@@ -48,7 +48,7 @@ namespace ShardingConnector.ShardingAdoNet
 
         protected override DbCommand CreateDbCommand()
         {
-            //
+            //d
             return new ShardingCommand(null, this);
         }
     }
