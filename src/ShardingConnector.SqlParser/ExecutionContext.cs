@@ -6,7 +6,7 @@ namespace ShardingConnector.SqlParser
 {
 /*
 * @Author: xjm
-* @Description:
+* @Description:1
 * @Date: Tuesday, 23 March 2021 21:27:41
 * @Email: 326308290@qq.com
 */
