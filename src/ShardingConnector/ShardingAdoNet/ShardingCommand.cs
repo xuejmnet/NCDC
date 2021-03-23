@@ -57,6 +57,8 @@ namespace ShardingConnector.ShardingAdoNet
             if (string.IsNullOrWhiteSpace(this.CommandText))
                 throw new ShardingException("sql command text null or empty");
             DbDataReader dataReader= new ShardingDataReader();
+
+
             return dataReader;
         }
     }
