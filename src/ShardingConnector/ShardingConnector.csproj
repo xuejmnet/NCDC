@@ -9,8 +9,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Kernels\Parse\" />
-      <Folder Include="Kernels\Route\" />
       <Folder Include="Kernels\Merge\" />
     </ItemGroup>
 

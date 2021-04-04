@@ -1,7 +1,6 @@
-using System;
 using System.Collections.Generic;
 
-namespace ShardingConnector.SqlParser
+namespace ShardingConnector.Kernels.Parse
 {
 /*
 * @Author: xjm

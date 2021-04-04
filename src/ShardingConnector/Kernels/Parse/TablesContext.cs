@@ -1,6 +1,4 @@
-using System;
-
-namespace ShardingConnector.SqlParser
+namespace ShardingConnector.Kernels.Parse
 {
 /*
 * @Author: xjm

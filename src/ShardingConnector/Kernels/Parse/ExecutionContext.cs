@@ -1,8 +1,7 @@
-using System;
 using System.Collections.Generic;
-using ShardingConnector.SqlParser.SqlExpression;
+using ShardingConnector.Kernels.Parse.SqlExpression;
 
-namespace ShardingConnector.SqlParser
+namespace ShardingConnector.Kernels.Parse
 {
 /*
 * @Author: xjm
