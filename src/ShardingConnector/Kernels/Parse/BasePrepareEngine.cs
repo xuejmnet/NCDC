@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using ShardingConnector.Kernels.Parse.SqlExpression;
 using ShardingConnector.Kernels.Route;
+using ShardingConnector.Kernels.Route.Rule;
+using ShardingConnector.Spi.Order;
 
 namespace ShardingConnector.Kernels.Parse
 {
@@ -14,8 +16,17 @@ namespace ShardingConnector.Kernels.Parse
     public abstract class BasePrepareEngine
     {
 
+        private readonly DataNodeRouter _router;
+        private readonly ICollection<IBaseRule> _rules;
+
+        protected BasePrepareEngine(DataNodeRouter router, ICollection<IBaseRule> rules)
+        {
+            _router = router;
+            _rules = rules;
+        }
+
         protected abstract IList<object> CloneParameters(IList<object> parameters);
-        protected abstract RouteContext Route(string sql, IList<object> parameters);
+        protected abstract RouteContext Route(DataNodeRouter router,string sql, IList<object> parameters);
 
         public ExecutionContext<ISqlCommand> Prepare(string sql, IList<object> parameters)
         {
@@ -24,7 +35,15 @@ namespace ShardingConnector.Kernels.Parse
 
         private RouteContext ExecuteRoute(string sql, List<object> clonedParameters)
         {
-            return Route(sq)
+            RegisterRouteDecorator();
+            return Route(_router, sql, clonedParameters);
+        }
+        /// <summary>
+        /// ×¢²áÂ·ÓÉ×°ÊÎÆ÷
+        /// </summary>
+        private void RegisterRouteDecorator()
+        {
+            var registeredOrderedAware = OrderedRegistry.GetRegisteredOrderedAware<IRouteDecorator<IBaseRule>>();
         }
     }
 }
