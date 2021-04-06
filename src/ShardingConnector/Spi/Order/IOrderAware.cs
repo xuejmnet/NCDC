@@ -11,14 +11,13 @@ namespace ShardingConnector.Spi.Order
     * @Ver: 1.0
     * @Email: 326308290@qq.com
     */
-    public interface IOrderAware
+    public interface IOrderAware<T>
     {
         int GetOrder();
-        Type GetType();
-
-    }
-    public interface IOrderAware<T>: IOrderAware
-    {
-
+        /// <summary>
+        /// 泛型类型
+        /// </summary>
+        /// <returns></returns>
+        Type GetGenericType();
     }
 }

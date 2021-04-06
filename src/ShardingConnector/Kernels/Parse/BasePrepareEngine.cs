@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using ShardingConnector.Exceptions;
 using ShardingConnector.Kernels.Parse.SqlExpression;
 using ShardingConnector.Kernels.Route;
 using ShardingConnector.Kernels.Route.Rule;
@@ -44,6 +46,28 @@ namespace ShardingConnector.Kernels.Parse
         private void RegisterRouteDecorator()
         {
             var registeredOrderedAware = OrderedRegistry.GetRegisteredOrderedAware<IRouteDecorator<IBaseRule>>();
+            foreach (var routeDecorator in registeredOrderedAware)
+            {
+                var decorator = CreateRouteDecorator(routeDecorator.GetType());
+                var ruleType = decorator.GetGenericType();
+                foreach (var rule in _rules.Where(rule=>!rule.GetType().IsAbstract&& ruleType.IsInstanceOfType(rule)))
+                {
+                    _router.RegisterDecorator(rule,decorator);
+                }
+
+            }
+        }
+        //创建路由装饰器
+        private IRouteDecorator<IBaseRule> CreateRouteDecorator(Type routeDecoratorType)
+        {
+            try
+            {
+                return (IRouteDecorator<IBaseRule>)Activator.CreateInstance(routeDecoratorType);
+            }
+            catch (Exception e)
+            {
+                throw new ShardingException($"Can not find public default constructor for route decorator {routeDecoratorType}", e);
+            }
         }
     }
 }

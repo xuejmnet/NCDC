@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using ShardingConnector.Kernels.Route.Rule;
 
 namespace ShardingConnector.Spi.Order
 {
@@ -12,7 +13,7 @@ namespace ShardingConnector.Spi.Order
     */
     public sealed class OrderedRegistry
     {
-        public static ICollection<T> GetRegisteredOrderedAware<T>() where T: IOrderAware
+        public static ICollection<T> GetRegisteredOrderedAware<T>() where T: IOrderAware<IBaseRule>
         {
             IDictionary<int, T> result = new SortedDictionary<int, T>();
             var newServiceInstances = NewInstanceServiceLoader.NewServiceInstances<T>();
