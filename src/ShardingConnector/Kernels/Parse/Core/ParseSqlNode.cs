@@ -14,6 +14,5 @@ namespace ShardingConnector.Kernels.Parse.Core
     */
     public sealed class ParseSqlNode:ISqlNode
     {
-        public 
     }
 }

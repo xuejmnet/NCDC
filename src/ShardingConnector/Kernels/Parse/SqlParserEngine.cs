@@ -23,7 +23,7 @@ namespace ShardingConnector.Kernels.Parse
 
         private ISqlCommand Parse0(string sql)
         {
-
+            return null;
         }
     }
 }

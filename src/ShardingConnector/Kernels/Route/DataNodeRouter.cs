@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using ShardingConnector.Kernels.Parse;
+using ShardingConnector.Kernels.Parse.SqlExpression;
 using ShardingConnector.Kernels.Route.Rule;
 
 namespace ShardingConnector.Kernels.Route
@@ -16,6 +18,13 @@ namespace ShardingConnector.Kernels.Route
     {
         private readonly IDictionary<IBaseRule, IRouteDecorator<IBaseRule>> _decorators =
             new Dictionary<IBaseRule, IRouteDecorator<IBaseRule>>();
+
+        private readonly SqlParserEngine _parserEngine;
+
+        public DataNodeRouter(SqlParserEngine parserEngine)
+        {
+            _parserEngine = parserEngine;
+        }
         public void RegisterDecorator(IBaseRule rule,IRouteDecorator<IBaseRule> decorator)
         {
             _decorators.Add(rule,decorator);
@@ -33,7 +42,11 @@ namespace ShardingConnector.Kernels.Route
 
         private RouteContext CreateRouteContext(string sql, List<object> parameters)
         {
-
+            var sqlCommand = _parserEngine.Parse(sql);
+            try
+            {
+                ISqlCommandContext<ISqlCommand>
+            }
         }
     }
 }

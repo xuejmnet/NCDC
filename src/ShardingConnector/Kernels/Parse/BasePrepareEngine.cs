@@ -41,7 +41,7 @@ namespace ShardingConnector.Kernels.Parse
             return Route(_router, sql, clonedParameters);
         }
         /// <summary>
-        /// ×¢²áÂ·ÓÉ×°ÊÎÆ÷
+        /// æ³¨å†Œè·¯ç”±è£…é¥°å™¨
         /// </summary>
         private void RegisterRouteDecorator()
         {
@@ -57,7 +57,7 @@ namespace ShardingConnector.Kernels.Parse
 
             }
         }
-        //´´½¨Â·ÓÉ×°ÊÎÆ÷
+        //åˆ›å»ºè·¯ç”±è£…é¥°å™¨
         private IRouteDecorator<IBaseRule> CreateRouteDecorator(Type routeDecoratorType)
         {
             try
