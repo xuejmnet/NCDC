@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using ShardingConnector.Kernels.MetaData.Column;
 using ShardingConnector.Kernels.MetaData.Index;
@@ -13,78 +14,106 @@ namespace ShardingConnector.Kernels.MetaData.Table
 */
     public sealed class TableMetaData
     {
-        
-    private readonly IDictionary<string, ColumnMetaData> _columns;
-    
-    private readonly IDictionary<String, IndexMetaData> _indexes;
-    
-    @Getter(AccessLevel.NONE)
-    private final List<String> columnNames = new ArrayList<>();
-    
-    private final List<String> primaryKeyColumns = new ArrayList<>();
-    
-    public TableMetaData(final Collection<ColumnMetaData> columnMetaDataList, final Collection<IndexMetaData> indexMetaDataList) {
-        columns = getColumns(columnMetaDataList);
-        indexes = getIndexes(indexMetaDataList);
-    }
-    
-    private Map<String, ColumnMetaData> getColumns(final Collection<ColumnMetaData> columnMetaDataList) {
-        Map<String, ColumnMetaData> result = new LinkedHashMap<>(columnMetaDataList.size(), 1);
-        for (ColumnMetaData each : columnMetaDataList) {
-            String lowerColumnName = each.getName().toLowerCase();
-            columnNames.add(lowerColumnName);
-            result.put(lowerColumnName, each);
-            if (each.isPrimaryKey()) {
-                primaryKeyColumns.add(lowerColumnName);
+        private readonly ConcurrentDictionary<string, ColumnMetaData> _columns;
+
+        private readonly ConcurrentDictionary<String, IndexMetaData> _indexes;
+
+        private readonly List<string> _columnNames = new List<string>();
+
+        private readonly List<string> _primaryKeyColumns = new List<string>();
+
+        public TableMetaData(ICollection<ColumnMetaData> columnMetaDataList, ICollection<IndexMetaData> indexMetaDataList)
+        {
+            _columns = CreateColumns(columnMetaDataList);
+            _indexes = CreateIndexes(indexMetaDataList);
+        }
+
+        private ConcurrentDictionary<string, ColumnMetaData> CreateColumns(ICollection<ColumnMetaData> columnMetaDataList)
+        {
+            ConcurrentDictionary<string, ColumnMetaData> result = new ConcurrentDictionary<string, ColumnMetaData>();
+            foreach (var columnMetaData in columnMetaDataList)
+            {
+                var lowerColumnName = columnMetaData.Name.ToLower();
+                _columnNames.Add(lowerColumnName);
+                result.TryAdd(lowerColumnName, columnMetaData);
+                if (columnMetaData.PrimaryKey)
+                {
+                    _primaryKeyColumns.Add(lowerColumnName);
+                }
             }
+
+            return result;
         }
-        return Collections.synchronizedMap(result);
-    }
-    
-    private Map<String, IndexMetaData> getIndexes(final Collection<IndexMetaData> indexMetaDataList) {
-        Map<String, IndexMetaData> result = new LinkedHashMap<>(indexMetaDataList.size(), 1);
-        for (IndexMetaData each : indexMetaDataList) {
-            result.put(each.getName().toLowerCase(), each);
+
+        private ConcurrentDictionary<string, IndexMetaData> CreateIndexes(ICollection<IndexMetaData> indexMetaDataList)
+        {
+            ConcurrentDictionary<string, IndexMetaData> result = new ConcurrentDictionary<string, IndexMetaData>();
+            foreach (var indexMetaData in indexMetaDataList)
+            {
+                result.TryAdd(indexMetaData.Name.ToLower(), indexMetaData);
+            }
+
+            return result;
         }
-        return Collections.synchronizedMap(result);
-    }
-    
-    /**
+
+        public ConcurrentDictionary<string, ColumnMetaData> GetColumns()
+        {
+            return _columns;
+        }
+        /**
      * Get column meta data.
      *
      * @param columnIndex column index
      * @return column meta data
      */
-    public ColumnMetaData getColumnMetaData(final int columnIndex) {
-        return columns.get(columnNames.get(columnIndex));
-    }
-    
-    /**
+        public ColumnMetaData GetColumnMetaData(int columnIndex)
+        {
+            if (_columns.TryGetValue(_columnNames[columnIndex], out var value))
+            {
+                return value;
+            }
+
+            return null;
+        }
+
+        /**
      * Find index of column.
      *
      * @param columnName column name
      * @return index of column if found, otherwise -1
      */
-    public int findColumnIndex(final String columnName) {
-        for (int i = 0; i < columnNames.size(); i++) {
-            if (columnNames.get(i).equals(columnName)) {
-                return i;
+        public int FindColumnIndex(string columnName)
+        {
+            for (int i = 0; i < _columnNames.Count; i++)
+            {
+                if (_columnNames[i].Equals(columnName))
+                {
+                    return i;
+                }
             }
+
+            return -1;
         }
-        return -1;
-    }
-    
-    /**
+
+        /**
      * Judge column whether primary key.
      *
      * @param columnIndex column index
      * @return true if the column is primary key, otherwise false
      */
-    public boolean isPrimaryKey(final int columnIndex) {
-        if (columnIndex >= columnNames.size()) {
+        public bool IsPrimaryKey(int columnIndex)
+        {
+            if (columnIndex >= _columnNames.Count)
+            {
+                return false;
+            }
+
+            if (_columns.TryGetValue(_columnNames[columnIndex], out var value))
+            {
+                return value.PrimaryKey;
+            }
+
             return false;
         }
-        return columns.get(columnNames.get(columnIndex)).isPrimaryKey();
-    }
     }
 }

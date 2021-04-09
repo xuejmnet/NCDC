@@ -97,7 +97,7 @@ namespace ShardingConnector.Kernels.MetaData.Schema
      * @return contains column name or not
      */
     public bool ContainsColumn(string tableName, string columnName) {
-        return ContainsTable(tableName) && Get(tableName).getColumns().containsKey(columnName.toLowerCase());
+        return ContainsTable(tableName) && Get(tableName).GetColumns().ContainsKey(columnName.ToLower());
     }
     
     /**
@@ -106,8 +106,8 @@ namespace ShardingConnector.Kernels.MetaData.Schema
      * @param tableName table name
      * @return column names
      */
-    public List<String> getAllColumnNames(final String tableName) {
-        return containsTable(tableName) ? new ArrayList<>(get(tableName).getColumns().keySet()) : Collections.emptyList();
+    public List<string> GetAllColumnNames(string tableName) {
+        return ContainsTable(tableName) ? new List<string>(Get(tableName).GetColumns().Keys) : new List<string>(0);
     }
     }
 }
