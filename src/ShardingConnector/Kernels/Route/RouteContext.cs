@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Text;
 using ShardingConnector.Kernels.Parse.SqlExpression;
+using ShardingConnector.Parser.Binder.Command;
+using ShardingConnector.Parser.Sql.Command;
 
 namespace ShardingConnector.Kernels.Route
 {

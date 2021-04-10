@@ -1,4 +1,8 @@
-namespace ShardingConnector.Kernels.Parse.SqlExpression
+using ShardingConnector.Kernels.Parse;
+using ShardingConnector.Parser.Binder.Segment.Table;
+using ShardingConnector.Parser.Sql.Command;
+
+namespace ShardingConnector.Parser.Binder.Command
 {
 /*
 * @Author: xjm

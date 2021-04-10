@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.Common;
 using System.Text;
 using ShardingConnector.Kernels.Parse.SqlExpression;
+using ShardingConnector.Parser.Sql.Command;
 
 namespace ShardingConnector.Kernels.Parse
 {

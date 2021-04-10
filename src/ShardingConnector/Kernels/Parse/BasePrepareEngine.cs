@@ -5,6 +5,7 @@ using ShardingConnector.Exceptions;
 using ShardingConnector.Kernels.Parse.SqlExpression;
 using ShardingConnector.Kernels.Route;
 using ShardingConnector.Kernels.Route.Rule;
+using ShardingConnector.Parser.Sql.Command;
 using ShardingConnector.Spi.Order;
 
 namespace ShardingConnector.Kernels.Parse

@@ -4,6 +4,8 @@ using System.Text;
 using ShardingConnector.Kernels.Parse;
 using ShardingConnector.Kernels.Parse.SqlExpression;
 using ShardingConnector.Kernels.Route.Rule;
+using ShardingConnector.Parser.Binder.Command;
+using ShardingConnector.Parser.Sql.Command;
 
 namespace ShardingConnector.Kernels.Route
 {
