@@ -105,51 +105,56 @@ namespace ShardingConnector.Parser.Binder.Segment.Select.Projection
         /// <returns></returns>
         public List<AggregationProjection> GetAggregationProjections()
         {
-            List<AggregationProjection> result = new LinkedList<>();
-            for (Projection each :
-            projections) {
-                if (each instanceof AggregationProjection) {
-                    AggregationProjection aggregationProjection = (AggregationProjection) each;
-                    result.add(aggregationProjection);
-                    result.addAll(aggregationProjection.getDerivedAggregationProjections());
+            List<AggregationProjection> result = new List<AggregationProjection>();
+            foreach (var projection in _projections)
+            {
+                if (projection is AggregationProjection aggregationProjection)
+                {
+                    result.Add(aggregationProjection);
+                    result.AddRange(aggregationProjection.GetDerivedAggregationProjections());
                 }
             }
+
             return result;
         }
 
-        /**
-     * Get aggregation distinct projections.
-     *
-     * @return aggregation distinct projections
-     */
-        public List<AggregationDistinctProjection> getAggregationDistinctProjections()
+       /// <summary>
+       /// Get aggregation distinct projections.
+       /// </summary>
+       /// <returns></returns>
+        public List<AggregationDistinctProjection> GetAggregationDistinctProjections()
         {
-            List<AggregationDistinctProjection> result = new LinkedList<>();
-            for (Projection each :
-            projections) {
-                if (each instanceof AggregationDistinctProjection) {
-                    result.add((AggregationDistinctProjection) each);
+            List<AggregationDistinctProjection> result = new List<AggregationDistinctProjection>();
+            foreach (var projection in _projections)
+            {
+                if (projection is AggregationDistinctProjection aggregationDistinctProjection)
+                {
+                    result.Add(aggregationDistinctProjection);
                 }
             }
+
             return result;
         }
 
-        /**
-     * Get expand projections with shorthand projections.
-     * 
-     * @return expand projections
-     */
-        public List<Projection> getExpandProjections()
+       /// <summary>
+       /// Get expand projections with shorthand projections.
+       /// </summary>
+       /// <returns></returns>
+        public List<IProjection> GetExpandProjections()
         {
-            List<Projection> result = new ArrayList<>();
-            for (Projection each :
-            projections) {
-                if (each instanceof ShorthandProjection) {
-                    result.addAll(((ShorthandProjection) each).getActualColumns());
-                } else if (!(each instanceof DerivedProjection)) {
-                    result.add(each);
+            List<IProjection> result = new List<IProjection>();
+            foreach (var projection in _projections)
+            {
+                if (projection is ShorthandProjection shorthandProjection)
+                {
+                    result.AddRange(shorthandProjection.GetActualColumns());
+                }
+                else if (!(projection is DerivedProjection))
+                {
+                    result.Add(projection);
                 }
             }
+
             return result;
         }
     }

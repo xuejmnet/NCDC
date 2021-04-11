@@ -1,8 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using ShardingConnector.Kernels.MetaData.Schema;
 using ShardingConnector.Parser.Binder.Segment.Select.Groupby;
+using ShardingConnector.Parser.Binder.Segment.Select.Groupby.Engine;
 using ShardingConnector.Parser.Binder.Segment.Select.OrderBy;
+using ShardingConnector.Parser.Binder.Segment.Select.OrderBy.Engine;
+using ShardingConnector.Parser.Binder.Segment.Select.Pagination;
 using ShardingConnector.Parser.Binder.Segment.Select.Projection;
 using ShardingConnector.Parser.Binder.Segment.Table;
 using ShardingConnector.Parser.Sql.Command.DML;
@@ -22,36 +27,34 @@ namespace ShardingConnector.Parser.Binder.Command.DML
     {
         private readonly TablesContext _tablesContext;
     
-        private readonly ProjectionsContext projectionsContext;
+        private readonly ProjectionsContext _projectionsContext;
     
-        private readonly GroupByContext groupByContext;
+        private readonly GroupByContext _groupByContext;
     
-        private readonly OrderByContext orderByContext;
+        private readonly OrderByContext _orderByContext;
     
-        private readonly PaginationContext paginationContext;
+        private readonly PaginationContext _paginationContext;
     
-        private readonly bool containsSubquery;
+        private readonly bool _containsSubQuery;
 
         // TODO to be remove, for test case only
-        public SelectStatementContext(final SelectStatement sqlStatement, final GroupByContext groupByContext,
-        final OrderByContext orderByContext, final ProjectionsContext projectionsContext, final PaginationContext paginationContext) {
-            super(sqlStatement);
-            tablesContext = new TablesContext(sqlStatement.getSimpleTableSegments());
-            this.groupByContext = groupByContext;
-            this.orderByContext = orderByContext;
-            this.projectionsContext = projectionsContext;
-            this.paginationContext = paginationContext;
-            containsSubquery = containsSubquery();
+        public SelectCommandContext(SelectCommand sqlCommand,GroupByContext groupByContext,
+        OrderByContext orderByContext, ProjectionsContext projectionsContext, PaginationContext paginationContext):base(sqlCommand) {
+            _tablesContext = new TablesContext(sqlCommand.GetSimpleTableSegments());
+            this._groupByContext = _groupByContext;
+            this._orderByContext = _orderByContext;
+            this._projectionsContext = _projectionsContext;
+            this._paginationContext = _paginationContext;
+            _containsSubQuery = ContainsSubQuery();
         }
     
-        public SelectStatementContext(final SchemaMetaData schemaMetaData, final String sql, final List<Object> parameters, final SelectStatement sqlStatement) {
-            super(sqlStatement);
-            tablesContext = new TablesContext(sqlStatement.getSimpleTableSegments());
-            groupByContext = new GroupByContextEngine().createGroupByContext(sqlStatement);
-            orderByContext = new OrderByContextEngine().createOrderBy(sqlStatement, groupByContext);
-            projectionsContext = new ProjectionsContextEngine(schemaMetaData).createProjectionsContext(sql, sqlStatement, groupByContext, orderByContext);
-            paginationContext = new PaginationContextEngine().createPaginationContext(sqlStatement, projectionsContext, parameters);
-            containsSubquery = containsSubquery();
+        public SelectCommandContext(SchemaMetaData schemaMetaData, string sql, List<Object> parameters,SelectCommand sqlCommand):base(sqlCommand) {
+            _tablesContext = new TablesContext(sqlCommand.GetSimpleTableSegments());
+            _groupByContext = GroupByContextEngine.CreateGroupByContext(sqlCommand);
+            _orderByContext = OrderByContextEngine.CreateOrderBy(sqlCommand,_groupByContext);
+            _projectionsContext = new ProjectionsContextEngine(schemaMetaData).createProjectionsContext(sql, sqlStatement, _groupByContext, _orderByContext);
+            _paginationContext = new PaginationContextEngine().createPaginationContext(sqlStatement, _projectionsContext, parameters);
+            _containsSubQuery = ContainsSubQuery();
         }
 
         public ICollection<SimpleTableSegment> GetAllTables()
@@ -61,16 +64,31 @@ namespace ShardingConnector.Parser.Binder.Command.DML
 
         public WhereSegment GetWhere()
         {
-            throw new NotImplementedException();
+            return 
         }
 
         public ProjectionsContext GetProjectionsContext()
         {
-            return projectionsContext;
+            return _projectionsContext;
         }
         public GroupByContext GetGroupByContext()
         {
-            return groupByContext;
+            return _groupByContext;
+        }
+        
+        public bool IsSameGroupByAndOrderByItems() {
+            return _groupByContext.GetItems().Any() && _groupByContext.GetItems().Equals(_orderByContext.GetItems());
+        }
+        
+        private bool ContainsSubQuery() {
+            // FIXME process subquery
+//        Collection<SubqueryPredicateSegment> subqueryPredicateSegments = getSqlStatement().findSQLSegments(SubqueryPredicateSegment.class);
+//        for (SubqueryPredicateSegment each : subqueryPredicateSegments) {
+//            if (!each.getAndPredicates().isEmpty()) {
+//                return true;
+//            }
+//        }
+            return false;
         }
     }
 }

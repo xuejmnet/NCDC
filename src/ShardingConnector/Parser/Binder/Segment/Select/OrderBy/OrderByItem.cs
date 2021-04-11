@@ -15,10 +15,9 @@ namespace ShardingConnector.Parser.Binder.Segment.Select.OrderBy
 
         private int index;
 
-        public OrderByItem(OrderByItemSegment segment, int index)
+        public OrderByItem(OrderByItemSegment segment)
         {
             _segment = segment;
-            this.index = index;
         }
 
         public OrderByItemSegment GetOrderByItemSegment()

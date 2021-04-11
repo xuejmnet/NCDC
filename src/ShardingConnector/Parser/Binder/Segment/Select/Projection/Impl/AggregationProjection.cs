@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using ShardingConnector.Parser.Sql.Constant;
+using ShardingConnector.Parser.Sql.Util;
 
 namespace ShardingConnector.Parser.Binder.Segment.Select.Projection.Impl
 {
@@ -21,24 +22,40 @@ namespace ShardingConnector.Parser.Binder.Segment.Select.Projection.Impl
         private readonly List<AggregationProjection> _derivedAggregationProjections = new List<AggregationProjection>(2);
     
         private int index = -1;
+
+        public AggregationProjection(AggregationTypeEnum type, string innerExpression, string @alias)
+        {
+            _type = type;
+            _innerExpression = innerExpression;
+            _alias = alias;
+        }
+
         public string GetExpression()
         {
-            throw new NotImplementedException();
+            return SqlUtil.GetExactlyValue(_type.ToString() + _innerExpression);
         }
 
         public string GetAlias()
         {
-            throw new NotImplementedException();
+            return _alias;
         }
-
+        /// <summary>
+        /// 别称或者是真实的表达式
+        /// </summary>
+        /// <returns></returns>
         public string GetColumnLabel()
         {
-            throw new NotImplementedException();
+            return _alias ?? GetExpression();
         }
 
         public void SetIndex(int index)
         {
             this.index = index;
+        }
+
+        public List<AggregationProjection> GetDerivedAggregationProjections()
+        {
+            return _derivedAggregationProjections;
         }
     }
 }

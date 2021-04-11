@@ -40,5 +40,10 @@ namespace ShardingConnector.Parser.Binder.Segment.Select.Projection.Impl
         {
             return _owner;
         }
+
+        public ICollection<ColumnProjection> GetActualColumns()
+        {
+            return _actualColumns;
+        }
     }
 }

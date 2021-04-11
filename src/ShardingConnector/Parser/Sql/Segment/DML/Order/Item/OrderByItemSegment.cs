@@ -10,7 +10,7 @@ namespace ShardingConnector.Parser.Sql.Segment.DML.Order.Item
 * @Date: Sunday, 11 April 2021 14:17:21
 * @Email: 326308290@qq.com
 */
-    public sealed class OrderByItemSegment:ISqlSegment
+    public abstract class OrderByItemSegment:ISqlSegment
     {
         private readonly int _startIndex;
     

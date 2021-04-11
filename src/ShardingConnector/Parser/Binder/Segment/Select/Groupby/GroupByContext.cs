@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using ShardingConnector.Parser.Binder.Segment.Select.OrderBy;
+using ShardingConnector.Parser.Sql.Command.DML;
+using ShardingConnector.Parser.Sql.Segment.DML.Order.Item;
 
 namespace ShardingConnector.Parser.Binder.Segment.Select.Groupby
 {
@@ -30,5 +32,6 @@ namespace ShardingConnector.Parser.Binder.Segment.Select.Groupby
         {
             return _lastIndex;
         }
+        
     }
 }

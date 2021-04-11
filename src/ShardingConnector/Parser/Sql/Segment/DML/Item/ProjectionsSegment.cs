@@ -47,7 +47,7 @@ namespace ShardingConnector.Parser.Sql.Segment.DML.Item
             return _projections;
         }
 
-        public bool GetDistinctRow()
+        public bool IsDistinctRow()
         {
             return distinctRow;
         }

@@ -19,14 +19,12 @@ namespace ShardingConnector.Parser.Sql.Util
         }
 
 
-        /**
-         * Get exactly value for SQL expression.
-         * 
-         * <p>remove special char for SQL expression</p>
-         * 
-         * @param value SQL expression
-         * @return exactly SQL expression
-         */
+        /// <summary>
+        /// remove special char for SQL expression
+        /// 获取移除了特殊字符后的值
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public static string GetExactlyValue(string value)
         {
             return value?.Replace("[",string.Empty)

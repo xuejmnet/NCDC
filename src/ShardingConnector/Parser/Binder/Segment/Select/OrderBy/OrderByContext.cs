@@ -1,5 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using ShardingConnector.Parser.Binder.Segment.Select.Groupby;
+using ShardingConnector.Parser.Sql.Command.DML;
+using ShardingConnector.Parser.Sql.Constant;
+using ShardingConnector.Parser.Sql.Segment.DML.Item;
+using ShardingConnector.Parser.Sql.Segment.DML.Order.Item;
 
 namespace ShardingConnector.Parser.Binder.Segment.Select.OrderBy
 {
@@ -30,5 +36,6 @@ namespace ShardingConnector.Parser.Binder.Segment.Select.OrderBy
         {
             return _generated;
         }
+        
     }
 }

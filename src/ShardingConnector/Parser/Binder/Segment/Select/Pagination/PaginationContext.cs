@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using ShardingConnector.Parser.Binder.Command.DML;
 using ShardingConnector.Parser.Sql.Segment.DML.Pagination;
+using ShardingConnector.Parser.Sql.Segment.DML.Pagination.limit;
 
 namespace ShardingConnector.Parser.Binder.Segment.Select.Pagination
 {
@@ -98,12 +99,12 @@ namespace ShardingConnector.Parser.Binder.Segment.Select.Pagination
         if (IsMaxRowCount(shardingCommand)) {
             return int.MaxValue;
         }
-        return _rowCountSegment instanceof LimitValueSegment ? _actualOffset + _actualRowCount : _actualRowCount;
+        return _rowCountSegment is LimitValueSegment ? _actualOffset + _actualRowCount.GetValueOrDefault() : _actualRowCount.GetValueOrDefault();
     }
     
     private bool IsMaxRowCount(SelectCommandContext shardingCommand) {
         return (shardingCommand.GetGroupByContext().GetItems().Any()
-                || !shardingCommand.GetProjectionsContext().GetAggregationProjections().isEmpty()) && !shardingCommand.IsSameGroupByAndOrderByItems();
+                || shardingCommand.GetProjectionsContext().GetAggregationProjections().Any()) && !shardingCommand.IsSameGroupByAndOrderByItems();
     }
 
     public bool HasPagination()
