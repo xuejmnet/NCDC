@@ -57,5 +57,10 @@ namespace ShardingConnector.Parser.Binder.Segment.Select.Projection.Impl
         {
             return _derivedAggregationProjections;
         }
+
+        public string GetInnerExpression()
+        {
+            return _innerExpression;
+        }
     }
 }

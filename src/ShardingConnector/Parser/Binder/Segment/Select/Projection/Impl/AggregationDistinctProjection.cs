@@ -31,5 +31,10 @@ namespace ShardingConnector.Parser.Binder.Segment.Select.Projection.Impl
         public string GetDistinctColumnLabel() {
             return GetAlias()??_distinctInnerExpression;
         }
+
+        public string GetDistinctInnerExpression()
+        {
+            return _distinctInnerExpression;
+        }
     }
 }
