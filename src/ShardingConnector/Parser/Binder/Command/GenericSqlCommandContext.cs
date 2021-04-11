@@ -4,6 +4,7 @@ using System.Text;
 using ShardingConnector.Kernels.Parse;
 using ShardingConnector.Parser.Binder.Segment.Table;
 using ShardingConnector.Parser.Sql.Command;
+using ShardingConnector.Parser.Sql.Segment.Generic.Table;
 
 namespace ShardingConnector.Parser.Binder.Command
 {
@@ -22,7 +23,7 @@ namespace ShardingConnector.Parser.Binder.Command
         public GenericSqlCommandContext(T sqlCommand)
         {
             this.sqlCommand = sqlCommand;
-            this.tablesContext = new TablesContext();
+            this.tablesContext = new TablesContext(new List<SimpleTableSegment>(0));
         }
         public T GetSqlCommand()
         {
