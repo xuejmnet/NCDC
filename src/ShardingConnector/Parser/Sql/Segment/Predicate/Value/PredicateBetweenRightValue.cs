@@ -28,4 +28,3 @@ namespace ShardingConnector.Parser.Sql.Segment.Predicate.Value
         }
     }
 }
-}

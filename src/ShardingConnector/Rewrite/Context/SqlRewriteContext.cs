@@ -32,7 +32,7 @@ namespace ShardingConnector.Rewrite.Context
 
         private readonly SQLTokenGenerators sqlTokenGenerators = new SQLTokenGenerators();
 
-        public SQLRewriteContext(final SchemaMetaData schemaMetaData, final SQLStatementContext sqlStatementContext, final String sql, final List<Object> parameters)
+        public SQLRewriteContext(SchemaMetaData schemaMetaData, ISqlCommandContext<ISqlCommand> sqlCommandContext, string sql, IList<Object> parameters)
         {
             this.schemaMetaData = schemaMetaData;
             this.sqlStatementContext = sqlStatementContext;
