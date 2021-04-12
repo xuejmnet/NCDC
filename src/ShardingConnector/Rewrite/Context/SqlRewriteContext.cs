@@ -5,6 +5,8 @@ using ShardingConnector.Kernels.MetaData.Schema;
 using ShardingConnector.Parser.Binder.Command;
 using ShardingConnector.Parser.Sql.Command;
 using ShardingConnector.Rewrite.Parameter.Builder.Impl;
+using ShardingConnector.Rewrite.Sql.Token.Generator;
+using ShardingConnector.Rewrite.Sql.Token.Generator.Builder;
 using ShardingConnector.Rewrite.Sql.Token.SimpleObject;
 
 namespace ShardingConnector.Rewrite.Context
@@ -30,15 +32,19 @@ namespace ShardingConnector.Rewrite.Context
     
         private readonly ICollection<SqlToken> _sqlTokens = new LinkedList<SqlToken>();
 
-        private readonly SQLTokenGenerators sqlTokenGenerators = new SQLTokenGenerators();
+        private readonly SqlTokenGenerators _sqlTokenGenerators = new SqlTokenGenerators();
 
-        public SQLRewriteContext(SchemaMetaData schemaMetaData, ISqlCommandContext<ISqlCommand> sqlCommandContext, string sql, IList<Object> parameters)
+        public SqlRewriteContext(SchemaMetaData schemaMetaData, ISqlCommandContext<ISqlCommand> sqlCommandContext, string sql, IList<object> parameters)
         {
-            this.schemaMetaData = schemaMetaData;
-            this.sqlStatementContext = sqlStatementContext;
-            this.sql = sql;
-            this.parameters = parameters;
-            addSQLTokenGenerators(new DefaultTokenGeneratorBuilder().getSQLTokenGenerators());
+            this._schemaMetaData = schemaMetaData;
+            this._sqlCommandContext = sqlCommandContext;
+            this._sql = sql;
+            this._parameters = parameters;
+            AddSQLTokenGenerators(new DefaultTokenGeneratorBuilder().GetSQLTokenGenerators());
+            if (sqlCommandContext is InsertStatementContext)
+            {
+                
+            }
             parameterBuilder = sqlStatementContext instanceof InsertStatementContext
                 ? new GroupedParameterBuilder(((InsertStatementContext)sqlStatementContext).getGroupedParameters()) : new StandardParameterBuilder(parameters);
         }
@@ -48,9 +54,9 @@ namespace ShardingConnector.Rewrite.Context
          * 
          * @param sqlTokenGenerators SQL token generators
          */
-        public void addSQLTokenGenerators(final Collection<SQLTokenGenerator> sqlTokenGenerators)
+        public void AddSQLTokenGenerators(ICollection<ISqlTokenGenerator> sqlTokenGenerators)
         {
-            this.sqlTokenGenerators.addAll(sqlTokenGenerators);
+            this._sqlTokenGenerators.AddAll(sqlTokenGenerators);
         }
 
         /**

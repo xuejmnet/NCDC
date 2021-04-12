@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using ShardingConnector.Extensions;
 using ShardingConnector.Kernels.MetaData.Schema;
 using ShardingConnector.Parser.Binder.Command;
 using ShardingConnector.Parser.Sql.Command;
@@ -43,6 +44,7 @@ namespace ShardingConnector.Rewrite.Sql.Token.Generator
                 if (item.GetType() == sqlTokenGenerator.GetType())
                     return true;
             }
+
             return false;
         }
 
@@ -54,7 +56,7 @@ namespace ShardingConnector.Rewrite.Sql.Token.Generator
          * @param schemaMetaData schema meta data
          * @return SQL tokens
          */
-    public ICollection<SqlToken> GenerateSQLTokens(ISqlCommandContext<ISqlCommand> sqlCommandContext, IList<object> parameters, SchemaMetaData schemaMetaData)
+        public ICollection<SqlToken> GenerateSQLTokens(ISqlCommandContext<ISqlCommand> sqlCommandContext, IList<object> parameters, SchemaMetaData schemaMetaData)
         {
             ICollection<SqlToken> result = new LinkedList<SqlToken>();
 
@@ -65,30 +67,40 @@ namespace ShardingConnector.Rewrite.Sql.Token.Generator
                 {
                     continue;
                 }
-                if (sqlTokenGenerator is OptionalSQLTokenGenerator) {
-                    SQLToken sqlToken = ((OptionalSQLTokenGenerator)each).generateSQLToken(sqlStatementContext);
-                    if (!result.contains(sqlToken))
+
+                if (sqlTokenGenerator is IOptionalSQLTokenGenerator<ISqlCommandContext<ISqlCommand>> optionalSqlTokenGenerator)
+                {
+                    SqlToken sqlToken = optionalSqlTokenGenerator.GenerateSQLToken(sqlCommandContext);
+                    if (!result.Contains(sqlToken))
                     {
-                        result.add(sqlToken);
+                        result.Add(sqlToken);
                     }
-                } else if (each instanceof CollectionSQLTokenGenerator) {
-                    result.addAll(((CollectionSQLTokenGenerator)each).generateSQLTokens(sqlStatementContext));
+                }
+                else if (sqlTokenGenerator is ICollectionSqlTokenGenerator<ISqlCommandContext<ISqlCommand>> collectionSqlTokenGenerator)
+                {
+                    result.AddAll(collectionSqlTokenGenerator.GenerateSQLTokens(sqlCommandContext));
                 }
             }
-        return result;
-    }
 
-    private void SetUpSqlTokenGenerator(ISqlTokenGenerator sqlTokenGenerator, IList<object> parameters, SchemaMetaData schemaMetaData, ICollection<SqlToken> previousSqlTokens)
-    {
-        if (sqlTokenGenerator is IParametersAware parametersAware) {
-            parametersAware.SetParameters(parameters);
+            return result;
         }
-        if (sqlTokenGenerator is ISchemaMetaDataAware schemaMetaDataAware) {
-            schemaMetaDataAware.SetSchemaMetaData(schemaMetaData);
-        }
-        if (sqlTokenGenerator is IPreviousSqlTokensAware previousSqlTokensAware) {
-            previousSqlTokensAware.SetPreviousSQLTokens(previousSqlTokens);
+
+        private void SetUpSqlTokenGenerator(ISqlTokenGenerator sqlTokenGenerator, IList<object> parameters, SchemaMetaData schemaMetaData, ICollection<SqlToken> previousSqlTokens)
+        {
+            if (sqlTokenGenerator is IParametersAware parametersAware)
+            {
+                parametersAware.SetParameters(parameters);
+            }
+
+            if (sqlTokenGenerator is ISchemaMetaDataAware schemaMetaDataAware)
+            {
+                schemaMetaDataAware.SetSchemaMetaData(schemaMetaData);
+            }
+
+            if (sqlTokenGenerator is IPreviousSqlTokensAware previousSqlTokensAware)
+            {
+                previousSqlTokensAware.SetPreviousSQLTokens(previousSqlTokens);
+            }
         }
     }
-}
 }
