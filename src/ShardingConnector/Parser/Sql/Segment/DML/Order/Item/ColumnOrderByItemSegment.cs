@@ -28,5 +28,10 @@ namespace ShardingConnector.Parser.Sql.Segment.DML.Order.Item
         {
             return _column.GetQualifiedName();
         }
+
+        public ColumnSegment GetColumn()
+        {
+            return _column;
+        }
     }
 }

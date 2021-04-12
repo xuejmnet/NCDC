@@ -9,139 +9,156 @@ using ShardingConnector.Parser.Sql.Segment.Generic.Table;
 
 namespace ShardingConnector.Parser.Binder.Segment.Select.Projection.Engine
 {
-/*
-* @Author: xjm
-* @Description:
-* @Date: Sunday, 11 April 2021 21:52:44
-* @Email: 326308290@qq.com
-*/
+    /*
+    * @Author: xjm
+    * @Description:
+    * @Date: Sunday, 11 April 2021 21:52:44
+    * @Email: 326308290@qq.com
+    */
     public sealed class ProjectionEngine
     {
-        
-    private readonly SchemaMetaData _schemaMetaData;
-    
-    private int aggregationAverageDerivedColumnCount;
-    
-    private int aggregationDistinctDerivedColumnCount;
 
-    public ProjectionEngine(SchemaMetaData schemaMetaData)
-    {
-        _schemaMetaData = schemaMetaData;
-    }
+        private readonly SchemaMetaData _schemaMetaData;
 
-    /**
-     * Create projection.
-     * 
-     * @param sql SQL
-     * @param tableSegments table segments
-     * @param projectionSegment projection segment
-     * @return projection
-     */
-    public IProjection CreateProjection(string sql, ICollection<SimpleTableSegment> tableSegments, IProjectionSegment projectionSegment) {
-        if (projectionSegment is ShorthandProjectionSegment) {
-            return Optional.of(createProjection(tableSegments, (ShorthandProjectionSegment) projectionSegment));
-        }
-        if (projectionSegment instanceof ColumnProjectionSegment) {
-            return Optional.of(createProjection((ColumnProjectionSegment) projectionSegment));
-        }
-        if (projectionSegment instanceof ExpressionProjectionSegment) {
-            return Optional.of(createProjection((ExpressionProjectionSegment) projectionSegment));
-        }
-        if (projectionSegment instanceof AggregationDistinctProjectionSegment) {
-            return Optional.of(createProjection(sql, (AggregationDistinctProjectionSegment) projectionSegment));
-        }
-        if (projectionSegment instanceof AggregationProjectionSegment) {
-            return Optional.of(createProjection(sql, (AggregationProjectionSegment) projectionSegment));
-        }
-        // TODO subquery
-        return Optional.empty();
-    }
-    
-    private ShorthandProjection CreateProjection(ICollection<SimpleTableSegment> tableSegments, ShorthandProjectionSegment projectionSegment)
-    {
-        var owner = projectionSegment.GetOwner()?.GetIdentifier().GetValue();
-        ICollection<ColumnProjection> columns = getShorthandColumns(tableSegments, owner);
-        return new ShorthandProjection(owner, columns);
-    }
-    
-    private ColumnProjection CreateProjection(ColumnProjectionSegment projectionSegment) {
-        String owner = projectionSegment.GetColumn().GetOwner()?.GetIdentifier().GetValue();
-        return new ColumnProjection(owner, projectionSegment.GetColumn().GetIdentifier().GetValue(), projectionSegment.GetAlias());
-    }
-    
-    private ExpressionProjection CreateProjection(final ExpressionProjectionSegment projectionSegment) {
-        return new ExpressionProjection(projectionSegment.getText(), projectionSegment.getAlias().orElse(null));
-    }
-    
-    private AggregationDistinctProjection CreateProjection(final String sql, final AggregationDistinctProjectionSegment projectionSegment) {
-        String innerExpression = sql.substring(projectionSegment.getInnerExpressionStartIndex(), projectionSegment.getStopIndex() + 1);
-        String alias = projectionSegment.getAlias().orElse(DerivedColumn.AGGREGATION_DISTINCT_DERIVED.getDerivedColumnAlias(aggregationDistinctDerivedColumnCount++));
-        AggregationDistinctProjection result = new AggregationDistinctProjection(
-                projectionSegment.getStartIndex(), projectionSegment.getStopIndex(), projectionSegment.getType(), innerExpression, alias, projectionSegment.getDistinctExpression());
-        if (AggregationType.AVG == result.getType()) {
-            appendAverageDistinctDerivedProjection(result);
-        }
-        return result;
-    }
-    
-    private AggregationProjection CreateProjection(final String sql, final AggregationProjectionSegment projectionSegment) {
-        String innerExpression = sql.substring(projectionSegment.getInnerExpressionStartIndex(), projectionSegment.getStopIndex() + 1);
-        AggregationProjection result = new AggregationProjection(projectionSegment.getType(), innerExpression, projectionSegment.getAlias().orElse(null));
-        if (AggregationType.AVG == result.getType()) {
-            appendAverageDerivedProjection(result);
-            // TODO replace avg to constant, avoid calculate useless avg
-        }
-        return result;
-    }
-    
-    private ICollection<ColumnProjection> GetShorthandColumns(ICollection<SimpleTableSegment> tables, string owner) {
-        return null == owner ? GetUnqualifiedShorthandColumns(tables) : GetQualifiedShorthandColumns(tables, owner);
-    }
-    
-    private ICollection<ColumnProjection> GetUnqualifiedShorthandColumns(ICollection<SimpleTableSegment> tables)
-    {
-        List<ColumnProjection> result =
-            tables.SelectMany(table =>
-            {
-                return _schemaMetaData.GetAllColumnNames(table.GetTableName().GetIdentifier().GetValue())
-                    .Select(columnName => new ColumnProjection(null, columnName, null)).ToList();
-            }).ToList();
-        return result;
-    }
-    
-    private ICollection<ColumnProjection> GetQualifiedShorthandColumns(ICollection<SimpleTableSegment> tables, string owner) {
-       
-        foreach (var table in tables)
+        private int aggregationAverageDerivedColumnCount;
+
+        private int aggregationDistinctDerivedColumnCount;
+
+        public ProjectionEngine(SchemaMetaData schemaMetaData)
         {
-            string tableName = table.GetTableName().GetIdentifier().GetValue();
-            if (owner.Equals(table.GetAlias()??tableName)) {
-                return _schemaMetaData.GetAllColumnNames(tableName).Select(columnName => new ColumnProjection(owner, columnName, null)).ToList();
-            }
+            _schemaMetaData = schemaMetaData;
         }
-        return new List<ColumnProjection>(0);
-    }
-    
-    private void AppendAverageDistinctDerivedProjection(AggregationDistinctProjection averageDistinctProjection) {
-        string innerExpression = averageDistinctProjection.GetInnerExpression();
-        string distinctInnerExpression = averageDistinctProjection.GetDistinctInnerExpression();
-        string countAlias = DerivedColumn.AVG_COUNT_ALIAS.getDerivedColumnAlias(_aggregationAverageDerivedColumnCount);
-        AggregationDistinctProjection countDistinctProjection = new AggregationDistinctProjection(0, 0, AggregationType.COUNT, innerExpression, countAlias, distinctInnerExpression);
-        string sumAlias = DerivedColumn.AVG_SUM_ALIAS.getDerivedColumnAlias(_aggregationAverageDerivedColumnCount);
-        AggregationDistinctProjection sumDistinctProjection = new AggregationDistinctProjection(0, 0, AggregationType.SUM, innerExpression, sumAlias, distinctInnerExpression);
-        averageDistinctProjection.getDerivedAggregationProjections().add(countDistinctProjection);
-        averageDistinctProjection.getDerivedAggregationProjections().add(sumDistinctProjection);
-        _aggregationAverageDerivedColumnCount++;
-    }
-    
-    private void appendAverageDerivedProjection(final AggregationProjection averageProjection) {
-        String innerExpression = averageProjection.getInnerExpression();
-        String countAlias = DerivedColumn.AVG_COUNT_ALIAS.getDerivedColumnAlias(_aggregationAverageDerivedColumnCount);
-        AggregationProjection countProjection = new AggregationProjection(AggregationType.COUNT, innerExpression, countAlias);
-        String sumAlias = DerivedColumn.AVG_SUM_ALIAS.getDerivedColumnAlias(_aggregationAverageDerivedColumnCount);
-        AggregationProjection sumProjection = new AggregationProjection(AggregationType.SUM, innerExpression, sumAlias);
-        averageProjection.getDerivedAggregationProjections().add(countProjection);
-        averageProjection.getDerivedAggregationProjections().add(sumProjection);
-        _aggregationAverageDerivedColumnCount++;
-    }
+
+        /**
+         * Create projection.
+         * 
+         * @param sql SQL
+         * @param tableSegments table segments
+         * @param projectionSegment projection segment
+         * @return projection
+         */
+        public IProjection CreateProjection(string sql, ICollection<SimpleTableSegment> tableSegments, IProjectionSegment projectionSegment)
+        {
+            if (projectionSegment is ShorthandProjectionSegment shorthandProjectionSegment)
+            {
+                return CreateProjection(tableSegments, (ShorthandProjectionSegment)projectionSegment);
+            }
+            if (projectionSegment is ColumnProjectionSegment columnProjectionSegment)
+            {
+                return CreateProjection(columnProjectionSegment);
+            }
+            if (projectionSegment is ExpressionProjectionSegment expressionProjectionSegment)
+            {
+                return CreateProjection(expressionProjectionSegment);
+            }
+            if (projectionSegment is AggregationDistinctProjectionSegment aggregationDistinctProjectionSegment)
+            {
+                return CreateProjection(sql, aggregationDistinctProjectionSegment);
+            }
+            if (projectionSegment is AggregationProjectionSegment aggregationProjectionSegment)
+            {
+                return CreateProjection(sql, aggregationProjectionSegment);
+            }
+            // TODO subquery
+            return null;
+        }
+
+        private ShorthandProjection CreateProjection(ICollection<SimpleTableSegment> tableSegments, ShorthandProjectionSegment projectionSegment)
+        {
+            var owner = projectionSegment.GetOwner()?.GetIdentifier().GetValue();
+            ICollection<ColumnProjection> columns = GetShorthandColumns(tableSegments, owner);
+            return new ShorthandProjection(owner, columns);
+        }
+
+        private ColumnProjection CreateProjection(ColumnProjectionSegment projectionSegment)
+        {
+            String owner = projectionSegment.GetColumn().GetOwner()?.GetIdentifier().GetValue();
+            return new ColumnProjection(owner, projectionSegment.GetColumn().GetIdentifier().GetValue(), projectionSegment.GetAlias());
+        }
+
+        private ExpressionProjection CreateProjection(ExpressionProjectionSegment projectionSegment)
+        {
+            return new ExpressionProjection(projectionSegment.GetText(), projectionSegment.GetAlias());
+        }
+
+        private AggregationDistinctProjection CreateProjection(string sql, AggregationDistinctProjectionSegment projectionSegment)
+        {
+            var innerExpression = sql.Substring(projectionSegment.GetInnerExpressionStartIndex(), projectionSegment.GetStopIndex() + 1);
+            var alias = projectionSegment.GetAlias() ?? DerivedColumn.Get(DerivedColumnEnum.AGGREGATION_DISTINCT_DERIVED).GetDerivedColumnAlias(aggregationDistinctDerivedColumnCount++);
+            AggregationDistinctProjection result = new AggregationDistinctProjection(
+                    projectionSegment.GetStartIndex(), projectionSegment.GetStopIndex(), projectionSegment.GetAggregationType(), innerExpression, alias, projectionSegment.GetDistinctExpression());
+            if (AggregationTypeEnum.AVG == result.GetAggregationType())
+            {
+                AppendAverageDistinctDerivedProjection(result);
+            }
+            return result;
+        }
+
+        private AggregationProjection CreateProjection(string sql, AggregationProjectionSegment projectionSegment)
+        {
+            var innerExpression = sql.Substring(projectionSegment.GetInnerExpressionStartIndex(), projectionSegment.GetStopIndex() + 1);
+            AggregationProjection result = new AggregationProjection(projectionSegment.GetAggregationType(), innerExpression, projectionSegment.GetAlias());
+            if (AggregationTypeEnum.AVG == result.GetAggregationType())
+            {
+                AppendAverageDerivedProjection(result);
+                // TODO replace avg to constant, avoid calculate useless avg
+            }
+            return result;
+        }
+
+        private ICollection<ColumnProjection> GetShorthandColumns(ICollection<SimpleTableSegment> tables, string owner)
+        {
+            return null == owner ? GetUnqualifiedShorthandColumns(tables) : GetQualifiedShorthandColumns(tables, owner);
+        }
+
+        private ICollection<ColumnProjection> GetUnqualifiedShorthandColumns(ICollection<SimpleTableSegment> tables)
+        {
+            List<ColumnProjection> result =
+                tables.SelectMany(table =>
+                {
+                    return _schemaMetaData.GetAllColumnNames(table.GetTableName().GetIdentifier().GetValue())
+                        .Select(columnName => new ColumnProjection(null, columnName, null)).ToList();
+                }).ToList();
+            return result;
+        }
+
+        private ICollection<ColumnProjection> GetQualifiedShorthandColumns(ICollection<SimpleTableSegment> tables, string owner)
+        {
+
+            foreach (var table in tables)
+            {
+                string tableName = table.GetTableName().GetIdentifier().GetValue();
+                if (owner.Equals(table.GetAlias() ?? tableName))
+                {
+                    return _schemaMetaData.GetAllColumnNames(tableName).Select(columnName => new ColumnProjection(owner, columnName, null)).ToList();
+                }
+            }
+            return new List<ColumnProjection>(0);
+        }
+
+        private void AppendAverageDistinctDerivedProjection(AggregationDistinctProjection averageDistinctProjection)
+        {
+            var innerExpression = averageDistinctProjection.GetInnerExpression();
+            var distinctInnerExpression = averageDistinctProjection.GetDistinctInnerExpression();
+            var countAlias = DerivedColumn.Get(DerivedColumnEnum.AVG_COUNT_ALIAS).GetDerivedColumnAlias(aggregationAverageDerivedColumnCount);
+            AggregationDistinctProjection countDistinctProjection = new AggregationDistinctProjection(0, 0, AggregationTypeEnum.COUNT, innerExpression, countAlias, distinctInnerExpression);
+            var sumAlias = DerivedColumn.Get(DerivedColumnEnum.AVG_SUM_ALIAS).GetDerivedColumnAlias(aggregationAverageDerivedColumnCount);
+            AggregationDistinctProjection sumDistinctProjection = new AggregationDistinctProjection(0, 0, AggregationTypeEnum.SUM, innerExpression, sumAlias, distinctInnerExpression);
+            averageDistinctProjection.GetDerivedAggregationProjections().Add(countDistinctProjection);
+            averageDistinctProjection.GetDerivedAggregationProjections().Add(sumDistinctProjection);
+            aggregationAverageDerivedColumnCount++;
+        }
+
+        private void AppendAverageDerivedProjection(AggregationProjection averageProjection)
+        {
+            String innerExpression = averageProjection.GetInnerExpression();
+            String countAlias = DerivedColumn.Get(DerivedColumnEnum.AVG_COUNT_ALIAS).GetDerivedColumnAlias(aggregationAverageDerivedColumnCount);
+            AggregationProjection countProjection = new AggregationProjection(AggregationTypeEnum.COUNT, innerExpression, countAlias);
+            String sumAlias = DerivedColumn.Get(DerivedColumnEnum.AVG_SUM_ALIAS).GetDerivedColumnAlias(aggregationAverageDerivedColumnCount);
+            AggregationProjection sumProjection = new AggregationProjection(AggregationTypeEnum.SUM, innerExpression, sumAlias);
+            averageProjection.GetDerivedAggregationProjections().Add(countProjection);
+            averageProjection.GetDerivedAggregationProjections().Add(sumProjection);
+            aggregationAverageDerivedColumnCount++;
+        }
     }
 }

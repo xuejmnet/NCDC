@@ -33,7 +33,7 @@ namespace ShardingConnector.Parser.Sql.Segment.Predicate
             return stopIndex;
         }
 
-        public ICollection<AndPredicateSegment> GetAndPredicate()
+        public ICollection<AndPredicateSegment> GetAndPredicates()
         {
             return _andPredicates;
         }

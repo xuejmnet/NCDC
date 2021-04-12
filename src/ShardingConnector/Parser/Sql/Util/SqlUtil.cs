@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using ShardingConnector.Parser.Sql.Constant;
 
 namespace ShardingConnector.Parser.Sql.Util
 {
@@ -32,6 +33,25 @@ namespace ShardingConnector.Parser.Sql.Util
                 .Replace("`", string.Empty)
                 .Replace("'", string.Empty)
                 .Replace("\"", string.Empty);
+        }
+        /// <summary>
+        /// 获取不带外圆括号的表达式
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static string GetExpressionWithoutOutsideParentheses(string value)
+        {
+            int parenthesesOffset = GetParenthesesOffset(value);
+            return 0 == parenthesesOffset ? value : value.Substring(parenthesesOffset, value.Length - parenthesesOffset);
+        }
+        private static int GetParenthesesOffset(string value)
+        {
+            int result = 0;
+            while (Paren.Get(ParenEnum.PARENTHESES).GetLeftParen() == value[result])
+            {
+                result++;
+            }
+            return result;
         }
     }
 }

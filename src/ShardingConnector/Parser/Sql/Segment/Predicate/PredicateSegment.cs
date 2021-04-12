@@ -38,7 +38,7 @@ namespace ShardingConnector.Parser.Sql.Segment.Predicate
             return _stopIndex;
         }
 
-        public ColumnSegment GetColumnSegment()
+        public ColumnSegment GetColumn()
         {
             return _column;
         }

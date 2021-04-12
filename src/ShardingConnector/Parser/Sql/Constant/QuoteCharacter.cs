@@ -25,7 +25,7 @@ namespace ShardingConnector.Parser.Sql.Constant
             _quotes.Add(QuoteCharacterEnum.BRACKETS, new QuoteCharacter("[", "["));
             _quotes.Add(QuoteCharacterEnum.NONE, new QuoteCharacter("", ""));
         }
-        public QuoteCharacter(string startDelimiter, string endDelimiter)
+        private QuoteCharacter(string startDelimiter, string endDelimiter)
         {
             _startDelimiter = startDelimiter;
             _endDelimiter = endDelimiter;
@@ -41,6 +41,16 @@ namespace ShardingConnector.Parser.Sql.Constant
                     return quote.Key;
             }
             return QuoteCharacterEnum.NONE;
+        }
+
+        public string GetStartDelimiter()
+        {
+            return _startDelimiter;
+        }
+
+        public string GetEndDelimiter()
+        {
+            return _endDelimiter;
         }
     }
 

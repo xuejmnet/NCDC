@@ -17,12 +17,12 @@ namespace ShardingConnector.Parser.Binder.Segment.Select.OrderBy.Engine
 */
     public class OrderByContextEngine
     {
-        private OrderByContextEngine()
+        public OrderByContextEngine()
         {
         }
 
 
-        public static OrderByContext CreateOrderBy(SelectCommand selectCommand, GroupByContext groupByContext)
+        public  OrderByContext CreateOrderBy(SelectCommand selectCommand, GroupByContext groupByContext)
         {
             if (null == selectCommand.OrderBy || !selectCommand.OrderBy.GetOrderByItems().Any())
             {
@@ -45,7 +45,7 @@ namespace ShardingConnector.Parser.Binder.Segment.Select.OrderBy.Engine
             return new OrderByContext(orderByItems, false);
         }
 
-        private static OrderByContext CreateOrderByContextForDistinctRowWithoutGroupBy(SelectCommand selectCommand, GroupByContext groupByContext)
+        private  OrderByContext CreateOrderByContextForDistinctRowWithoutGroupBy(SelectCommand selectCommand, GroupByContext groupByContext)
         {
             if (!groupByContext.GetItems().Any() && selectCommand.Projections.IsDistinctRow())
             {

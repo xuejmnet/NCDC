@@ -62,5 +62,10 @@ namespace ShardingConnector.Parser.Binder.Segment.Select.Projection.Impl
         {
             return _innerExpression;
         }
+
+        public AggregationTypeEnum GetAggregationType()
+        {
+            return _type;
+        }
     }
 }

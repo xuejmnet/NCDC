@@ -9,6 +9,7 @@ using ShardingConnector.Parser.Binder.Segment.Select.OrderBy;
 using ShardingConnector.Parser.Binder.Segment.Select.OrderBy.Engine;
 using ShardingConnector.Parser.Binder.Segment.Select.Pagination;
 using ShardingConnector.Parser.Binder.Segment.Select.Projection;
+using ShardingConnector.Parser.Binder.Segment.Select.Projection.Engine;
 using ShardingConnector.Parser.Binder.Segment.Table;
 using ShardingConnector.Parser.Sql.Command.DML;
 using ShardingConnector.Parser.Sql.Segment.Generic.Table;
@@ -50,9 +51,9 @@ namespace ShardingConnector.Parser.Binder.Command.DML
     
         public SelectCommandContext(SchemaMetaData schemaMetaData, string sql, List<Object> parameters,SelectCommand sqlCommand):base(sqlCommand) {
             _tablesContext = new TablesContext(sqlCommand.GetSimpleTableSegments());
-            _groupByContext = GroupByContextEngine.CreateGroupByContext(sqlCommand);
-            _orderByContext = OrderByContextEngine.CreateOrderBy(sqlCommand,_groupByContext);
-            _projectionsContext = new ProjectionsContextEngine(schemaMetaData).createProjectionsContext(sql, sqlStatement, _groupByContext, _orderByContext);
+            _groupByContext = new GroupByContextEngine().CreateGroupByContext(sqlCommand);
+            _orderByContext = new OrderByContextEngine().CreateOrderBy(sqlCommand,_groupByContext);
+            _projectionsContext = new ProjectionsContextEngine(schemaMetaData).CreateProjectionsContext(sql, sqlCommand, _groupByContext, _orderByContext);
             _paginationContext = new PaginationContextEngine().createPaginationContext(sqlStatement, _projectionsContext, parameters);
             _containsSubQuery = ContainsSubQuery();
         }

@@ -12,15 +12,15 @@ namespace ShardingConnector.Parser.Binder.Segment.Select.Groupby.Engine
 * @Date: Sunday, 11 April 2021 21:03:35
 * @Email: 326308290@qq.com
 */
-    public class GroupByContextEngine
+    public sealed class GroupByContextEngine
     {
-        private GroupByContextEngine()
+        public GroupByContextEngine()
         {
             
         }
         
         
-        public static GroupByContext CreateGroupByContext(SelectCommand selectCommand) {
+        public  GroupByContext CreateGroupByContext(SelectCommand selectCommand) {
             if (selectCommand.GroupBy==null) {
                 return new GroupByContext(new LinkedList<OrderByItem>(), 0);
             }
