@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using ShardingConnector.Kernels.Parse;
+using ShardingConnector.Parser.Binder.Command;
+using ShardingConnector.Parser.Sql.Command;
 
 namespace ShardingConnector.Contexts
 {
@@ -13,5 +16,23 @@ namespace ShardingConnector.Contexts
     */
     public sealed class ExecutionContext
     {
+        private readonly ISqlCommandContext<ISqlCommand> _sqlCommandContext;
+    
+        private readonly ICollection<ExecutionUnit> _executionUnits = new HashSet<ExecutionUnit>();
+
+        public ExecutionContext(ISqlCommandContext<ISqlCommand> sqlCommandContext)
+        {
+            _sqlCommandContext = sqlCommandContext;
+        }
+
+        public ISqlCommandContext<ISqlCommand> GetSqlStatementContext()
+        {
+            return _sqlCommandContext;
+        }
+
+        public ICollection<ExecutionUnit> GetExecutionUnits()
+        {
+            return _executionUnits;
+        }
     }
 }

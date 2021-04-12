@@ -34,6 +34,16 @@ namespace ShardingConnector.Parser.Sql.Util
                 .Replace("'", string.Empty)
                 .Replace("\"", string.Empty);
         }
+
+        /// <summary>
+        /// 移除空格
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static string GetExactlyExpression(string value)
+        {
+            return value?.Replace(" ",string.Empty);
+        }
         /// <summary>
         /// 获取不带外圆括号的表达式
         /// </summary>

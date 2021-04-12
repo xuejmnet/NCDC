@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using ShardingConnector.Kernels.Route;
 using ShardingConnector.Kernels.Route.Rule;
 
-namespace ShardingConnector.Kernels.Parse
+namespace ShardingConnector.Pluggble.Prepare
 {
     /*
     * @Author: xjm
