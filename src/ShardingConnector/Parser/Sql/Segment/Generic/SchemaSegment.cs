@@ -35,7 +35,7 @@ namespace ShardingConnector.Parser.Sql.Segment.Generic
             return _stopIndex;
         }
 
-        public IdentifierValue GetIdentifierValue()
+        public IdentifierValue GetIdentifier()
         {
             return _identifier;
         }

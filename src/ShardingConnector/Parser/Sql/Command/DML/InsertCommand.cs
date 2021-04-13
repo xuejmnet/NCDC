@@ -1,147 +1,131 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
+using System.Linq;
+using ShardingConnector.Parser.Sql.Segment.DML.Assignment;
 using ShardingConnector.Parser.Sql.Segment.DML.Column;
+using ShardingConnector.Parser.Sql.Segment.DML.Expr;
 using ShardingConnector.Parser.Sql.Segment.Generic.Table;
 
 namespace ShardingConnector.Parser.Sql.Command.DML
 {
-/*
-* @Author: xjm
-* @Description:
-* @Date: Monday, 12 April 2021 22:38:40
-* @Email: 326308290@qq.com
-*/
-    public sealed class InsertCommand:DMLCommand
+    /*
+    * @Author: xjm
+    * @Description:
+    * @Date: Monday, 12 April 2021 22:38:40
+    * @Email: 326308290@qq.com
+    */
+    public sealed class InsertCommand : DMLCommand
     {
-        
-    public SimpleTableSegment Table;
-    
-    public InsertColumnsSegment InsertColumns;
-    
-    public SetAssignmentSegment SetAssignment;
-    
-    public OnDuplicateKeyColumnsSegment OnDuplicateKeyColumns;
-    
-    public readonly ICollection<InsertValuesSegment> Values = new LinkedList<InsertValuesSegment>();
-    
-    /**
-     * Get insert columns segment.
-     * 
-     * @return insert columns segment
-     */
-    public Optional<InsertColumnsSegment> getInsertColumns() {
-        return Optional.ofNullable(insertColumns);
-    }
-    
-    /**
-     * Get columns.
-     * 
-     * @return columns
-     */
-    public Collection<ColumnSegment> getColumns() {
-        return null == insertColumns ? Collections.emptyList() : insertColumns.getColumns();
-    }
-    
-    /**
-     * Get set assignment segment.
-     * 
-     * @return set assignment segment
-     */
-    public Optional<SetAssignmentSegment> getSetAssignment() {
-        return Optional.ofNullable(setAssignment);
-    }
-    
-    /**
-     * Get on duplicate key columns segment.
-     *
-     * @return on duplicate key columns segment
-     */
-    public Optional<OnDuplicateKeyColumnsSegment> getOnDuplicateKeyColumns() {
-        return Optional.ofNullable(onDuplicateKeyColumns);
-    }
-    
-    /**
-     * Judge is use default columns or not.
-     * 
-     * @return is use default columns or not
-     */
-    public boolean useDefaultColumns() {
-        return getColumns().isEmpty() && null == setAssignment;
-    }
-    
-    /**
-     * Get column names.
-     *
-     * @return column names
-     */
-    public List<String> getColumnNames() {
-        return null == setAssignment ? getColumnNamesForInsertColumns() : getColumnNamesForSetAssignment();
-    }
-    
-    private List<String> getColumnNamesForInsertColumns() {
-        List<String> result = new LinkedList<>();
-        for (ColumnSegment each : getColumns()) {
-            result.add(each.getIdentifier().getValue().toLowerCase());
+
+        public SimpleTableSegment Table;
+
+        public InsertColumnsSegment InsertColumns;
+
+        public SetAssignmentSegment SetAssignment;
+
+        public OnDuplicateKeyColumnsSegment OnDuplicateKeyColumns;
+
+        public readonly ICollection<InsertValuesSegment> Values = new LinkedList<InsertValuesSegment>();
+
+        public List<ColumnSegment> GtColumns()
+        {
+            return null == InsertColumns ? new List<ColumnSegment>(0) : InsertColumns.GetColumns();
         }
-        return result;
-    }
-    
-    private List<String> getColumnNamesForSetAssignment() {
-        List<String> result = new LinkedList<>();
-        for (AssignmentSegment each : setAssignment.getAssignments()) {
-            result.add(each.getColumn().getIdentifier().getValue().toLowerCase());
+
+
+
+        public bool UseDefaultColumns()
+        {
+            return !GtColumns().Any() && null == SetAssignment;
         }
-        return result;
-    }
-    
-    /**
-     * Get value list count.
-     *
-     * @return value list count
-     */
-    public int getValueListCount() {
-        return null == setAssignment ? values.size() : 1;
-    }
-    
-    /**
-     * Get value count for per value list.
-     * 
-     * @return value count
-     */
-    public int getValueCountForPerGroup() {
-        if (!values.isEmpty()) {
-            return values.iterator().next().getValues().size();
+
+        /**
+         * Get column names.
+         *
+         * @return column names
+         */
+        public List<string> GetColumnNames()
+        {
+            return null == SetAssignment ? GetColumnNamesForInsertColumns() : GetColumnNamesForSetAssignment();
         }
-        if (null != setAssignment) {
-            return setAssignment.getAssignments().size();
+
+        private List<string> GetColumnNamesForInsertColumns()
+        {
+            List<string> result = new List<string>(GtColumns().Count);
+            foreach (var column in GtColumns())
+            {
+                result.Add(column.GetIdentifier().GetValue().ToLower());
+            }
+            return result;
         }
-        return 0;
-    }
-    
-    /**
-     * Get all value expressions.
-     * 
-     * @return all value expressions
-     */
-    public List<List<ExpressionSegment>> getAllValueExpressions() {
-        return null == setAssignment ? getAllValueExpressionsFromValues() : Collections.singletonList(getAllValueExpressionsFromSetAssignment());
-    }
-    
-    private List<List<ExpressionSegment>> getAllValueExpressionsFromValues() {
-        List<List<ExpressionSegment>> result = new ArrayList<>(values.size());
-        for (InsertValuesSegment each : values) {
-            result.add(each.getValues());
+
+        private List<string> GetColumnNamesForSetAssignment()
+        {
+            List<string> result = new List<string>(SetAssignment.GetAssignments().Count);
+            foreach (var assignment in SetAssignment.GetAssignments())
+            {
+                result.Add(assignment.GetColumn().GetIdentifier().GetValue().ToLower());
+            }
+            return result;
         }
-        return result;
-    }
-    
-    private List<ExpressionSegment> getAllValueExpressionsFromSetAssignment() {
-        List<ExpressionSegment> result = new ArrayList<>(setAssignment.getAssignments().size());
-        for (AssignmentSegment each : setAssignment.getAssignments()) {
-            result.add(each.getValue());
+
+        /**
+         * Get value list count.
+         *
+         * @return value list count
+         */
+        public int GetValueListCount()
+        {
+            return null == SetAssignment ? Values.Count : 1;
         }
-        return result;
-    }
+
+        /**
+         * Get value count for per value list.
+         * 
+         * @return value count
+         */
+        public int GetValueCountForPerGroup()
+        {
+            if (Values.Any())
+            {
+                return Values.First().GetValues().Count;
+            }
+            if (null != SetAssignment)
+            {
+                return SetAssignment.GetAssignments().Count;
+            }
+            return 0;
+        }
+
+        /**
+         * Get all value expressions.
+         * 
+         * @return all value expressions
+         */
+        public List<List<IExpressionSegment>> GetAllValueExpressions()
+        {
+            return null == SetAssignment ? GetAllValueExpressionsFromValues() : new List<List<IExpressionSegment>>(){ GetAllValueExpressionsFromSetAssignment() };
+        }
+
+        private List<List<IExpressionSegment>> GetAllValueExpressionsFromValues()
+        {
+            List<List<IExpressionSegment>> result = new List<List<IExpressionSegment>>(Values.Count);
+            foreach (var insertValues in Values)
+            {
+                result.Add(insertValues.GetValues());
+            }
+            return result;
+        }
+
+        private List<IExpressionSegment> GetAllValueExpressionsFromSetAssignment()
+        {
+            List<IExpressionSegment> result = new List<IExpressionSegment>(SetAssignment.GetAssignments().Count);
+            foreach (var assignment in SetAssignment.GetAssignments())
+            {
+                result.Add(assignment.GetValue());
+
+            }
+            return result;
+        }
     }
 }

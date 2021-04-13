@@ -21,6 +21,14 @@ namespace ShardingConnector.Parser.Sql.Segment.DML.Column
         private readonly int _stopIndex;
         private readonly IdentifierValue _identifier;
         private  OwnerSegment owner;
+
+        public ColumnSegment(int startIndex, int stopIndex, IdentifierValue identifier)
+        {
+            _startIndex = startIndex;
+            _stopIndex = stopIndex;
+            _identifier = identifier;
+        }
+
         public int GetStartIndex()
         {
             return _startIndex;
