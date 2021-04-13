@@ -60,7 +60,7 @@ namespace ShardingConnector.Pluggble.Prepare
         {
             RegisterRouteDecorator();
             SqlRewriteContext sqlRewriteContext = _rewriter.CreateSqlRewriteContext(sql, parameters, routeContext.GetSqlCommandContext(), routeContext);
-            return routeContext.GetRouteResult().getRouteUnits().isEmpty() ? rewrite(sqlRewriteContext) : rewrite(routeContext, sqlRewriteContext);
+            return !routeContext.GetRouteResult().GetRouteUnits().Any() ? rewrite(sqlRewriteContext) : rewrite(routeContext, sqlRewriteContext);
         }
         private RouteContext ExecuteRoute(string sql, IList<object> clonedParameters)
         {
@@ -95,6 +95,22 @@ namespace ShardingConnector.Pluggble.Prepare
             {
                 throw new ShardingException($"Can not find public default constructor for route decorator {routeDecoratorType}", e);
             }
+        }
+        private ICollection<ExecutionUnit> Rewrite(SqlRewriteContext sqlRewriteContext)
+        {
+            var sqlRewriteResult = new SqlRewriteEngine().rewrite(sqlRewriteContext);
+            String dataSourceName = metaData.getDataSources().getAllInstanceDataSourceNames().iterator().next();
+            return Collections.singletonList(new ExecutionUnit(dataSourceName, new SQLUnit(sqlRewriteResult.getSql(), sqlRewriteResult.getParameters())));
+        }
+
+        private ICollection<ExecutionUnit> rewrite(RouteContext routeContext, final SQLRewriteContext sqlRewriteContext)
+        {
+            ICollection<ExecutionUnit> result = new LinkedHashSet<>();
+            for (Entry<RouteUnit, SQLRewriteResult> entry : new SQLRouteRewriteEngine().rewrite(sqlRewriteContext, routeContext.getRouteResult()).entrySet())
+            {
+                result.add(new ExecutionUnit(entry.getKey().getDataSourceMapper().getActualName(), new SQLUnit(entry.getValue().getSql(), entry.getValue().getParameters())));
+            }
+            return result;
         }
     }
 }

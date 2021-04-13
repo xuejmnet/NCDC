@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using ShardingConnector.Common.Rule;
+using ShardingConnector.Extensions;
+using ShardingConnector.Kernels.Route.Context;
 
 namespace ShardingConnector.Kernels.Route
 {
@@ -14,18 +17,18 @@ namespace ShardingConnector.Kernels.Route
     */
     public sealed class RouteResult
     {
-        private readonly ICollection<ICollection<DataNode>> originalDataNodes = new LinkedList<ICollection<DataNode>>();
+        private readonly ICollection<ICollection<DataNode>> _originalDataNodes = new LinkedList<ICollection<DataNode>>();
 
-        private readonly ICollection<RouteUnit> routeUnits = new HashSet<RouteUnit>();
+        private readonly ISet<RouteUnit> _routeUnits = new HashSet<RouteUnit>();
 
         /**
          * Judge is route for single database and table only or not.
          *
          * @return is route for single database and table only or not
          */
-        public boolean isSingleRouting()
+        public bool IsSingleRouting()
         {
-            return 1 == routeUnits.size();
+            return 1 == _routeUnits.Count;
         }
 
         /**
@@ -33,9 +36,9 @@ namespace ShardingConnector.Kernels.Route
          *
          * @return actual data source names
          */
-        public ICollection<String> getActualDataSourceNames()
+        public ICollection<string> GetActualDataSourceNames()
         {
-            return routeUnits.stream().map(each->each.getDataSourceMapper().getActualName()).collect(Collectors.toCollection(()-> new HashSet<>(routeUnits.size(), 1)));
+            return _routeUnits.Select(o => o.DataSourceMapper.ActualName).ToHashSet();
         }
 
         /**
@@ -49,19 +52,20 @@ namespace ShardingConnector.Kernels.Route
          * @param logicTableNames logic table names
          * @return actual table groups
          */
-        public List<Set<String>> getActualTableNameGroups(final String actualDataSourceName, final Set<String> logicTableNames)
+        public List<ISet<string>> GetActualTableNameGroups(string actualDataSourceName, ISet<string> logicTableNames)
         {
-            return logicTableNames.stream().map(each->getActualTableNames(actualDataSourceName, each)).filter(actualTableNames-> !actualTableNames.isEmpty()).collect(Collectors.toList());
+            return logicTableNames.Select(o => GetActualTableNames(actualDataSourceName, o))
+                .Where(actualTableNames => actualTableNames.Any()).ToList();
         }
 
-        private Set<String> getActualTableNames(final String actualDataSourceName, final String logicTableName)
+        private ISet<string> GetActualTableNames(string actualDataSourceName,string logicTableName)
         {
-            Set<String> result = new HashSet<>();
-            for (RouteUnit each : routeUnits)
+            ISet<string> result = new HashSet<string>();
+            foreach (var routeUnit in _routeUnits)
             {
-                if (actualDataSourceName.equalsIgnoreCase(each.getDataSourceMapper().getActualName()))
+                if (actualDataSourceName.EqualsIgnoreCase(routeUnit.DataSourceMapper.ActualName))
                 {
-                    result.addAll(each.getActualTableNames(logicTableName));
+                    result.AddAll(routeUnit.GetActualTableNames(logicTableName));
                 }
             }
             return result;
@@ -73,28 +77,29 @@ namespace ShardingConnector.Kernels.Route
          * @param actualDataSourceNames actual data source names
          * @return  map relationship between data source and logic tables
          */
-        public Map<String, Set<String>> getDataSourceLogicTablesMap(final Collection<String> actualDataSourceNames)
+        public IDictionary<string, ISet<string>> GetDataSourceLogicTablesMap(ICollection<string> actualDataSourceNames)
         {
-            Map<String, Set<String>> result = new HashMap<>();
-            for (System.String each : actualDataSourceNames)
+            IDictionary<string, ISet<string>> result = new Dictionary<string, ISet<string>>();
+            foreach (var actualDataSourceName in actualDataSourceNames)
             {
-                Set<String> logicTableNames = getLogicTableNames(each);
-                if (!logicTableNames.isEmpty())
+
+                ISet<string> logicTableNames = GetLogicTableNames(actualDataSourceName);
+                if (logicTableNames.Any())
                 {
-                    result.put(each, logicTableNames);
+                    result.Add(actualDataSourceName, logicTableNames);
                 }
             }
             return result;
         }
 
-        private Set<String> getLogicTableNames(final String actualDataSourceName)
+        private ISet<string> GetLogicTableNames(string actualDataSourceName)
         {
-            Set<String> result = new HashSet<>();
-            for (RouteUnit each : routeUnits)
+            ISet<string> result = new HashSet<string>();
+            foreach (var routeUnit in _routeUnits)
             {
-                if (actualDataSourceName.equalsIgnoreCase(each.getDataSourceMapper().getActualName()))
+                if (actualDataSourceName.EqualsIgnoreCase(routeUnit.DataSourceMapper.ActualName))
                 {
-                    result.addAll(each.getLogicTableNames());
+                    result.AddAll(routeUnit.GetLogicTableNames());
                 }
             }
             return result;
@@ -107,17 +112,23 @@ namespace ShardingConnector.Kernels.Route
          * @param actualTableName actual table name
          * @return table mapper
          */
-        public Optional<RouteMapper> findTableMapper(final String logicDataSourceName, final String actualTableName)
+        public RouteMapper FindTableMapper(string logicDataSourceName, string actualTableName)
         {
-            for (RouteUnit each : routeUnits)
+            foreach (var routeUnit in _routeUnits)
             {
-                Optional<RouteMapper> result = each.findTableMapper(logicDataSourceName, actualTableName);
-                if (result.isPresent())
+
+                var result = routeUnit.FindTableMapper(logicDataSourceName, actualTableName);
+                if (result!=null)
                 {
                     return result;
                 }
             }
-            return Optional.empty();
+            return null;
+        }
+
+        public ISet<RouteUnit> GetRouteUnits()
+        {
+            return _routeUnits;
         }
     }
 }
