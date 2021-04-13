@@ -44,6 +44,15 @@ namespace ShardingConnector.Common.Rule
             return dataNodeStr.Contains(DELIMITER.ToString()) && 2 == dataNodeStr.Split(DELIMITER).Length;
         }
 
+        public string GetTableName()
+        {
+            return _tableName;
+        }
+        public string GetDataSourceName()
+        {
+            return _dataSourceName;
+        }
+
         //public boolean equals(final Object object)
         //{
         //    if (this == object)

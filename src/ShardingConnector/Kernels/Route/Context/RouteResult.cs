@@ -130,5 +130,10 @@ namespace ShardingConnector.Kernels.Route
         {
             return _routeUnits;
         }
+
+        public ICollection<ICollection<DataNode>> GetOriginalDataNodes()
+        {
+            return _originalDataNodes;
+        }
     }
 }

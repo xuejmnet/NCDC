@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using ShardingConnector.Rewrite.Context;
+using ShardingConnector.Rewrite.Sql.Impl;
 
 namespace ShardingConnector.Rewrite.Engine
 {
@@ -22,7 +23,7 @@ namespace ShardingConnector.Rewrite.Engine
          */
         public SqlRewriteResult Rewrite(SqlRewriteContext sqlRewriteContext)
         {
-            return new SqlRewriteResult(new DefaultSQLBuilder(sqlRewriteContext).toSQL(), sqlRewriteContext.getParameterBuilder().getParameters());
+            return new SqlRewriteResult(new DefaultSqlBuilder(sqlRewriteContext).ToSql(), sqlRewriteContext.GetParameterBuilder().GetParameters());
         }
     }
 }

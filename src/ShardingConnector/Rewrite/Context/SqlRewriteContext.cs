@@ -33,7 +33,7 @@ namespace ShardingConnector.Rewrite.Context
 
         private readonly IParameterBuilder _parameterBuilder;
     
-        private readonly ICollection<SqlToken> _sqlTokens = new LinkedList<SqlToken>();
+        private readonly List<SqlToken> _sqlTokens = new List<SqlToken>();
 
         private readonly SqlTokenGenerators _sqlTokenGenerators = new SqlTokenGenerators();
 
@@ -70,7 +70,24 @@ namespace ShardingConnector.Rewrite.Context
          */
         public void GenerateSqlTokens()
         {
-            _sqlTokens.AddAll(_sqlTokenGenerators.GenerateSqlTokens(_sqlCommandContext, _parameters, _schemaMetaData));
+            _sqlTokens.AddRange(_sqlTokenGenerators.GenerateSqlTokens(_sqlCommandContext, _parameters, _schemaMetaData));
         }
+
+        public List<SqlToken> GetSqlTokens()
+        {
+            return _sqlTokens;
+        }
+
+        public string GetSql()
+        {
+            return _sql;
+        }
+
+        public IParameterBuilder GetParameterBuilder()
+        {
+            return _parameterBuilder;
+        }
+        
+        
     }
 }

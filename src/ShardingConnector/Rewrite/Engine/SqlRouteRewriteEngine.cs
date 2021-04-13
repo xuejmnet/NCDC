@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text;
 using ShardingConnector.Common.Rule;
+using ShardingConnector.Extensions;
 using ShardingConnector.Kernels.Route;
 using ShardingConnector.Kernels.Route.Context;
 using ShardingConnector.Rewrite.Context;
+using ShardingConnector.Rewrite.Parameter.Builder;
 using ShardingConnector.Rewrite.Parameter.Builder.Impl;
+using ShardingConnector.Rewrite.Sql.Impl;
 
 namespace ShardingConnector.Rewrite.Engine
 {
@@ -26,47 +29,43 @@ namespace ShardingConnector.Rewrite.Engine
          * @param routeResult route result
          * @return SQL map of route unit and rewrite result
          */
-        public IDictionary<RouteUnit, SqlRewriteResult> rewrite(SqlRewriteContext sqlRewriteContext, RouteResult routeResult)
+        public IDictionary<RouteUnit, SqlRewriteResult> Rewrite(SqlRewriteContext sqlRewriteContext, RouteResult routeResult)
         {
             IDictionary<RouteUnit, SqlRewriteResult> result = new Dictionary<RouteUnit, SqlRewriteResult>();
-            for (Kernels.Route.Context.RouteUnit each : routeResult.getRouteUnits())
-            {
-                result.put(each, new SQLRewriteResult(new RouteSQLBuilder(sqlRewriteContext, each).toSQL(), getParameters(sqlRewriteContext.getParameterBuilder(), routeResult, each)));
-            }
             foreach (var routeUnit in routeResult.GetRouteUnits())
             {
-                result.Add(routeUnit,new SqlRewriteResult(new rout));
+                result.Add(routeUnit,new SqlRewriteResult(new RouteSqlBuilder(sqlRewriteContext,routeUnit).ToSql(),GetParameters(sqlRewriteContext.GetParameterBuilder(), routeResult, routeUnit)));
             }
             return result;
         }
 
-        private List<Object> getParameters(final ParameterBuilder parameterBuilder, final RouteResult routeResult, final RouteUnit routeUnit)
+        private List<object> GetParameters(IParameterBuilder parameterBuilder,RouteResult routeResult, RouteUnit routeUnit)
         {
-            if (parameterBuilder instanceof StandardParameterBuilder || routeResult.getOriginalDataNodes().isEmpty() || parameterBuilder.getParameters().isEmpty()) {
-                return parameterBuilder.getParameters();
+            if (parameterBuilder is StandardParameterBuilder || routeResult.GetOriginalDataNodes().IsEmpty() || parameterBuilder.GetParameters().IsEmpty()) {
+                return parameterBuilder.GetParameters();
             }
-            List<Object> result = new LinkedList<>();
+            List<object> result = new List<object>();
             int count = 0;
-            for (Collection<> DataNode> each : routeResult.getOriginalDataNodes())
+            foreach (var originalDataNode in routeResult.GetOriginalDataNodes())
             {
-                if (isInSameDataNode(each, routeUnit))
+                if (IsInSameDataNode(originalDataNode, routeUnit))
                 {
-                    result.addAll(((GroupedParameterBuilder)parameterBuilder).getParameters(count));
+                    result.AddAll(((GroupedParameterBuilder)parameterBuilder).GetParameters(count));
                 }
                 count++;
             }
             return result;
         }
 
-        private boolean isInSameDataNode(final Collection<DataNode> dataNodes, final RouteUnit routeUnit)
+        private bool IsInSameDataNode(ICollection<DataNode> dataNodes, RouteUnit routeUnit)
         {
-            if (dataNodes.isEmpty())
+            if (dataNodes.IsEmpty())
             {
                 return true;
             }
-            for (DataNode each : dataNodes)
+            foreach (var dataNode in dataNodes)
             {
-                if (routeUnit.findTableMapper(each.getDataSourceName(), each.getTableName()).isPresent())
+                if (routeUnit.FindTableMapper(dataNode.GetDataSourceName(), dataNode.GetTableName())!=null)
                 {
                     return true;
                 }

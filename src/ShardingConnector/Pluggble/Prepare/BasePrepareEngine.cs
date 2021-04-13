@@ -10,9 +10,11 @@ using ShardingConnector.Exceptions;
 using ShardingConnector.Extensions;
 using ShardingConnector.Kernels.Parse;
 using ShardingConnector.Kernels.Route;
+using ShardingConnector.Kernels.Route.Context;
 using ShardingConnector.Parser.Sql.Command;
 using ShardingConnector.Rewrite;
 using ShardingConnector.Rewrite.Context;
+using ShardingConnector.Rewrite.Engine;
 using ShardingConnector.Spi.Order;
 
 namespace ShardingConnector.Pluggble.Prepare
@@ -31,12 +33,14 @@ namespace ShardingConnector.Pluggble.Prepare
         private readonly SqlRewriteEntry _rewriter;
 
         private readonly ConfigurationProperties _properties;
+        private readonly ShardingConnectorMetaData _metaData;
 
         protected BasePrepareEngine(ICollection<IBaseRule> rules, ConfigurationProperties properties, ShardingConnectorMetaData metaData, SqlParserEngine sqlParserEngine)
         {
             _router = new DataNodeRouter(metaData,sqlParserEngine, properties);
             _rules = rules;
             _properties = properties;
+            _metaData = metaData;
         }
 
         protected abstract List<object> CloneParameters(List<object> parameters);
@@ -60,9 +64,9 @@ namespace ShardingConnector.Pluggble.Prepare
         {
             RegisterRouteDecorator();
             SqlRewriteContext sqlRewriteContext = _rewriter.CreateSqlRewriteContext(sql, parameters, routeContext.GetSqlCommandContext(), routeContext);
-            return !routeContext.GetRouteResult().GetRouteUnits().Any() ? rewrite(sqlRewriteContext) : rewrite(routeContext, sqlRewriteContext);
+            return !routeContext.GetRouteResult().GetRouteUnits().Any() ? Rewrite(sqlRewriteContext) : Rewrite(routeContext, sqlRewriteContext);
         }
-        private RouteContext ExecuteRoute(string sql, IList<object> clonedParameters)
+        private RouteContext ExecuteRoute(string sql, List<object> clonedParameters)
         {
             RegisterRouteDecorator();
             return Route(_router, sql, clonedParameters);
@@ -76,7 +80,7 @@ namespace ShardingConnector.Pluggble.Prepare
             foreach (var routeDecorator in registeredOrderedAware)
             {
                 var decorator = CreateRouteDecorator(routeDecorator.GetType());
-                var ruleType = decorator.GetGenericType();
+                var ruleType = decorator.GetType().GetGenericArguments(typeof(IRouteDecorator<>))[0];
                 foreach (var rule in _rules.Where(rule=>!rule.GetType().IsAbstract&& ruleType.IsInstanceOfType(rule)))
                 {
                     _router.RegisterDecorator(rule,decorator);
@@ -98,17 +102,18 @@ namespace ShardingConnector.Pluggble.Prepare
         }
         private ICollection<ExecutionUnit> Rewrite(SqlRewriteContext sqlRewriteContext)
         {
-            var sqlRewriteResult = new SqlRewriteEngine().rewrite(sqlRewriteContext);
-            String dataSourceName = metaData.getDataSources().getAllInstanceDataSourceNames().iterator().next();
-            return Collections.singletonList(new ExecutionUnit(dataSourceName, new SQLUnit(sqlRewriteResult.getSql(), sqlRewriteResult.getParameters())));
+            var sqlRewriteResult = new SqlRewriteEngine().Rewrite(sqlRewriteContext);
+            String dataSourceName = _metaData.DataSources.GetAllInstanceDataSourceNames().First();
+            return new List<ExecutionUnit>(){new ExecutionUnit(dataSourceName, new SqlUnit(sqlRewriteResult.Sql, sqlRewriteResult.Parameters))};
         }
 
-        private ICollection<ExecutionUnit> rewrite(RouteContext routeContext, final SQLRewriteContext sqlRewriteContext)
+        private ICollection<ExecutionUnit> Rewrite(RouteContext routeContext, SqlRewriteContext sqlRewriteContext)
         {
-            ICollection<ExecutionUnit> result = new LinkedHashSet<>();
-            for (Entry<RouteUnit, SQLRewriteResult> entry : new SQLRouteRewriteEngine().rewrite(sqlRewriteContext, routeContext.getRouteResult()).entrySet())
+            ICollection<ExecutionUnit> result = new LinkedList<ExecutionUnit>();
+            var sqlRewriteResults = new SqlRouteRewriteEngine().Rewrite(sqlRewriteContext, routeContext.GetRouteResult());
+            foreach (var sqlRewriteResult in sqlRewriteResults)
             {
-                result.add(new ExecutionUnit(entry.getKey().getDataSourceMapper().getActualName(), new SQLUnit(entry.getValue().getSql(), entry.getValue().getParameters())));
+                result.Add(new ExecutionUnit(sqlRewriteResult.Key.DataSourceMapper.ActualName, new SqlUnit(sqlRewriteResult.Value.Sql, sqlRewriteResult.Value.Parameters)));
             }
             return result;
         }

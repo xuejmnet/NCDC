@@ -1,5 +1,8 @@
 ﻿using System.Collections.Generic;
+using ShardingConnector.Common.Config.Properties;
+using ShardingConnector.Common.MetaData;
 using ShardingConnector.Common.Rule;
+using ShardingConnector.Kernels.Parse;
 using ShardingConnector.Kernels.Route;
 
 namespace ShardingConnector.Pluggble.Prepare
@@ -11,20 +14,32 @@ namespace ShardingConnector.Pluggble.Prepare
     * @Ver: 1.0
     * @Email: 326308290@qq.com
     */
-    public class SimpleQueryPrepareEngine: BasePrepareEngine
+    
+    /**
+ * Prepare engine for simple query.
+ * 
+ * <pre>
+ *     Simple query:  
+ *       for JDBC is Statement; 
+ *       for MyQL is COM_QUERY; 
+ *       for PostgreSQL is Simple Query;
+ * </pre>
+ */
+    public sealed class SimpleQueryPrepareEngine: BasePrepareEngine
     {
-        public SimpleQueryPrepareEngine(DataNodeRouter router, ICollection<IBaseRule> rules) : base(router, rules)
+
+        public SimpleQueryPrepareEngine(ICollection<IBaseRule> rules, ConfigurationProperties properties, ShardingConnectorMetaData metaData, SqlParserEngine sqlParserEngine) : base(rules, properties, metaData, sqlParserEngine)
         {
         }
 
-        protected override IList<object> CloneParameters(IList<object> parameters)
+        protected override List<object> CloneParameters(List<object> parameters)
         {
             return new List<object>();
         }
 
-        protected override RouteContext Route(DataNodeRouter router, string sql, IList<object> parameters)
+        protected override RouteContext Route(DataNodeRouter router, string sql, List<object> parameters)
         {
-            return router.
+            return  router.Route(sql, new List<object>());
         }
     }
 }
