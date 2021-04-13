@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using ShardingConnector.Extensions;
 using ShardingConnector.Kernels.MetaData.Schema;
 using ShardingConnector.Parser.Binder.Command;
+using ShardingConnector.Parser.Binder.Command.DML;
 using ShardingConnector.Parser.Sql.Command;
+using ShardingConnector.Rewrite.Parameter.Builder;
 using ShardingConnector.Rewrite.Parameter.Builder.Impl;
 using ShardingConnector.Rewrite.Sql.Token.Generator;
 using ShardingConnector.Rewrite.Sql.Token.Generator.Builder;
@@ -26,7 +29,7 @@ namespace ShardingConnector.Rewrite.Context
     
         private readonly string _sql;
     
-        private readonly IList<object> _parameters;
+        private readonly List<object> _parameters;
 
         private readonly IParameterBuilder _parameterBuilder;
     
@@ -34,27 +37,30 @@ namespace ShardingConnector.Rewrite.Context
 
         private readonly SqlTokenGenerators _sqlTokenGenerators = new SqlTokenGenerators();
 
-        public SqlRewriteContext(SchemaMetaData schemaMetaData, ISqlCommandContext<ISqlCommand> sqlCommandContext, string sql, IList<object> parameters)
+        public SqlRewriteContext(SchemaMetaData schemaMetaData, ISqlCommandContext<ISqlCommand> sqlCommandContext, string sql, List<object> parameters)
         {
             this._schemaMetaData = schemaMetaData;
             this._sqlCommandContext = sqlCommandContext;
             this._sql = sql;
             this._parameters = parameters;
-            AddSQLTokenGenerators(new DefaultTokenGeneratorBuilder().GetSQLTokenGenerators());
-            if (sqlCommandContext is InsertStatementContext)
+            AddSqlTokenGenerators(new DefaultTokenGeneratorBuilder().GetSQLTokenGenerators());
+            if (sqlCommandContext is InsertCommandContext insertCommandContext)
             {
-                
+                _parameterBuilder = new GroupedParameterBuilder(insertCommandContext.GetGroupedParameters());
             }
-            parameterBuilder = sqlStatementContext instanceof InsertStatementContext
-                ? new GroupedParameterBuilder(((InsertStatementContext)sqlStatementContext).getGroupedParameters()) : new StandardParameterBuilder(parameters);
+            else
+            {
+                _parameterBuilder=new StandardParameterBuilder(parameters);
+            }
         }
+
 
         /**
          * Add SQL token generators.
          * 
          * @param sqlTokenGenerators SQL token generators
          */
-        public void AddSQLTokenGenerators(ICollection<ISqlTokenGenerator> sqlTokenGenerators)
+        public void AddSqlTokenGenerators(ICollection<ISqlTokenGenerator> sqlTokenGenerators)
         {
             this._sqlTokenGenerators.AddAll(sqlTokenGenerators);
         }
@@ -62,9 +68,9 @@ namespace ShardingConnector.Rewrite.Context
         /**
          * Generate SQL tokens.
          */
-        public void generateSQLTokens()
+        public void GenerateSqlTokens()
         {
-            sqlTokens.addAll(sqlTokenGenerators.generateSQLTokens(sqlStatementContext, parameters, schemaMetaData));
+            _sqlTokens.AddAll(_sqlTokenGenerators.GenerateSqlTokens(_sqlCommandContext, _parameters, _schemaMetaData));
         }
     }
 }

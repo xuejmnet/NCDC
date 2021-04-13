@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using ShardingConnector.Common.Config.Properties;
-using ShardingConnector.Kernels.Route.Rule;
+using ShardingConnector.Common.Rule;
 using ShardingConnector.Spi.Order;
 
 namespace ShardingConnector.Rewrite.Context
@@ -14,7 +14,7 @@ namespace ShardingConnector.Rewrite.Context
     * @Ver: 1.0
     * @Email: 326308290@qq.com
     */
-    public interface ISqlRewriteContextDecorator<T>:IOrderAware<T> where T:IBaseRule
+    public interface ISqlRewriteContextDecorator<in T>:IOrderAware where T: IBaseRule
     {
         void Decorate(T rule, ConfigurationProperties properties, SqlRewriteContext sqlRewriteContext);
     }

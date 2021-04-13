@@ -2,17 +2,16 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace ShardingConnector.Spi.Order
+namespace ShardingConnector.Spi.DataBase.MetaData
 {
     /*
     * @Author: xjm
     * @Description:
-    * @Date: 2021/4/5 13:03:55
+    * @Date: 2021/4/13 14:53:11
     * @Ver: 1.0
     * @Email: 326308290@qq.com
     */
-    public interface IOrderAware
+    public interface IMemorizedDataSourceMetaData:IDataSourceMetaData
     {
-        int GetOrder();
     }
 }

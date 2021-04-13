@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Text;
+using ShardingConnector.Kernels.MetaData.Schema;
 using ShardingConnector.Parser.Binder.Segment.Insert;
+using ShardingConnector.Parser.Binder.Segment.Insert.Keygen;
+using ShardingConnector.Parser.Binder.Segment.Insert.Keygen.Engine;
 using ShardingConnector.Parser.Binder.Segment.Insert.Values;
 using ShardingConnector.Parser.Binder.Segment.Table;
 using ShardingConnector.Parser.Sql.Command.DML;
@@ -17,34 +19,33 @@ namespace ShardingConnector.Parser.Binder.Command.DML
     * @Ver: 1.0
     * @Email: 326308290@qq.com
     */
-    public class InsertCommandContext:GenericSqlCommandContext<InsertCommand>,ITableAvailable
+    public class InsertCommandContext : GenericSqlCommandContext<InsertCommand>, ITableAvailable
     {
         private readonly TablesContext _tablesContext;
-    
-    private readonly List<string> _columnNames;
+
+        private readonly List<string> _columnNames;
 
         private readonly List<InsertValueContext> _insertValueContexts;
 
         private readonly GeneratedKeyContext _generatedKeyContext;
-    
-    public InsertCommandContext(final SchemaMetaData schemaMetaData, final List<Object> parameters, final InsertStatement sqlStatement)
+
+        public InsertCommandContext(SchemaMetaData schemaMetaData, List<object> parameters, InsertCommand insertCommand) : base(insertCommand)
         {
-            super(sqlStatement);
-            tablesContext = new TablesContext(sqlStatement.getTable());
-            columnNames = sqlStatement.useDefaultColumns() ? schemaMetaData.getAllColumnNames(sqlStatement.getTable().getTableName().getIdentifier().getValue()) : sqlStatement.getColumnNames();
-            insertValueContexts = getInsertValueContexts(parameters);
-            generatedKeyContext = new GeneratedKeyContextEngine(schemaMetaData).createGenerateKeyContext(parameters, sqlStatement).orElse(null);
+            _tablesContext = new TablesContext(insertCommand.Table);
+            _columnNames = insertCommand.UseDefaultColumns() ? schemaMetaData.GetAllColumnNames(insertCommand.Table.GetTableName().GetIdentifier().GetValue()) : insertCommand.GetColumnNames();
+            _insertValueContexts = GetInsertValueContexts(parameters);
+            _generatedKeyContext = new GeneratedKeyContextEngine(schemaMetaData).CreateGenerateKeyContext(parameters, insertCommand);
         }
 
-        private List<InsertValueContext> getInsertValueContexts(final List<Object> parameters)
+        private List<InsertValueContext> GetInsertValueContexts(List<object> parameters)
         {
-            List<InsertValueContext> result = new LinkedList<>();
+            List<InsertValueContext> result = new List<InsertValueContext>(GetSqlCommand().GetAllValueExpressions().Count);
             int parametersOffset = 0;
-            for (Collection<> ExpressionSegment> each : getSqlStatement().getAllValueExpressions())
+            foreach (var valueExpression in GetSqlCommand().GetAllValueExpressions())
             {
-                InsertValueContext insertValueContext = new InsertValueContext(each, parameters, parametersOffset);
-                result.add(insertValueContext);
-                parametersOffset += insertValueContext.getParametersCount();
+                InsertValueContext insertValueContext = new InsertValueContext(valueExpression, parameters, parametersOffset);
+                result.Add(insertValueContext);
+                parametersOffset += insertValueContext.GetParametersCount();
             }
             return result;
         }
@@ -54,9 +55,11 @@ namespace ShardingConnector.Parser.Binder.Command.DML
          * 
          * @return column names for descending order
          */
-        public Iterator<String> getDescendingColumnNames()
+        public List<string> GetDescendingColumnNames()
         {
-            return new LinkedList<>(columnNames).descendingIterator();
+            var list = new List<string>(_columnNames);
+            list.Reverse();
+            return list;
         }
 
         /**
@@ -64,12 +67,12 @@ namespace ShardingConnector.Parser.Binder.Command.DML
          * 
          * @return grouped parameters
          */
-        public List<List<Object>> getGroupedParameters()
+        public List<List<object>> GetGroupedParameters()
         {
-            List<List<Object>> result = new LinkedList<>();
-            for (InsertValueContext each : insertValueContexts)
+            List<List<object>> result = new List<List<object>>();
+            foreach (var insertValueContext in _insertValueContexts)
             {
-                result.add(each.getParameters());
+                result.Add(insertValueContext.GetParameters());
             }
             return result;
         }
@@ -79,15 +82,14 @@ namespace ShardingConnector.Parser.Binder.Command.DML
          * 
          * @return generated key context
          */
-        public Optional<GeneratedKeyContext> getGeneratedKeyContext()
+        public GeneratedKeyContext GetGeneratedKeyContext()
         {
-            return Optional.ofNullable(generatedKeyContext);
+            return _generatedKeyContext;
         }
 
-        @Override
-    public Collection<SimpleTableSegment> getAllTables()
+        public ICollection<SimpleTableSegment> GetAllTables()
         {
-            return Collections.singletonList(getSqlStatement().getTable());
+            return new List<SimpleTableSegment>() { GetSqlCommand().Table };
         }
     }
 }

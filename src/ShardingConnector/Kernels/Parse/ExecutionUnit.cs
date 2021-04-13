@@ -16,5 +16,15 @@ namespace ShardingConnector.Kernels.Parse
             _dataSourceName = dataSourceName;
             _sqlUnit = sqlUnit;
         }
+
+        public string GetDataSourceName()
+        {
+            return _dataSourceName;
+        }
+
+        public SqlUnit GetSqlUnit()
+        {
+            return _sqlUnit;
+        }
     }
 }

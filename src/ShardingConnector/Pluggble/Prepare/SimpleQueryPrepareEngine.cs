@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
+using ShardingConnector.Common.Rule;
 using ShardingConnector.Kernels.Route;
-using ShardingConnector.Kernels.Route.Rule;
 
 namespace ShardingConnector.Pluggble.Prepare
 {

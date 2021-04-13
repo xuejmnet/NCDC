@@ -10,7 +10,7 @@ namespace ShardingConnector.Parser.Binder.Command
 * @Date: Tuesday, 23 March 2021 21:24:51
 * @Email: 326308290@qq.com
 */
-    public interface ISqlCommandContext<T> where T:ISqlCommand
+    public interface ISqlCommandContext<out T> where T:ISqlCommand
     {
         /// <summary>
         /// 获取命令

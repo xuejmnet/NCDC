@@ -18,5 +18,15 @@ namespace ShardingConnector.Kernels.Parse
             _sql = sql;
             _parameters = parameters;
         }
+
+        public string GetSql()
+        {
+            return _sql;
+        }
+
+        public List<object> GetParameters()
+        {
+            return _parameters;
+        }
     }
 }

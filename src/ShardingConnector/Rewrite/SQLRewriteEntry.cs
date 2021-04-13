@@ -2,8 +2,13 @@
 using System.Collections.Generic;
 using System.Text;
 using ShardingConnector.Common.Config.Properties;
+using ShardingConnector.Common.Rule;
 using ShardingConnector.Kernels.MetaData.Schema;
-using ShardingConnector.Kernels.Route.Rule;
+using ShardingConnector.Kernels.Route;
+using ShardingConnector.Parser.Binder.Command;
+using ShardingConnector.Parser.Sql.Command;
+using ShardingConnector.Rewrite.Context;
+using ShardingConnector.Rewrite.Sql.Token.Generator.Aware;
 
 namespace ShardingConnector.Rewrite
 {
@@ -14,13 +19,19 @@ namespace ShardingConnector.Rewrite
     * @Ver: 1.0
     * @Email: 326308290@qq.com
     */
-    public sealed class SQLRewriteEntry
+    public sealed class SqlRewriteEntry
     {
         private readonly SchemaMetaData _schemaMetaData;
     
         private readonly ConfigurationProperties _properties;
     
-        private readonly IDictionary<IBaseRule, SQLRewriteContextDecorator> decorators = new LinkedHashMap<>();
+        private readonly IDictionary<IBaseRule, ISqlRewriteContextDecorator<IBaseRule>> _decorators = new Dictionary<IBaseRule, ISqlRewriteContextDecorator<IBaseRule>>();
+
+        public SqlRewriteEntry(SchemaMetaData schemaMetaData, ConfigurationProperties properties)
+        {
+            _schemaMetaData = schemaMetaData;
+            _properties = properties;
+        }
 
         /**
          * Register route decorator.
@@ -28,9 +39,9 @@ namespace ShardingConnector.Rewrite
          * @param rule rule
          * @param decorator SQL rewrite context decorator
          */
-        public void registerDecorator(final BaseRule rule, final SQLRewriteContextDecorator decorator)
+        public void RegisterDecorator(IBaseRule rule, ISqlRewriteContextDecorator<IBaseRule> decorator)
         {
-            decorators.put(rule, decorator);
+            _decorators.Add(rule, decorator);
         }
 
         /**
@@ -42,25 +53,24 @@ namespace ShardingConnector.Rewrite
          * @param routeContext route context
          * @return SQL rewrite context
          */
-        public SQLRewriteContext createSQLRewriteContext(final String sql, final List<Object> parameters, final SQLStatementContext sqlStatementContext, final RouteContext routeContext)
+        public SqlRewriteContext CreateSqlRewriteContext(string sql, List<object> parameters,  ISqlCommandContext<ISqlCommand> sqlCommandContext, RouteContext routeContext)
         {
-            SQLRewriteContext result = new SQLRewriteContext(schemaMetaData, sqlStatementContext, sql, parameters);
-            decorate(decorators, result, routeContext);
-            result.generateSQLTokens();
+            var result = new SqlRewriteContext(_schemaMetaData, sqlCommandContext, sql, parameters);
+            Decorate(_decorators, result, routeContext);
+            result.GenerateSqlTokens();
             return result;
         }
-
-        @SuppressWarnings("unchecked")
-        private void decorate(final Map<BaseRule, SQLRewriteContextDecorator> decorators, final SQLRewriteContext sqlRewriteContext, final RouteContext routeContext)
+        
+        private void Decorate(IDictionary<IBaseRule, ISqlRewriteContextDecorator<IBaseRule>> decorators, SqlRewriteContext sqlRewriteContext, RouteContext routeContext)
         {
-            for (Entry<BaseRule, SQLRewriteContextDecorator> entry : decorators.entrySet())
+            foreach (var decoratorEntry in decorators)
             {
-                BaseRule rule = entry.getKey();
-                SQLRewriteContextDecorator decorator = entry.getValue();
-                if (decorator instanceof RouteContextAware) {
-                    ((RouteContextAware)decorator).setRouteContext(routeContext);
+                var rule = decoratorEntry.Key;
+                var decorator = decoratorEntry.Value;
+                if (decorator is IRouteContextAware routeContextAware) {
+                    routeContextAware.SetRouteContext(routeContext);
                 }
-                decorator.decorate(rule, properties, sqlRewriteContext);
+                decorator.Decorate(rule, _properties, sqlRewriteContext);
             }
         }
 }

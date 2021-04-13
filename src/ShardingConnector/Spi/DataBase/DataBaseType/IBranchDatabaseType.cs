@@ -2,17 +2,17 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace ShardingConnector.Rewrite.Parameter.Builder.Impl
+namespace ShardingConnector.Spi.DataBase.DataBaseType
 {
     /*
     * @Author: xjm
     * @Description:
-    * @Date: 2021/4/12 16:02:08
+    * @Date: 2021/4/13 14:55:08
     * @Ver: 1.0
     * @Email: 326308290@qq.com
     */
-    public interface IParameterBuilder
+    public interface IBranchDatabaseType:IDatabaseType
     {
-        IList<object> GetParameters();
+        IDatabaseType GetTrunkDatabaseType();
     }
 }

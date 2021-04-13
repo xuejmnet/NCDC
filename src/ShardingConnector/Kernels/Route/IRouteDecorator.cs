@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using ShardingConnector.Kernels.Route.Rule;
+using ShardingConnector.Common.Config.Properties;
+using ShardingConnector.Common.MetaData;
+using ShardingConnector.Common.Rule;
 using ShardingConnector.Spi.Order;
 
 namespace ShardingConnector.Kernels.Route
@@ -13,8 +15,8 @@ namespace ShardingConnector.Kernels.Route
     * @Ver: 1.0
     * @Email: 326308290@qq.com
     */
-    public interface IRouteDecorator<T>:IOrderAware<T> where T: IBaseRule
+    public interface IRouteDecorator<T>:IOrderAware where T: IBaseRule
     {
-        RouteContext Decorate(RouteContext routeContext);
+        RouteContext Decorate(RouteContext routeContext, ShardingConnectorMetaData metaData, T rule, ConfigurationProperties properties);
     }
 }

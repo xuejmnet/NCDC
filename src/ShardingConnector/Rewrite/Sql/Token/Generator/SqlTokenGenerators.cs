@@ -56,7 +56,7 @@ namespace ShardingConnector.Rewrite.Sql.Token.Generator
          * @param schemaMetaData schema meta data
          * @return SQL tokens
          */
-        public ICollection<SqlToken> GenerateSQLTokens(ISqlCommandContext<ISqlCommand> sqlCommandContext, IList<object> parameters, SchemaMetaData schemaMetaData)
+        public ICollection<SqlToken> GenerateSqlTokens(ISqlCommandContext<ISqlCommand> sqlCommandContext, IList<object> parameters, SchemaMetaData schemaMetaData)
         {
             ICollection<SqlToken> result = new LinkedList<SqlToken>();
 

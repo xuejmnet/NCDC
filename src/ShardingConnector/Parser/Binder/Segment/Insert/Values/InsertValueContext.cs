@@ -90,5 +90,15 @@ namespace ShardingConnector.Parser.Binder.Segment.Insert.Values
             }
             throw new ShardingException("Can not get parameter index.");
         }
+
+        public int GetParametersCount()
+        {
+            return _parametersCount;
+        }
+
+        public List<object> GetParameters()
+        {
+            return _parameters;
+        }
     }
 }

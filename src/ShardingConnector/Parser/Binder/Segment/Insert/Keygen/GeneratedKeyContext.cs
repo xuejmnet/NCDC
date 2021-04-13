@@ -17,7 +17,7 @@ namespace ShardingConnector.Parser.Binder.Segment.Insert.Keygen
     
         private readonly bool _generated;
     
-        private readonly LinkedList<IComparable> _generatedValues = new LinkedList<IComparable>();
+        private readonly ICollection<IComparable> _generatedValues = new LinkedList<IComparable>();
 
         public GeneratedKeyContext(string columnName, bool generated)
         {
@@ -35,7 +35,7 @@ namespace ShardingConnector.Parser.Binder.Segment.Insert.Keygen
             return _generated;
         }
 
-        public LinkedList<IComparable> GetGeneratedValues()
+        public ICollection<IComparable> GetGeneratedValues()
         {
             return _generatedValues;
         }

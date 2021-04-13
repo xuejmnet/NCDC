@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using ShardingConnector.Common.Config;
 
-namespace ShardingConnector.Kernels.Route.Rule
+namespace ShardingConnector.Common.Rule
 {
     /*
     * @Author: xjm

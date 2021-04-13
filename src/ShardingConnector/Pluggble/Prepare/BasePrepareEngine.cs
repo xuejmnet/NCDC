@@ -1,13 +1,18 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using ShardingConnector.Common.Config.Properties;
+using ShardingConnector.Common.Log;
+using ShardingConnector.Common.MetaData;
+using ShardingConnector.Common.Rule;
 using ShardingConnector.Contexts;
 using ShardingConnector.Exceptions;
 using ShardingConnector.Extensions;
 using ShardingConnector.Kernels.Parse;
 using ShardingConnector.Kernels.Route;
-using ShardingConnector.Kernels.Route.Rule;
 using ShardingConnector.Parser.Sql.Command;
+using ShardingConnector.Rewrite;
+using ShardingConnector.Rewrite.Context;
 using ShardingConnector.Spi.Order;
 
 namespace ShardingConnector.Pluggble.Prepare
@@ -23,36 +28,39 @@ namespace ShardingConnector.Pluggble.Prepare
         private readonly ICollection<IBaseRule> _rules;
 
         private readonly DataNodeRouter _router;
-        private readonly SQLRewriteEntry _rewriter;
+        private readonly SqlRewriteEntry _rewriter;
 
-        protected BasePrepareEngine(DataNodeRouter router, ICollection<IBaseRule> rules)
+        private readonly ConfigurationProperties _properties;
+
+        protected BasePrepareEngine(ICollection<IBaseRule> rules, ConfigurationProperties properties, ShardingConnectorMetaData metaData, SqlParserEngine sqlParserEngine)
         {
-            _router = router;
+            _router = new DataNodeRouter(metaData,sqlParserEngine, properties);
             _rules = rules;
+            _properties = properties;
         }
 
-        protected abstract IList<object> CloneParameters(IList<object> parameters);
-        protected abstract RouteContext Route(DataNodeRouter router,string sql, IList<object> parameters);
+        protected abstract List<object> CloneParameters(List<object> parameters);
+        protected abstract RouteContext Route(DataNodeRouter router,string sql, List<object> parameters);
 
-        public ExecutionContext<ISqlCommand> Prepare(string sql, IList<object> parameters)
+        public ExecutionContext Prepare(string sql, List<object> parameters)
         {
             var cloneParameters = CloneParameters(parameters);
             var routeContext = ExecuteRoute(sql, cloneParameters);
             ExecutionContext result = new ExecutionContext(routeContext.GetSqlCommandContext());
-            result.GetExecutionUnits().AddAll(ExecuteRewrite(sql, clonedParameters, routeContext));
-            if (properties.< Boolean > getValue(ConfigurationPropertyKey.SQL_SHOW))
+            result.GetExecutionUnits().AddAll(ExecuteRewrite(sql, cloneParameters, routeContext));
+            if (true)
             {
-                SQLLogger.logSQL(sql, properties.< Boolean > getValue(ConfigurationPropertyKey.SQL_SIMPLE), result.getSqlStatementContext(), result.getExecutionUnits());
+                SqlLogger.LogSql(sql,false,result.GetSqlStatementContext(),result.GetExecutionUnits());
             }
             return result;
         }
 
 
-        private ICollection<ExecutionUnit> ExecuteRewrite(string sql, IList<object> parameters, RouteContext routeContext)
+        private ICollection<ExecutionUnit> ExecuteRewrite(string sql, List<object> parameters, RouteContext routeContext)
         {
             RegisterRouteDecorator();
-            SQLRewriteContext sqlRewriteContext = rewriter.createSQLRewriteContext(sql, parameters, routeContext.getSqlStatementContext(), routeContext);
-            return routeContext.getRouteResult().getRouteUnits().isEmpty() ? rewrite(sqlRewriteContext) : rewrite(routeContext, sqlRewriteContext);
+            SqlRewriteContext sqlRewriteContext = _rewriter.CreateSqlRewriteContext(sql, parameters, routeContext.GetSqlCommandContext(), routeContext);
+            return routeContext.GetRouteResult().getRouteUnits().isEmpty() ? rewrite(sqlRewriteContext) : rewrite(routeContext, sqlRewriteContext);
         }
         private RouteContext ExecuteRoute(string sql, IList<object> clonedParameters)
         {
