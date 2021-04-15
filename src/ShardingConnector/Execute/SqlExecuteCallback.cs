@@ -1,7 +1,10 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data.Common;
+using ShardingConnector.Executor.Constant;
 using ShardingConnector.Executor.Engine;
+using ShardingConnector.Executor.Hook;
 using ShardingConnector.Kernels.Parse;
 using ShardingConnector.Spi.DataBase.DataBaseType;
 using ShardingConnector.Spi.DataBase.MetaData;
@@ -19,7 +22,7 @@ namespace ShardingConnector.Execute
     /// <summary>
     /// 
     /// </summary>
-    public abstract class SQLExecuteCallback<T>:IGroupedCallback<CommandExecuteUnit,T>
+    public abstract class SqlExecuteCallback<T>:IGroupedCallback<CommandExecuteUnit,T>
     {
         private static readonly ConcurrentDictionary<string, IDataSourceMetaData> CACHED_DATASOURCE_METADATA = new ConcurrentDictionary<string, IDataSourceMetaData>();
     
@@ -27,7 +30,7 @@ namespace ShardingConnector.Execute
     
         private readonly bool isExceptionThrown;
 
-        protected SQLExecuteCallback(IDatabaseType databaseType, bool isExceptionThrown)
+        protected SqlExecuteCallback(IDatabaseType databaseType, bool isExceptionThrown)
         {
             this.databaseType = databaseType;
             this.isExceptionThrown = isExceptionThrown;
@@ -55,18 +58,18 @@ namespace ShardingConnector.Execute
      */
     private T Execute0(CommandExecuteUnit commandExecuteUnit, bool isTrunkThread, IDictionary<string, object> dataMap){
         ExecutorExceptionHandler.SetExceptionThrow(isExceptionThrown);
-        IDataSourceMetaData dataSourceMetaData = getDataSourceMetaData(commandExecuteUnit.Command);
-        SQLExecutionHook sqlExecutionHook = new SPISQLExecutionHook();
+        IDataSourceMetaData dataSourceMetaData = GetDataSourceMetaData(commandExecuteUnit.Command);
+        ISqlExecutionHook sqlExecutionHook = new SpiSqlExecutionHook();
         try {
-            ExecutionUnit executionUnit = statementExecuteUnit.getExecutionUnit();
-            sqlExecutionHook.start(executionUnit.getDataSourceName(), executionUnit.getSqlUnit().getSql(), executionUnit.getSqlUnit().getParameters(), dataSourceMetaData, isTrunkThread, dataMap);
-            T result = executeSQL(executionUnit.getSqlUnit().getSql(), statementExecuteUnit.getStatement(), statementExecuteUnit.getConnectionMode());
-            sqlExecutionHook.finishSuccess();
+            ExecutionUnit executionUnit = commandExecuteUnit.ExecutionUnit;
+            sqlExecutionHook.Start(executionUnit.GetDataSourceName(), executionUnit.GetSqlUnit().GetSql(), executionUnit.GetSqlUnit().GetParameters(), dataSourceMetaData, isTrunkThread, dataMap);
+            T result = ExecuteSql(executionUnit.GetSqlUnit().GetSql(), commandExecuteUnit.Command, commandExecuteUnit.ConnectionMode);
+            sqlExecutionHook.FinishSuccess();
             return result;
-        } catch (final SQLException ex) {
-            sqlExecutionHook.finishFailure(ex);
-            ExecutorExceptionHandler.handleException(ex);
-            return null;
+        } catch (Exception ex) {
+            sqlExecutionHook.FinishFailure(ex);
+            ExecutorExceptionHandler.HandleException(ex);
+            return default;
         }
     }
     
@@ -76,10 +79,10 @@ namespace ShardingConnector.Execute
             return CACHED_DATASOURCE_METADATA[url];
         }
         IDataSourceMetaData result = databaseType.GetDataSourceMetaData(url, null);
-        CACHED_DATASOURCE_METADATA.put(url, result);
+        CACHED_DATASOURCE_METADATA.TryAdd(url, result);
         return result;
     }
     
-    protected abstract T executeSQL(String sql, Statement statement, ConnectionMode connectionMode) throws SQLException;
+    protected abstract T ExecuteSql(string sql, DbCommand command, ConnectionModeEnum connectionMode);
     }
 }

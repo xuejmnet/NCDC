@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
+using System.Linq;
+using System.Threading.Tasks;
+using ShardingConnector.Exceptions;
 using ShardingConnector.Extensions;
 
 namespace ShardingConnector.Executor.Engine
@@ -16,7 +18,7 @@ namespace ShardingConnector.Executor.Engine
     /// <summary>
     /// 
     /// </summary>
-    public sealed class ExecutorEngine:IDisposable
+    public sealed class ExecutorEngine
     {
     
     /**
@@ -50,69 +52,58 @@ namespace ShardingConnector.Executor.Engine
         if (inputGroups.IsEmpty()) {
             return new List<R>(0);
         }
-        return serial ? SerialExecute(inputGroups, firstCallback, callback) : parallelExecute(inputGroups, firstCallback, callback);
+        return serial ? SerialExecute(inputGroups, firstCallback, callback) : ParallelExecute(inputGroups, firstCallback, callback);
     }
     
     private  List<R> SerialExecute<T,R>(ICollection<InputGroup<T>> inputGroups, IGroupedCallback<T, R> firstCallback, IGroupedCallback<T, R> callback) {
-        Iterator<InputGroup<I>> inputGroupsIterator = inputGroups.iterator();
-        InputGroup<I> firstInputs = inputGroupsIterator.next();
-        List<O> result = new LinkedList<>(SyncExecute(firstInputs, null == firstCallback ? callback : firstCallback));
-        for (InputGroup<I> each : Lists.newArrayList(inputGroupsIterator)) {
-            result.addAll(syncExecute(each, callback));
+        ICollection<R> result = new LinkedList<R>(SyncExecute(inputGroups.First(), null == firstCallback ? callback : firstCallback));
+        var loopInputGroups = inputGroups.Skip(1);
+        foreach (var inputGroup in loopInputGroups)
+        {
+            result.AddAll(SyncExecute(inputGroup,callback));
         }
-        return result;
+        return result.ToList();
     }
     
     private List<R> ParallelExecute<T,R>(ICollection<InputGroup<T>> inputGroups, IGroupedCallback<T, R> firstCallback, IGroupedCallback<T, R> callback) {
-        Iterator<InputGroup<I>> inputGroupsIterator = inputGroups.iterator();
-        InputGroup<I> firstInputs = inputGroupsIterator.next();
-        Collection<ListenableFuture<Collection<O>>> restResultFutures = asyncExecute(Lists.newArrayList(inputGroupsIterator), callback);
-        return getGroupResults(syncExecute(firstInputs, null == firstCallback ? callback : firstCallback), restResultFutures);
+        var restResultFutures = AsyncExecute(inputGroups.Skip(1).ToList(), callback);
+        return GetGroupResults(SyncExecute(inputGroups.First(), null == firstCallback ? callback : firstCallback), restResultFutures);
     }
     
     private ICollection<R> SyncExecute<T,R>(InputGroup<T> inputGroup, IGroupedCallback<T, R> callback){
-        return callback.Execute(inputGroup.Inputs, true, ExecutorDataMap.getValue());
+        return callback.Execute(inputGroup.Inputs, true,new Dictionary<string, object>());
     }
     
-    private <I, O> Collection<ListenableFuture<Collection<O>>> asyncExecute(final List<InputGroup<I>> inputGroups, final GroupedCallback<I, O> callback) {
-        Collection<ListenableFuture<Collection<O>>> result = new LinkedList<>();
-        for (InputGroup<I> each : inputGroups) {
-            result.add(asyncExecute(each, callback));
+    private  ICollection<Task<ICollection<R>>> AsyncExecute<T,R>(List<InputGroup<T>> inputGroups, IGroupedCallback<T, R> callback) {
+        ICollection<Task<ICollection<R>>> result = new LinkedList<Task<ICollection<R>>>();
+        foreach (var inputGroup in inputGroups)
+        {
+            result.Add(AsyncExecute(inputGroup,callback));
         }
         return result;
     }
     
-    private <I, O> ListenableFuture<Collection<O>> asyncExecute(final InputGroup<I> inputGroup, final GroupedCallback<I, O> callback) {
-        final Map<String, Object> dataMap = ExecutorDataMap.getValue();
-        return executorService.getExecutorService().submit(() -> callback.execute(inputGroup.getInputs(), false, dataMap));
+    private  Task<ICollection<R>> AsyncExecute<T,R>(InputGroup<T> inputGroup, IGroupedCallback<T, R> callback)
+    {
+        IDictionary<string, object> dataMap = new Dictionary<string, object>();
+        return Task.Run(()=>callback.Execute(inputGroup.Inputs, false, dataMap));
     }
     
-    private <O> List<O> getGroupResults(final Collection<O> firstResults, final Collection<ListenableFuture<Collection<O>>> restFutures) throws SQLException {
-        List<O> result = new LinkedList<>(firstResults);
-        for (ListenableFuture<Collection<O>> each : restFutures) {
-            try {
-                result.addAll(each.get());
-            } catch (final InterruptedException | ExecutionException ex) {
-                return throwException(ex);
+    private  List<T> GetGroupResults<T>(ICollection<T> firstResults, ICollection<Task<ICollection<T>>> restFutures){
+        ICollection<T> result = new LinkedList<T>(firstResults);
+        foreach (var restFuture in restFutures)
+        {
+            try
+            {
+                result.AddAll(restFuture.GetAwaiter().GetResult());
+            }
+            catch (Exception e)
+            {
+                throw new ShardingException("get group results error",e);
             }
         }
-        return result;
+        return result.ToList();
     }
     
-    private <O> List<O> throwException(final Exception exception) throws SQLException {
-        if (exception.getCause() instanceof SQLException) {
-            throw (SQLException) exception.getCause();
-        }
-        throw new ShardingSphereException(exception);
-    }
-    
-    @Override
-    public void close() {
-        executorService.close();
-    }
-        public void Dispose()
-        {
-            throw new NotImplementedException();
-        }
     }
 }
