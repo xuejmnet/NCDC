@@ -61,6 +61,19 @@ namespace ShardingConnector.Common.Log
             }
         }
 
+        public static void Error(string msg)
+        {
+            _sqlLogger.Show?.Invoke(msg);
+        }
+        public static void Error(string msg,Exception ex)
+        {
+            _sqlLogger.Show?.Invoke($@"msg:{msg},exception:{ex}");
+        }
+        public static void Error(Exception ex)
+        {
+            _sqlLogger.Show?.Invoke($@"exception:{ex}");
+        }
+
         private static void LogSimpleMode(ICollection<ExecutionUnit> executionUnits)
         {
             ISet<string> dataSourceNames = new HashSet<string>();

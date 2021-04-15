@@ -26,24 +26,11 @@ namespace ShardingConnector
         /// <typeparam name="TIService"></typeparam>
         public static void Register<TIService>()
         {
-            var loadServices = LoadServices<TIService>();
+            var loadServices =ServiceLoader.Load<TIService>();
             foreach (var service in loadServices)
             {
                 RegisterServiceType(typeof(TIService),service);
             }
-        }
-
-        private static ICollection<TIService> LoadServices<TIService>()
-        {
-            var serviceType = typeof(TIService);
-
-            var serviceImpls = AssemblyHelper.CurrentDomain.GetAssemblies().SelectMany(o => o.GetTypes())
-                .Where(type => !String.IsNullOrEmpty(type.Namespace))
-                .Where(type => !type.IsAbstract && type.GetInterfaces()
-                    .Any(it => it.IsInterface && serviceType == it)
-                &&type.GetConstructors().Length==1&&type.GetConstructors()[0].GetParameters().Length==0
-                );
-            return serviceImpls.Select(o => (TIService)Activator.CreateInstance(o)).ToList();
         }
 
         /// <summary>

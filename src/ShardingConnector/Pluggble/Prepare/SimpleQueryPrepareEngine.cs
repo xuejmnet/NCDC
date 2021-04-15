@@ -20,7 +20,7 @@ namespace ShardingConnector.Pluggble.Prepare
  * 
  * <pre>
  *     Simple query:  
- *       for JDBC is Statement; 
+ *       for ADONET is Command; 
  *       for MyQL is COM_QUERY; 
  *       for PostgreSQL is Simple Query;
  * </pre>
