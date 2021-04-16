@@ -20,5 +20,12 @@ namespace ShardingConnector.Extensions
                 source.Add(t);
             }
         }
+        public static void RemoveAll<T>(this ICollection<T> source,ICollection<T> target)
+        {
+            foreach (var t in target)
+            {
+                source.Remove(t);
+            }
+        }
     }
 }

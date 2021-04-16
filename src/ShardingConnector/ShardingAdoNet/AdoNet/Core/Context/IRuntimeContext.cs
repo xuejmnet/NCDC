@@ -1,6 +1,7 @@
 ﻿using System;
 using ShardingConnector.Common.Config.Properties;
 using ShardingConnector.Common.Rule;
+using ShardingConnector.Executor.Engine;
 using ShardingConnector.Kernels.Parse;
 using ShardingConnector.Spi.DataBase.DataBaseType;
 
@@ -45,13 +46,13 @@ namespace ShardingConnector.ShardingAdoNet.AdoNet.Core.Context
      * 
      * @return execute engine
      */
-        ExecutorEngine getExecutorEngine();
+        ExecutorEngine GetExecutorEngine();
     
         /**
      * Get SQL parser engine.
      * 
      * @return SQL parser engine
      */
-        SqlParserEngine getSqlParserEngine();
+        SqlParserEngine GetSqlParserEngine();
     }
 }

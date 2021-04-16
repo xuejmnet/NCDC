@@ -32,6 +32,14 @@ namespace ShardingConnector
                 RegisterServiceType(typeof(TIService),service);
             }
         }
+        public static void Register(Type type)
+        {
+            var loadServices =ServiceLoader.Load(type);
+            foreach (var service in loadServices)
+            {
+                RegisterServiceType(type,service);
+            }
+        }
 
         /// <summary>
         /// 添加服务类型

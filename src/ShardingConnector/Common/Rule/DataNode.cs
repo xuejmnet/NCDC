@@ -39,6 +39,12 @@ namespace ShardingConnector.Common.Rule
             _tableName = segments[1];
         }
 
+        public DataNode(string dataSourceName,string tableName)
+        {
+            _dataSourceName = dataSourceName;
+            _tableName = tableName;
+        }
+
         private static bool IsValidDataNode(string dataNodeStr)
         {
             return dataNodeStr.Contains(DELIMITER.ToString()) && 2 == dataNodeStr.Split(DELIMITER).Length;

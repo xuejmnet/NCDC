@@ -16,6 +16,11 @@ namespace ShardingConnector.Kernels.Parse
     */
     public class SqlParserEngine
     {
+        private readonly string _databaseTypeName;
+        public SqlParserEngine(string databaseTypeName)
+        {
+            _databaseTypeName = databaseTypeName;
+        }
         public ISqlCommand Parse(string sql)
         {
             ISqlCommand result = Parse0(sql);

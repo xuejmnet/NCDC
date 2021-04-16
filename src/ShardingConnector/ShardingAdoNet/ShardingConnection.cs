@@ -2,6 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
+using ShardingConnector.ShardingAdoNet.AdoNet.Core.Context;
+using ShardingConnector.Transaction;
+using ShardingConnector.Transaction.Spi;
 
 namespace ShardingConnector.ShardingAdoNet
 {
@@ -13,12 +16,17 @@ namespace ShardingConnector.ShardingAdoNet
 */
     public class ShardingConnection:DbConnection
     {
-        private readonly Dictionary<string, AbstractConnector> _connectors;
+        private readonly IDictionary<string, DbProviderFactory> _dbProviderFactories;
         private bool isOpened = false;
+        private readonly ShardingRuntimeContext _runtimeContext;
+        private readonly TransactionTypeEnum _transactionType;
+        private readonly IShardingTransactionManager _transactionManager;
 
-        public ShardingConnection(Dictionary<string, AbstractConnector> connectors)
+        public ShardingConnection(IDictionary<string, DbProviderFactory> dbProviderFactories,ShardingRuntimeContext runtimeContext,TransactionTypeEnum transactionType)
         {
-            this._connectors = connectors;
+            _dbProviderFactories = dbProviderFactories;
+            _runtimeContext = runtimeContext;
+            _transactionType = transactionType;
         }
         protected override DbTransaction BeginDbTransaction(IsolationLevel isolationLevel)
         {

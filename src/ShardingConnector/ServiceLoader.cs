@@ -19,8 +19,11 @@ namespace ShardingConnector
         private ServiceLoader(){}
         public static T[] Load<T>()
         {
+            return Load(typeof(T)).Select(o => (T)o).ToArray();
+        }
+        public static object[] Load(Type serviceType)
+        {
             
-            var serviceType = typeof(T);
 
             var serviceImpls = AssemblyHelper.CurrentDomain.GetAssemblies().SelectMany(o => o.GetTypes())
                 .Where(type => !String.IsNullOrEmpty(type.Namespace))
@@ -28,7 +31,7 @@ namespace ShardingConnector
                                                     .Any(it => it.IsInterface && serviceType == it)
                                                 &&type.GetConstructors().Length==1&&type.GetConstructors()[0].GetParameters().Length==0
                 );
-            return serviceImpls.Select(o => (T)Activator.CreateInstance(o)).ToArray();
+            return serviceImpls.Select(o => Activator.CreateInstance(o)).ToArray();
         }
     }
 }

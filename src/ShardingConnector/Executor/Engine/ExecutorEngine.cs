@@ -19,6 +19,7 @@ namespace ShardingConnector.Executor.Engine
     /// 
     /// </summary>
     public sealed class ExecutorEngine
+    {
         /**
      * Execute.
      *

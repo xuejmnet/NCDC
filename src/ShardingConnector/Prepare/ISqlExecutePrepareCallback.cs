@@ -1,0 +1,44 @@
+﻿using System.Collections.Generic;
+using System.Data.Common;
+using ShardingConnector.Execute;
+using ShardingConnector.Executor.Constant;
+using ShardingConnector.Kernels.Parse;
+
+namespace ShardingConnector.Prepare
+{
+    /*
+    * @Author: xjm
+    * @Description:
+    * @Date: 2021/04/16 00:00:00
+    * @Ver: 1.0
+    * @Email: 326308290@qq.com
+    */
+    /// <summary>
+    /// 
+    /// </summary>
+    public interface ISqlExecutePrepareCallback
+    {
+        /**
+     * Get connection.
+     * 
+     * @param connectionMode connection mode
+     * @param dataSourceName data source name
+     * @param connectionSize connection size
+     * @return connection
+     * @throws SQLException SQL exception
+     */
+        List<DbConnection> GetConnections(ConnectionModeEnum connectionMode, string dataSourceName, int connectionSize);
+    
+        /**
+     * Create SQL execute unit.
+     * 
+     * @param connection connection
+     * @param executionUnit execution unit
+     * @param connectionMode connection mode
+     * @return SQL execute unit
+     * @throws SQLException SQL exception
+     */
+        CommandExecuteUnit CreateStatementExecuteUnit(DbConnection connection, ExecutionUnit executionUnit, ConnectionModeEnum connectionMode);
+
+    }
+}
