@@ -21,13 +21,13 @@ namespace ShardingConnector.ShardingAdoNet.AdoNet.Core.DataReader
     public class ShardingDataReader : AbstractDataReader
     {
         private readonly IMergedEnumerator _mergedEnumerator;
-        private readonly IDictionary<string, int> columnLabelAndIndexMap;
+        private readonly IDictionary<string, int> _columnLabelAndIndexMap;
 
         public ShardingDataReader(List<DbDataReader> dataReaders, IMergedEnumerator mergedEnumerator, DbCommand command,
             ExecutionContext executionContext) : base(dataReaders, command, executionContext)
         {
             _mergedEnumerator = mergedEnumerator;
-            columnLabelAndIndexMap = CreateColumnLabelAndIndexMap(dataReaders[0]);
+            _columnLabelAndIndexMap = CreateColumnLabelAndIndexMap(dataReaders[0]);
         }
 
         private IDictionary<string, int> CreateColumnLabelAndIndexMap(DbDataReader dataReader)
@@ -46,7 +46,11 @@ namespace ShardingConnector.ShardingAdoNet.AdoNet.Core.DataReader
         {
             return _mergedEnumerator.IsDBNull(ordinal);
         }
-
+        /// <summary>
+        /// 读取下个结果集比如批处理返回多个结果集
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
         public override bool NextResult()
         {
             throw new NotImplementedException();
@@ -57,13 +61,19 @@ namespace ShardingConnector.ShardingAdoNet.AdoNet.Core.DataReader
             return _mergedEnumerator.MoveNext();
         }
 
-        public override object this[int ordinal] => throw new NotImplementedException();
+        public override object this[int ordinal] => _mergedEnumerator.GetValue(ordinal);
 
         public override object this[string name] => throw new NotImplementedException();
 
+        private object GetValueByName(string name)
+        {
+            var columnLabelAndIndex = _columnLabelAndIndexMap[name];
+            return _mergedEnumerator.GetValue(columnLabelAndIndex);
+        }
+
         public override bool GetBoolean(int ordinal)
         {
-            return _mergedEnumerator.GetValue<bool>(ordinal);
+            throw new NotImplementedException();
         }
 
         public override byte GetByte(int ordinal)
