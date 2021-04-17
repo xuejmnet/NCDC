@@ -12,4 +12,10 @@
       <Folder Include="Kernels\Merge\" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Compile Update="ShardingAdoNet\AdoNet\Core\Command\ShardingCommand.cs">
+        <SubType>Component</SubType>
+      </Compile>
+    </ItemGroup>
+
 </Project>

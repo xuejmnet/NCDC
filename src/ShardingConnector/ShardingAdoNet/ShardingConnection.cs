@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
+using ShardingConnector.ShardingAdoNet.AdoNet.Core.Command;
 using ShardingConnector.ShardingAdoNet.AdoNet.Core.Context;
 using ShardingConnector.Transaction;
 using ShardingConnector.Transaction.Spi;
@@ -58,6 +59,18 @@ namespace ShardingConnector.ShardingAdoNet
         {
             //d
             return new ShardingCommand(null, this);
+        }
+
+        public ShardingRuntimeContext GetRuntimeContext()
+        {
+            return _runtimeContext;
+        }
+        /// <summary>
+        /// 是否在事务中
+        /// </summary>
+        /// <returns></returns>
+        public bool IsHoldTransaction() {
+            return (TransactionTypeEnum.LOCAL == _transactionType && !getAutoCommit()) || (TransactionTypeEnum.XA == _transactionType && isInShardingTransaction());
         }
     }
 }

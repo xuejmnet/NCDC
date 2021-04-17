@@ -1,4 +1,10 @@
-﻿namespace ShardingConnector.ShardingAdoNet.AdoNet.Core.Context
+﻿using System.Collections.Generic;
+using System.Data.Common;
+using ShardingConnector.Core.Rule;
+using ShardingConnector.Kernels.MetaData.Schema;
+using ShardingConnector.Spi.DataBase.DataBaseType;
+
+namespace ShardingConnector.ShardingAdoNet.AdoNet.Core.Context
 {
     /*
     * @Author: xjm
@@ -11,8 +17,18 @@
     /// <summary>
     /// 
     /// </summary>
-    public class ShardingRuntimeContext
+    public class ShardingRuntimeContext:MultipleDataSourcesRuntimeContext<ShardingRule>
     {
-        
+        // private readonly CachedDatabaseMetaData cachedDatabaseMetaData;
+        //
+        // private readonly ShardingTransactionManagerEngine shardingTransactionManagerEngine;
+        public ShardingRuntimeContext(IDictionary<string, DbProviderFactory> dataSourceMap, ShardingRule rule, IDictionary<string, object> props, IDatabaseType databaseType) : base(dataSourceMap, rule, props, databaseType)
+        {
+        }
+
+        protected override SchemaMetaData LoadSchemaMetaData(IDictionary<string, DbProviderFactory> dataSourceMap)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

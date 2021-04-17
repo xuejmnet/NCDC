@@ -10,7 +10,7 @@ using ShardingConnector.Parser.Sql.Command.DAL.Dialect;
 using ShardingConnector.ShardingAdoNet.AdoNet.Core.DataReader;
 using ShardingConnector.ShardingAdoNet.Executor;
 
-namespace ShardingConnector.ShardingAdoNet
+namespace ShardingConnector.ShardingAdoNet.AdoNet.Core.Command
 {
 /*
 * @Author: xjm
@@ -74,51 +74,29 @@ namespace ShardingConnector.ShardingAdoNet
             if (string.IsNullOrWhiteSpace(this.CommandText))
                 throw new ShardingException("sql command text null or empty");
 
-            if (null != currentResultSet)
-            {
-                return currentResultSet;
+            DbDataReader result;
+            try {
+                executionContext = Prepare(CommandText);
+                List<IQueryEnumerator> queryResults = _commandExecutor.executeQuery();
+                MergedResult mergedResult = mergeQuery(queryResults);
+                result = new ShardingResultSet(statementExecutor.getResultSets(), mergedResult, this, executionContext);
+            } finally {
+                currentResultSet = null;
             }
-
-            if (executionContext.GetSqlStatementContext() is SelectCommandContext selectCommandContext || executionContext.GetSqlStatementContext().GetSqlCommand() is DALCommand)
-            {
-                List<DbDataReader> resultSets = GetDataReaders();
-                MergedResult mergedResult = mergeQuery(getQueryResults(resultSets));
-                currentResultSet = new ShardingDataReader(resultSets, mergedResult, this, executionContext);
-            }
-
-            return currentResultSet;
-        }
-
-        private List<DbDataReader> GetDataReaders()
-        {
-            // List<ResultSet> result = new ArrayList<>(statementExecutor.getStatements().size());
-            List<DbDataReader> result = new List<DbDataReader>();
-            //     for (Statement each : statementExecutor.getStatements()) {
-            //     result.add(each.getResultSet());
-            // }
-            //     foreach (var VARIABLE in COLLECTION)
-            //     {
-            //         
-            //     }
+            currentResultSet = result;
             return result;
         }
         
-        private List<IQueryEnumerator> GetQueryEnumerators(List<DbDataReader> dbDataReaders)
-        {
-            List<IQueryEnumerator> result = new List<IQueryEnumerator>(dbDataReaders.Count);
-        for (ResultSet each : resultSets) {
-            if (null != each) {
-                result.add(new StreamQueryResult(each));
-            }
-        }
-        foreach (var dataReader in dbDataReaders)
-        {
-            if (null != dataReader)
-            {
-                result.Add();
-            }
-        }
-    return result;
-}
+        private ExecutionContext Prepare(string sql) {
+            _commandExecutor.Clear();
+        ShardingRuntimeContext runtimeContext = connection.getRuntimeContext();
+        BasePrepareEngine prepareEngine = new SimpleQueryPrepareEngine(
+            runtimeContext.getRule().toRules(), runtimeContext.getProperties(), runtimeContext.getMetaData(), runtimeContext.getSqlParserEngine());
+        ExecutionContext result = prepareEngine.prepare(sql, Collections.emptyList());
+        statementExecutor.init(result);
+        statementExecutor.getStatements().forEach(this::replayMethodsInvocation);
+            return result;
+    }
+
     }
 }

@@ -63,7 +63,7 @@ namespace ShardingConnector.ShardingAdoNet.AdoNet.Core.DataReader
 
         public override object this[int ordinal] => _mergedEnumerator.GetValue(ordinal);
 
-        public override object this[string name] => throw new NotImplementedException();
+        public override object this[string name] => GetValueByName(name);
 
         private object GetValueByName(string name)
         {
