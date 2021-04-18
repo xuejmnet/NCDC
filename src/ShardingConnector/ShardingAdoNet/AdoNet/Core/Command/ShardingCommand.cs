@@ -5,8 +5,12 @@ using System.Data.Common;
 using ShardingConnector.Contexts;
 using ShardingConnector.Exceptions;
 using ShardingConnector.Executor;
+using ShardingConnector.Merge;
 using ShardingConnector.Parser.Binder.Command.DML;
 using ShardingConnector.Parser.Sql.Command.DAL.Dialect;
+using ShardingConnector.Pluggble.Merge;
+using ShardingConnector.Pluggble.Prepare;
+using ShardingConnector.ShardingAdoNet.AdoNet.Core.Context;
 using ShardingConnector.ShardingAdoNet.AdoNet.Core.DataReader;
 using ShardingConnector.ShardingAdoNet.Executor;
 
@@ -77,9 +81,9 @@ namespace ShardingConnector.ShardingAdoNet.AdoNet.Core.Command
             DbDataReader result;
             try {
                 executionContext = Prepare(CommandText);
-                List<IQueryEnumerator> queryResults = _commandExecutor.executeQuery();
-                MergedResult mergedResult = mergeQuery(queryResults);
-                result = new ShardingResultSet(statementExecutor.getResultSets(), mergedResult, this, executionContext);
+                List<IQueryEnumerator> queryResults = _commandExecutor.ExecuteQuery();
+                IMergedEnumerator mergedResult = MergeQuery(queryResults);
+                result = new ShardingDataReader(_commandExecutor.getResultSets(), mergedResult, this, executionContext);
             } finally {
                 currentResultSet = null;
             }
@@ -87,14 +91,20 @@ namespace ShardingConnector.ShardingAdoNet.AdoNet.Core.Command
             return result;
         }
         
+        private IMergedEnumerator MergeQuery(List<IQueryEnumerator> queryResults){
+            ShardingRuntimeContext runtimeContext = ((ShardingConnection)DbConnection).GetRuntimeContext();
+        MergeEngine mergeEngine = new MergeEngine(runtimeContext.GetRule().ToRules(), runtimeContext.GetProperties(), runtimeContext.GetDatabaseType(), runtimeContext.GetMetaData().Schema);
+            return mergeEngine.Merge(queryResults, executionContext.GetSqlStatementContext());
+    }
+        
         private ExecutionContext Prepare(string sql) {
-            _commandExecutor.Clear();
-        ShardingRuntimeContext runtimeContext = connection.getRuntimeContext();
+            // _commandExecutor.Clear();
+        ShardingRuntimeContext runtimeContext = ((ShardingConnection)DbConnection).GetRuntimeContext();
         BasePrepareEngine prepareEngine = new SimpleQueryPrepareEngine(
-            runtimeContext.getRule().toRules(), runtimeContext.getProperties(), runtimeContext.getMetaData(), runtimeContext.getSqlParserEngine());
-        ExecutionContext result = prepareEngine.prepare(sql, Collections.emptyList());
-        statementExecutor.init(result);
-        statementExecutor.getStatements().forEach(this::replayMethodsInvocation);
+            runtimeContext.GetRule().ToRules(), runtimeContext.GetProperties(), runtimeContext.GetMetaData(), runtimeContext.GetSqlParserEngine());
+        ExecutionContext result = prepareEngine.Prepare(sql, new List<object>());
+        // statementExecutor.init(result);
+        // statementExecutor.getStatements().forEach(this::replayMethodsInvocation);
             return result;
     }
 

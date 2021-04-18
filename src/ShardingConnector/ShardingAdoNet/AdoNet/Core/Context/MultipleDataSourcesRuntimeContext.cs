@@ -64,7 +64,7 @@ namespace ShardingConnector.ShardingAdoNet.AdoNet.Core.Context
 
         protected abstract SchemaMetaData LoadSchemaMetaData(IDictionary<string, DbProviderFactory> dataSourceMap);
 
-        protected override ShardingConnectorMetaData GetMetaData()
+        public override ShardingConnectorMetaData GetMetaData()
         {
             return _metaData;
         }

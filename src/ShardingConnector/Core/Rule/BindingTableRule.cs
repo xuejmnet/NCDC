@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
+using ShardingConnector.Exceptions;
+using ShardingConnector.Extensions;
 
 namespace ShardingConnector.Core.Rule
 {
@@ -44,35 +45,41 @@ namespace ShardingConnector.Core.Rule
      * @param otherActualTable other actual table name in same binding table rule
      * @return actual table name
      */
-    public String GetBindingActualTable(final String dataSource, final String logicTable, final String otherActualTable) {
+    public String GetBindingActualTable( String dataSource,  String logicTable,  String otherActualTable) {
         int index = -1;
-        for (TableRule each : tableRules) {
-            index = each.findActualTableIndex(dataSource, otherActualTable);
-            if (-1 != index) {
+        foreach (var tableRule in tableRules)
+        {
+            index = tableRule.FindActualTableIndex(dataSource, otherActualTable);
+            if (-1 != index)
+            {
                 break;
             }
         }
         if (-1 == index) {
-            throw new ShardingSphereConfigurationException("Actual table [%s].[%s] is not in table config", dataSource, otherActualTable);
+            throw new ShardingException($"Actual table [{dataSource}].[{otherActualTable}] is not in table config" );
         }
-        for (TableRule each : tableRules) {
-            if (each.getLogicTable().equals(logicTable.toLowerCase())) {
-                return each.getActualDataNodes().get(index).getTableName().toLowerCase();
+        foreach (var tableRule in tableRules)
+        {
+            if (tableRule.logicTable.Equals(logicTable.ToLower()))
+            {
+                return tableRule.actualDataNodes[index].GetTableName().ToLower();
             }
         }
-        throw new ShardingSphereConfigurationException("Cannot find binding actual table, data source: %s, logic table: %s, other actual table: %s", dataSource, logicTable, otherActualTable);
+        throw new ShardingException($"Cannot find binding actual table, data source: {dataSource}, logic table: {logicTable}, other actual table: {otherActualTable}");
     }
     
-    Collection<String> getAllLogicTables() {
-        return tableRules.stream().map(input -> input.getLogicTable().toLowerCase()).collect(Collectors.toList());
+   public ICollection<String> GetAllLogicTables()
+    {
+        return tableRules.Select(o => o.logicTable.ToLower()).ToList();
     }
     
-    Map<String, String> getLogicAndActualTables(final String dataSource, final String logicTable, final String actualTable, final Collection<String> availableLogicBindingTables) {
-        Map<String, String> result = new LinkedHashMap<>();
-        for (System.String each : availableLogicBindingTables) {
-            String availableLogicTable = each.toLowerCase();
-            if (!availableLogicTable.equalsIgnoreCase(logicTable) && hasLogicTable(availableLogicTable)) {
-                result.put(availableLogicTable, getBindingActualTable(dataSource, availableLogicTable, actualTable));
+   public IDictionary<String, String> GetLogicAndActualTables( String dataSource,  String logicTable,  String actualTable,  ICollection<String> availableLogicBindingTables) {
+       IDictionary<String, String> result = new Dictionary<string, string>();
+        foreach (var availableLogicBindingTable in availableLogicBindingTables)
+        {
+            String availableLogicTable = availableLogicBindingTable.ToLower();
+            if (!availableLogicTable.EqualsIgnoreCase(logicTable) && HasLogicTable(availableLogicTable)) {
+                result.Add(availableLogicTable, GetBindingActualTable(dataSource, availableLogicTable, actualTable));
             }
         }
         return result;

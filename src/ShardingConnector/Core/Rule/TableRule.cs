@@ -226,14 +226,14 @@ namespace ShardingConnector.Core.Rule
             return new List<string>(0);
         }
 
-        int FindActualTableIndex(string dataSourceName, string actualTableName)
+        public int FindActualTableIndex(string dataSourceName, string actualTableName)
         {
             if (dataNodeIndexMap.TryGetValue(new DataNode(dataSourceName, actualTableName), out var value))
                 return value;
             return -1;
         }
 
-        bool IsExisted(string actualTableName)
+        public bool IsExisted(string actualTableName)
         {
             return actualTables.Contains(actualTableName);
         }

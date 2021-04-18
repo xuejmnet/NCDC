@@ -44,7 +44,7 @@ namespace ShardingConnector.ShardingAdoNet.AdoNet.Core.Context
             // ConfigurationLogger.log(props);
         }
     
-        protected abstract ShardingConnectorMetaData GetMetaData();
+        public abstract ShardingConnectorMetaData GetMetaData();
     
         public T GetRule()
         {
