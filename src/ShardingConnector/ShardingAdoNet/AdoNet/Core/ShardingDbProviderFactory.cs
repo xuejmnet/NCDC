@@ -2,7 +2,10 @@
 using System.Collections.Generic;
 using System.Data.Common;
 using ShardingConnector.Common.Rule;
+using ShardingConnector.Core.Rule;
+using ShardingConnector.Exceptions;
 using ShardingConnector.Kernels.Route;
+using ShardingConnector.Merge.Engine;
 using ShardingConnector.Rewrite.Context;
 using ShardingConnector.ShardingAdoNet;
 using ShardingConnector.ShardingAdoNet.AdoNet.Adapter;
@@ -25,44 +28,51 @@ namespace ShardingConnector.ShardingAdoNet.AdoNet.Core
     /// </summary>
     public class ShardingDbProviderFactory : AbstractDbProviderFactory
     {
-        private ShardingRuntimeContext runtimeContext;
+        private readonly ShardingRuntimeContext _runtimeContext;
 
         static ShardingDbProviderFactory()
         {
             NewInstanceServiceLoader.Register(typeof(IRouteDecorator<>));
             NewInstanceServiceLoader.Register(typeof(ISqlRewriteContextDecorator<>));
-            // NewInstanceServiceLoader.Register<ResultProcessEngine>();
+            NewInstanceServiceLoader.Register(typeof(IResultProcessEngine<>));
         }
 
-        //     public ShardingDbProviderFactory(final Map<String, DataSource> dataSourceMap, final ShardingRule shardingRule, final Properties props) throws SQLException {
-        //         super(dataSourceMap);
-        //     ShardingDbProviderFactory(dataSourceMap);
-        //     runtimeContext = new ShardingDbProviderFactory(dataSourceMap, shardingRule, props, getDatabaseType());
-        // }
 
-//     private void checkDataSourceType(final Map<String, DataSource> dataSourceMap) {
-//     for (DataSource each : dataSourceMap.values()) {
-//     Preconditions.checkArgument(!(each instanceof MasterSlaveDataSource), "Initialized data sources can not be master-slave data sources.");
-//     }
-// }
-
-        public ShardingConnection GetConnection()
+        public override DbConnection CreateConnection()
         {
-            return new ShardingConnection(DataSourceMap, runtimeContext,
+            return new ShardingConnection(DataSourceMap, _runtimeContext,
                 TransactionTypeHolder.Get() ?? TransactionTypeEnum.LOCAL);
         }
 
-        public ShardingDbProviderFactory(IDictionary<string, DbProviderFactory> dataSourceMap) : base(dataSourceMap)
+        public ShardingDbProviderFactory(IDictionary<string, DbProviderFactory> dataSourceMap,
+            ShardingRule shardingRule, IDictionary<string, object> props) : base(dataSourceMap)
         {
+            CheckDataSourceType(dataSourceMap);
+            _runtimeContext = new ShardingRuntimeContext(dataSourceMap, shardingRule, props, GetDatabaseType());
         }
 
-        public ShardingDbProviderFactory(DbProviderFactory dataSource) : base(dataSource)
+        public ShardingDbProviderFactory(DbProviderFactory dataSource, ShardingRule shardingRule,
+            IDictionary<string, object> props) : base(dataSource)
         {
+            var dataSourceMap = new Dictionary<string, DbProviderFactory>() {{"unique", dataSource}};
+            CheckDataSourceType(dataSourceMap);
+            _runtimeContext = new ShardingRuntimeContext(dataSourceMap, shardingRule, props, GetDatabaseType());
+        }
+
+        private void CheckDataSourceType(IDictionary<String, DbProviderFactory> dataSourceMap)
+        {
+            foreach (var dataSource in dataSourceMap)
+            {
+                // if (dataSource is MasterSlaveDataSource)
+                // {
+                //     throw new ShardingException("Initialized data sources can not be master-slave data sources.");
+                // }
+            }
         }
 
         protected override IRuntimeContext<IBaseRule> GetRuntimeContext()
         {
-            throw new NotImplementedException();
+            return _runtimeContext;
         }
     }
 }

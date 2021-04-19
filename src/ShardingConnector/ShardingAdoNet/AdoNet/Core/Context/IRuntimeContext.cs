@@ -17,7 +17,7 @@ namespace ShardingConnector.ShardingAdoNet.AdoNet.Core.Context
     /// <summary>
     /// 
     /// </summary>
-    public interface IRuntimeContext<T>:IDisposable where T:IBaseRule
+    public interface IRuntimeContext<out T>:IDisposable where T:IBaseRule
     {
         
         /**

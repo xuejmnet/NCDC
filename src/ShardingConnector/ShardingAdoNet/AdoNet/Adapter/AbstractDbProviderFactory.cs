@@ -72,7 +72,10 @@ namespace ShardingConnector.ShardingAdoNet.AdoNet.Adapter
             }
         }
 
-
+        public IDatabaseType GetDatabaseType()
+        {
+            return _databaseType;
+        }
         protected abstract IRuntimeContext<IBaseRule> GetRuntimeContext();
     }
 }

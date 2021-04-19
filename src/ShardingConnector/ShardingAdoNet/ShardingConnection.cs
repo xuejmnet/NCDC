@@ -69,8 +69,10 @@ namespace ShardingConnector.ShardingAdoNet
         /// 是否在事务中
         /// </summary>
         /// <returns></returns>
-        public bool IsHoldTransaction() {
-            return (TransactionTypeEnum.LOCAL == _transactionType && !getAutoCommit()) || (TransactionTypeEnum.XA == _transactionType && isInShardingTransaction());
+        public bool IsHoldTransaction()
+        {
+            return false;
+            // return (TransactionTypeEnum.LOCAL == _transactionType && !getAutoCommit()) || (TransactionTypeEnum.XA == _transactionType && isInShardingTransaction());
         }
     }
 }

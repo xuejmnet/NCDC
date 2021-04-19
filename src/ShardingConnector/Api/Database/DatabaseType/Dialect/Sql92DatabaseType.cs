@@ -1,4 +1,9 @@
-﻿namespace ShardingConnector.Api.Database.DatabaseType.Dialect
+﻿using System.Collections.Generic;
+using ShardingConnector.Api.Database.MetaData.Dialect;
+using ShardingConnector.Spi.DataBase.DataBaseType;
+using ShardingConnector.Spi.DataBase.MetaData;
+
+namespace ShardingConnector.Api.Database.DatabaseType.Dialect
 {
     /*
     * @Author: xjm
@@ -10,8 +15,21 @@
     /// <summary>
     /// 
     /// </summary>
-    public interface Sql92DatabaseType
+    public class Sql92DatabaseType:IDatabaseType
     {
-        
+        public string GetName()
+        {
+            return "Sql92";
+        }
+
+        public ICollection<string> GetAdoNetUrlPrefixAlias()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public IDataSourceMetaData GetDataSourceMetaData(string url, string username)
+        {
+            return new Sql92DataSourceMetaData();
+        }
     }
 }

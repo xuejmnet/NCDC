@@ -104,8 +104,10 @@ namespace ShardingConnector.ShardingAdoNet.Executor
      * 
      * @return accumulate or not
      */
-    public  bool IsAccumulate() {
-        return !connection.GetRuntimeContext().GetRule().isAllBroadcastTables(SqlStatementContext.GetTablesContext().GetTableNames());
+    public  bool IsAccumulate()
+    {
+        return false;
+        // return !connection.GetRuntimeContext().GetRule().isAllBroadcastTables(SqlStatementContext.GetTablesContext().GetTableNames());
     }
     
     

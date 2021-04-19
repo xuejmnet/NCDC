@@ -36,7 +36,7 @@ namespace ShardingConnector.ShardingAdoNet.AdoNet.Core.Command
         {
             this.CommandText = commandText;
             this.DbConnection = connection;
-            _commandExecutor = new CommandExecutor();
+            _commandExecutor = new CommandExecutor(1,1,1,connection);
         }
 
         public override void Cancel()
@@ -83,7 +83,7 @@ namespace ShardingConnector.ShardingAdoNet.AdoNet.Core.Command
                 executionContext = Prepare(CommandText);
                 List<IQueryEnumerator> queryResults = _commandExecutor.ExecuteQuery();
                 IMergedEnumerator mergedResult = MergeQuery(queryResults);
-                result = new ShardingDataReader(_commandExecutor.getResultSets(), mergedResult, this, executionContext);
+                result = new ShardingDataReader(_commandExecutor.resultSets, mergedResult, this, executionContext);
             } finally {
                 currentResultSet = null;
             }

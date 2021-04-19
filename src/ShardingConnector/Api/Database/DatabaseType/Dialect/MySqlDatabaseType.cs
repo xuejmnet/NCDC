@@ -15,11 +15,11 @@ namespace ShardingConnector.Api.Database.DatabaseType.Dialect
     /// <summary>
     /// 
     /// </summary>
-    public class MySqlDataSourceMetaData:IDatabaseType
+    public class MySqlDatabaseType:IDatabaseType
     {
         public string GetName()
         {
-            throw new System.NotImplementedException();
+            return "MySql";
         }
 
         public ICollection<string> GetAdoNetUrlPrefixAlias()

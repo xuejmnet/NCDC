@@ -1,4 +1,6 @@
-﻿namespace ShardingConnector.Api.Database.MetaData.Dialect
+﻿using ShardingConnector.Spi.DataBase.MetaData;
+
+namespace ShardingConnector.Api.Database.MetaData.Dialect
 {
     /*
     * @Author: xjm
@@ -11,8 +13,26 @@
     /// <summary>
     /// 
     /// </summary>
-    public class Sql92DataSourceMetaData
+    public class Sql92DataSourceMetaData:IDataSourceMetaData
     {
-        
+        public string GetHostName()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public int GetPort()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public string GetCatalog()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public string GetSchema()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }
