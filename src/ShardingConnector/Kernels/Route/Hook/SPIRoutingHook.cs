@@ -14,34 +14,19 @@ namespace ShardingConnector.Kernels.Route.Hook
     */
     public sealed class SPIRoutingHook : IRoutingHook
     {
-        private readonly ICollection<IRoutingHook> routingHooks = NewInstanceServiceLoader.NewServiceInstances<IRoutingHook>();
-
-        static SPIRoutingHook()
-        {
-            NewInstanceServiceLoader.Register<IRoutingHook>();
-        }
         public void Start(string sql)
         {
-            foreach (var routingHook in routingHooks)
-            {
-                routingHook.Start(sql);
-            }
+            Console.WriteLine("Start");
         }
 
         public void FinishSuccess(RouteContext routeContext, SchemaMetaData schemaMetaData)
         {
-            foreach (var routingHook in routingHooks)
-            {
-                routingHook.FinishSuccess(routeContext, schemaMetaData);
-            }
+            Console.WriteLine("FinishSuccess");
         }
 
         public void FinishFailure(Exception cause)
         {
-            foreach (var routingHook in routingHooks)
-            {
-                routingHook.FinishFailure(cause);
-            }
+            Console.WriteLine("FinishFailure");
         }
     }
 }

@@ -28,7 +28,7 @@ namespace ShardingConnector.Kernels.Route
         private readonly IDictionary<IBaseRule, IRouteDecorator<IBaseRule>> _decorators =
             new Dictionary<IBaseRule, IRouteDecorator<IBaseRule>>();
 
-        private readonly IRoutingHook _routingHook = new SPIRoutingHook();
+        private readonly RoutingHookManager _routingHook = new RoutingHookManager();
 
         public DataNodeRouter(ShardingConnectorMetaData metaData, SqlParserEngine parserEngine, ConfigurationProperties properties)
         {

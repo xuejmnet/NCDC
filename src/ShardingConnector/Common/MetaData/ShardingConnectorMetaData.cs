@@ -21,7 +21,7 @@ namespace ShardingConnector.Common.MetaData
             Schema = schema;
         }
 
-        public  DataSourceMetas DataSources { get; }
+        public DataSourceMetas DataSources { get; }
 
         public SchemaMetaData Schema { get; }
     }

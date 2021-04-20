@@ -9,7 +9,23 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShardingConnector", "src\Sh
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{C37A1D9B-9BAA-435C-857B-0BB3E2C010B2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShardingConnector.AppConsoleTest", "test\ShardingConnector.AppConsoleTest\ShardingConnector.AppConsoleTest.csproj", "{0A0AB1E5-FF3A-455B-A2B9-E3BD843636A3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShardingConnector.AppConsoleTest", "test\ShardingConnector.AppConsoleTest\ShardingConnector.AppConsoleTest.csproj", "{0A0AB1E5-FF3A-455B-A2B9-E3BD843636A3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "antlr4", "antlr4", "{28CC1DDF-6535-418A-A081-1C72203EBDDD}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShardingConnector.SqlServerParser", "src\antlr4\ShardingConnector.SqlServerParser\ShardingConnector.SqlServerParser.csproj", "{81CCA66E-A081-4880-8421-BBED2E64ACDB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "adonet", "adonet", "{CF0C2C06-79E0-4949-AE50-DAA2A6C294BD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShardingConnector.AdoNet", "src\adonet\ShardingConnector.AdoNet\ShardingConnector.AdoNet.csproj", "{C507B218-3DC1-4CDC-B9FC-839CC2618D16}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "parser", "parser", "{AAC9AB4A-CE9D-4A68-92BC-09F1DDE898AA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShardingConnector.AbstractParser", "src\parser\ShardingConnector.AbstractParser\ShardingConnector.AbstractParser.csproj", "{D635C05C-0DE2-45D3-9E11-94410D513799}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShardingConnector.CommandParser", "src\parser\ShardingConnector.CommandParser\ShardingConnector.CommandParser.csproj", "{149F34EB-C266-433A-8730-DCC500FBF32E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShardingConnector.ParserEngine", "src\parser\ShardingConnector.ParserEngine\ShardingConnector.ParserEngine.csproj", "{937EF382-7D1D-411A-BD26-805A4E65DDF2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -25,6 +41,26 @@ Global
 		{0A0AB1E5-FF3A-455B-A2B9-E3BD843636A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0A0AB1E5-FF3A-455B-A2B9-E3BD843636A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0A0AB1E5-FF3A-455B-A2B9-E3BD843636A3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{81CCA66E-A081-4880-8421-BBED2E64ACDB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{81CCA66E-A081-4880-8421-BBED2E64ACDB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{81CCA66E-A081-4880-8421-BBED2E64ACDB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{81CCA66E-A081-4880-8421-BBED2E64ACDB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C507B218-3DC1-4CDC-B9FC-839CC2618D16}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C507B218-3DC1-4CDC-B9FC-839CC2618D16}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C507B218-3DC1-4CDC-B9FC-839CC2618D16}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C507B218-3DC1-4CDC-B9FC-839CC2618D16}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D635C05C-0DE2-45D3-9E11-94410D513799}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D635C05C-0DE2-45D3-9E11-94410D513799}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D635C05C-0DE2-45D3-9E11-94410D513799}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D635C05C-0DE2-45D3-9E11-94410D513799}.Release|Any CPU.Build.0 = Release|Any CPU
+		{149F34EB-C266-433A-8730-DCC500FBF32E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{149F34EB-C266-433A-8730-DCC500FBF32E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{149F34EB-C266-433A-8730-DCC500FBF32E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{149F34EB-C266-433A-8730-DCC500FBF32E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{937EF382-7D1D-411A-BD26-805A4E65DDF2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{937EF382-7D1D-411A-BD26-805A4E65DDF2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{937EF382-7D1D-411A-BD26-805A4E65DDF2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{937EF382-7D1D-411A-BD26-805A4E65DDF2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -32,6 +68,14 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{97DE1EEA-3582-4B5A-B978-484BCF975FEA} = {8D052C6C-F76F-420E-AE82-241352E5ABB4}
 		{0A0AB1E5-FF3A-455B-A2B9-E3BD843636A3} = {C37A1D9B-9BAA-435C-857B-0BB3E2C010B2}
+		{28CC1DDF-6535-418A-A081-1C72203EBDDD} = {8D052C6C-F76F-420E-AE82-241352E5ABB4}
+		{81CCA66E-A081-4880-8421-BBED2E64ACDB} = {28CC1DDF-6535-418A-A081-1C72203EBDDD}
+		{CF0C2C06-79E0-4949-AE50-DAA2A6C294BD} = {8D052C6C-F76F-420E-AE82-241352E5ABB4}
+		{C507B218-3DC1-4CDC-B9FC-839CC2618D16} = {CF0C2C06-79E0-4949-AE50-DAA2A6C294BD}
+		{AAC9AB4A-CE9D-4A68-92BC-09F1DDE898AA} = {8D052C6C-F76F-420E-AE82-241352E5ABB4}
+		{D635C05C-0DE2-45D3-9E11-94410D513799} = {AAC9AB4A-CE9D-4A68-92BC-09F1DDE898AA}
+		{149F34EB-C266-433A-8730-DCC500FBF32E} = {AAC9AB4A-CE9D-4A68-92BC-09F1DDE898AA}
+		{937EF382-7D1D-411A-BD26-805A4E65DDF2} = {AAC9AB4A-CE9D-4A68-92BC-09F1DDE898AA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FE6C7648-4D94-4A48-B67D-3161C6FE3BC0}

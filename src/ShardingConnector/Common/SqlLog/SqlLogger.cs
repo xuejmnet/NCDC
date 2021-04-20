@@ -61,6 +61,10 @@ namespace ShardingConnector.Common.Log
             }
         }
 
+        public static void Log(string msg)
+        {
+            _sqlLogger.Show?.Invoke(msg);
+        }
         public static void Error(string msg)
         {
             _sqlLogger.Show?.Invoke(msg);

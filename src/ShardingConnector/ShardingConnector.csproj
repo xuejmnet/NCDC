@@ -9,13 +9,9 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Folder Include="Abstractions\" />
       <Folder Include="Kernels\Merge\" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Compile Update="ShardingAdoNet\AdoNet\Core\Command\ShardingCommand.cs">
-        <SubType>Component</SubType>
-      </Compile>
+      <Folder Include="NewConnector\ShardingClient\" />
     </ItemGroup>
 
 </Project>

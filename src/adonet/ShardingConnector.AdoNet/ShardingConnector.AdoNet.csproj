@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\antlr4\ShardingConnector.SqlServerParser\ShardingConnector.SqlServerParser.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="AdoNet\Core\Command\ShardingCommand.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="AdoNet\Core\Connection\ShardingConnection.cs">
+      <SubType>Component</SubType>
+    </Compile>
+  </ItemGroup>
+
+</Project>

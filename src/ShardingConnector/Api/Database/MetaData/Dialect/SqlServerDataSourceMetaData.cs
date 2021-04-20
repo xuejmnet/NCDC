@@ -32,14 +32,14 @@ namespace ShardingConnector.Api.Database.MetaData.Dialect
         private readonly Regex _pattern = new Regex(SqlServer,RegexOptions.IgnoreCase);
     
         public SqlServerDataSourceMetaData(string url) {
-            var match = _pattern.Match(url);
-            if (!_pattern.IsMatch(url)) {
-                throw new ShardingException($"The URL: '{url}' is not recognized. Please refer to this pattern: '{SqlServer}'.");
-            }
-            _hostName = match.Groups[2].Value;
-            _port = string.IsNullOrEmpty(match.Groups[3].Value) ? DEFAULT_PORT : int.Parse(match.Groups[3].Value);
-            _catalog = match.Groups[5].Value;
-            _schema = null;
+            //var match = _pattern.Match(url);
+            //if (!_pattern.IsMatch(url)) {
+            //    throw new ShardingException($"The URL: '{url}' is not recognized. Please refer to this pattern: '{SqlServer}'.");
+            //}
+            //_hostName = match.Groups[2].Value;
+            //_port = string.IsNullOrEmpty(match.Groups[3].Value) ? DEFAULT_PORT : int.Parse(match.Groups[3].Value);
+            //_catalog = match.Groups[5].Value;
+            //_schema = null;
         }
         public string GetHostName()
         {
