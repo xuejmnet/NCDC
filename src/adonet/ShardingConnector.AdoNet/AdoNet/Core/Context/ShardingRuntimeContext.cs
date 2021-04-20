@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
-using ShardingConnector.Core.Rule;
-using ShardingConnector.Kernels.MetaData.Schema;
-using ShardingConnector.NewConnector.DataSource;
+﻿using ShardingConnector.NewConnector.DataSource;
+using ShardingConnector.ParserBinder.MetaData.Schema;
+using ShardingConnector.ShardingCommon.Core.Rule;
 using ShardingConnector.Spi.DataBase.DataBaseType;
+using System.Collections.Generic;
 
 namespace ShardingConnector.AdoNet.AdoNet.Core.Context
 {
@@ -17,7 +17,7 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Context
     /// <summary>
     /// 
     /// </summary>
-    public class ShardingRuntimeContext: ShardingConnector.AdoNet.AdoNet.Core.Context.MultipleDataSourcesRuntimeContext<ShardingRule>
+    public class ShardingRuntimeContext: MultipleDataSourcesRuntimeContext<ShardingRule>
     {
         // private readonly CachedDatabaseMetaData cachedDatabaseMetaData;
         //

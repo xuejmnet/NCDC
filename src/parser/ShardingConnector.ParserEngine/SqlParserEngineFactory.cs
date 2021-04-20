@@ -1,5 +1,4 @@
 ﻿using System.Collections.Concurrent;
-using ShardingConnector.Kernels.Parse;
 
 namespace ShardingConnector.ParserEngine
 {

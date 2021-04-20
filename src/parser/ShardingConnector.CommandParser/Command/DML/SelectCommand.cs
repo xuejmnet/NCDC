@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using ShardingConnector.CommandParser.Segment;
+using ShardingConnector.CommandParser.Segment.DML;
 using ShardingConnector.CommandParser.Segment.DML.Item;
 using ShardingConnector.CommandParser.Segment.DML.Order;
 using ShardingConnector.CommandParser.Segment.DML.Pagination.limit;

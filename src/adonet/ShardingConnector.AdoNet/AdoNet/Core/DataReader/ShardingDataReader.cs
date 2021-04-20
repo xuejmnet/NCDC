@@ -1,10 +1,10 @@
-﻿using System;
+﻿using ShardingConnector.AdoNet.AdoNet.Abstraction;
+using ShardingConnector.Merge.Reader;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data.Common;
-using ShardingConnector.AdoNet.AdoNet.Abstraction;
-using ShardingConnector.Contexts;
-using ShardingConnector.Merge;
+using ShardingConnector.Executor.Context;
 
 namespace ShardingConnector.AdoNet.AdoNet.Core.DataReader
 {

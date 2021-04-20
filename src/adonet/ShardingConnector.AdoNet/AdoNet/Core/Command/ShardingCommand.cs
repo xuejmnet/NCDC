@@ -1,16 +1,15 @@
-﻿using System;
+﻿using ShardingConnector.AdoNet.AdoNet.Core.Connection;
+using ShardingConnector.AdoNet.Executor;
+using ShardingConnector.Exceptions;
+using ShardingConnector.Executor;
+using ShardingConnector.Executor.Context;
+using ShardingConnector.Merge.Reader;
+using ShardingConnector.Pluggable.Merge;
+using ShardingConnector.Pluggable.Prepare;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
-using ShardingConnector.AdoNet.AdoNet.Core.Connection;
-using ShardingConnector.AdoNet.Executor;
-using ShardingConnector.Contexts;
-using ShardingConnector.Exceptions;
-using ShardingConnector.Executor;
-using ShardingConnector.Merge;
-using ShardingConnector.Pluggble.Merge;
-using ShardingConnector.Pluggble.Prepare;
-using ShardingConnector.ShardingAdoNet.AdoNet.Core.Context;
 using ShardingDataReader = ShardingConnector.AdoNet.AdoNet.Core.DataReader.ShardingDataReader;
 using ShardingRuntimeContext = ShardingConnector.AdoNet.AdoNet.Core.Context.ShardingRuntimeContext;
 

@@ -1,12 +1,11 @@
-﻿using System;
+﻿using ShardingConnector.Exceptions;
+using ShardingConnector.Extensions;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
-using ShardingConnector.Contexts;
-using ShardingConnector.Exceptions;
-using ShardingConnector.Extensions;
-using ShardingConnector.ShardingAdoNet.AdoNet.Adapter.Executor;
+using ShardingConnector.Executor.Context;
 
 namespace ShardingConnector.AdoNet.AdoNet.Abstraction
 {

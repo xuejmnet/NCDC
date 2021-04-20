@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\core\ShardingConnector.Route\ShardingConnector.Route.csproj" />
+    <ProjectReference Include="..\ShardingConnector.ShardingCommon\ShardingConnector.ShardingCommon.csproj" />
+  </ItemGroup>
+
+</Project>

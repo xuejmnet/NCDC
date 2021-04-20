@@ -1,5 +1,5 @@
-﻿using ShardingConnector.CommandParser.Segment.Generic;
-using ShardingConnector.CommandParser.Segment.Predicate.Value;
+﻿using ShardingConnector.CommandParser.Segment.DML.Predicate.Value;
+using ShardingConnector.CommandParser.Segment.Generic;
 using ShardingConnector.CommandParser.Value.Identifier;
 
 namespace ShardingConnector.CommandParser.Segment.DML.Column

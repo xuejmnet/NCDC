@@ -20,6 +20,10 @@ namespace ShardingConnector.CommandParser.Segment.Generic.Table
             this._tableName = new TableNameSegment(startIndex, stopIndex, identifierValue);
         }
 
+        public SimpleTableSegment(TableNameSegment tableName)
+        {
+            _tableName = tableName;
+        }
         public TableNameSegment GetTableName()
         {
             return _tableName;

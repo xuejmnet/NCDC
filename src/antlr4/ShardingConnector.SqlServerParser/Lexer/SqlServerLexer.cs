@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Antlr4.Runtime;
 using System.IO;
-using System.Text;
-using Antlr4.Runtime;
-using ShardingConnector.Abstractions.SqlParser.Lexer;
+using ShardingConnector.AbstractParser.Lexer;
 
 namespace ShardingConnector.SqlServerParser.Lexer
 {

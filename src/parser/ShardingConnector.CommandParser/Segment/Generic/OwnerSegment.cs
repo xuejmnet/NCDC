@@ -16,6 +16,14 @@ namespace ShardingConnector.CommandParser.Segment.Generic
         private readonly int _stopIndex;
 
         private readonly IdentifierValue _identifier;
+
+        public OwnerSegment(int startIndex, int stopIndex, IdentifierValue identifier)
+        {
+            _startIndex = startIndex;
+            _stopIndex = stopIndex;
+            _identifier = identifier;
+        }
+
         public int GetStartIndex()
         {
             return _startIndex;

@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
@@ -16,6 +16,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <ProjectReference Include="..\..\parser\ShardingConnector.AbstractParser\ShardingConnector.AbstractParser.csproj" />
+	  <ProjectReference Include="..\..\parser\ShardingConnector.CommandParser\ShardingConnector.CommandParser.csproj" />
 	  <ProjectReference Include="..\..\ShardingConnector\ShardingConnector.csproj" />
 	</ItemGroup>
 

@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Common;
-using Microsoft.Data.SqlClient;
-using ShardingConnector.Api.Config.Sharding;
+﻿using Microsoft.Data.SqlClient;
 using ShardingConnector.Api.Database.DatabaseType.Dialect;
-using ShardingConnector.Api.DataSource;
-using ShardingConnector.Api.DataSource.Dialect;
-using ShardingConnector.Core.Rule;
-using ShardingConnector.ShardingAdoNet;
-using ShardingConnector.ShardingAdoNet.AdoNet.Core.Context;
-using ShardingConnector.ShardingAdoNet.Api;
+using ShardingConnector.NewConnector.DataSource;
+using ShardingConnector.NewConnector.DataSource.Dialect;
 using ShardingConnector.Transaction;
+using System;
+using System.Collections.Generic;
+using ShardingConnector.AdoNet.AdoNet.Core.Connection;
+using ShardingConnector.AdoNet.AdoNet.Core.Context;
+using ShardingConnector.ShardingCommon.Core.Rule;
 
 namespace ShardingConnector.AppConsoleTest
 {

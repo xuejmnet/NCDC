@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\core\ShardingConnector.Common\ShardingConnector.Common.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Api\Hint\" />
+  </ItemGroup>
+
+</Project>
