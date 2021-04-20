@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Antlr4.Runtime;
 using ShardingConnector.AbstractParser;
 using ShardingConnector.CommandParser.Command.DML;
 using ShardingConnector.CommandParser.Predicate;
@@ -8,6 +9,7 @@ using ShardingConnector.CommandParser.Segment.DDL.Index;
 using ShardingConnector.CommandParser.Segment.DML.Column;
 using ShardingConnector.CommandParser.Segment.DML.Expr;
 using ShardingConnector.CommandParser.Segment.DML.Expr.Complex;
+using ShardingConnector.CommandParser.Segment.DML.Expr.Simple;
 using ShardingConnector.CommandParser.Segment.DML.Expr.SubQuery;
 using ShardingConnector.CommandParser.Segment.DML.Predicate.Value;
 using ShardingConnector.CommandParser.Segment.Generic;
@@ -295,6 +297,45 @@ namespace ShardingConnector.SqlServerParser.Visitor
                 Visit(context.predicate());
             }
             return new CommonExpressionSegment(context.Start.StartIndex, context.Stop.StopIndex, context.GetText());
+        }
+
+        public override IASTNode VisitBitExpr(SqlServerCommandParser.BitExprContext context)
+        {
+            if (null != context.simpleExpr())
+            {
+                return CreateExpressionSegment(Visit(context.simpleExpr()), context);
+            }
+            VisitRemainBitExpr(context);
+            return new CommonExpressionSegment(context.Start.StartIndex, context.Stop.StopIndex, context.GetText());
+        }
+        private IASTNode CreateExpressionSegment(IASTNode astNode, ParserRuleContext context)
+        {
+            if (astNode is StringLiteralValue stringLiteralValue) {
+                return new LiteralExpressionSegment(context.Start.StartIndex, context.Stop.StopIndex, stringLiteralValue.GetValue());
+            }
+            if (astNode is NumberLiteralValue numberLiteralValue) {
+                return new LiteralExpressionSegment(context.Start.StartIndex, context.Stop.StopIndex, numberLiteralValue.GetValue());
+            }
+            if (astNode is BooleanLiteralValue booleanLiteralValue) {
+                return new LiteralExpressionSegment(context.Start.StartIndex, context.Stop.StopIndex, booleanLiteralValue.GetValue());
+            }
+            if (astNode is ParameterMarkerValue parameterMarkerValue) {
+                return new ParameterMarkerExpressionSegment(context.Start.StartIndex, context.Stop.StopIndex, parameterMarkerValue.GetValue());
+            }
+            if (astNode is SubQuerySegment subQuerySegment) {
+                return new SubQueryExpressionSegment(subQuerySegment);
+            }
+            if (astNode is OtherLiteralValue otherLiteralValue) {
+                return new CommonExpressionSegment(context.Start.StartIndex, context.Stop.StopIndex, context.GetText());
+            }
+            return astNode;
+        }
+        private void VisitRemainBitExpr(SqlServerCommandParser.BitExprContext context)
+        {
+            foreach (var bitExpr in context.bitExpr())
+            {
+                Visit(bitExpr);
+            }
         }
     }
 }
