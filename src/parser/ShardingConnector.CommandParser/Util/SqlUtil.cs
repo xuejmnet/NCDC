@@ -1,4 +1,5 @@
-﻿using ShardingConnector.CommandParser.Constant;
+﻿using System;
+using ShardingConnector.CommandParser.Constant;
 
 namespace ShardingConnector.CommandParser.Util
 {
@@ -16,6 +17,17 @@ namespace ShardingConnector.CommandParser.Util
             
         }
 
+        public static decimal GetExactlyNumber(string value, int radix)
+        {
+            try
+            {
+                return Convert.ToInt64(value, radix);
+            }
+            catch (FormatException e)
+            {
+                return decimal.Parse(value);
+            }
+        }
 
         /// <summary>
         /// remove special char for SQL expression

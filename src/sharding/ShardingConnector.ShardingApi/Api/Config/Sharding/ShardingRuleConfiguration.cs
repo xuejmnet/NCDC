@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using ShardingConnector.Api.Config.Strategy;
 using ShardingConnector.Common.Config;
-using ShardingConnector.Encrypt.Api;
 using ShardingConnector.ShardingApi.Api.Config.MasterSlave;
 
 namespace ShardingConnector.ShardingApi.Api.Config.Sharding
@@ -33,6 +32,6 @@ namespace ShardingConnector.ShardingApi.Api.Config.Sharding
         public KeyGeneratorConfiguration DefaultKeyGeneratorConfig { get; set; }
 
 
-        public EncryptRuleConfiguration EncryptRuleConfig { get; set; }
+        // public EncryptRuleConfiguration EncryptRuleConfig { get; set; }
     }
 }

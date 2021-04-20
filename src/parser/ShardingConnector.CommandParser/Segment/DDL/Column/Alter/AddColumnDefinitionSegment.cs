@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using ShardingConnector.CommandParser.Segment.DDL.Column.Position;
 
 namespace ShardingConnector.CommandParser.Segment.DDL.Column.Alter
 {
@@ -13,31 +14,29 @@ namespace ShardingConnector.CommandParser.Segment.DDL.Column.Alter
     */
     public sealed class AddColumnDefinitionSegment: IAlterDefinitionSegment
     {
-        private readonly int startIndex;
+        private readonly int _startIndex;
 
-        private readonly int stopIndex;
+        private readonly int _stopIndex;
 
-        private readonly ICollection<ColumnDefinitionSegment> columnDefinitions;
-
-        private ColumnPositionSegment columnPosition;
-
-        /**
-         * Get column position.
-         * 
-         * @return column position
-         */
-        public Optional<ColumnPositionSegment> getColumnPosition()
+        public AddColumnDefinitionSegment(int startIndex, int stopIndex, ICollection<ColumnDefinitionSegment> columnDefinitions)
         {
-            return Optional.ofNullable(columnPosition);
+            this._startIndex = startIndex;
+            this._stopIndex = stopIndex;
+            ColumnDefinitions = columnDefinitions;
         }
+
+        public  ICollection<ColumnDefinitionSegment> ColumnDefinitions { get; }
+
+        public ColumnPositionSegment ColumnPosition { get; set; }
+
         public int GetStartIndex()
         {
-            throw new NotImplementedException();
+            return _startIndex;
         }
 
         public int GetStopIndex()
         {
-            throw new NotImplementedException();
+            return _stopIndex;
         }
     }
 }

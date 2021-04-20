@@ -18,6 +18,11 @@ namespace ShardingConnector.CommandParser.Constant
                    || nameof(AggregationTypeEnum.COUNT).Equals(aggregationType, StringComparison.OrdinalIgnoreCase)
                    || nameof(AggregationTypeEnum.AVG).Equals(aggregationType, StringComparison.OrdinalIgnoreCase);
         }
+
+        public static AggregationTypeEnum ValueOf(string aggregationType)
+        {
+            return (AggregationTypeEnum)Enum.Parse(typeof(AggregationTypeEnum),aggregationType);
+        }
     }
 
     public enum AggregationTypeEnum

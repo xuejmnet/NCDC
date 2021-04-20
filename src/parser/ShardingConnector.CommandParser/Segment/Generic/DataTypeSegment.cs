@@ -31,7 +31,7 @@ namespace ShardingConnector.CommandParser.Segment.Generic
             return dataLength;
         }
 
-        public void SetDataLegnth(DataTypeLengthSegment dataLength)
+        public void SetDataLength(DataTypeLengthSegment dataLength)
         {
             this.dataLength = dataLength;
         }
