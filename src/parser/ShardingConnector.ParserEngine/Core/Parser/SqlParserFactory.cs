@@ -20,28 +20,30 @@ namespace ShardingConnector.ParserEngine.Core.Parser
         {
             NewInstanceServiceLoader.Register<ISqlParserConfiguration>();
         }
+
         private SqlParserFactory()
         {
-
         }
+
         public static ISqlParser NewInstance(string dataSourceName, string sql)
         {
             var sqlParserConfigurations = NewInstanceServiceLoader.NewServiceInstances<ISqlParserConfiguration>();
 
             foreach (var configuration in sqlParserConfigurations)
             {
-                if(configuration.GetDataSourceName().Equals(dataSourceName))
+                if (configuration.GetDataSourceName().Equals(dataSourceName))
                     return CreateSqlParser(sql, configuration);
-}
+            }
+
             throw new NotSupportedException($"Cannot support database type '{dataSourceName}'");
         }
-    
+
         private static ISqlParser CreateSqlParser(string sql, ISqlParserConfiguration configuration)
         {
             var lexerType = configuration.GetLexerType();
-            Lexer lexer = (Lexer)lexerType.GetConstructor(new[] { typeof(ICharStream) })?.Invoke(new object[] { CharStreams.fromString(sql) });
+            Lexer lexer = (Lexer) lexerType.GetConstructor(new[] {typeof(ICharStream)})?.Invoke(new object[] {CharStreams.fromString(sql)});
             var parserType = configuration.GetParserType();
-            return (ISqlParser)parserType.GetConstructor(new[] { typeof(ITokenStream) })?.Invoke(new object[] { new CommonTokenStream(lexer) });
+            return (ISqlParser) parserType.GetConstructor(new[] {typeof(ITokenStream)})?.Invoke(new object[] {new CommonTokenStream(lexer)});
         }
     }
 }

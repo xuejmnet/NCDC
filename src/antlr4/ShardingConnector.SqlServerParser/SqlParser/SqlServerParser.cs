@@ -3,6 +3,7 @@ using System.IO;
 using Antlr4.Runtime;
 using ShardingConnector.AbstractParser;
 using ShardingConnector.AbstractParser.SqlParser;
+using ShardingConnector.ParserEngine.Core;
 
 namespace ShardingConnector.SqlServerParser.SqlParser
 {
@@ -25,7 +26,7 @@ namespace ShardingConnector.SqlServerParser.SqlParser
 
         public IASTNode Parse()
         {
-            throw new NotImplementedException();
+            return new ParseASTNode(execute());
         }
     }
 }

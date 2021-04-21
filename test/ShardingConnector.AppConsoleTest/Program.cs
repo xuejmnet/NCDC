@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using ShardingConnector.AdoNet.AdoNet.Core.Connection;
 using ShardingConnector.AdoNet.AdoNet.Core.Context;
 using ShardingConnector.ShardingCommon.Core.Rule;
+using ShardingConnector.SqlServerParser;
 
 namespace ShardingConnector.AppConsoleTest
 {
@@ -15,6 +16,7 @@ namespace ShardingConnector.AppConsoleTest
     {
         static void Main(string[] args)
         {
+            var type = typeof(SqlServerParserConfiguration);
             //var dbProviderFactory = ShardingCreateDbProviderFactory.CreateDataSource(dataSourceMap, new ShardingRuleConfiguration(),
             //    new Dictionary<string, object>());
             var dataSourceMap = new Dictionary<string, IDataSource>()
