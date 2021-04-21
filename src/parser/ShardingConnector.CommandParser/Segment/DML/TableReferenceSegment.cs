@@ -18,7 +18,7 @@ namespace ShardingConnector.CommandParser.Segment.DML
     
         private TableFactorSegment _tableFactor;
         
-        private readonly ICollection<JoinedTableSegment> _joinedTables = new LinkedList<JoinedTableSegment>();
+        public readonly ICollection<JoinedTableSegment> JoinedTables = new LinkedList<JoinedTableSegment>();
 
         
         public int GetStartIndex()
@@ -41,12 +41,12 @@ namespace ShardingConnector.CommandParser.Segment.DML
             this._stopIndex = stopIndex;
         }
 
-        public TableFactorSegment GetTableFactorSegment()
+        public TableFactorSegment GetTableFactor()
         {
             return _tableFactor;
         }
 
-        public void SetTableFactorSegment(TableFactorSegment tableFactor)
+        public void SetTableFactor(TableFactorSegment tableFactor)
         {
             this._tableFactor = tableFactor;
         }
@@ -60,8 +60,8 @@ namespace ShardingConnector.CommandParser.Segment.DML
                 tables.Add(simpleTable);
             }
 
-            if (_joinedTables.Any()) {
-                foreach (var joinedTable in _joinedTables)
+            if (JoinedTables.Any()) {
+                foreach (var joinedTable in JoinedTables)
                 {
                     var t = joinedTable.GetTable();
                     if (null != t)

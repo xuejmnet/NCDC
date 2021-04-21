@@ -17,10 +17,10 @@ namespace ShardingConnector.CommandParser.Segment.DML
         private int stopIndex;
     
         private ITableSegment table;
-    
-        private readonly ICollection<ColumnSegment> columns = new LinkedList<ColumnSegment>();
-    
-        private ICollection<TableReferenceSegment> tableReferences = new LinkedList<TableReferenceSegment>();
+
+        public readonly ICollection<ColumnSegment> Columns = new LinkedList<ColumnSegment>();
+
+        public readonly ICollection<TableReferenceSegment> TableReferences = new LinkedList<TableReferenceSegment>();
 
         public int GetStartIndex()
         {

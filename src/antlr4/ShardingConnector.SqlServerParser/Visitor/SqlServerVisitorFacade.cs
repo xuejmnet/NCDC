@@ -1,5 +1,6 @@
 using System;
 using ShardingConnector.AbstractParser.Visitor;
+using ShardingConnector.SqlServerParser.Visitor.Impl;
 
 namespace ShardingConnector.SqlServerParser.Visitor
 {
@@ -13,32 +14,32 @@ namespace ShardingConnector.SqlServerParser.Visitor
     {
         public Type GetDMLVisitorType()
         {
-            return typeof(sqlserverdml)
+            return typeof(SqlServerDMLVisitor);
         }
 
         public Type GetDDLVisitorType()
         {
-            throw new NotImplementedException();
+            return typeof(SqlServerDDLVisitor);
         }
 
         public Type GetTCLVisitorType()
         {
-            throw new NotImplementedException();
+            return typeof(SqlServerTCLVisitor);
         }
 
         public Type GetDCLVisitorType()
         {
-            throw new NotImplementedException();
+            return typeof(SqlServerDCLVisitor);
         }
 
         public Type GetDALVisitorType()
         {
-            throw new NotImplementedException();
+            return typeof(SqlServerDALVisitor);
         }
 
         public Type GetRLVisitorType()
         {
-            throw new NotImplementedException();
+            return null;
         }
     }
 }

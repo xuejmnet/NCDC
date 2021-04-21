@@ -46,6 +46,11 @@ namespace ShardingConnector.SqlServerParser.Visitor
             return new ParameterMarkerValue(currentParameterIndex++);
         }
 
+        public int GetCurrentParameterIndex()
+        {
+            return currentParameterIndex;
+        }
+
         public override IASTNode VisitLiterals(SqlServerCommandParser.LiteralsContext context)
         {
             if (null != context.stringLiterals())

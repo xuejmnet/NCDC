@@ -9,7 +9,7 @@ namespace ShardingConnector.CommandParser.Value
     * @Ver: 1.0
     * @Email: 326308290@qq.com
     */
-    public interface IValueASTNode<T>:IASTNode
+    public interface IValueASTNode<out T>:IASTNode
     {
         T GetValue();
     }

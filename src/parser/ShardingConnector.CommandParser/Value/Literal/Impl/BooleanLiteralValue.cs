@@ -15,6 +15,10 @@ namespace ShardingConnector.CommandParser.Value.Literal.Impl
     {
         private readonly bool _value;
 
+        public BooleanLiteralValue(bool value)
+        {
+            _value = value;
+        }
         public BooleanLiteralValue(string value)
         {
             _value = bool.Parse(value);

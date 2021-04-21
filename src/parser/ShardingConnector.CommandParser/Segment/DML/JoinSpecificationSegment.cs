@@ -19,7 +19,7 @@ namespace ShardingConnector.CommandParser.Segment.DML
     
         private PredicateSegment _predicateSegment;
     
-        private readonly ICollection<ColumnSegment> _usingColumns = new LinkedList<ColumnSegment>();
+        private  ICollection<ColumnSegment> usingColumns = new LinkedList<ColumnSegment>();
         
         public int GetStartIndex()
         {
@@ -51,9 +51,14 @@ namespace ShardingConnector.CommandParser.Segment.DML
             this._predicateSegment = predicate;
         }
 
-        public ICollection<ColumnSegment> GetUsingColumn()
+        public ICollection<ColumnSegment> GetUsingColumns()
         {
-            return this._usingColumns;
+            return this.usingColumns;
+        }
+
+        public void SetUsingColumns(ICollection<ColumnSegment> usingColumns)
+        {
+            this.usingColumns = usingColumns;
         }
     }
 }

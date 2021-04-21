@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using ShardingConnector.CommandParser.Segment.DML.Expr;
 
 namespace ShardingConnector.CommandParser.Segment.DML.Assignment
@@ -16,11 +17,11 @@ namespace ShardingConnector.CommandParser.Segment.DML.Assignment
         private readonly int _stopIndex;
         private readonly List<IExpressionSegment> _values;
 
-        public InsertValuesSegment(int startIndex, int stopIndex, List<IExpressionSegment> values)
+        public InsertValuesSegment(int startIndex, int stopIndex, ICollection<IExpressionSegment> values)
         {
             _startIndex = startIndex;
             _stopIndex = stopIndex;
-            _values = values;
+            _values = values.ToList();
         }
 
         public int GetStartIndex()

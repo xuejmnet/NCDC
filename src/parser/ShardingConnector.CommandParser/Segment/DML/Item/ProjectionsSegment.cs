@@ -19,11 +19,10 @@ namespace ShardingConnector.CommandParser.Segment.DML.Item
 
         private readonly ICollection<IProjectionSegment> _projections = new LinkedList<IProjectionSegment>();
 
-        public ProjectionsSegment(int startIndex, int stopIndex,bool distinctRow)
+        public ProjectionsSegment(int startIndex, int stopIndex)
         {
             _startIndex = startIndex;
             _stopIndex = stopIndex;
-            this.distinctRow = distinctRow;
         }
 
         public int GetStartIndex()

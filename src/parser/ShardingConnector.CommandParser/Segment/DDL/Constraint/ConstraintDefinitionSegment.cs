@@ -20,13 +20,12 @@ namespace ShardingConnector.CommandParser.Segment.DDL.Constraint
         private readonly int _stopIndex;
 
         public readonly ICollection<ColumnSegment> PrimaryKeyColumns = new LinkedList<ColumnSegment>();
-        public SimpleTableSegment ReferencedTable { get; }
+        public SimpleTableSegment ReferencedTable { get; set; }
 
-        public ConstraintDefinitionSegment(int startIndex, int stopIndex, SimpleTableSegment referencedTable)
+        public ConstraintDefinitionSegment(int startIndex, int stopIndex)
         {
             this._startIndex = startIndex;
             this._stopIndex = stopIndex;
-            ReferencedTable = referencedTable;
         }
 
         public int GetStartIndex()

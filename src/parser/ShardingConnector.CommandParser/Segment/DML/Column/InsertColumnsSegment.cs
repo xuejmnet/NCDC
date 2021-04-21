@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace ShardingConnector.CommandParser.Segment.DML.Column
 {
@@ -17,11 +18,11 @@ namespace ShardingConnector.CommandParser.Segment.DML.Column
 
         private readonly List<ColumnSegment> _columns;
 
-        public InsertColumnsSegment(int startIndex, int stopIndex, List<ColumnSegment> columns)
+        public InsertColumnsSegment(int startIndex, int stopIndex, ICollection<ColumnSegment> columns)
         {
             _startIndex = startIndex;
             _stopIndex = stopIndex;
-            _columns = columns;
+            _columns = columns.ToList();
         }
 
         public int GetStartIndex()
