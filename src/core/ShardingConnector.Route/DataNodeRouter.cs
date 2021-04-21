@@ -39,13 +39,13 @@ namespace ShardingConnector.Route
             _decorators.Add(rule, decorator);
         }
 
-        public RouteContext Route(string sql, List<object> parameters)
+        public RouteContext Route(string sql, List<object> parameters,bool useCache)
         {
             var routingHookManager = RoutingHookManager.GetInstance();
             routingHookManager.Start(sql);
             try
             {
-                RouteContext result = ExecuteRoute(sql, parameters);
+                RouteContext result = ExecuteRoute(sql, parameters,useCache);
                 routingHookManager.FinishSuccess(result, _metaData.Schema);
                 return result;
                 // CHECKSTYLE:OFF
@@ -59,9 +59,9 @@ namespace ShardingConnector.Route
 
         }
 
-        private RouteContext ExecuteRoute(string sql, List<object> parameters)
+        private RouteContext ExecuteRoute(string sql, List<object> parameters, bool useCache)
         {
-            var result = CreateRouteContext(sql, parameters);
+            var result = CreateRouteContext(sql, parameters, useCache);
             foreach (var decorator in _decorators)
             {
                 result = decorator.Value.Decorate(result, _metaData, decorator.Key, _properties);
@@ -69,9 +69,9 @@ namespace ShardingConnector.Route
             return result;
         }
 
-        private RouteContext CreateRouteContext(string sql, List<object> parameters)
+        private RouteContext CreateRouteContext(string sql, List<object> parameters, bool useCache)
         {
-            var sqlCommand = _parserEngine.Parse(sql);
+            var sqlCommand = _parserEngine.Parse(sql, useCache);
             try
             {
                 ISqlCommandContext<ISqlCommand> sqlCommandContext = SqlCommandContextFactory.NewInstance(_metaData.Schema, sql, parameters, sqlCommand);

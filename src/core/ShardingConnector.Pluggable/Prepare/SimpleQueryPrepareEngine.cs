@@ -40,7 +40,7 @@ namespace ShardingConnector.Pluggable.Prepare
 
         protected override RouteContext Route(DataNodeRouter router, string sql, List<object> parameters)
         {
-            return  router.Route(sql, new List<object>());
+            return  router.Route(sql, new List<object>(),false);
         }
     }
 }
