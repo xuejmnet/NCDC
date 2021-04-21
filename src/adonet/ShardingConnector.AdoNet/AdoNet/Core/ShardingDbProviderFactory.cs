@@ -1,18 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Common;
-using ShardingConnector.AdoNet.AdoNet.Core.Connection;
+﻿using ShardingConnector.AdoNet.AdoNet.Core.Connection;
 using ShardingConnector.AdoNet.AdoNet.Core.Context;
 using ShardingConnector.Common.Rule;
-using ShardingConnector.Core.Rule;
-using ShardingConnector.Kernels.Route;
 using ShardingConnector.Merge.Engine;
 using ShardingConnector.NewConnector.DataSource;
-using ShardingConnector.Rewrite.Context;
-using ShardingConnector.ShardingAdoNet;
-using ShardingConnector.ShardingAdoNet.AdoNet.Adapter;
+using ShardingConnector.RewriteEngine.Context;
+using ShardingConnector.Route;
+using ShardingConnector.ShardingCommon.Core.Rule;
 using ShardingConnector.Transaction;
 using ShardingConnector.Transaction.Core;
+using System;
+using System.Collections.Generic;
+using System.Data.Common;
 using AbstractDbProviderFactory = ShardingConnector.AdoNet.AdoNet.Abstraction.AbstractDbProviderFactory;
 
 namespace ShardingConnector.AdoNet.AdoNet.Core

@@ -1,4 +1,4 @@
-﻿namespace ShardingConnector.AbstractParser.Lexer
+﻿namespace ShardingConnector.AbstractParser.SqlLexer
 {
     /*
     * @Author: xjm

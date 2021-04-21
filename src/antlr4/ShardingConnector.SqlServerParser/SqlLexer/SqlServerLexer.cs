@@ -1,8 +1,8 @@
-﻿using Antlr4.Runtime;
-using System.IO;
-using ShardingConnector.AbstractParser.Lexer;
+﻿using System.IO;
+using Antlr4.Runtime;
+using ShardingConnector.AbstractParser.SqlLexer;
 
-namespace ShardingConnector.SqlServerParser.Lexer
+namespace ShardingConnector.SqlServerParser.SqlLexer
 {
     /*
     * @Author: xjm

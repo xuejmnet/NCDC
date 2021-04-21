@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Antlr4.Runtime;
 using ShardingConnector.AbstractParser;
-using ShardingConnector.AbstractParser.Parser;
+using ShardingConnector.AbstractParser.SqlParser;
 
 namespace ShardingConnector.ParserEngine.Core.Parser
 {

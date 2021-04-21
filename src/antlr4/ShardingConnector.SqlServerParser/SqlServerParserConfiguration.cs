@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using ShardingConnector.AbstractParser;
-using ShardingConnector.SqlServerParser.Lexer;
+using ShardingConnector.SqlServerParser.SqlLexer;
 using ShardingConnector.SqlServerParser.Visitor;
 
 namespace ShardingConnector.SqlServerParser
@@ -29,7 +29,7 @@ namespace ShardingConnector.SqlServerParser
 
         public Type GetParserType()
         {
-            return typeof(ShardingConnector.SqlServerParser.Parser.SqlServerParser);
+            return typeof(SqlParser.SqlServerParser);
         }
 
         public Type GetVisitorFacadeType()
