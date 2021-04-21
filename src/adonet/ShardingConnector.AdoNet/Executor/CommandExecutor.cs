@@ -1,20 +1,20 @@
+using ShardingConnector.AdoNet.AdoNet.Core.Connection;
+using ShardingConnector.Executor;
+using ShardingConnector.Executor.Constant;
+using ShardingConnector.ShardingExecute.Execute;
+using ShardingConnector.ShardingExecute.Execute.DataReader;
 using System;
 using System.Collections.Generic;
 using System.Data.Common;
-using ShardingConnector.AdoNet.AdoNet.Core.Connection;
-using ShardingConnector.Execute;
-using ShardingConnector.Execute.DataReader;
-using ShardingConnector.Executor;
-using ShardingConnector.Executor.Constant;
 
 namespace ShardingConnector.AdoNet.Executor
 {
-/*
-* @Author: xjm
-* @Description:
-* @Date: Friday, 16 April 2021 21:47:47
-* @Email: 326308290@qq.com
-*/
+    /*
+    * @Author: xjm
+    * @Description:
+    * @Date: Friday, 16 April 2021 21:47:47
+    * @Email: 326308290@qq.com
+    */
     public class CommandExecutor : AbstractCommandExecutor
     {
         public CommandExecutor(int resultSetType, int resultSetConcurrency, int resultSetHoldability, ShardingConnection shardingConnection) : base(resultSetType, resultSetConcurrency, resultSetHoldability, shardingConnection)

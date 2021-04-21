@@ -1,9 +1,9 @@
-﻿using System;
-using ShardingConnector.Common.Config.Properties;
+﻿using ShardingConnector.Common.Config.Properties;
 using ShardingConnector.Common.Rule;
 using ShardingConnector.Executor.Engine;
-using ShardingConnector.Kernels.Parse;
+using ShardingConnector.ParserEngine;
 using ShardingConnector.Spi.DataBase.DataBaseType;
+using System;
 
 namespace ShardingConnector.AdoNet.AdoNet.Core.Context
 {

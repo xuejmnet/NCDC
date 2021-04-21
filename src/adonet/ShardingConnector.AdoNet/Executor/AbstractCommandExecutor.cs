@@ -1,15 +1,15 @@
-﻿using System.Collections.Generic;
-using System.Data.Common;
-using System.Linq;
-using ShardingConnector.AdoNet.AdoNet.Core.Connection;
+﻿using ShardingConnector.AdoNet.AdoNet.Core.Connection;
 using ShardingConnector.AdoNet.AdoNet.Core.Context;
-using ShardingConnector.Execute;
+using ShardingConnector.CommandParser.Command;
 using ShardingConnector.Executor.Engine;
 using ShardingConnector.Extensions;
-using ShardingConnector.Parser.Binder.Command;
-using ShardingConnector.Parser.Sql.Command;
-using ShardingConnector.Prepare;
+using ShardingConnector.ParserBinder.Command;
+using ShardingConnector.ShardingExecute.Execute;
+using ShardingConnector.ShardingExecute.Prepare;
 using ShardingConnector.Spi.DataBase.DataBaseType;
+using System.Collections.Generic;
+using System.Data.Common;
+using System.Linq;
 
 namespace ShardingConnector.AdoNet.Executor
 {

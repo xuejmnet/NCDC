@@ -47,17 +47,17 @@ namespace ShardingConnector.ShardingExecute.Prepare
         private ICollection<InputGroup<CommandExecuteUnit>> GetSynchronizedExecuteUnitGroups(
             ICollection<ExecutionUnit> executionUnits, ISqlExecutePrepareCallback callback)
         {
-            IDictionary<string, List<SqlUnit>> sqlUnitGroups = GetSQLUnitGroups(executionUnits);
+            IDictionary<string, List<SqlUnit>> sqlUnitGroups = GetSqlUnitGroups(executionUnits);
             ICollection<InputGroup<CommandExecuteUnit>> result = new LinkedList<InputGroup<CommandExecuteUnit>>();
             foreach (var sqlUnitGroup in sqlUnitGroups)
             {
-                result.AddAll(GetSQLExecuteGroups(sqlUnitGroup.Key, sqlUnitGroup.Value, callback));
+                result.AddAll(GetSqlExecuteGroups(sqlUnitGroup.Key, sqlUnitGroup.Value, callback));
             }
 
             return result;
         }
 
-        private IDictionary<string, List<SqlUnit>> GetSQLUnitGroups(ICollection<ExecutionUnit> executionUnits)
+        private IDictionary<string, List<SqlUnit>> GetSqlUnitGroups(ICollection<ExecutionUnit> executionUnits)
         {
             IDictionary<string, List<SqlUnit>> result = new Dictionary<string, List<SqlUnit>>(executionUnits.Count);
             foreach (var executionUnit in executionUnits)
@@ -73,7 +73,7 @@ namespace ShardingConnector.ShardingExecute.Prepare
             return result;
         }
 
-        private List<InputGroup<CommandExecuteUnit>> GetSQLExecuteGroups(string dataSourceName, List<SqlUnit> sqlUnits,
+        private List<InputGroup<CommandExecuteUnit>> GetSqlExecuteGroups(string dataSourceName, List<SqlUnit> sqlUnits,
             ISqlExecutePrepareCallback callback)
         {
             ICollection<InputGroup<CommandExecuteUnit>> result = new LinkedList<InputGroup<CommandExecuteUnit>>();
@@ -93,13 +93,13 @@ namespace ShardingConnector.ShardingExecute.Prepare
             int count = 0;
             foreach (var item in sqlUnitPartitions)
             {
-                result.Add(GetSQLExecuteGroup(connectionMode, connections[count++], dataSourceName, item, callback));
+                result.Add(GetSqlExecuteGroup(connectionMode, connections[count++], dataSourceName, item, callback));
             }
 
             return result.ToList();
         }
 
-        private InputGroup<CommandExecuteUnit> GetSQLExecuteGroup(ConnectionModeEnum connectionMode,
+        private InputGroup<CommandExecuteUnit> GetSqlExecuteGroup(ConnectionModeEnum connectionMode,
             DbConnection connection,
             string dataSourceName, List<SqlUnit> sqlUnitGroup, ISqlExecutePrepareCallback callback)
         {

@@ -1,11 +1,11 @@
-﻿using System.Collections.Generic;
-using ShardingConnector.Api.Database.DatabaseType;
+﻿using ShardingConnector.Api.Database.DatabaseType;
 using ShardingConnector.Common.Config.Properties;
 using ShardingConnector.Common.MetaData;
 using ShardingConnector.Common.Rule;
 using ShardingConnector.Executor.Engine;
-using ShardingConnector.Kernels.Parse;
+using ShardingConnector.ParserEngine;
 using ShardingConnector.Spi.DataBase.DataBaseType;
+using System.Collections.Generic;
 
 namespace ShardingConnector.AdoNet.AdoNet.Core.Context
 {
@@ -20,7 +20,7 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Context
     /// <summary>
     /// 
     /// </summary>
-    public abstract class AbstractRuntimeContext<T>: ShardingConnector.AdoNet.AdoNet.Core.Context.IRuntimeContext<T> where T:IBaseRule
+    public abstract class AbstractRuntimeContext<T>: IRuntimeContext<T> where T:IBaseRule
     {
 
         private readonly T rule;
@@ -39,7 +39,7 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Context
             properties = new ConfigurationProperties();
             this.databaseType = databaseType;
             executorEngine = new ExecutorEngine();
-            sqlParserEngine = SqlParserEngineFactory.GetSQLParserEngine(DatabaseTypes.GetTrunkDatabaseTypeName(databaseType));
+            sqlParserEngine = SqlParserEngineFactory.GetSqlParserEngine(DatabaseTypes.GetTrunkDatabaseTypeName(databaseType));
             // ConfigurationLogger.log(rule.getRuleConfiguration());
             // ConfigurationLogger.log(props);
         }
