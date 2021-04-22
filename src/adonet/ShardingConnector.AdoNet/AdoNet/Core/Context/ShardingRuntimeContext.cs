@@ -3,6 +3,7 @@ using ShardingConnector.ParserBinder.MetaData.Schema;
 using ShardingConnector.ShardingCommon.Core.Rule;
 using ShardingConnector.Spi.DataBase.DataBaseType;
 using System.Collections.Generic;
+using ShardingConnector.ShardingCommon.Core.MetaData;
 
 namespace ShardingConnector.AdoNet.AdoNet.Core.Context
 {
@@ -38,7 +39,7 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Context
             //}
             int maxConnectionsSizePerQuery = 10;
             bool isCheckingMetaData = true;
-            //SchemaMetaData result = new ShardingMetaDataLoader(dataSourceMap, getRule(), maxConnectionsSizePerQuery, isCheckingMetaData).load(getDatabaseType());
+            SchemaMetaData result = new ShardingMetaDataLoader(dataSourceMap, getRule(), maxConnectionsSizePerQuery, isCheckingMetaData).load(getDatabaseType());
             //result = SchemaMetaDataDecorator.decorate(result, getRule(), new ShardingTableMetaDataDecorator());
             //if (!getRule().getEncryptRule().getEncryptTableNames().isEmpty())
             //{

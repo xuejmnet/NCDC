@@ -1,6 +1,17 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using ShardingConnector.Api.Config.Strategy;
 using ShardingConnector.Common.Config;
 using ShardingConnector.Common.Rule;
+using ShardingConnector.Exceptions;
+using ShardingConnector.Extensions;
+using ShardingConnector.ShardingApi.Api.Config.MasterSlave;
+using ShardingConnector.ShardingApi.Api.Config.Sharding;
+using ShardingConnector.ShardingApi.Spi.KeyGen;
+using ShardingConnector.ShardingCommon.Core.Strategy.Route;
+using ShardingConnector.ShardingCommon.Core.Strategy.Route.None;
+using ShardingConnector.ShardingCommon.Spi.Algorithm.KeyGen;
 
 namespace ShardingConnector.ShardingCommon.Core.Rule
 {
@@ -15,410 +26,469 @@ namespace ShardingConnector.ShardingCommon.Core.Rule
     /// <summary>
     /// 
     /// </summary>
-    public class ShardingRule:IBaseRule
+    public class ShardingRule : IBaseRule
     {
-    //     
-    // public  ShardingRuleConfiguration ruleConfiguration { get; }
-    //
-    // public  ShardingDataSourceNames shardingDataSourceNames { get; }
-    //
-    // public  ICollection<TableRule> tableRules { get; }
-    //
-    // public  ICollection<BindingTableRule> bindingTableRules { get; }
-    //
-    // public  ICollection<string> broadcastTables { get; }
-    //
-    // public  ShardingStrategy defaultDatabaseShardingStrategy { get; }
-    //
-    // public  ShardingStrategy defaultTableShardingStrategy { get; }
-    //
-    // public  ShardingKeyGenerator defaultShardingKeyGenerator { get; }
-    //
-    // public  ICollection<MasterSlaveRule> masterSlaveRules { get; }
-    //
-    // public  EncryptRule encryptRule { get; }
-    //
-    // public ShardingRule( ShardingRuleConfiguration shardingRuleConfig,  ICollection<string> dataSourceNames) {
-    //     Preconditions.checkArgument(null != shardingRuleConfig, "ShardingRuleConfig cannot be null.");
-    //     Preconditions.checkArgument(null != dataSourceNames && !dataSourceNames.isEmpty(), "Data sources cannot be empty.");
-    //     this.ruleConfiguration = shardingRuleConfig;
-    //     shardingDataSourceNames = new ShardingDataSourceNames(shardingRuleConfig, dataSourceNames);
-    //     tableRules = createTableRules(shardingRuleConfig);
-    //     broadcastTables = shardingRuleConfig.getBroadcastTables();
-    //     bindingTableRules = createBindingTableRules(shardingRuleConfig.getBindingTableGroups());
-    //     defaultDatabaseShardingStrategy = createDefaultShardingStrategy(shardingRuleConfig.getDefaultDatabaseShardingStrategyConfig());
-    //     defaultTableShardingStrategy = createDefaultShardingStrategy(shardingRuleConfig.getDefaultTableShardingStrategyConfig());
-    //     defaultShardingKeyGenerator = createDefaultKeyGenerator(shardingRuleConfig.getDefaultKeyGeneratorConfig());
-    //     masterSlaveRules = createMasterSlaveRules(shardingRuleConfig.getMasterSlaveRuleConfigs());
-    //     encryptRule = createEncryptRule(shardingRuleConfig.getEncryptRuleConfig());
-    // }
-    //
-    // private ICollection<TableRule> createTableRules( ShardingRuleConfiguration shardingRuleConfig) {
-    //     return shardingRuleConfig.getTableRuleConfigs().stream().map(each ->
-    //             new TableRule(each, shardingDataSourceNames, getDefaultGenerateKeyColumn(shardingRuleConfig))).collect(Collectors.toList());
-    // }
-    //
-    // private string getDefaultGenerateKeyColumn( ShardingRuleConfiguration shardingRuleConfig) {
-    //     return Optional.ofNullable(shardingRuleConfig.getDefaultKeyGeneratorConfig()).map(KeyGeneratorConfiguration::getColumn).orElse(null);
-    // }
-    //
-    // private ICollection<BindingTableRule> createBindingTableRules( ICollection<string> bindingTableGroups) {
-    //     return bindingTableGroups.stream().map(this::createBindingTableRule).collect(Collectors.toList());
-    // }
-    //
-    // private BindingTableRule createBindingTableRule( string bindingTableGroup) {
-    //     List<TableRule> tableRules = Splitter.on(",").trimResults().splitToList(bindingTableGroup).stream().map(this::getTableRule).collect(Collectors.toICollection(LinkedList::new));
-    //     return new BindingTableRule(tableRules);
-    // }
-    //
-    // private ShardingStrategy createDefaultShardingStrategy( ShardingStrategyConfiguration shardingStrategyConfiguration) {
-    //     return Optional.ofNullable(shardingStrategyConfiguration).map(ShardingStrategyFactory::newInstance).orElse(new NoneShardingStrategy());
-    // }
-    //
-    // private ShardingKeyGenerator createDefaultKeyGenerator( KeyGeneratorConfiguration keyGeneratorConfiguration) {
-    //     ShardingKeyGeneratorServiceLoader serviceLoader = new ShardingKeyGeneratorServiceLoader();
-    //     return containsKeyGeneratorConfiguration(keyGeneratorConfiguration)
-    //             ? serviceLoader.newService(keyGeneratorConfiguration.getType(), keyGeneratorConfiguration.getProperties()) : serviceLoader.newService();
-    // }
-    //
-    // private boolean containsKeyGeneratorConfiguration( KeyGeneratorConfiguration keyGeneratorConfiguration) {
-    //     return null != keyGeneratorConfiguration && !strings.isNullOrEmpty(keyGeneratorConfiguration.getType());
-    // }
-    //
-    // private ICollection<MasterSlaveRule> createMasterSlaveRules( ICollection<MasterSlaveRuleConfiguration> masterSlaveRuleConfigurations) {
-    //     return masterSlaveRuleConfigurations.stream().map(MasterSlaveRule::new).collect(Collectors.toList());
-    // }
-    //
-    // private EncryptRule createEncryptRule( EncryptRuleConfiguration encryptRuleConfig) {
-    //     return Optional.ofNullable(encryptRuleConfig).map(e -> new EncryptRule(ruleConfiguration.getEncryptRuleConfig())).orElse(new EncryptRule());
-    // }
-    //
-    // /**
-    //  * Find table rule.
-    //  *
-    //  * @param logicTableName logic table name
-    //  * @return table rule
-    //  */
-    // public Optional<TableRule> findTableRule( string logicTableName) {
-    //     return tableRules.stream().filter(each -> each.getLogicTable().equalsIgnoreCase(logicTableName)).findFirst();
-    // }
-    //
-    // /**
-    //  * Find table rule via actual table name.
-    //  *
-    //  * @param actualTableName actual table name
-    //  * @return table rule
-    //  */
-    // public Optional<TableRule> findTableRuleByActualTable( string actualTableName) {
-    //     return tableRules.stream().filter(each -> each.isExisted(actualTableName)).findFirst();
-    // }
-    //
-    // /**
-    //  * Get table rule.
-    //  *
-    //  * @param logicTableName logic table name
-    //  * @return table rule
-    //  */
-    // public TableRule getTableRule( string logicTableName) {
-    //     Optional<TableRule> tableRule = findTableRule(logicTableName);
-    //     if (tableRule.isPresent()) {
-    //         return tableRule.get();
-    //     }
-    //     if (isBroadcastTable(logicTableName)) {
-    //         return new TableRule(shardingDataSourceNames.getDataSourceNames(), logicTableName);
-    //     }
-    //     if (!strings.isNullOrEmpty(shardingDataSourceNames.getDefaultDataSourceName())) {
-    //         return new TableRule(shardingDataSourceNames.getDefaultDataSourceName(), logicTableName);
-    //     }
-    //     throw new ShardingSphereConfigurationException("Cannot find table rule and default data source with logic table: '%s'", logicTableName);
-    // }
-    //
-    // /**
-    //  * Get database sharding strategy.
-    //  *
-    //  * <p>
-    //  * Use default database sharding strategy if not found.
-    //  * </p>
-    //  *
-    //  * @param tableRule table rule
-    //  * @return database sharding strategy
-    //  */
-    // public ShardingStrategy getDatabaseShardingStrategy( TableRule tableRule) {
-    //     return null == tableRule.getDatabaseShardingStrategy() ? defaultDatabaseShardingStrategy : tableRule.getDatabaseShardingStrategy();
-    // }
-    //
-    // /**
-    //  * Get table sharding strategy.
-    //  *
-    //  * <p>
-    //  * Use default table sharding strategy if not found.
-    //  * </p>
-    //  *
-    //  * @param tableRule table rule
-    //  * @return table sharding strategy
-    //  */
-    // public ShardingStrategy getTableShardingStrategy( TableRule tableRule) {
-    //     return null == tableRule.getTableShardingStrategy() ? defaultTableShardingStrategy : tableRule.getTableShardingStrategy();
-    // }
-    //
-    // /**
-    //  * Judge logic tables is all belong to binding encryptors.
-    //  *
-    //  * @param logicTableNames logic table names
-    //  * @return logic tables is all belong to binding encryptors or not
-    //  */
-    // public boolean isAllBindingTables( ICollection<string> logicTableNames) {
-    //     if (logicTableNames.isEmpty()) {
-    //         return false;
-    //     }
-    //     Optional<BindingTableRule> bindingTableRule = findBindingTableRule(logicTableNames);
-    //     if (!bindingTableRule.isPresent()) {
-    //         return false;
-    //     }
-    //     ICollection<string> result = new TreeSet<>(string.CASE_INSENSITIVE_ORDER);
-    //     result.addAll(bindingTableRule.get().getAllLogicTables());
-    //     return !result.isEmpty() && result.containsAll(logicTableNames);
-    // }
-    //
-    // private Optional<BindingTableRule> findBindingTableRule( ICollection<string> logicTableNames) {
-    //     return logicTableNames.stream().map(this::findBindingTableRule).filter(Optional::isPresent).findFirst().orElse(Optional.empty());
-    // }
-    //
-    // /**
-    //  * Find binding table rule via logic table name.
-    //  *
-    //  * @param logicTableName logic table name
-    //  * @return binding table rule
-    //  */
-    // public Optional<BindingTableRule> findBindingTableRule( string logicTableName) {
-    //     return bindingTableRules.stream().filter(each -> each.hasLogicTable(logicTableName)).findFirst();
-    // }
-    //
-    // /**
-    //  * Judge logic tables is all belong to broadcast encryptors.
-    //  *
-    //  * @param logicTableNames logic table names
-    //  * @return logic tables is all belong to broadcast encryptors or not
-    //  */
-    // public boolean isAllBroadcastTables( ICollection<string> logicTableNames) {
-    //     if (logicTableNames.isEmpty()) {
-    //         return false;
-    //     }
-    //     for (string each : logicTableNames) {
-    //         if (!isBroadcastTable(each)) {
-    //             return false;
-    //         }
-    //     }
-    //     return true;
-    // }
-    //
-    // /**
-    //  * Judge logic table is belong to broadcast tables.
-    //  *
-    //  * @param logicTableName logic table name
-    //  * @return logic table is belong to broadcast tables or not
-    //  */
-    // public boolean isBroadcastTable( string logicTableName) {
-    //     return broadcastTables.stream().anyMatch(each -> each.equalsIgnoreCase(logicTableName));
-    // }
-    //
-    // /**
-    //  * Judge logic tables is all belong to default data source.
-    //  *
-    //  * @param logicTableNames logic table names
-    //  * @return logic tables is all belong to default data source
-    //  */
-    // public boolean isAllInDefaultDataSource( ICollection<string> logicTableNames) {
-    //     if (!hasDefaultDataSourceName()) {
-    //         return false;
-    //     }
-    //     for (string each : logicTableNames) {
-    //         if (findTableRule(each).isPresent() || isBroadcastTable(each)) {
-    //             return false;
-    //         }
-    //     }
-    //     return !logicTableNames.isEmpty();
-    // }
-    //
-    // /**
-    //  * Judge if there is at least one table rule for logic tables.
-    //  *
-    //  * @param logicTableNames logic table names
-    //  * @return whether a table rule exists for logic tables
-    //  */
-    // public boolean tableRuleExists( ICollection<string> logicTableNames) {
-    //     return logicTableNames.stream().anyMatch(each -> findTableRule(each).isPresent() || isBroadcastTable(each));
-    // }
-    //
-    // /**
-    //  * Judge is sharding column or not.
-    //  *
-    //  * @param columnName column name
-    //  * @param tableName table name
-    //  * @return is sharding column or not
-    //  */
-    // public boolean isShardingColumn( string columnName,  string tableName) {
-    //     return tableRules.stream().anyMatch(each -> each.getLogicTable().equalsIgnoreCase(tableName) && isShardingColumn(each, columnName));
-    // }
-    //
-    // private boolean isShardingColumn( TableRule tableRule,  string columnName) {
-    //     return getDatabaseShardingStrategy(tableRule).getShardingColumns().contains(columnName) || getTableShardingStrategy(tableRule).getShardingColumns().contains(columnName);
-    // }
-    //
-    // /**
-    //  * Find column name of generated key.
-    //  *
-    //  * @param logicTableName logic table name
-    //  * @return column name of generated key
-    //  */
-    // public Optional<string> findGenerateKeyColumnName( string logicTableName) {
-    //     return tableRules.stream().filter(each -> each.getLogicTable().equalsIgnoreCase(logicTableName) && each.getGenerateKeyColumn().isPresent())
-    //             .map(TableRule::getGenerateKeyColumn).findFirst().orElse(Optional.empty());
-    // }
-    //
-    // /**
-    //  * Generate key.
-    //  *
-    //  * @param logicTableName logic table name
-    //  * @return generated key
-    //  */
-    // public Comparable<?> generateKey( string logicTableName) {
-    //     Optional<TableRule> tableRule = findTableRule(logicTableName);
-    //     if (!tableRule.isPresent()) {
-    //         throw new ShardingSphereConfigurationException("Cannot find strategy for generate keys.");
-    //     }
-    //     return Optional.ofNullable(tableRule.get().getShardingKeyGenerator()).orElse(defaultShardingKeyGenerator).generateKey();
-    // }
-    //
-    // /**
-    //  * Get logic table names based on actual table name.
-    //  *
-    //  * @param actualTableName actual table name
-    //  * @return logic table name
-    //  */
-    // public ICollection<string> getLogicTableNames( string actualTableName) {
-    //     return tableRules.stream().filter(each -> each.isExisted(actualTableName)).map(TableRule::getLogicTable).collect(Collectors.toICollection(LinkedList::new));
-    // }
-    //
-    // /**
-    //  * Find data node by logic table name.
-    //  *
-    //  * @param logicTableName logic table name
-    //  * @return data node
-    //  */
-    // public DataNode getDataNode( string logicTableName) {
-    //     TableRule tableRule = getTableRule(logicTableName);
-    //     return tableRule.getActualDataNodes().get(0);
-    // }
-    //
-    // /**
-    //  * Find data node by data source and logic table.
-    //  *
-    //  * @param dataSourceName data source name
-    //  * @param logicTableName logic table name
-    //  * @return data node
-    //  */
-    // public DataNode getDataNode( string dataSourceName,  string logicTableName) {
-    //     TableRule tableRule = getTableRule(logicTableName);
-    //     return tableRule.getActualDataNodes().stream().filter(each -> shardingDataSourceNames.getDataSourceNames().contains(each.getDataSourceName())
-    //             && each.getDataSourceName().equals(dataSourceName)).findFirst()
-    //             .orElseThrow(() -> new ShardingSphereConfigurationException("Cannot find actual data node for data source name: '%s' and logic table name: '%s'", dataSourceName, logicTableName));
-    // }
-    //
-    // /**
-    //  * Judge if default data source mame exists.
-    //  *
-    //  * @return if default data source name exists
-    //  */
-    // public boolean hasDefaultDataSourceName() {
-    //     string defaultDataSourceName = shardingDataSourceNames.getDefaultDataSourceName();
-    //     return !strings.isNullOrEmpty(defaultDataSourceName);
-    // }
-    //
-    // /**
-    //  * Find actual default data source name.
-    //  *
-    //  * <p>If use master-slave rule, return master data source name.</p>
-    //  *
-    //  * @return actual default data source name
-    //  */
-    // public Optional<string> findActualDefaultDataSourceName() {
-    //     string defaultDataSourceName = shardingDataSourceNames.getDefaultDataSourceName();
-    //     if (strings.isNullOrEmpty(defaultDataSourceName)) {
-    //         return Optional.empty();
-    //     }
-    //     Optional<string> masterDefaultDataSourceName = findMasterDataSourceName(defaultDataSourceName);
-    //     return masterDefaultDataSourceName.isPresent() ? masterDefaultDataSourceName : Optional.of(defaultDataSourceName);
-    // }
-    //
-    // private Optional<string> findMasterDataSourceName( string masterSlaveRuleName) {
-    //     return masterSlaveRules.stream().filter(each -> each.getName().equalsIgnoreCase(masterSlaveRuleName)).map(e -> Optional.of(e.getMasterDataSourceName())).findFirst().orElse(Optional.empty());
-    // }
-    //
-    // /**
-    //  * Find master slave rule.
-    //  *
-    //  * @param dataSourceName data source name
-    //  * @return master slave rule
-    //  */
-    // public Optional<MasterSlaveRule> findMasterSlaveRule( string dataSourceName) {
-    //     return masterSlaveRules.stream().filter(each -> each.containDataSourceName(dataSourceName)).findFirst();
-    // }
-    //
-    // /**
-    //  * Get sharding logic table names.
-    //  *
-    //  * @param logicTableNames logic table names
-    //  * @return sharding logic table names
-    //  */
-    // public ICollection<string> getShardingLogicTableNames( ICollection<string> logicTableNames) {
-    //     return logicTableNames.stream().filter(each -> findTableRule(each).isPresent()).collect(Collectors.toICollection(LinkedList::new));
-    // }
-    //
-    // /**
-    //  * Get logic and actual binding tables.
-    //  * 
-    //  * @param dataSourceName data source name
-    //  * @param logicTable logic table name
-    //  * @param actualTable actual table name
-    //  * @param availableLogicBindingTables available logic binding table names
-    //  * @return logic and actual binding tables
-    //  */
-    // public Map<string, string> getLogicAndActualTablesFromBindingTable( string dataSourceName, 
-    //                                                                     string logicTable,  string actualTable,  ICollection<string> availableLogicBindingTables) {
-    //     Map<string, string> result = new LinkedHashMap<>();
-    //     findBindingTableRule(logicTable).ifPresent(
-    //         bindingTableRule -> result.putAll(bindingTableRule.getLogicAndActualTables(dataSourceName, logicTable, actualTable, availableLogicBindingTables)));
-    //     return result;
-    // }
-    //
-    // /**
-    //  * To rules.
-    //  * 
-    //  * @return rules
-    //  */
-    // public ICollection<BaseRule> toRules() {
-    //     ICollection<BaseRule> result = new LinkedList<>();
-    //     result.add(this);
-    //     if (!encryptRule.getEncryptTableNames().isEmpty()) {
-    //         result.add(encryptRule);
-    //     }
-    //     result.addAll(masterSlaveRules);
-    //     return result;
-    // }
-    public IRuleConfiguration GetRuleConfiguration()
-    {
-        throw new System.NotImplementedException();
-    }
-    
-    public ICollection<IBaseRule> ToRules() {
-        ICollection<IBaseRule> result = new LinkedList<IBaseRule>();
-        result.Add(this);
-        // if (!encryptRule.getEncryptTableNames().isEmpty()) {
-        //     result.add(encryptRule);
+
+        public ShardingRuleConfiguration ruleConfiguration { get; }
+
+        public ShardingDataSourceNames shardingDataSourceNames { get; }
+
+        public ICollection<TableRule> tableRules { get; }
+
+        public ICollection<BindingTableRule> bindingTableRules { get; }
+
+        public ICollection<string> broadcastTables { get; }
+
+        public IShardingStrategy defaultDatabaseShardingStrategy { get; }
+
+        public IShardingStrategy defaultTableShardingStrategy { get; }
+
+        public IShardingKeyGenerator defaultShardingKeyGenerator { get; }
+
+        public ICollection<MasterSlaveRule> masterSlaveRules { get; }
+
+
+        public ShardingRule(ShardingRuleConfiguration shardingRuleConfig, ICollection<string> dataSourceNames)
+        {
+            if (shardingRuleConfig == null)
+                throw new ArgumentNullException(nameof(shardingRuleConfig));
+            if (dataSourceNames == null || dataSourceNames.IsEmpty())
+                throw new ArgumentNullException("data sources cannot be empty.");
+            this.ruleConfiguration = shardingRuleConfig;
+            shardingDataSourceNames = new ShardingDataSourceNames(shardingRuleConfig, dataSourceNames);
+            tableRules = CreateTableRules(shardingRuleConfig);
+            broadcastTables = shardingRuleConfig.BroadcastTables;
+            bindingTableRules = CreateBindingTableRules(shardingRuleConfig.BindingTableGroups);
+            defaultDatabaseShardingStrategy = CreateDefaultShardingStrategy(shardingRuleConfig.DefaultDatabaseShardingStrategyConfig);
+            defaultTableShardingStrategy = CreateDefaultShardingStrategy(shardingRuleConfig.DefaultTableShardingStrategyConfig);
+            defaultShardingKeyGenerator = CreateDefaultKeyGenerator(shardingRuleConfig.DefaultKeyGeneratorConfig);
+            masterSlaveRules = CreateMasterSlaveRules(shardingRuleConfig.MasterSlaveRuleConfigs);
+        }
+
+        private ICollection<TableRule> CreateTableRules(ShardingRuleConfiguration shardingRuleConfig)
+        {
+            return shardingRuleConfig.TableRuleConfigs.Select(o =>
+                new TableRule(o, shardingDataSourceNames, GetDefaultGenerateKeyColumn(shardingRuleConfig))).ToList();
+        }
+
+        private string GetDefaultGenerateKeyColumn(ShardingRuleConfiguration shardingRuleConfig)
+        {
+            return shardingRuleConfig.DefaultKeyGeneratorConfig?.Column;
+        }
+
+        private ICollection<BindingTableRule> CreateBindingTableRules(ICollection<string> bindingTableGroups)
+        {
+            return bindingTableGroups.Select(o => CreateBindingTableRule(o)).ToList();
+        }
+
+        private BindingTableRule CreateBindingTableRule(string bindingTableGroup)
+        {
+            var rules = bindingTableGroup.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(GetTableRule)
+                .ToList();
+            return new BindingTableRule(rules);
+        }
+
+        /**
+         * Get table rule.
+         *
+         * @param logicTableName logic table name
+         * @return table rule
+         */
+        public TableRule GetTableRule(string logicTableName)
+        {
+            var tableRule = FindTableRule(logicTableName);
+            if (tableRule != null)
+            {
+                return tableRule;
+            }
+            if (IsBroadcastTable(logicTableName))
+            {
+                return new TableRule(shardingDataSourceNames.DataSourceNames, logicTableName);
+            }
+            if (!string.IsNullOrEmpty(shardingDataSourceNames.GetDefaultDataSourceName()))
+            {
+                return new TableRule(shardingDataSourceNames.GetDefaultDataSourceName(), logicTableName);
+            }
+            throw new ShardingException($"Cannot find table rule and default data source with logic table: '{logicTableName}'");
+        }
+
+        /**
+         * Find table rule.
+         *
+         * @param logicTableName logic table name
+         * @return table rule
+         */
+        public TableRule FindTableRule(string logicTableName)
+        {
+            return tableRules.FirstOrDefault(o => o.LogicTable.EqualsIgnoreCase(logicTableName));
+        }
+
+        /**
+         * Judge logic table is belong to broadcast tables.
+         *
+         * @param logicTableName logic table name
+         * @return logic table is belong to broadcast tables or not
+         */
+        public bool IsBroadcastTable(string logicTableName)
+        {
+            return broadcastTables.Any(o => o.EqualsIgnoreCase(logicTableName));
+        }
+
+        private IShardingStrategy CreateDefaultShardingStrategy(IShardingStrategyConfiguration shardingStrategyConfiguration)
+        {
+            if (shardingStrategyConfiguration != null)
+            {
+                return ShardingStrategyFactory.NewInstance(shardingStrategyConfiguration) ?? new NoneShardingStrategy();
+            }
+            return new NoneShardingStrategy();
+        }
+
+        private IShardingKeyGenerator CreateDefaultKeyGenerator(KeyGeneratorConfiguration keyGeneratorConfiguration)
+        {
+            ShardingKeyGeneratorServiceLoader serviceLoader = new ShardingKeyGeneratorServiceLoader();
+            return ContainsKeyGeneratorConfiguration(keyGeneratorConfiguration)
+                    ? serviceLoader.NewService(keyGeneratorConfiguration.Type, keyGeneratorConfiguration.Properties) : serviceLoader.NewService();
+        }
+
+        private bool ContainsKeyGeneratorConfiguration(KeyGeneratorConfiguration keyGeneratorConfiguration)
+        {
+            return null != keyGeneratorConfiguration && !string.IsNullOrEmpty(keyGeneratorConfiguration.Type);
+        }
+
+        private ICollection<MasterSlaveRule> CreateMasterSlaveRules(ICollection<MasterSlaveRuleConfiguration> masterSlaveRuleConfigurations)
+        {
+            return masterSlaveRuleConfigurations.Select(o => new MasterSlaveRule(o)).ToList();
+        }
+
+
+        /**
+         * Find table rule via actual table name.
+         *
+         * @param actualTableName actual table name
+         * @return table rule
+         */
+        public TableRule FindTableRuleByActualTable(string actualTableName)
+        {
+            return tableRules.Where(o => o.IsExisted(actualTableName)).FirstOrDefault();
+        }
+
+        /**
+         * Get database sharding strategy.
+         *
+         * <p>
+         * Use default database sharding strategy if not found.
+         * </p>
+         *
+         * @param tableRule table rule
+         * @return database sharding strategy
+         */
+        public IShardingStrategy GetDatabaseShardingStrategy(TableRule tableRule)
+        {
+            return tableRule.DatabaseShardingStrategy ?? defaultDatabaseShardingStrategy;
+        }
+
+        /**
+         * Get table sharding strategy.
+         *
+         * <p>
+         * Use default table sharding strategy if not found.
+         * </p>
+         *
+         * @param tableRule table rule
+         * @return table sharding strategy
+         */
+        public IShardingStrategy GetTableShardingStrategy(TableRule tableRule)
+        {
+            return tableRule.TableShardingStrategy ?? defaultTableShardingStrategy;
+        }
+
+        /**
+         * Judge logic tables is all belong to binding encryptors.
+         *
+         * @param logicTableNames logic table names
+         * @return logic tables is all belong to binding encryptors or not
+         */
+        public bool IsAllBindingTables(ICollection<string> logicTableNames)
+        {
+            if (logicTableNames.IsEmpty())
+            {
+                return false;
+            }
+            var bindingTableRule = FindBindingTableRule(logicTableNames);
+            if (bindingTableRule==null)
+            {
+                return false;
+            }
+            ICollection<string> result = new SortedSet<string>(StringComparer.OrdinalIgnoreCase);
+            result.AddAll(bindingTableRule.GetAllLogicTables());
+            return !result.IsEmpty() && logicTableNames.All(o=>result.Contains(o));
+        }
+
+        private BindingTableRule FindBindingTableRule(ICollection<string> logicTableNames)
+        {
+            return logicTableNames.Select(FindBindingTableRule).Where(o => null != o).FirstOrDefault();
+        }
+
+        /**
+         * Find binding table rule via logic table name.
+         *
+         * @param logicTableName logic table name
+         * @return binding table rule
+         */
+        public BindingTableRule FindBindingTableRule(string logicTableName)
+        {
+            return bindingTableRules.Where(o => o.HasLogicTable(logicTableName)).FirstOrDefault();
+        }
+
+        /**
+         * Judge logic tables is all belong to broadcast encryptors.
+         *
+         * @param logicTableNames logic table names
+         * @return logic tables is all belong to broadcast encryptors or not
+         */
+        public bool IsAllBroadcastTables(ICollection<string> logicTableNames)
+        {
+            if (logicTableNames.IsEmpty())
+            {
+                return false;
+            }
+            foreach (var logicTableName in logicTableNames)
+            {
+                if (!IsBroadcastTable(logicTableName))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        /**
+         * Judge logic tables is all belong to default data source.
+         *
+         * @param logicTableNames logic table names
+         * @return logic tables is all belong to default data source
+         */
+        public bool IsAllInDefaultDataSource(ICollection<string> logicTableNames)
+        {
+            if (!HasDefaultDataSourceName())
+            {
+                return false;
+            }
+            foreach (var logicTableName in logicTableNames)
+            {
+                if (FindTableRule(logicTableName)!=null || IsBroadcastTable(logicTableName))
+                {
+                    return false;
+                }
+            }
+            return !logicTableNames.IsEmpty();
+        }
+
+        /**
+         * Judge if there is at least one table rule for logic tables.
+         *
+         * @param logicTableNames logic table names
+         * @return whether a table rule exists for logic tables
+         */
+        public bool TableRuleExists(ICollection<string> logicTableNames)
+        {
+            return logicTableNames.Any(o => FindTableRule(o) != null || IsBroadcastTable(o));
+        }
+
+        /**
+         * Judge is sharding column or not.
+         *
+         * @param columnName column name
+         * @param tableName table name
+         * @return is sharding column or not
+         */
+        public bool IsShardingColumn(string columnName, string tableName)
+        {
+            return tableRules.Any(o => o.LogicTable.EqualsIgnoreCase(tableName) && IsShardingColumn(o, columnName));
+        }
+
+        private bool IsShardingColumn(TableRule tableRule, string columnName)
+        {
+            return GetDatabaseShardingStrategy(tableRule).GetShardingColumns().Contains(columnName) || GetTableShardingStrategy(tableRule).GetShardingColumns().Contains(columnName);
+        }
+
+        /**
+         * Find column name of generated key.
+         *
+         * @param logicTableName logic table name
+         * @return column name of generated key
+         */
+        public string FindGenerateKeyColumnName(string logicTableName)
+        {
+            return tableRules
+                .Where(o => o.LogicTable.EqualsIgnoreCase(logicTableName) && o.GetGenerateKeyColumn() != null)
+                .Select(o => o.GetGenerateKeyColumn()).FirstOrDefault();
+        }
+
+        /**
+         * Generate key.
+         *
+         * @param logicTableName logic table name
+         * @return generated key
+         */
+        public IComparable GenerateKey(string logicTableName)
+        {
+            var tableRule = FindTableRule(logicTableName);
+            if (tableRule==null)
+            {
+                throw new ShardingException("Cannot find strategy for generate keys.");
+            }
+
+            return tableRule.ShardingKeyGenerator?.GenerateKey() ?? defaultShardingKeyGenerator.GenerateKey();
+        }
+
+        /**
+         * Get logic table names based on actual table name.
+         *
+         * @param actualTableName actual table name
+         * @return logic table name
+         */
+        public ICollection<string> GetLogicTableNames(string actualTableName)
+        {
+            return tableRules.Where(o => o.IsExisted(actualTableName)).Select(o => o.LogicTable).ToList();
+        }
+
+        /**
+         * Find data node by logic table name.
+         *
+         * @param logicTableName logic table name
+         * @return data node
+         */
+        public DataNode GetDataNode(string logicTableName)
+        {
+            TableRule tableRule = GetTableRule(logicTableName);
+            return tableRule.ActualDataNodes[0];
+        }
+
+        /**
+         * Find data node by data source and logic table.
+         *
+         * @param dataSourceName data source name
+         * @param logicTableName logic table name
+         * @return data node
+         */
+        public DataNode GetDataNode(string dataSourceName, string logicTableName)
+        {
+            TableRule tableRule = GetTableRule(logicTableName);
+            return tableRule.ActualDataNodes.FirstOrDefault(o => shardingDataSourceNames.DataSourceNames.Contains(o.GetDataSourceName()) &&
+                                                                 o.GetDataSourceName().Equals(dataSourceName)) ?? throw new ShardingException(
+                $"Cannot find actual data node for data source name: '{dataSourceName}' and logic table name: '{logicTableName}'");
+        }
+
+        /**
+         * Judge if default data source mame exists.
+         *
+         * @return if default data source name exists
+         */
+        public bool HasDefaultDataSourceName()
+        {
+            string defaultDataSourceName = shardingDataSourceNames.GetDefaultDataSourceName();
+            return !string.IsNullOrEmpty(defaultDataSourceName);
+        }
+
+        /**
+         * Find actual default data source name.
+         *
+         * <p>If use master-slave rule, return master data source name.</p>
+         *
+         * @return actual default data source name
+         */
+        public string FindActualDefaultDataSourceName()
+        {
+            string defaultDataSourceName = shardingDataSourceNames.GetDefaultDataSourceName();
+            if (string.IsNullOrEmpty(defaultDataSourceName))
+            {
+                return null;
+            }
+            var masterDefaultDataSourceName = FindMasterDataSourceName(defaultDataSourceName);
+            return masterDefaultDataSourceName?? defaultDataSourceName;
+        }
+
+        private string FindMasterDataSourceName(string masterSlaveRuleName)
+        {
+            return masterSlaveRules.Where(o=>o.Name.EqualsIgnoreCase(masterSlaveRuleName)).Select(o=>o.MasterDataSourceName).FirstOrDefault();
+        }
+
+        /**
+         * Find master slave rule.
+         *
+         * @param dataSourceName data source name
+         * @return master slave rule
+         */
+        public MasterSlaveRule FindMasterSlaveRule(string dataSourceName)
+        {
+            return masterSlaveRules.Where(o=>o.ContainDataSourceName(dataSourceName)).FirstOrDefault();
+        }
+
+        /**
+         * Get sharding logic table names.
+         *
+         * @param logicTableNames logic table names
+         * @return sharding logic table names
+         */
+        public ICollection<string> GetShardingLogicTableNames(ICollection<string> logicTableNames)
+        {
+            return logicTableNames.Where(o => FindTableRule(o) != null).ToList();
+        }
+
+        /**
+         * Get logic and actual binding tables.
+         * 
+         * @param dataSourceName data source name
+         * @param logicTable logic table name
+         * @param actualTable actual table name
+         * @param availableLogicBindingTables available logic binding table names
+         * @return logic and actual binding tables
+         */
+        public IDictionary<string, string> GetLogicAndActualTablesFromBindingTable(string dataSourceName,
+                                                                            string logicTable, string actualTable, ICollection<string> availableLogicBindingTables)
+        {
+            IDictionary<string, string> result = new Dictionary<string, string>();
+            var bindingTableRule = FindBindingTableRule(logicTable);
+            if (bindingTableRule != null)
+            {
+                result.AddAll(bindingTableRule.GetLogicAndActualTables(dataSourceName,logicTable,actualTable, availableLogicBindingTables));
+            }
+
+            return result;
+        }
+        //
+        // /**
+        //  * To rules.
+        //  * 
+        //  * @return rules
+        //  */
+        // public ICollection<BaseRule> toRules() {
+        //     ICollection<BaseRule> result = new LinkedList<>();
+        //     result.add(this);
+        //     if (!encryptRule.getEncryptTableNames().isEmpty()) {
+        //         result.add(encryptRule);
+        //     }
+        //     result.addAll(masterSlaveRules);
+        //     return result;
         // }
-        // result.AddAll(masterSlaveRules);
-        return result;
-    }
+        public IRuleConfiguration GetRuleConfiguration()
+        {
+            return ruleConfiguration;
+        }
+
+        public ICollection<IBaseRule> ToRules()
+        {
+            ICollection<IBaseRule> result = new LinkedList<IBaseRule>();
+            result.Add(this);
+            // if (!encryptRule.getEncryptTableNames().isEmpty()) {
+            //     result.add(encryptRule);
+            // }
+            foreach (var masterSlaveRule in masterSlaveRules)
+            {
+                result.Add(masterSlaveRule);
+            }
+            return result;
+        }
     }
 }

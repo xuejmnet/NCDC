@@ -14,6 +14,6 @@ namespace ShardingConnector.ShardingApi.Spi.MasterSlave
     */
     public interface IMasterSlaveLoadBalanceAlgorithm:ITypeBasedSpi
     {
-        String getDataSource(String name, String masterDataSourceName, List<String> slaveDataSourceNames);
+        String GetDataSource(String name, String masterDataSourceName, List<String> slaveDataSourceNames);
     }
 }

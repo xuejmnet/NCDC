@@ -24,67 +24,67 @@ namespace ShardingConnector.ShardingCommon.Core.Rule
     /// </summary>
     public sealed class TableRule
     {
-        public string logicTable { get; }
+        public string LogicTable { get; }
 
-        public List<DataNode> actualDataNodes { get; }
+        public List<DataNode> ActualDataNodes { get; }
 
         private readonly ISet<string> actualTables;
 
         private readonly IDictionary<DataNode, int> dataNodeIndexMap;
 
-        public IShardingStrategy databaseShardingStrategy { get; }
+        public IShardingStrategy DatabaseShardingStrategy { get; }
 
-        public IShardingStrategy tableShardingStrategy { get; }
+        public IShardingStrategy TableShardingStrategy { get; }
 
         private readonly string generateKeyColumn;
 
-        public IShardingKeyGenerator shardingKeyGenerator { get; }
+        public IShardingKeyGenerator ShardingKeyGenerator { get; }
 
-        public readonly ICollection<string> actualDatasourceNames = new HashSet<string>();
+        public readonly ICollection<string> ActualDatasourceNames = new HashSet<string>();
 
-        public readonly IDictionary<string, ICollection<string>> datasourceToTablesMap =
+        public readonly IDictionary<string, ICollection<string>> DatasourceToTablesMap =
             new Dictionary<string, ICollection<string>>();
 
         public TableRule(string defaultDataSourceName, string logicTableName)
         {
-            logicTable = logicTableName.ToLower();
-            actualDataNodes = new List<DataNode>() {new DataNode(defaultDataSourceName, logicTableName)};
+            LogicTable = logicTableName.ToLower();
+            ActualDataNodes = new List<DataNode>() {new DataNode(defaultDataSourceName, logicTableName)};
             actualTables = GetActualTables();
             CacheActualDataSourcesAndTables();
             dataNodeIndexMap = new Dictionary<DataNode, int>();
-            databaseShardingStrategy = null;
-            tableShardingStrategy = null;
+            DatabaseShardingStrategy = null;
+            TableShardingStrategy = null;
             generateKeyColumn = null;
-            shardingKeyGenerator = null;
+            ShardingKeyGenerator = null;
         }
 
         public TableRule(ICollection<string> dataSourceNames, string logicTableName)
         {
-            logicTable = logicTableName.ToLower();
+            LogicTable = logicTableName.ToLower();
             dataNodeIndexMap = new Dictionary<DataNode, int>(dataSourceNames.Count);
-            actualDataNodes = GenerateDataNodes(logicTableName, dataSourceNames);
+            ActualDataNodes = GenerateDataNodes(logicTableName, dataSourceNames);
             actualTables = GetActualTables();
-            databaseShardingStrategy = null;
-            tableShardingStrategy = null;
+            DatabaseShardingStrategy = null;
+            TableShardingStrategy = null;
             generateKeyColumn = null;
-            shardingKeyGenerator = null;
+            ShardingKeyGenerator = null;
         }
 
         public TableRule(TableRuleConfiguration tableRuleConfig, ShardingDataSourceNames shardingDataSourceNames,
             string defaultGenerateKeyColumn)
         {
-            logicTable = tableRuleConfig.LogicTable.ToLower();
+            LogicTable = tableRuleConfig.LogicTable.ToLower();
             // List<string> dataNodes = new InlineExpressionParser(tableRuleConfig.GetActualDataNodes()).splitAndEvaluate();
             // dataNodeIndexMap = new HashMap<>(dataNodes.size(), 1);
             dataNodeIndexMap = new Dictionary<DataNode, int>();
             // actualDataNodes = IsEmptyDataNodes(dataNodes)
             //     ? GenerateDataNodes(tableRuleConfig.LogicTable, shardingDataSourceNames.DataSourceNames) : GenerateDataNodes(dataNodes, shardingDataSourceNames.getDataSourceNames());
-            actualDataNodes = GenerateDataNodes(tableRuleConfig.LogicTable, shardingDataSourceNames.DataSourceNames);
+            ActualDataNodes = GenerateDataNodes(tableRuleConfig.LogicTable, shardingDataSourceNames.DataSourceNames);
             actualTables = GetActualTables();
-            databaseShardingStrategy = null == tableRuleConfig.DatabaseShardingStrategyConfig
+            DatabaseShardingStrategy = null == tableRuleConfig.DatabaseShardingStrategyConfig
                 ? null
                 : ShardingStrategyFactory.NewInstance(tableRuleConfig.DatabaseShardingStrategyConfig);
-            tableShardingStrategy = null == tableRuleConfig.TableShardingStrategyConfig
+            TableShardingStrategy = null == tableRuleConfig.TableShardingStrategyConfig
                 ? null
                 : ShardingStrategyFactory.NewInstance(tableRuleConfig.DatabaseShardingStrategyConfig);
             KeyGeneratorConfiguration keyGeneratorConfiguration = tableRuleConfig.KeyGeneratorConfig;
@@ -92,7 +92,7 @@ namespace ShardingConnector.ShardingCommon.Core.Rule
                 null != keyGeneratorConfiguration && !string.IsNullOrWhiteSpace(keyGeneratorConfiguration.Column)
                     ? keyGeneratorConfiguration.Column
                     : defaultGenerateKeyColumn;
-            shardingKeyGenerator = ContainsKeyGeneratorConfiguration(tableRuleConfig)
+            ShardingKeyGenerator = ContainsKeyGeneratorConfiguration(tableRuleConfig)
                 ? new ShardingKeyGeneratorServiceLoader().NewService(tableRuleConfig.KeyGeneratorConfig.Type,
                     tableRuleConfig.KeyGeneratorConfig.Properties)
                 : null;
@@ -101,30 +101,30 @@ namespace ShardingConnector.ShardingCommon.Core.Rule
 
         private void CacheActualDataSourcesAndTables()
         {
-            foreach (var actualDataNode in actualDataNodes)
+            foreach (var actualDataNode in ActualDataNodes)
             {
-                actualDatasourceNames.Add(actualDataNode.GetDataSourceName());
+                ActualDatasourceNames.Add(actualDataNode.GetDataSourceName());
                 AddActualTable(actualDataNode.GetDataSourceName(), actualDataNode.GetTableName());
             }
         }
 
         private ISet<string> GetActualTables()
         {
-            return actualDataNodes.Select(o => o.GetTableName()).ToHashSet();
+            return ActualDataNodes.Select(o => o.GetTableName()).ToHashSet();
         }
 
         private void AddActualTable(string datasourceName, string tableName)
         {
             ICollection<string> datasourceToTables = null;
-            if (datasourceToTablesMap.ContainsKey(datasourceName))
+            if (DatasourceToTablesMap.ContainsKey(datasourceName))
             {
-                datasourceToTables = datasourceToTablesMap[datasourceName];
+                datasourceToTables = DatasourceToTablesMap[datasourceName];
             }
 
             if (datasourceToTables == null)
             {
                 datasourceToTables = new LinkedList<string>();
-                datasourceToTablesMap.Add(datasourceName, datasourceToTables);
+                DatasourceToTablesMap.Add(datasourceName, datasourceToTables);
             }
 
             datasourceToTables.Add(tableName);
@@ -150,7 +150,7 @@ namespace ShardingConnector.ShardingCommon.Core.Rule
                 DataNode dataNode = new DataNode(dataSourceName, logicTable);
                 result.Add(dataNode);
                 dataNodeIndexMap.Add(dataNode, index);
-                actualDatasourceNames.Add(dataSourceName);
+                ActualDatasourceNames.Add(dataSourceName);
                 AddActualTable(dataNode.GetDataSourceName(), dataNode.GetTableName());
                 index++;
             }
@@ -173,7 +173,7 @@ namespace ShardingConnector.ShardingCommon.Core.Rule
 
                 result.Add(dataNode);
                 dataNodeIndexMap.Add(dataNode, index);
-                actualDatasourceNames.Add(dataNode.GetDataSourceName());
+                ActualDatasourceNames.Add(dataNode.GetDataSourceName());
                 AddActualTable(dataNode.GetDataSourceName(), dataNode.GetTableName());
                 index++;
             }
@@ -188,8 +188,8 @@ namespace ShardingConnector.ShardingCommon.Core.Rule
      */
         public IDictionary<string, List<DataNode>> GetDataNodeGroups()
         {
-            IDictionary<string, List<DataNode>> result = new Dictionary<string, List<DataNode>>(actualDataNodes.Count);
-            foreach (var actualDataNode in actualDataNodes)
+            IDictionary<string, List<DataNode>> result = new Dictionary<string, List<DataNode>>(ActualDataNodes.Count);
+            foreach (var actualDataNode in ActualDataNodes)
             {
                 string dataSourceName = actualDataNode.GetDataSourceName();
                 if (!result.ContainsKey(dataSourceName))
@@ -210,7 +210,7 @@ namespace ShardingConnector.ShardingCommon.Core.Rule
      */
         public ICollection<string> GetActualDatasourceNames()
         {
-            return actualDatasourceNames;
+            return ActualDatasourceNames;
         }
 
         /**
@@ -221,7 +221,7 @@ namespace ShardingConnector.ShardingCommon.Core.Rule
      */
         public ICollection<string> GetActualTableNames(string targetDataSource)
         {
-            if (datasourceToTablesMap.TryGetValue(targetDataSource, out var result))
+            if (DatasourceToTablesMap.TryGetValue(targetDataSource, out var result))
                 return result;
             return new List<string>(0);
         }
@@ -240,11 +240,11 @@ namespace ShardingConnector.ShardingCommon.Core.Rule
 
         private void CheckRule(List<string> dataNodes)
         {
-            if (IsEmptyDataNodes(dataNodes) && null != tableShardingStrategy &&
-                !(tableShardingStrategy is NoneShardingStrategy))
+            if (IsEmptyDataNodes(dataNodes) && null != TableShardingStrategy &&
+                !(TableShardingStrategy is NoneShardingStrategy))
             {
                 throw new ShardingException(
-                    $"ActualDataNodes must be configured if want to shard tables for logicTable [{logicTable}]");
+                    $"ActualDataNodes must be configured if want to shard tables for logicTable [{LogicTable}]");
             }
         }
 

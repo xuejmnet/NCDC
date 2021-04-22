@@ -34,7 +34,7 @@ namespace ShardingConnector.ShardingCommon.Core.Rule
      * @return contains this logic table or not
      */
     public bool HasLogicTable(string logicTable) {
-        return tableRules.Any(tableRule => tableRule.logicTable.Equals(logicTable.ToLower()));
+        return tableRules.Any(tableRule => tableRule.LogicTable.Equals(logicTable.ToLower()));
     }
     
     /**
@@ -60,9 +60,9 @@ namespace ShardingConnector.ShardingCommon.Core.Rule
         }
         foreach (var tableRule in tableRules)
         {
-            if (tableRule.logicTable.Equals(logicTable.ToLower()))
+            if (tableRule.LogicTable.Equals(logicTable.ToLower()))
             {
-                return tableRule.actualDataNodes[index].GetTableName().ToLower();
+                return tableRule.ActualDataNodes[index].GetTableName().ToLower();
             }
         }
         throw new ShardingException($"Cannot find binding actual table, data source: {dataSource}, logic table: {logicTable}, other actual table: {otherActualTable}");
@@ -70,7 +70,7 @@ namespace ShardingConnector.ShardingCommon.Core.Rule
     
    public ICollection<String> GetAllLogicTables()
     {
-        return tableRules.Select(o => o.logicTable.ToLower()).ToList();
+        return tableRules.Select(o => o.LogicTable.ToLower()).ToList();
     }
     
    public IDictionary<String, String> GetLogicAndActualTables( String dataSource,  String logicTable,  String actualTable,  ICollection<String> availableLogicBindingTables) {

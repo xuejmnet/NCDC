@@ -20,6 +20,6 @@ namespace ShardingConnector.ShardingApi.Spi.KeyGen
      * 
      * @return generated key
      */
-        IComparable<object> GenerateKey();
+        IComparable GenerateKey();
     }
 }
