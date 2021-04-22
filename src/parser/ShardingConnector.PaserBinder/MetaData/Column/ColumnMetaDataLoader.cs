@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.Common;
+using System.Linq;
 using System.Text;
 using Antlr4.Runtime.Misc;
 using ShardingConnector.ParserBinder.MetaData.Column;
@@ -43,13 +45,37 @@ namespace ShardingConnector.ParserBinder.MetaData.Column
                 return new List<ColumnMetaData>(0);
             }
             ICollection<ColumnMetaData> result = new LinkedList<ColumnMetaData>();
-            ICollection<string> primaryKeys = LoadPrimaryKeys(connection, table, databaseType);
+            ICollection<string> primaryKeys = new LinkedList<string>();
             List<string> columnNames = new ArrayList<string>();
             List<int> columnTypes = new List<int>();
             List<string> columnTypeNames = new List<string>();
             List<bool> isPrimaryKeys = new List<bool>();
-            List<bool> isCaseSensitives = new List<bool>();
-            using()
+            bool isCaseSensitive = false;
+            
+            using (var dbCommand = connection.CreateCommand())
+            {
+                dbCommand.CommandText = GenerateEmptyResultSQL(table, databaseType);
+                DbDataReader dbDataReader = null;
+                try
+                {
+                    dbDataReader = dbCommand.ExecuteReader();
+                    var schemaTable = dbDataReader.GetSchemaTable();
+                    isCaseSensitive = schemaTable.CaseSensitive;
+                    var dbColumns = dbDataReader.GetColumnSchema().ToList();
+                    foreach (var dbColumn in dbColumns)
+                    {
+                        if (dbColumn.IsIdentity.GetValueOrDefault())
+                        {
+                            primaryKeys.Add(dbColumn.ColumnName);
+                        }
+                    }
+
+                }
+                finally
+                {
+                    dbDataReader?.Close();
+                }
+            }
 
             try (ResultSet resultSet = connection.getMetaData().getColumns(connection.getCatalog(), JdbcUtil.getSchema(connection, databaseType), table, "%")) {
                 while (resultSet.next())
@@ -78,22 +104,17 @@ namespace ShardingConnector.ParserBinder.MetaData.Column
 
 
 
-    private static string generateEmptyResultSQL(string table, string databaseType)
+    private static string GenerateEmptyResultSQL(string table, string databaseType)
             {
                 // TODO consider add a getDialectDelimeter() interface in parse module
                 string delimiterLeft;
                 string delimiterRight;
-                if ("MySQL".equals(databaseType) || "MariaDB".equals(databaseType))
+                if ("MySql".Equals(databaseType) || "MariaDB".Equals(databaseType))
                 {
                     delimiterLeft = "`";
                     delimiterRight = "`";
                 }
-                else if ("Oracle".equals(databaseType) || "PostgreSQL".equals(databaseType) || "H2".equals(databaseType) || "SQL92".equals(databaseType))
-                {
-                    delimiterLeft = "\"";
-                    delimiterRight = "\"";
-                }
-                else if ("SQLServer".equals(databaseType))
+                else if ("SqlServer".Equals(databaseType))
                 {
                     delimiterLeft = "[";
                     delimiterRight = "]";
@@ -103,7 +124,7 @@ namespace ShardingConnector.ParserBinder.MetaData.Column
                     delimiterLeft = "";
                     delimiterRight = "";
                 }
-                return "SELECT * FROM " + delimiterLeft + table + delimiterRight + " WHERE 1 != 1";
+                return $"SELECT * FROM {delimiterLeft}{table}{delimiterRight} WHERE 1 != 1";
             }
 
             private static bool IsTableExist(DbConnection connection, string catalog, string table, string databaseType)
@@ -115,7 +136,13 @@ namespace ShardingConnector.ParserBinder.MetaData.Column
 
 private static ICollection<string> LoadPrimaryKeys(DbConnection connection, string table, string databaseType)
             {
-                ICollection<string> result = new HashSet<>();
+                ICollection<string> result = new HashSet<string>();
+                using (var dbCommand = connection.CreateCommand())
+                {
+                    dbCommand.CommandText = $"select * from {table}";
+                    var dbDataReader = dbCommand.ExecuteReader();
+                    var dbColumns = dbDataReader.GetColumnSchema().ToList();
+                }
                 try (ResultSet resultSet = connection.getMetaData().getPrimaryKeys(connection.getCatalog(), JdbcUtil.getSchema(connection, databaseType), table)) {
                 while (resultSet.next())
                 {
