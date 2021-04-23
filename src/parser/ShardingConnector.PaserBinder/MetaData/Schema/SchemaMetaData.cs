@@ -16,7 +16,7 @@ namespace ShardingConnector.ParserBinder.MetaData.Schema
 
         private readonly ConcurrentDictionary<string, TableMetaData> _tables = new ConcurrentDictionary<string, TableMetaData>();
 
-        public SchemaMetaData(Dictionary<String, TableMetaData> tables)
+        public SchemaMetaData(IDictionary<String, TableMetaData> tables)
         {
             foreach (var tableEntry in tables)
             {

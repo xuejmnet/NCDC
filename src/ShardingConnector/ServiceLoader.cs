@@ -25,12 +25,7 @@ namespace ShardingConnector
         {
             
 
-            var serviceImpls = AssemblyHelper.CurrentDomain.GetAssemblies().SelectMany(o => o.GetTypes())
-                .Where(type => !String.IsNullOrEmpty(type.Namespace))
-                .Where(type => !type.IsAbstract && type.GetInterfaces()
-                                                    .Any(it => it.IsInterface && serviceType == it)
-                                                &&type.GetConstructors().Length==1&&type.GetConstructors()[0].GetParameters().Length==0
-                );
+            var serviceImpls = RuntimeHelper.GetImplementTypes(serviceType);
             return serviceImpls.Select(o => Activator.CreateInstance(o)).ToArray();
         }
     }

@@ -23,11 +23,8 @@ namespace ShardingConnector.ParserBinder.MetaData.Column
 
         }
 
-        private static readonly string COLUMN_NAME = "COLUMN_NAME";
-
-        private static readonly string DATA_TYPE = "DATA_TYPE";
-
-        private static readonly string TYPE_NAME = "TYPE_NAME";
+        private const string TABLE_SCHEMA = "Tables";
+        private const string TABLE_NAME = "TABLE_NAME";
 
         /**
          * Load column meta data list.
@@ -40,33 +37,32 @@ namespace ShardingConnector.ParserBinder.MetaData.Column
          */
         public static ICollection<ColumnMetaData> Load(DbConnection connection, string table, string databaseType)
         {
-            if (!IsTableExist(connection, connection.Database, table, databaseType))
+            if (!IsTableExist(connection, table))
             {
                 return new List<ColumnMetaData>(0);
             }
+
             ICollection<ColumnMetaData> result = new LinkedList<ColumnMetaData>();
-            ICollection<string> primaryKeys = new LinkedList<string>();
-            List<string> columnNames = new ArrayList<string>();
-            List<int> columnTypes = new List<int>();
-            List<string> columnTypeNames = new List<string>();
-            List<bool> isPrimaryKeys = new List<bool>();
             bool isCaseSensitive = false;
-            
+
             using (var dbCommand = connection.CreateCommand())
             {
                 dbCommand.CommandText = GenerateEmptyResultSQL(table, databaseType);
                 DbDataReader dbDataReader = null;
+                List<DbColumn> dbColumns = null;
                 try
                 {
                     dbDataReader = dbCommand.ExecuteReader();
-                    var schemaTable = dbDataReader.GetSchemaTable();
-                    isCaseSensitive = schemaTable.CaseSensitive;
-                    var dbColumns = dbDataReader.GetColumnSchema().ToList();
-                    foreach (var dbColumn in dbColumns)
+                    using (var schemaTable = dbDataReader.GetSchemaTable())
                     {
-                        if (dbColumn.IsIdentity.GetValueOrDefault())
+                        isCaseSensitive = schemaTable.CaseSensitive;
+                        dbColumns = dbDataReader.GetColumnSchema().ToList();
+                        foreach (var dbColumn in dbColumns)
                         {
-                            primaryKeys.Add(dbColumn.ColumnName);
+                            if (dbColumn.ColumnOrdinal.HasValue)
+                            {
+                                result.Add(new ColumnMetaData(dbColumn.ColumnName, dbColumn.ColumnOrdinal.Value, dbColumn.DataTypeName, dbColumn.IsIdentity.GetValueOrDefault(), dbColumn.IsAutoIncrement.GetValueOrDefault(), isCaseSensitive));
+                            }
                         }
                     }
 
@@ -74,82 +70,52 @@ namespace ShardingConnector.ParserBinder.MetaData.Column
                 finally
                 {
                     dbDataReader?.Close();
+                    dbColumns?.Clear();
                 }
             }
 
-            try (ResultSet resultSet = connection.getMetaData().getColumns(connection.getCatalog(), JdbcUtil.getSchema(connection, databaseType), table, "%")) {
-                while (resultSet.next())
-                {
-                    string columnName = resultSet.getstring(COLUMN_NAME);
-                    columnTypes.add(resultSet.getInt(DATA_TYPE));
-                    columnTypeNames.add(resultSet.getstring(TYPE_NAME));
-                    isPrimaryKeys.add(primaryKeys.contains(columnName));
-                    columnNames.add(columnName);
-                }
-            }
-            try (ResultSet resultSet = connection.createStatement().executeQuery(generateEmptyResultSQL(table, databaseType))) {
-                for (string each : columnNames)
-                {
-                    isCaseSensitives.add(resultSet.getMetaData().isCaseSensitive(resultSet.findColumn(each)));
-                }
-            }
-            for (int i = 0; i < columnNames.size(); i++)
-            {
-                // TODO load auto generated from database meta data
-                result.add(new ColumnMetaData(columnNames.get(i), columnTypes.get(i), columnTypeNames.get(i), isPrimaryKeys.get(i), false, isCaseSensitives.get(i)));
-            }
-            return result;
-            }
-
-
-
-
-    private static string GenerateEmptyResultSQL(string table, string databaseType)
-            {
-                // TODO consider add a getDialectDelimeter() interface in parse module
-                string delimiterLeft;
-                string delimiterRight;
-                if ("MySql".Equals(databaseType) || "MariaDB".Equals(databaseType))
-                {
-                    delimiterLeft = "`";
-                    delimiterRight = "`";
-                }
-                else if ("SqlServer".Equals(databaseType))
-                {
-                    delimiterLeft = "[";
-                    delimiterRight = "]";
-                }
-                else
-                {
-                    delimiterLeft = "";
-                    delimiterRight = "";
-                }
-                return $"SELECT * FROM {delimiterLeft}{table}{delimiterRight} WHERE 1 != 1";
-            }
-
-            private static bool IsTableExist(DbConnection connection, string catalog, string table, string databaseType)
-            {
-                try (ResultSet resultSet = connection.getMetaData().getTables(catalog, JdbcUtil.getSchema(connection, databaseType), table, null)) {
-                return resultSet.next();
-            }
-            }
-
-private static ICollection<string> LoadPrimaryKeys(DbConnection connection, string table, string databaseType)
-            {
-                ICollection<string> result = new HashSet<string>();
-                using (var dbCommand = connection.CreateCommand())
-                {
-                    dbCommand.CommandText = $"select * from {table}";
-                    var dbDataReader = dbCommand.ExecuteReader();
-                    var dbColumns = dbDataReader.GetColumnSchema().ToList();
-                }
-                try (ResultSet resultSet = connection.getMetaData().getPrimaryKeys(connection.getCatalog(), JdbcUtil.getSchema(connection, databaseType), table)) {
-                while (resultSet.next())
-                {
-                    result.add(resultSet.getstring(COLUMN_NAME));
-                }
-            }
-            return result;
+            return result.OrderBy(o => o.ColumnOrdinal).ToList();
         }
+
+
+
+
+        private static string GenerateEmptyResultSQL(string table, string databaseType)
+        {
+            // TODO consider add a getDialectDelimeter() interface in parse module
+            string delimiterLeft;
+            string delimiterRight;
+            if ("MySql".Equals(databaseType) || "MariaDB".Equals(databaseType))
+            {
+                delimiterLeft = "`";
+                delimiterRight = "`";
+            }
+            else if ("SqlServer".Equals(databaseType))
+            {
+                delimiterLeft = "[";
+                delimiterRight = "]";
+            }
+            else
+            {
+                delimiterLeft = "";
+                delimiterRight = "";
+            }
+            return $"SELECT * FROM {delimiterLeft}{table}{delimiterRight} WHERE 1 != 1";
+        }
+
+        private static bool IsTableExist(DbConnection connection, string table)
+        {
+            using (var dataTable = connection.GetSchema(TABLE_SCHEMA))
+            {
+                for (int i = 0; i < dataTable.Rows.Count; i++)
+                {
+                    if (dataTable.Rows[i][TABLE_NAME].Equals(table))
+                        return true;
+                }
+
+                return false;
+            }
+        }
+
     }
 }

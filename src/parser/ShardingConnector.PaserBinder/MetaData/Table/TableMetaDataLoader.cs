@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Text;
 using ShardingConnector.NewConnector.DataSource;
+using ShardingConnector.ParserBinder.MetaData.Column;
+using ShardingConnector.ParserBinder.MetaData.Index;
 
 namespace ShardingConnector.ParserBinder.MetaData.Table
 {
@@ -22,9 +24,8 @@ namespace ShardingConnector.ParserBinder.MetaData.Table
         {
             using (var connection= dataSource.GetDbConnection())
             {
-                return new TableMetaData(ColumnMetaDataLoader.load(connection, table, databaseType), IndexMetaDataLoader.load(connection, table, databaseType));
+                return new TableMetaData(ColumnMetaDataLoader.Load(connection, table, databaseType), IndexMetaDataLoader.Load(connection, table, databaseType));
             }
         }
-    }
     }
 }

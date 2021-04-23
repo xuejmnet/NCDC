@@ -16,7 +16,7 @@ namespace ShardingConnector.ParserBinder.MetaData.Table
     {
         private readonly ConcurrentDictionary<string, ColumnMetaData> _columns;
 
-        private readonly ConcurrentDictionary<String, IndexMetaData> _indexes;
+        private readonly ConcurrentDictionary<string, IndexMetaData> _indexes;
 
         private readonly List<string> _columnNames = new List<string>();
 
@@ -59,6 +59,11 @@ namespace ShardingConnector.ParserBinder.MetaData.Table
         public ConcurrentDictionary<string, ColumnMetaData> GetColumns()
         {
             return _columns;
+        }
+
+        public ConcurrentDictionary<string, IndexMetaData> GetIndexes()
+        {
+            return _indexes;
         }
         /**
      * Get column meta data.

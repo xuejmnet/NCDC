@@ -8,10 +8,10 @@ namespace ShardingConnector.ParserBinder.MetaData.Column
 */
     public class ColumnMetaData
     {
-        public ColumnMetaData(string name, int dataType, string dataTypeName, bool primaryKey, bool generated, bool caseSensitive)
+        public ColumnMetaData(string name,int columnOrdinal, string dataTypeName, bool primaryKey, bool generated, bool caseSensitive)
         {
             Name = name;
-            DataType = dataType;
+            ColumnOrdinal = columnOrdinal;
             DataTypeName = dataTypeName;
             PrimaryKey = primaryKey;
             Generated = generated;
@@ -19,9 +19,8 @@ namespace ShardingConnector.ParserBinder.MetaData.Column
         }
 
         public  string Name { get; }
-    
-        public int DataType{ get; }
-    
+        public int ColumnOrdinal { get; }
+
         public string DataTypeName{ get; }
     
         public bool PrimaryKey{ get; }

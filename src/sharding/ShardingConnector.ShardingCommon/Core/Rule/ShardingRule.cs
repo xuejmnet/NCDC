@@ -29,23 +29,23 @@ namespace ShardingConnector.ShardingCommon.Core.Rule
     public class ShardingRule : IBaseRule
     {
 
-        public ShardingRuleConfiguration ruleConfiguration { get; }
+        public ShardingRuleConfiguration RuleConfiguration { get; }
 
-        public ShardingDataSourceNames shardingDataSourceNames { get; }
+        public ShardingDataSourceNames ShardingDataSourceNames { get; }
 
-        public ICollection<TableRule> tableRules { get; }
+        public ICollection<TableRule> TableRules { get; }
 
-        public ICollection<BindingTableRule> bindingTableRules { get; }
+        public ICollection<BindingTableRule> BindingTableRules { get; }
 
-        public ICollection<string> broadcastTables { get; }
+        public ICollection<string> BroadcastTables { get; }
 
-        public IShardingStrategy defaultDatabaseShardingStrategy { get; }
+        public IShardingStrategy DefaultDatabaseShardingStrategy { get; }
 
-        public IShardingStrategy defaultTableShardingStrategy { get; }
+        public IShardingStrategy DefaultTableShardingStrategy { get; }
 
-        public IShardingKeyGenerator defaultShardingKeyGenerator { get; }
+        public IShardingKeyGenerator DefaultShardingKeyGenerator { get; }
 
-        public ICollection<MasterSlaveRule> masterSlaveRules { get; }
+        public ICollection<MasterSlaveRule> MasterSlaveRules { get; }
 
 
         public ShardingRule(ShardingRuleConfiguration shardingRuleConfig, ICollection<string> dataSourceNames)
@@ -54,21 +54,21 @@ namespace ShardingConnector.ShardingCommon.Core.Rule
                 throw new ArgumentNullException(nameof(shardingRuleConfig));
             if (dataSourceNames == null || dataSourceNames.IsEmpty())
                 throw new ArgumentNullException("data sources cannot be empty.");
-            this.ruleConfiguration = shardingRuleConfig;
-            shardingDataSourceNames = new ShardingDataSourceNames(shardingRuleConfig, dataSourceNames);
-            tableRules = CreateTableRules(shardingRuleConfig);
-            broadcastTables = shardingRuleConfig.BroadcastTables;
-            bindingTableRules = CreateBindingTableRules(shardingRuleConfig.BindingTableGroups);
-            defaultDatabaseShardingStrategy = CreateDefaultShardingStrategy(shardingRuleConfig.DefaultDatabaseShardingStrategyConfig);
-            defaultTableShardingStrategy = CreateDefaultShardingStrategy(shardingRuleConfig.DefaultTableShardingStrategyConfig);
-            defaultShardingKeyGenerator = CreateDefaultKeyGenerator(shardingRuleConfig.DefaultKeyGeneratorConfig);
-            masterSlaveRules = CreateMasterSlaveRules(shardingRuleConfig.MasterSlaveRuleConfigs);
+            this.RuleConfiguration = shardingRuleConfig;
+            ShardingDataSourceNames = new ShardingDataSourceNames(shardingRuleConfig, dataSourceNames);
+            TableRules = CreateTableRules(shardingRuleConfig);
+            BroadcastTables = shardingRuleConfig.BroadcastTables;
+            BindingTableRules = CreateBindingTableRules(shardingRuleConfig.BindingTableGroups);
+            DefaultDatabaseShardingStrategy = CreateDefaultShardingStrategy(shardingRuleConfig.DefaultDatabaseShardingStrategyConfig);
+            DefaultTableShardingStrategy = CreateDefaultShardingStrategy(shardingRuleConfig.DefaultTableShardingStrategyConfig);
+            DefaultShardingKeyGenerator = CreateDefaultKeyGenerator(shardingRuleConfig.DefaultKeyGeneratorConfig);
+            MasterSlaveRules = CreateMasterSlaveRules(shardingRuleConfig.MasterSlaveRuleConfigs);
         }
 
         private ICollection<TableRule> CreateTableRules(ShardingRuleConfiguration shardingRuleConfig)
         {
             return shardingRuleConfig.TableRuleConfigs.Select(o =>
-                new TableRule(o, shardingDataSourceNames, GetDefaultGenerateKeyColumn(shardingRuleConfig))).ToList();
+                new TableRule(o, ShardingDataSourceNames, GetDefaultGenerateKeyColumn(shardingRuleConfig))).ToList();
         }
 
         private string GetDefaultGenerateKeyColumn(ShardingRuleConfiguration shardingRuleConfig)
@@ -103,11 +103,11 @@ namespace ShardingConnector.ShardingCommon.Core.Rule
             }
             if (IsBroadcastTable(logicTableName))
             {
-                return new TableRule(shardingDataSourceNames.DataSourceNames, logicTableName);
+                return new TableRule(ShardingDataSourceNames.DataSourceNames, logicTableName);
             }
-            if (!string.IsNullOrEmpty(shardingDataSourceNames.GetDefaultDataSourceName()))
+            if (!string.IsNullOrEmpty(ShardingDataSourceNames.GetDefaultDataSourceName()))
             {
-                return new TableRule(shardingDataSourceNames.GetDefaultDataSourceName(), logicTableName);
+                return new TableRule(ShardingDataSourceNames.GetDefaultDataSourceName(), logicTableName);
             }
             throw new ShardingException($"Cannot find table rule and default data source with logic table: '{logicTableName}'");
         }
@@ -120,7 +120,7 @@ namespace ShardingConnector.ShardingCommon.Core.Rule
          */
         public TableRule FindTableRule(string logicTableName)
         {
-            return tableRules.FirstOrDefault(o => o.LogicTable.EqualsIgnoreCase(logicTableName));
+            return TableRules.FirstOrDefault(o => o.LogicTable.EqualsIgnoreCase(logicTableName));
         }
 
         /**
@@ -131,7 +131,7 @@ namespace ShardingConnector.ShardingCommon.Core.Rule
          */
         public bool IsBroadcastTable(string logicTableName)
         {
-            return broadcastTables.Any(o => o.EqualsIgnoreCase(logicTableName));
+            return BroadcastTables.Any(o => o.EqualsIgnoreCase(logicTableName));
         }
 
         private IShardingStrategy CreateDefaultShardingStrategy(IShardingStrategyConfiguration shardingStrategyConfiguration)
@@ -169,7 +169,7 @@ namespace ShardingConnector.ShardingCommon.Core.Rule
          */
         public TableRule FindTableRuleByActualTable(string actualTableName)
         {
-            return tableRules.Where(o => o.IsExisted(actualTableName)).FirstOrDefault();
+            return TableRules.Where(o => o.IsExisted(actualTableName)).FirstOrDefault();
         }
 
         /**
@@ -184,7 +184,7 @@ namespace ShardingConnector.ShardingCommon.Core.Rule
          */
         public IShardingStrategy GetDatabaseShardingStrategy(TableRule tableRule)
         {
-            return tableRule.DatabaseShardingStrategy ?? defaultDatabaseShardingStrategy;
+            return tableRule.DatabaseShardingStrategy ?? DefaultDatabaseShardingStrategy;
         }
 
         /**
@@ -199,7 +199,7 @@ namespace ShardingConnector.ShardingCommon.Core.Rule
          */
         public IShardingStrategy GetTableShardingStrategy(TableRule tableRule)
         {
-            return tableRule.TableShardingStrategy ?? defaultTableShardingStrategy;
+            return tableRule.TableShardingStrategy ?? DefaultTableShardingStrategy;
         }
 
         /**
@@ -237,7 +237,7 @@ namespace ShardingConnector.ShardingCommon.Core.Rule
          */
         public BindingTableRule FindBindingTableRule(string logicTableName)
         {
-            return bindingTableRules.Where(o => o.HasLogicTable(logicTableName)).FirstOrDefault();
+            return BindingTableRules.Where(o => o.HasLogicTable(logicTableName)).FirstOrDefault();
         }
 
         /**
@@ -304,7 +304,7 @@ namespace ShardingConnector.ShardingCommon.Core.Rule
          */
         public bool IsShardingColumn(string columnName, string tableName)
         {
-            return tableRules.Any(o => o.LogicTable.EqualsIgnoreCase(tableName) && IsShardingColumn(o, columnName));
+            return TableRules.Any(o => o.LogicTable.EqualsIgnoreCase(tableName) && IsShardingColumn(o, columnName));
         }
 
         private bool IsShardingColumn(TableRule tableRule, string columnName)
@@ -320,7 +320,7 @@ namespace ShardingConnector.ShardingCommon.Core.Rule
          */
         public string FindGenerateKeyColumnName(string logicTableName)
         {
-            return tableRules
+            return TableRules
                 .Where(o => o.LogicTable.EqualsIgnoreCase(logicTableName) && o.GetGenerateKeyColumn() != null)
                 .Select(o => o.GetGenerateKeyColumn()).FirstOrDefault();
         }
@@ -339,7 +339,7 @@ namespace ShardingConnector.ShardingCommon.Core.Rule
                 throw new ShardingException("Cannot find strategy for generate keys.");
             }
 
-            return tableRule.ShardingKeyGenerator?.GenerateKey() ?? defaultShardingKeyGenerator.GenerateKey();
+            return tableRule.ShardingKeyGenerator?.GenerateKey() ?? DefaultShardingKeyGenerator.GenerateKey();
         }
 
         /**
@@ -350,7 +350,7 @@ namespace ShardingConnector.ShardingCommon.Core.Rule
          */
         public ICollection<string> GetLogicTableNames(string actualTableName)
         {
-            return tableRules.Where(o => o.IsExisted(actualTableName)).Select(o => o.LogicTable).ToList();
+            return TableRules.Where(o => o.IsExisted(actualTableName)).Select(o => o.LogicTable).ToList();
         }
 
         /**
@@ -375,7 +375,7 @@ namespace ShardingConnector.ShardingCommon.Core.Rule
         public DataNode GetDataNode(string dataSourceName, string logicTableName)
         {
             TableRule tableRule = GetTableRule(logicTableName);
-            return tableRule.ActualDataNodes.FirstOrDefault(o => shardingDataSourceNames.DataSourceNames.Contains(o.GetDataSourceName()) &&
+            return tableRule.ActualDataNodes.FirstOrDefault(o => ShardingDataSourceNames.DataSourceNames.Contains(o.GetDataSourceName()) &&
                                                                  o.GetDataSourceName().Equals(dataSourceName)) ?? throw new ShardingException(
                 $"Cannot find actual data node for data source name: '{dataSourceName}' and logic table name: '{logicTableName}'");
         }
@@ -387,7 +387,7 @@ namespace ShardingConnector.ShardingCommon.Core.Rule
          */
         public bool HasDefaultDataSourceName()
         {
-            string defaultDataSourceName = shardingDataSourceNames.GetDefaultDataSourceName();
+            string defaultDataSourceName = ShardingDataSourceNames.GetDefaultDataSourceName();
             return !string.IsNullOrEmpty(defaultDataSourceName);
         }
 
@@ -400,7 +400,7 @@ namespace ShardingConnector.ShardingCommon.Core.Rule
          */
         public string FindActualDefaultDataSourceName()
         {
-            string defaultDataSourceName = shardingDataSourceNames.GetDefaultDataSourceName();
+            string defaultDataSourceName = ShardingDataSourceNames.GetDefaultDataSourceName();
             if (string.IsNullOrEmpty(defaultDataSourceName))
             {
                 return null;
@@ -411,7 +411,7 @@ namespace ShardingConnector.ShardingCommon.Core.Rule
 
         private string FindMasterDataSourceName(string masterSlaveRuleName)
         {
-            return masterSlaveRules.Where(o=>o.Name.EqualsIgnoreCase(masterSlaveRuleName)).Select(o=>o.MasterDataSourceName).FirstOrDefault();
+            return MasterSlaveRules.Where(o=>o.Name.EqualsIgnoreCase(masterSlaveRuleName)).Select(o=>o.MasterDataSourceName).FirstOrDefault();
         }
 
         /**
@@ -422,7 +422,7 @@ namespace ShardingConnector.ShardingCommon.Core.Rule
          */
         public MasterSlaveRule FindMasterSlaveRule(string dataSourceName)
         {
-            return masterSlaveRules.Where(o=>o.ContainDataSourceName(dataSourceName)).FirstOrDefault();
+            return MasterSlaveRules.Where(o=>o.ContainDataSourceName(dataSourceName)).FirstOrDefault();
         }
 
         /**
@@ -474,7 +474,7 @@ namespace ShardingConnector.ShardingCommon.Core.Rule
         // }
         public IRuleConfiguration GetRuleConfiguration()
         {
-            return ruleConfiguration;
+            return RuleConfiguration;
         }
 
         public ICollection<IBaseRule> ToRules()
@@ -484,7 +484,7 @@ namespace ShardingConnector.ShardingCommon.Core.Rule
             // if (!encryptRule.getEncryptTableNames().isEmpty()) {
             //     result.add(encryptRule);
             // }
-            foreach (var masterSlaveRule in masterSlaveRules)
+            foreach (var masterSlaveRule in MasterSlaveRules)
             {
                 result.Add(masterSlaveRule);
             }
