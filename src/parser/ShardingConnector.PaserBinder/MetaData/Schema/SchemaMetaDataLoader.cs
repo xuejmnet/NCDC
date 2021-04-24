@@ -42,6 +42,7 @@ namespace ShardingConnector.ParserBinder.MetaData.Schema
             List<string> tableNames;
             using (var connection = dataSource.GetDbConnection())
             {
+                await connection.OpenAsync();
                 tableNames = LoadAllTableNames(connection);
             }
 
@@ -92,6 +93,7 @@ namespace ShardingConnector.ParserBinder.MetaData.Schema
         {
             using (connection)
             {
+                connection.Open();
                 IDictionary<string, TableMetaData> result = new Dictionary<string, TableMetaData>();
                 foreach (var table in tables)
                 {

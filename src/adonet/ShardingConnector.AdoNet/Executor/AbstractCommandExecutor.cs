@@ -26,53 +26,44 @@ namespace ShardingConnector.AdoNet.Executor
     public class AbstractCommandExecutor
     {
         
-    public IDatabaseType databaseType{ get;  }
+    public IDatabaseType DatabaseType{ get;  }
     
-    public int resultSetType{ get;  }
+    public ShardingConnection Connection{ get;  }
     
-    public int resultSetConcurrency{ get;  }
+    public SqlExecutePrepareTemplate SqlExecutePrepareTemplate{ get;  }
     
-    public int resultSetHoldability{ get;  }
+    public SqlExecuteTemplate SqlExecuteTemplate{ get;  }
     
-    public ShardingConnection connection{ get;  }
+    public readonly ICollection<DbConnection> Connections = new LinkedList<DbConnection>();
     
-    public SqlExecutePrepareTemplate sqlExecutePrepareTemplate{ get;  }
+    public readonly List<List<object>> ParameterSets = new List<List<object>>();
     
-    public SqlExecuteTemplate sqlExecuteTemplate{ get;  }
-    
-    public readonly ICollection<DbConnection> connections = new LinkedList<DbConnection>();
-    
-    public readonly List<List<object>> parameterSets = new List<List<object>>();
-    
-    public readonly List<DbCommand> statements = new List<DbCommand>();
+    public readonly List<DbCommand> Statements = new List<DbCommand>();
     
     /// <summary>
     /// 并发?
     /// </summary>
-    public readonly List<DbDataReader> resultSets = new List<DbDataReader>();
+    public readonly List<DbDataReader> ResultSets = new List<DbDataReader>();
     
-    public readonly ICollection<InputGroup<CommandExecuteUnit>> inputGroups = new LinkedList<InputGroup<CommandExecuteUnit>>();
+    public readonly ICollection<InputGroup<CommandExecuteUnit>> InputGroups = new LinkedList<InputGroup<CommandExecuteUnit>>();
     
     public ISqlCommandContext<ISqlCommand> SqlStatementContext { get; set; }
     
-    public AbstractCommandExecutor(int resultSetType, int resultSetConcurrency, int resultSetHoldability, ShardingConnection shardingConnection) {
-        this.databaseType = shardingConnection.GetRuntimeContext().GetDatabaseType();
-        this.resultSetType = resultSetType;
-        this.resultSetConcurrency = resultSetConcurrency;
-        this.resultSetHoldability = resultSetHoldability;
-        this.connection = shardingConnection;
+    public AbstractCommandExecutor(ShardingConnection shardingConnection) {
+        this.DatabaseType = shardingConnection.GetRuntimeContext().GetDatabaseType();
+        this.Connection = shardingConnection;
         // int maxConnectionsSizePerQuery = connection.GetRuntimeContext().GetProperties().<Integer>getValue(ConfigurationPropertyKey.MAX_CONNECTIONS_SIZE_PER_QUERY);
          int maxConnectionsSizePerQuery = 100;
-        ExecutorEngine executorEngine = connection.GetRuntimeContext().GetExecutorEngine();
-        sqlExecutePrepareTemplate = new SqlExecutePrepareTemplate(maxConnectionsSizePerQuery);
-        sqlExecuteTemplate = new SqlExecuteTemplate(executorEngine, connection.IsHoldTransaction());
+        ExecutorEngine executorEngine = Connection.GetRuntimeContext().GetExecutorEngine();
+        SqlExecutePrepareTemplate = new SqlExecutePrepareTemplate(maxConnectionsSizePerQuery);
+        SqlExecuteTemplate = new SqlExecuteTemplate(executorEngine, Connection.IsHoldTransaction());
     }
     
     protected  void CacheStatements() {
-        foreach (var inputGroup in inputGroups)
+        foreach (var inputGroup in InputGroups)
         {
-            statements.AddAll(inputGroup.Inputs.Select(o=>o.Command).ToList());
-            parameterSets.AddAll(inputGroup.Inputs.Select(o=>o.ExecutionUnit.GetSqlUnit().GetParameters()).ToList());
+            Statements.AddAll(inputGroup.Inputs.Select(o=>o.Command).ToList());
+            ParameterSets.AddAll(inputGroup.Inputs.Select(o=>o.ExecutionUnit.GetSqlUnit().GetParameters()).ToList());
         }
     }
     
@@ -88,8 +79,8 @@ namespace ShardingConnector.AdoNet.Executor
      * @throws SQLException SQL exception
      */
     protected  List<T> ExecuteCallback<T>(SqlExecuteCallback<T> executeCallback) {
-        List<T> result = sqlExecuteTemplate.Execute(inputGroups, executeCallback);
-        refreshMetaDataIfNeeded(connection.GetRuntimeContext(), SqlStatementContext);
+        List<T> result = SqlExecuteTemplate.Execute(InputGroups, executeCallback);
+        refreshMetaDataIfNeeded(Connection.GetRuntimeContext(), SqlStatementContext);
         return result;
     }
     

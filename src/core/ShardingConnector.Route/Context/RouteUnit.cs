@@ -64,5 +64,23 @@ namespace ShardingConnector.Route.Context
             }
             return null;
         }
+
+        private bool Equals(RouteUnit other)
+        {
+            return Equals(DataSourceMapper, other.DataSourceMapper) && Equals(TableMappers, other.TableMappers);
+        }
+
+        public override bool Equals(object obj)
+        {
+            return ReferenceEquals(this, obj) || obj is RouteUnit other && Equals(other);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                return ((DataSourceMapper != null ? DataSourceMapper.GetHashCode() : 0) * 397) ^ (TableMappers != null ? TableMappers.GetHashCode() : 0);
+            }
+        }
     }
 }

@@ -53,6 +53,7 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Context
                 var dbProviderFactory = dataSource.Value;
                 using (var connection = dbProviderFactory.GetDbConnection())
                 {
+                    connection.Open();
                     result.Add(dataSource.Key,
                         new DatabaseAccessConfiguration(connection.ConnectionString, null, null));
                 }

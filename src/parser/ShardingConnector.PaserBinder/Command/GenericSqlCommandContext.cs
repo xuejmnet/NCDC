@@ -14,22 +14,22 @@ namespace ShardingConnector.ParserBinder.Command
     */
     public class GenericSqlCommandContext<T>: ISqlCommandContext<T> where T:ISqlCommand
     {
-        private readonly T sqlCommand;
+        private readonly T _sqlCommand;
 
-        private readonly TablesContext tablesContext;
+        private readonly TablesContext _tablesContext;
         public GenericSqlCommandContext(T sqlCommand)
         {
-            this.sqlCommand = sqlCommand;
-            this.tablesContext = new TablesContext(new List<SimpleTableSegment>(0));
+            this._sqlCommand = sqlCommand;
+            this._tablesContext = new TablesContext(new List<SimpleTableSegment>(0));
         }
         public T GetSqlCommand()
         {
-            return sqlCommand;
+            return _sqlCommand;
         }
 
         public TablesContext GetTablesContext()
         {
-            return tablesContext;
+            return _tablesContext;
         }
     }
 }

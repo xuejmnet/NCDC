@@ -45,6 +45,28 @@ namespace ShardingConnector.ParserBinder.MetaData.Table
             return result;
         }
 
+        private bool Equals(TableMetaData other)
+        {
+            return Equals(_columns, other._columns) && Equals(_indexes, other._indexes) && Equals(_columnNames, other._columnNames) && Equals(_primaryKeyColumns, other._primaryKeyColumns);
+        }
+
+        public override bool Equals(object obj)
+        {
+            return ReferenceEquals(this, obj) || obj is TableMetaData other && Equals(other);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hashCode = (_columns != null ? _columns.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (_indexes != null ? _indexes.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (_columnNames != null ? _columnNames.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (_primaryKeyColumns != null ? _primaryKeyColumns.GetHashCode() : 0);
+                return hashCode;
+            }
+        }
+
         private ConcurrentDictionary<string, IndexMetaData> CreateIndexes(ICollection<IndexMetaData> indexMetaDataList)
         {
             ConcurrentDictionary<string, IndexMetaData> result = new ConcurrentDictionary<string, IndexMetaData>();

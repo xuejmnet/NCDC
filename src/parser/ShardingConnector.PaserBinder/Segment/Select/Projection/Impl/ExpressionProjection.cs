@@ -25,6 +25,24 @@ namespace ShardingConnector.ParserBinder.Segment.Select.Projection.Impl
             return _expression;
         }
 
+        private bool Equals(ExpressionProjection other)
+        {
+            return _expression == other._expression && _alias == other._alias;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return ReferenceEquals(this, obj) || obj is ExpressionProjection other && Equals(other);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                return ((_expression != null ? _expression.GetHashCode() : 0) * 397) ^ (_alias != null ? _alias.GetHashCode() : 0);
+            }
+        }
+
         public string GetAlias()
         {
             return _alias;

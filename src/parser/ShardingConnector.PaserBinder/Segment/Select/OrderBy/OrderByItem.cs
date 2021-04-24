@@ -34,20 +34,14 @@ namespace ShardingConnector.ParserBinder.Segment.Select.OrderBy
             this.index = index;
         }
 
-        public override bool Equals(object obj)
-        {
-            if (null == obj || !(obj is OrderByItem))
-            {
-                return false;
-            }
-
-            OrderByItem orderByItem = (OrderByItem) obj;
-            return _segment.GetOrderDirection() == orderByItem.GetOrderByItemSegment().GetOrderDirection() && index == orderByItem.GetIndex();
-        }
-
         private bool Equals(OrderByItem other)
         {
             return Equals(_segment, other._segment) && index == other.index;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return ReferenceEquals(this, obj) || obj is OrderByItem other && Equals(other);
         }
 
         public override int GetHashCode()

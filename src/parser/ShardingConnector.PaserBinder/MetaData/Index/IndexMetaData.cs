@@ -13,6 +13,21 @@ namespace ShardingConnector.ParserBinder.MetaData.Index
             Name = name;
         }
 
+        private bool Equals(IndexMetaData other)
+        {
+            return Name == other.Name;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return ReferenceEquals(this, obj) || obj is IndexMetaData other && Equals(other);
+        }
+
+        public override int GetHashCode()
+        {
+            return (Name != null ? Name.GetHashCode() : 0);
+        }
+
         public string Name { get; }
     }
 }

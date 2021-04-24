@@ -40,6 +40,7 @@ namespace ShardingConnector.Pluggable.Prepare
             _rules = rules;
             _properties = properties;
             _metaData = metaData;
+            _rewriter = new SqlRewriteEntry(metaData.Schema, properties);
         }
 
         protected abstract List<object> CloneParameters(List<object> parameters);

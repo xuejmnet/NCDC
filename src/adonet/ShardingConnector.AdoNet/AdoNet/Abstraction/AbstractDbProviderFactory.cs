@@ -68,6 +68,7 @@ namespace ShardingConnector.AdoNet.AdoNet.Abstraction
 
             using (var connection = dataSource.GetDbConnection())
             {
+                connection.Open();
                 return DatabaseTypes.GetDatabaseTypeByUrl(connection.ConnectionString);
             }
         }

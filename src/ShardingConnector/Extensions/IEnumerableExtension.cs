@@ -22,5 +22,14 @@ namespace ShardingConnector.Extensions
         {
             return !source.Any();
         }
+
+        public static TValue Get<TKey, TValue>(this IDictionary<TKey, TValue> dic, TKey key)
+            where TKey : class
+            where TValue : class
+        {
+            if (!dic.ContainsKey(key))
+                return null;
+            return dic[key];
+        }
     }
 }

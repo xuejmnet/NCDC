@@ -47,12 +47,12 @@ namespace ShardingConnector.ParserBinder.MetaData.Column
 
             using (var dbCommand = connection.CreateCommand())
             {
-                dbCommand.CommandText = GenerateEmptyResultSQL(table, databaseType);
+                dbCommand.CommandText = GenerateEmptyResultSql(table, databaseType);
                 DbDataReader dbDataReader = null;
                 List<DbColumn> dbColumns = null;
                 try
                 {
-                    dbDataReader = dbCommand.ExecuteReader();
+                    dbDataReader = dbCommand.ExecuteReader(behavior:CommandBehavior.KeyInfo);
                     using (var schemaTable = dbDataReader.GetSchemaTable())
                     {
                         isCaseSensitive = schemaTable.CaseSensitive;
@@ -61,7 +61,7 @@ namespace ShardingConnector.ParserBinder.MetaData.Column
                         {
                             if (dbColumn.ColumnOrdinal.HasValue)
                             {
-                                result.Add(new ColumnMetaData(dbColumn.ColumnName, dbColumn.ColumnOrdinal.Value, dbColumn.DataTypeName, dbColumn.IsIdentity.GetValueOrDefault(), dbColumn.IsAutoIncrement.GetValueOrDefault(), isCaseSensitive));
+                                result.Add(new ColumnMetaData(dbColumn.ColumnName, dbColumn.ColumnOrdinal.Value, dbColumn.DataTypeName, dbColumn.IsKey.GetValueOrDefault(), dbColumn.IsAutoIncrement.GetValueOrDefault(), isCaseSensitive));
                             }
                         }
                     }
@@ -80,7 +80,7 @@ namespace ShardingConnector.ParserBinder.MetaData.Column
 
 
 
-        private static string GenerateEmptyResultSQL(string table, string databaseType)
+        private static string GenerateEmptyResultSql(string table, string databaseType)
         {
             // TODO consider add a getDialectDelimeter() interface in parse module
             string delimiterLeft;
@@ -100,7 +100,7 @@ namespace ShardingConnector.ParserBinder.MetaData.Column
                 delimiterLeft = "";
                 delimiterRight = "";
             }
-            return $"SELECT * FROM {delimiterLeft}{table}{delimiterRight} WHERE 1 != 1";
+            return $"SELECT  * FROM {delimiterLeft}{table}{delimiterRight} WHERE 1!=1";
         }
 
         private static bool IsTableExist(DbConnection connection, string table)

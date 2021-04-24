@@ -23,7 +23,8 @@ namespace ShardingConnector.Common.MetaData.Decorator
             IDictionary<string, TableMetaData> result = new Dictionary<string, TableMetaData>(schemaMetaData.GetAllTableNames().Count);
             foreach (var tableName in schemaMetaData.GetAllTableNames())
             {
-                result.Add(tableName, tableMetaDataDecorator.Decorate(schemaMetaData.Get(tableName), tableName, rule));
+                var tableMetaData = tableMetaDataDecorator.Decorate(schemaMetaData.Get(tableName), tableName, rule);
+                result.Add(tableName, tableMetaData);
             }
             return new SchemaMetaData(result);
         }

@@ -22,6 +22,24 @@ namespace ShardingConnector.Executor.Context
             return _dataSourceName;
         }
 
+        private bool Equals(ExecutionUnit other)
+        {
+            return _dataSourceName == other._dataSourceName && Equals(_sqlUnit, other._sqlUnit);
+        }
+
+        public override bool Equals(object obj)
+        {
+            return ReferenceEquals(this, obj) || obj is ExecutionUnit other && Equals(other);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                return ((_dataSourceName != null ? _dataSourceName.GetHashCode() : 0) * 397) ^ (_sqlUnit != null ? _sqlUnit.GetHashCode() : 0);
+            }
+        }
+
         public SqlUnit GetSqlUnit()
         {
             return _sqlUnit;

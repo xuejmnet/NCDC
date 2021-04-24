@@ -24,6 +24,7 @@ namespace ShardingConnector.ParserBinder.MetaData.Table
         {
             using (var connection= dataSource.GetDbConnection())
             {
+                connection.Open();
                 return new TableMetaData(ColumnMetaDataLoader.Load(connection, table, databaseType), IndexMetaDataLoader.Load(connection, table, databaseType));
             }
         }
