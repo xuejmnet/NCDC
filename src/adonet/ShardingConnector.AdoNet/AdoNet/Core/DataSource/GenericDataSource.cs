@@ -1,7 +1,7 @@
 ﻿using System.Data.Common;
-using ShardingConnector.NewConnector.DataSource.MetaData;
+using ShardingConnector.NewConnector.DataSource;
 
-namespace ShardingConnector.NewConnector.DataSource.Dialect
+namespace ShardingConnector.AdoNet.AdoNet.Core.DataSource
 {
     /*
     * @Author: xjm
@@ -10,24 +10,15 @@ namespace ShardingConnector.NewConnector.DataSource.Dialect
     * @Ver: 1.0
     * @Email: 326308290@qq.com
     */
-    public sealed class SqlServerDataSource:IDataSource
+    public sealed class GenericDataSource:IDataSource
     {
         private readonly DbProviderFactory _dbProviderFactory;
         private readonly string _connectionString;
 
-        public SqlServerDataSource(DbProviderFactory dbProviderFactory,string connectionString)
+        public GenericDataSource(DbProviderFactory dbProviderFactory,string connectionString)
         {
             _dbProviderFactory = dbProviderFactory;
             _connectionString = connectionString;
-        }
-        public string GetName()
-        {
-            return "SqlServer";
-        }
-
-        public IDataSourceMetaData GetSourceMetaData()
-        {
-            return new SqlServerDataSourceMetaData(_connectionString);
         }
 
         public DbConnection GetDbConnection()

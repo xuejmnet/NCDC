@@ -11,8 +11,6 @@ namespace ShardingConnector.NewConnector.DataSource
     */
     public interface IDataSource
     {
-        string GetName();
-        IDataSourceMetaData GetSourceMetaData();
         DbConnection GetDbConnection();
     }
 }

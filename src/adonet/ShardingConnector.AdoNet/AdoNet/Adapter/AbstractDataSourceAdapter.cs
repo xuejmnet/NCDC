@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Text;
-using ShardingConnector.AdoNet.AdoNet.Abstraction;
 using ShardingConnector.AdoNet.AdoNet.Core.Context;
 using ShardingConnector.Api.Database.DatabaseType;
 using ShardingConnector.Common.Rule;
@@ -22,13 +22,13 @@ namespace ShardingConnector.AdoNet.AdoNet.Adapter
     {
         public IDictionary<string, IDataSource> DataSourceMap { get; }
 
-        private readonly IDatabaseType _databaseType;
+        public  IDatabaseType DatabaseType{ get; }
 
 
         public AbstractDataSourceAdapter(IDictionary<string, IDataSource> dataSourceMap)
         {
             this.DataSourceMap = dataSourceMap;
-            _databaseType = CreateDatabaseType();
+            DatabaseType = CreateDatabaseType();
         }
 
         public AbstractDataSourceAdapter(IDataSource dataSource) : this(new Dictionary<string, IDataSource>() { { "unique", dataSource } })
@@ -41,7 +41,7 @@ namespace ShardingConnector.AdoNet.AdoNet.Adapter
             foreach (var dataSource in DataSourceMap)
             {
                 IDatabaseType databaseType = CreateDatabaseType(dataSource.Value);
-                var flag = result == null || result == _databaseType;
+                var flag = result == null || result == DatabaseType;
                 if (!flag)
                 {
                     throw new ShardingException($"Database type inconsistent with '{result}' and '{databaseType}'");
@@ -57,7 +57,7 @@ namespace ShardingConnector.AdoNet.AdoNet.Adapter
         {
             if (dataSource is AbstractDataSourceAdapter abstractDataSourceAdapter)
             {
-                return abstractDataSourceAdapter._databaseType;
+                return abstractDataSourceAdapter.DatabaseType;
             }
 
             using (var connection = dataSource.GetDbConnection())
@@ -65,11 +65,6 @@ namespace ShardingConnector.AdoNet.AdoNet.Adapter
                 return DatabaseTypes.GetDataBaseTypeByDbConnection(connection);
             }
         }
-
-        public IDatabaseType GetDatabaseType()
-        {
-            return _databaseType;
-        }
-        protected abstract IRuntimeContext<IBaseRule> GetRuntimeContext();
+        public abstract DbConnection GetDbConnection();
     }
 }
