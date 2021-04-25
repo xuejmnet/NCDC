@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
+using ShardingConnector.AdoNet.AdoNet.Abstraction;
 using ShardingConnector.AdoNet.AdoNet.Core.Command;
 using ShardingConnector.NewConnector.DataSource;
 using ShardingConnector.Transaction;
@@ -16,7 +17,7 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Connection
     * @Ver: 1.0
     * @Email: 326308290@qq.com
     */
-    public class ShardingConnection:DbConnection
+    public class ShardingConnection: AbstractDbConnection
     {
         private readonly IDictionary<string, IDataSource> _dataSourceMap;
         private readonly ShardingRuntimeContext _runtimeContext;
@@ -72,6 +73,16 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Connection
         {
             //return null != shardingTransactionManager && shardingTransactionManager.isInTransaction();
             return false;
+        }
+
+        public override IDictionary<string, IDataSource> GetDataSourceMap()
+        {
+            return _dataSourceMap;
+        }
+
+        public override DbConnection CreateConnection(string dataSourceName, IDataSource dataSource)
+        {
+            return dataSource.GetDbConnection();
         }
     }
 }

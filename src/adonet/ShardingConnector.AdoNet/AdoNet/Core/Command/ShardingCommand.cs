@@ -102,13 +102,12 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Command
 
         private ExecutionContext Prepare(string sql)
         {
-            // _commandExecutor.Clear();
+            _commandExecutor.Clear();
             ShardingRuntimeContext runtimeContext = ((ShardingConnection)DbConnection).GetRuntimeContext();
             BasePrepareEngine prepareEngine = new SimpleQueryPrepareEngine(
                 runtimeContext.GetRule().ToRules(), runtimeContext.GetProperties(), runtimeContext.GetMetaData(), runtimeContext.GetSqlParserEngine());
             ExecutionContext result = prepareEngine.Prepare(sql, new List<object>());
-            _commandExecutor
-            // statementExecutor.init(result);
+            _commandExecutor.Init(result);
             // statementExecutor.getStatements().forEach(this::replayMethodsInvocation);
             return result;
         }

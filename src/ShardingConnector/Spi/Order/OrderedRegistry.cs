@@ -23,5 +23,17 @@ namespace ShardingConnector.Spi.Order
 
             return result.Values;
         }
+        public static ICollection<IOrderAware> GetRegisteredOrderedAware(Type type)
+        {
+            IDictionary<int, IOrderAware> result = new SortedDictionary<int, IOrderAware>();
+            var newServiceInstances = NewInstanceServiceLoader.NewServiceInstances(type);
+            foreach (var serviceInstance in newServiceInstances)
+            {
+                var serviceOrderWareInstance = (IOrderAware)serviceInstance;
+                result.Add(serviceOrderWareInstance.GetOrder(), serviceOrderWareInstance);
+            }
+
+            return result.Values;
+        }
     }
 }

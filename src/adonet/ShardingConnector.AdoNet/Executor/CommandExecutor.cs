@@ -25,39 +25,25 @@ namespace ShardingConnector.AdoNet.Executor
         }
 
 
-        public void init(ExecutionContext executionContext)
+        public void Init(ExecutionContext executionContext)
         {
             SqlStatementContext = executionContext.GetSqlStatementContext();
-            InputGroups.AddAll();
-        getInputGroups().addAll(getExecuteGroups(executionContext.getExecutionUnits()));
-        cacheStatements();
+            InputGroups.AddAll(GetExecuteGroups(executionContext.GetExecutionUnits()));
+            CacheCommands();
         }
 
-        private ICollection<InputGroup<CommandExecuteUnit>> getExecuteGroups(ICollection<ExecutionUnit> executionUnits)
+        private ICollection<InputGroup<CommandExecuteUnit>> GetExecuteGroups(ICollection<ExecutionUnit> executionUnits)
         {
-            SqlExecutePrepareTemplate.GetExecuteUnitGroups(executionUnits,)
-            return getSqlExecutePrepareTemplate().getExecuteUnitGroups(executionUnits, new SQLExecutePrepareCallback()
-        {
-
-            @Override
-            public List<Connection> getConnections(final ConnectionMode connectionMode, final String dataSourceName, final int connectionSize) throws SQLException {
-                return StatementExecutor.super.getConnection().getConnections(connectionMode, dataSourceName, connectionSize);
-            }
-
-            @SuppressWarnings("MagicConstant")
-            @Override
-            public StatementExecuteUnit createStatementExecuteUnit(final Connection connection, final ExecutionUnit executionUnit, final ConnectionMode connectionMode) throws SQLException {
-                return new StatementExecuteUnit(executionUnit, connection.createStatement(getResultSetType(), getResultSetConcurrency(), getResultSetHoldability()), connectionMode);
-            }
-        });
-    }
-    /**
- * Execute query.
- * 
- * @return result set list
- * @throws SQLException SQL exception
- */
-    public List<IQueryEnumerator> ExecuteQuery()
+            return SqlExecutePrepareTemplate.GetExecuteUnitGroups(executionUnits,
+                new CommandGetGroupsSqlExecutePrepareCallback(this));
+        }
+        /**
+     * Execute query.
+     * 
+     * @return result set list
+     * @throws SQLException SQL exception
+     */
+        public List<IQueryEnumerator> ExecuteQuery()
         {
             var isExceptionThrown = ExecutorExceptionHandler.IsThrowException();
             SqlExecuteCallback<IQueryEnumerator> executeCallback = new SqlExecuteCallback<IQueryEnumerator>(DatabaseType, isExceptionThrown);
@@ -68,9 +54,10 @@ namespace ShardingConnector.AdoNet.Executor
         private IQueryEnumerator GetQueryEnumerator(String sql, DbCommand statement, ConnectionModeEnum connectionMode)
         {
             // DbDataReader resultSet = statement.ExecuteReader(sql);
+            statement.CommandText = sql;
             DbDataReader resultSet = statement.ExecuteReader();
             ResultSets.Add(resultSet);
-            if (ConnectionModeEnum.MEMORY_STRICTLY != connectionMode)
+            if (ConnectionModeEnum.MEMORY_STRICTLY == connectionMode)
                 return new StreamQueryDataReader(resultSet);
             return new MemoryQueryDataReader(resultSet);
         }

@@ -26,26 +26,16 @@ namespace ShardingConnector.AdoNet.Executor
         }
         public List<DbConnection> GetConnections(ConnectionModeEnum connectionMode, string dataSourceName, int connectionSize)
         {
-            return _commandExecutor.Connection.c(connectionMode, dataSourceName, connectionSize);
+            var dbConnections = _commandExecutor.Connection.GetConnections(connectionMode, dataSourceName, connectionSize);
+            dbConnections.ForEach(o=>o.Open());
+            return dbConnections;
         }
 
         public CommandExecuteUnit CreateStatementExecuteUnit(DbConnection connection, ExecutionUnit executionUnit,
             ConnectionModeEnum connectionMode)
         {
-            throw new NotImplementedException();
+            return new CommandExecuteUnit(executionUnit, connection.CreateCommand(), connectionMode);
         }
 
-
-        @Override
-        public List<Connection> getConnections(final ConnectionMode connectionMode, final String dataSourceName, final int connectionSize) throws SQLException
-        {
-    }
-
-    @SuppressWarnings("MagicConstant")
-    @Override
-    public StatementExecuteUnit createStatementExecuteUnit(final Connection connection, final ExecutionUnit executionUnit, final ConnectionMode connectionMode) throws SQLException
-    {
-    return new StatementExecuteUnit(executionUnit, connection.createStatement(getResultSetType(), getResultSetConcurrency(), getResultSetHoldability()), connectionMode);
-}
     }
 }

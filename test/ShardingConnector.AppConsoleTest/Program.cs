@@ -35,8 +35,12 @@ namespace ShardingConnector.AppConsoleTest
 
 
             var dbCommand = dbConnection.CreateCommand();
-            dbCommand.CommandText = "select * from SysUserMod";
+            dbCommand.CommandText = "select * from SysUserMod_00";
             var dbDataReader = dbCommand.ExecuteReader();
+            while (dbDataReader.Read())
+            {
+                Console.WriteLine($"{dbDataReader[0]}-{dbDataReader[1]}-{dbDataReader[2]}");
+            }
             Console.WriteLine("Hello World!");
         }
     }

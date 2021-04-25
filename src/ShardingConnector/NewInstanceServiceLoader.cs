@@ -77,6 +77,20 @@ namespace ShardingConnector
             }
             return result;
         }
+        public static ICollection<object> NewServiceInstances(Type type)
+        {
+            ICollection<object> result = new LinkedList<object>();
+            if(!ServiceMap.TryGetValue(type, out var services))
+            {
+                return result;
+            }
+
+            foreach (var service in services)
+            {
+                result.Add(Activator.CreateInstance(service));
+            }
+            return result;
+        }
 
     }
 }

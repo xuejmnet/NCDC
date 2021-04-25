@@ -65,18 +65,18 @@ namespace ShardingConnector.ShardingExecute.Execute
         {
             ExecutorExceptionHandler.SetExceptionThrow(isExceptionThrown);
             IDataSourceMetaData dataSourceMetaData = GetDataSourceMetaData(commandExecuteUnit.Command);
-            ISqlExecutionHook sqlExecutionHook = new SpiSqlExecutionHook();
+            var hookManager = SqlExecutionHookManager.GetInstance();
             try
             {
                 ExecutionUnit executionUnit = commandExecuteUnit.ExecutionUnit;
-                sqlExecutionHook.Start(executionUnit.GetDataSourceName(), executionUnit.GetSqlUnit().GetSql(), executionUnit.GetSqlUnit().GetParameters(), dataSourceMetaData, isTrunkThread, dataMap);
+                hookManager.Start(executionUnit.GetDataSourceName(), executionUnit.GetSqlUnit().GetSql(), executionUnit.GetSqlUnit().GetParameters(), dataSourceMetaData, isTrunkThread, dataMap);
                 T result = OnSqlExecute(executionUnit.GetSqlUnit().GetSql(), commandExecuteUnit.Command, commandExecuteUnit.ConnectionMode);
-                sqlExecutionHook.FinishSuccess();
+                hookManager.FinishSuccess();
                 return result;
             }
             catch (Exception ex)
             {
-                sqlExecutionHook.FinishFailure(ex);
+                hookManager.FinishFailure(ex);
                 ExecutorExceptionHandler.HandleException(ex);
                 return default;
             }
