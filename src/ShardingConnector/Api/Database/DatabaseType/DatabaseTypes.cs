@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq;
 using ShardingConnector.Exceptions;
 using ShardingConnector.Spi.DataBase.DataBaseType;
+using ShardingConnector.Spi.DataBase.DataBaseType.DataBaseDiscover;
 
 namespace ShardingConnector.Api.Database.DatabaseType
 {
@@ -18,68 +20,63 @@ namespace ShardingConnector.Api.Database.DatabaseType
     /// </summary>
     public sealed class DatabaseTypes
     {
-        
-    private static readonly IDictionary<string, IDatabaseType> DATABASE_TYPES = new Dictionary<string, IDatabaseType>();
-    
-    static DatabaseTypes()
-    {
-        var databaseTypes = ServiceLoader.Load<IDatabaseType>();
-        foreach (var databaseType in databaseTypes)
+
+        private static readonly IDictionary<string, IDatabaseType> DATABASE_TYPES = new Dictionary<string, IDatabaseType>();
+
+        static DatabaseTypes()
         {
-            DATABASE_TYPES.Add(databaseType.GetName(),databaseType);
+            var databaseTypes = ServiceLoader.Load<IDatabaseType>();
+            foreach (var databaseType in databaseTypes)
+            {
+                DATABASE_TYPES.Add(databaseType.GetName(), databaseType);
+            }
+
         }
-    }
-    
-    /**
-     * Get name of trunk database type.
-     * 
-     * @param databaseType database type
-     * @return name of trunk database type
-     */
-    public static string GetTrunkDatabaseTypeName(IDatabaseType databaseType) {
-        return databaseType is IBranchDatabaseType branchDatabaseType ? branchDatabaseType.GetTrunkDatabaseType().GetName() : databaseType.GetName();
-    }
-    
-    /**
-     * Get trunk database type.
-     *
-     * @param name database name 
-     * @return trunk database type
-     */
-    public static IDatabaseType GetTrunkDatabaseType(string name) {
-        return DATABASE_TYPES[name] is IBranchDatabaseType branchDatabaseType ? branchDatabaseType.GetTrunkDatabaseType() : GetActualDatabaseType(name);
-    }
-    
-    /**
-     * Get actual database type.
-     *
-     * @param name database name 
-     * @return actual database type
-     */
-    public static IDatabaseType GetActualDatabaseType(string name)
-    {
-        var type = DATABASE_TYPES[name];
-        if (type == null)
-            throw new ShardingException($"Unsupported database:'{name}'");
-        return  type;
-    }
-    
-    /**
-     * Get database type by URL.
-     * 
-     * @param url database URL
-     * @return database type
-     */
-    public static IDatabaseType GetDatabaseTypeByUrl(string url) {
-        return  DATABASE_TYPES.Where(o=>MatchStandardURL(url,o.Value)||MatchURLAlias(url,o.Value)).Select(o=>o.Value).FirstOrDefault()??DATABASE_TYPES["Sql92"];
-    }
-    
-    private static bool MatchStandardURL(string url, IDatabaseType databaseType) {
-        return url.StartsWith($"adonet:{databaseType.GetName().ToLower()}:");
-    }
-    
-    private static bool MatchURLAlias(string url, IDatabaseType databaseType) {
-        return databaseType.GetAdoNetUrlPrefixAlias().Any(url.StartsWith);
-    }
+
+        /**
+         * Get name of trunk database type.
+         * 
+         * @param databaseType database type
+         * @return name of trunk database type
+         */
+        public static string GetTrunkDatabaseTypeName(IDatabaseType databaseType)
+        {
+            return databaseType is IBranchDatabaseType branchDatabaseType ? branchDatabaseType.GetTrunkDatabaseType().GetName() : databaseType.GetName();
+        }
+
+        /**
+         * Get trunk database type.
+         *
+         * @param name database name 
+         * @return trunk database type
+         */
+        public static IDatabaseType GetTrunkDatabaseType(string name)
+        {
+            return DATABASE_TYPES[name] is IBranchDatabaseType branchDatabaseType ? branchDatabaseType.GetTrunkDatabaseType() : GetActualDatabaseType(name);
+        }
+
+        /**
+         * Get actual database type.
+         *
+         * @param name database name 
+         * @return actual database type
+         */
+        public static IDatabaseType GetActualDatabaseType(string name)
+        {
+            var type = DATABASE_TYPES[name];
+            if (type == null)
+                throw new ShardingException($"Unsupported database:'{name}'");
+            return type;
+        }
+
+        public static IDatabaseType GetDataBaseTypeByDbConnection(DbConnection connection)
+        {
+            var name = DataBaseTypeDiscoverManager.GetInstance().MatchName(connection);
+            if (name == null)
+                return DATABASE_TYPES["Sql92"];
+
+            return DATABASE_TYPES.Where(o => o.Value.GetName() == name).Select(o => o.Value).FirstOrDefault() ?? DATABASE_TYPES["Sql92"];
+        }
+
     }
 }

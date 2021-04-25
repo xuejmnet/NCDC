@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Common;
+using System.Text;
+using ShardingConnector.AdoNet.AdoNet.Abstraction;
 using ShardingConnector.AdoNet.AdoNet.Core.Context;
 using ShardingConnector.Api.Database.DatabaseType;
 using ShardingConnector.Common.Rule;
@@ -8,33 +9,29 @@ using ShardingConnector.Exceptions;
 using ShardingConnector.NewConnector.DataSource;
 using ShardingConnector.Spi.DataBase.DataBaseType;
 
-namespace ShardingConnector.AdoNet.AdoNet.Abstraction
+namespace ShardingConnector.AdoNet.AdoNet.Adapter
 {
     /*
     * @Author: xjm
     * @Description:
-    * @Date: 2021/04/14 10:39:39
+    * @Date: 2021/4/25 16:56:19
     * @Ver: 1.0
     * @Email: 326308290@qq.com
     */
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public abstract class AbstractDbProviderFactory : DbProviderFactory
+    public abstract class AbstractDataSourceAdapter:IDataSource
     {
-        public  IDictionary<string, IDataSource> DataSourceMap  { get; }
+        public IDictionary<string, IDataSource> DataSourceMap { get; }
 
         private readonly IDatabaseType _databaseType;
 
 
-        public AbstractDbProviderFactory(IDictionary<string, IDataSource> dataSourceMap)
+        public AbstractDataSourceAdapter(IDictionary<string, IDataSource> dataSourceMap)
         {
             this.DataSourceMap = dataSourceMap;
             _databaseType = CreateDatabaseType();
         }
 
-        public AbstractDbProviderFactory(IDataSource dataSource):this(new Dictionary<string, IDataSource>() { { "unique", dataSource } })
+        public AbstractDataSourceAdapter(IDataSource dataSource) : this(new Dictionary<string, IDataSource>() { { "unique", dataSource } })
         {
         }
 
@@ -58,7 +55,7 @@ namespace ShardingConnector.AdoNet.AdoNet.Abstraction
 
         private IDatabaseType CreateDatabaseType(IDataSource dataSource)
         {
-            if (dataSource is AbstractDbProviderFactory abstractDataSourceAdapter)
+            if (dataSource is AbstractDataSourceAdapter abstractDataSourceAdapter)
             {
                 return abstractDataSourceAdapter._databaseType;
             }
