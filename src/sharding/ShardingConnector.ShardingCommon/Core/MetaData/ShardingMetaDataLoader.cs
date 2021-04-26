@@ -137,6 +137,7 @@ namespace ShardingConnector.ShardingCommon.Core.MetaData
 
         private void throwExceptionIfNecessary(ICollection<TableMetaDataViolation> violations, string logicTableName)
         {
+            return;
             if (violations.Any())
             {
                 StringBuilder errorMessage = new StringBuilder(

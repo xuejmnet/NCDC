@@ -11,8 +11,8 @@ namespace ShardingConnector.ShardingApi.Api.Sharding.Standard
     * @Ver: 1.0
     * @Email: 326308290@qq.com
     */
-    public interface IPreciseShardingAlgorithm<T>:IShardingAlgorithm where T:IComparable
+    public interface IPreciseShardingAlgorithm<out T> : IShardingAlgorithm where T : IComparable
     {
-        string DoSharding(ICollection<string> availableTargetNames, PreciseShardingValue<T> shardingValue);
+        string DoSharding(ICollection<string> availableTargetNames, PreciseShardingValue shardingValue);
     }
 }

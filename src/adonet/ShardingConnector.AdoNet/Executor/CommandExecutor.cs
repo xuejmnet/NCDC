@@ -51,11 +51,11 @@ namespace ShardingConnector.AdoNet.Executor
             return ExecuteCallback(executeCallback);
         }
 
-        private IQueryEnumerator GetQueryEnumerator(String sql, DbCommand statement, ConnectionModeEnum connectionMode)
+        private IQueryEnumerator GetQueryEnumerator(string sql, DbCommand command, ConnectionModeEnum connectionMode)
         {
-            // DbDataReader resultSet = statement.ExecuteReader(sql);
-            statement.CommandText = sql;
-            DbDataReader resultSet = statement.ExecuteReader();
+            // DbDataReader resultSet = command.ExecuteReader(sql);
+            command.CommandText = sql;
+            DbDataReader resultSet = command.ExecuteReader();
             ResultSets.Add(resultSet);
             if (ConnectionModeEnum.MEMORY_STRICTLY == connectionMode)
                 return new StreamQueryDataReader(resultSet);

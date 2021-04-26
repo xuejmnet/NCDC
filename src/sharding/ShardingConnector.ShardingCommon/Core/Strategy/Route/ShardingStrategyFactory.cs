@@ -1,5 +1,8 @@
-﻿using ShardingConnector.Api.Config.Strategy;
+﻿using ShardingConnector.ShardingApi.Api.Config.Sharding.Strategy;
+using ShardingConnector.ShardingCommon.Core.Strategy.Route.Complex;
+using ShardingConnector.ShardingCommon.Core.Strategy.Route.Hint;
 using ShardingConnector.ShardingCommon.Core.Strategy.Route.None;
+using ShardingConnector.ShardingCommon.Core.Strategy.Route.Standard;
 
 namespace ShardingConnector.ShardingCommon.Core.Strategy.Route
 {
@@ -22,18 +25,15 @@ namespace ShardingConnector.ShardingCommon.Core.Strategy.Route
         }
         
         public static IShardingStrategy NewInstance(IShardingStrategyConfiguration shardingStrategyConfig) {
-            // if (shardingStrategyConfig instanceof StandardShardingStrategyConfiguration) {
-            //     return new StandardShardingStrategy((StandardShardingStrategyConfiguration) shardingStrategyConfig);
-            // }
-            // if (shardingStrategyConfig instanceof InlineShardingStrategyConfiguration) {
-            //     return new InlineShardingStrategy((InlineShardingStrategyConfiguration) shardingStrategyConfig);
-            // }
-            // if (shardingStrategyConfig instanceof ComplexShardingStrategyConfiguration) {
-            //     return new ComplexShardingStrategy((ComplexShardingStrategyConfiguration) shardingStrategyConfig);
-            // }
-            // if (shardingStrategyConfig instanceof HintShardingStrategyConfiguration) {
-            //     return new HintShardingStrategy((HintShardingStrategyConfiguration) shardingStrategyConfig);
-            // }
+            if (shardingStrategyConfig is StandardShardingStrategyConfiguration shardingStrategyConfiguration) {
+                return new StandardShardingStrategy(shardingStrategyConfiguration);
+            }
+            if (shardingStrategyConfig is ComplexShardingStrategyConfiguration complexShardingStrategyConfiguration) {
+                return new ComplexShardingStrategy(complexShardingStrategyConfiguration);
+            }
+            if (shardingStrategyConfig is HintShardingStrategyConfiguration hintShardingStrategyConfiguration) {
+                return new HintShardingStrategy(hintShardingStrategyConfiguration);
+            }
             return new NoneShardingStrategy();
         }
     }

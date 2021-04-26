@@ -29,7 +29,7 @@ namespace ShardingConnector.ParserBinder.Segment.Insert.Keygen
             return _columnName;
         }
 
-        public bool GetGenerated()
+        public bool IsGenerated()
         {
             return _generated;
         }

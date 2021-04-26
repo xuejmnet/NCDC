@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using ShardingConnector.Api.Config.Strategy;
 using ShardingConnector.Common.Config;
 using ShardingConnector.ShardingApi.Api.Config.MasterSlave;
+using ShardingConnector.ShardingApi.Api.Config.Sharding.Strategy;
 
 namespace ShardingConnector.ShardingApi.Api.Config.Sharding
 {

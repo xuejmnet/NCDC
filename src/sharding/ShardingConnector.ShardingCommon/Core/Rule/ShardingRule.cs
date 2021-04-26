@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using ShardingConnector.Api.Config.Strategy;
 using ShardingConnector.Common.Config;
 using ShardingConnector.Common.Rule;
 using ShardingConnector.Exceptions;
 using ShardingConnector.Extensions;
 using ShardingConnector.ShardingApi.Api.Config.MasterSlave;
 using ShardingConnector.ShardingApi.Api.Config.Sharding;
+using ShardingConnector.ShardingApi.Api.Config.Sharding.Strategy;
 using ShardingConnector.ShardingApi.Spi.KeyGen;
 using ShardingConnector.ShardingCommon.Core.Strategy.Route;
 using ShardingConnector.ShardingCommon.Core.Strategy.Route.None;

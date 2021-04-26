@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using ShardingConnector.Exceptions;
 
 namespace ShardingConnector.Base
 {
@@ -26,7 +27,7 @@ namespace ShardingConnector.Base
         {
             if (argument == null)
             {
-                throw new ArgumentNullException(name);
+                throw new ShardingAssertException(name);
             }
         }
 
@@ -43,8 +44,29 @@ namespace ShardingConnector.Base
             CantBeNull(checkFunc, "checkFunc");
             if (!checkFunc(argument))
             {
-                throw new ArgumentException(formattedError);
+                throw new ShardingAssertException(formattedError);
             }
+        }
+
+        public static void ShouldBeTrue(bool check, string msg)
+        {
+            if (!check)
+                throw new ShardingAssertException(msg);
+        }
+        public static void ShouldBeFalse(bool check, string msg)
+        {
+            if (!check)
+                throw new ShardingAssertException(msg);
+        }
+        public static void If(bool check, string msg)
+        {
+            if (check)
+                throw new ShardingAssertException(msg);
+        }
+        public static void Else(bool check, string msg)
+        {
+            if (!check)
+                throw new ShardingAssertException(msg);
         }
     }
 }

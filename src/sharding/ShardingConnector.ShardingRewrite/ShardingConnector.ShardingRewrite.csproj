@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\antlr4\ShardingConnector.SqlServerParser\ShardingConnector.SqlServerParser.csproj" />
+    <ProjectReference Include="..\..\core\ShardingConnector.RewriteEngine\ShardingConnector.RewriteEngine.csproj" />
+    <ProjectReference Include="..\ShardingConnector.ShardingRoute\ShardingConnector.ShardingRoute.csproj" />
+  </ItemGroup>
+
+</Project>

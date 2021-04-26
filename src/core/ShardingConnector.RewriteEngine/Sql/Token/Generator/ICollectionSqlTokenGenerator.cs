@@ -11,7 +11,7 @@ namespace ShardingConnector.RewriteEngine.Sql.Token.Generator
 * @Date: Monday, 12 April 2021 21:46:30
 * @Email: 326308290@qq.com
 */
-    public interface ICollectionSqlTokenGenerator<T>:ISqlTokenGenerator where T:ISqlCommandContext<ISqlCommand>
+    public interface ICollectionSqlTokenGenerator<in T>:ISqlTokenGenerator where T:ISqlCommandContext<ISqlCommand>
     {
         ICollection<SqlToken> GenerateSQLTokens(T sqlCommandContext);
     }

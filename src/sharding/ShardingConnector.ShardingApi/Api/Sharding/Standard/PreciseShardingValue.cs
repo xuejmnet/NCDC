@@ -11,17 +11,20 @@ namespace ShardingConnector.ShardingApi.Api.Sharding.Standard
     * @Ver: 1.0
     * @Email: 326308290@qq.com
     */
-    public sealed class PreciseShardingValue<T>:IShardingValue where T:IComparable
+    public sealed class PreciseShardingValue: IShardingValue
     {
-        public PreciseShardingValue(string logicTableName, string columnName, T value)
+
+        public string LogicTableName { get; }
+        public string ColumnName { get; set; }
+
+        public IComparable Value { get; }
+
+        public PreciseShardingValue(string logicTableName, string columnName, IComparable value) 
         {
+            
             LogicTableName = logicTableName;
             ColumnName = columnName;
             Value = value;
         }
-
-        public string LogicTableName { get; }
-        public string ColumnName { get; set; }
-        public T Value { get; }
     }
 }

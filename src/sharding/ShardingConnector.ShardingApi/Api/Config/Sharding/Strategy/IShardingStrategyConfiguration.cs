@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace ShardingConnector.Api.Config.Strategy
+﻿namespace ShardingConnector.ShardingApi.Api.Config.Sharding.Strategy
 {
     /*
     * @Author: xjm

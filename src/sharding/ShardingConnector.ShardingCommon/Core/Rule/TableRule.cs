@@ -74,12 +74,13 @@ namespace ShardingConnector.ShardingCommon.Core.Rule
             string defaultGenerateKeyColumn)
         {
             LogicTable = tableRuleConfig.LogicTable.ToLower();
-            // List<string> dataNodes = new InlineExpressionParser(tableRuleConfig.GetActualDataNodes()).splitAndEvaluate();
-            // dataNodeIndexMap = new HashMap<>(dataNodes.size(), 1);
-            dataNodeIndexMap = new Dictionary<DataNode, int>();
-            // actualDataNodes = IsEmptyDataNodes(dataNodes)
-            //     ? GenerateDataNodes(tableRuleConfig.LogicTable, shardingDataSourceNames.DataSourceNames) : GenerateDataNodes(dataNodes, shardingDataSourceNames.getDataSourceNames());
-            ActualDataNodes = GenerateDataNodes(tableRuleConfig.LogicTable, shardingDataSourceNames.DataSourceNames);
+            List<string> dataNodes = tableRuleConfig.ActualDataNodes ?? new List<string>(0);
+             // List<string> dataNodes = new InlineExpressionParser(tableRuleConfig.GetActualDataNodes()).splitAndEvaluate();
+             // dataNodeIndexMap = new HashMap<>(dataNodes.size(), 1);
+            dataNodeIndexMap = new Dictionary<DataNode, int>(dataNodes.Count);
+            ActualDataNodes = IsEmptyDataNodes(dataNodes)
+                ? GenerateDataNodes(tableRuleConfig.LogicTable, shardingDataSourceNames.DataSourceNames) : GenerateDataNodes(dataNodes, shardingDataSourceNames.DataSourceNames);
+            //ActualDataNodes = GenerateDataNodes(tableRuleConfig.LogicTable, shardingDataSourceNames.DataSourceNames);
             actualTables = GetActualTables();
             DatabaseShardingStrategy = null == tableRuleConfig.DatabaseShardingStrategyConfig
                 ? null
@@ -113,21 +114,21 @@ namespace ShardingConnector.ShardingCommon.Core.Rule
             return ActualDataNodes.Select(o => o.GetTableName()).ToHashSet();
         }
 
-        private void AddActualTable(string datasourceName, string tableName)
+        private void AddActualTable(string dataSourceName, string tableName)
         {
-            ICollection<string> datasourceToTables = null;
-            if (DatasourceToTablesMap.ContainsKey(datasourceName))
+            ICollection<string> dataSourceToTables = null;
+            if (DatasourceToTablesMap.ContainsKey(dataSourceName))
             {
-                datasourceToTables = DatasourceToTablesMap[datasourceName];
+                dataSourceToTables = DatasourceToTablesMap[dataSourceName];
             }
 
-            if (datasourceToTables == null)
+            if (dataSourceToTables == null)
             {
-                datasourceToTables = new LinkedList<string>();
-                DatasourceToTablesMap.Add(datasourceName, datasourceToTables);
+                dataSourceToTables = new LinkedList<string>();
+                DatasourceToTablesMap.Add(dataSourceName, dataSourceToTables);
             }
 
-            datasourceToTables.Add(tableName);
+            dataSourceToTables.Add(tableName);
         }
 
         private bool ContainsKeyGeneratorConfiguration(TableRuleConfiguration tableRuleConfiguration)
@@ -181,6 +182,11 @@ namespace ShardingConnector.ShardingCommon.Core.Rule
             return result.ToList();
         }
 
+        //public void AddDataNode(DataNode dataNode)
+        //{
+        //    ActualDataNodes.Add(dataNode);
+        //}
+
         /**
      * Get data node groups.
      *
@@ -202,7 +208,6 @@ namespace ShardingConnector.ShardingCommon.Core.Rule
 
             return result;
         }
-
         /**
      * Get actual data source names.
      *
