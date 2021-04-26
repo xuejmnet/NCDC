@@ -31,5 +31,14 @@ namespace ShardingConnector.Extensions
                 return null;
             return dic[key];
         }
+
+        public static T Next<T>(this IEnumerator<T> enumerator)
+        {
+            if (!enumerator.MoveNext()) {
+                throw new InvalidOperationException();
+            } else {
+                return enumerator.Current;
+            }
+        }
     }
 }

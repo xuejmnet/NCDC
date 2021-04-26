@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using ShardingConnector.Base;
 using ShardingConnector.CommandParser.Command;
+using ShardingConnector.Extensions;
 using ShardingConnector.ParserBinder.Command;
 using ShardingConnector.ParserBinder.Command.DML;
 using ShardingConnector.RewriteEngine.Parameter.Builder;
@@ -27,20 +29,21 @@ namespace ShardingConnector.ShardingRewrite.Parameter.Impl
 
         }
 
-        public void Rewrite(IParameterBuilder parameterBuilder, InsertCommandContext insertCommandContext, List<object> parameters)
+        public void Rewrite(IParameterBuilder parameterBuilder, ISqlCommandContext<ISqlCommand> sqlCommandContext, List<object> parameters)
         {
+            var insertCommandContext = (InsertCommandContext)sqlCommandContext;
             ShardingAssert.CantBeNull(insertCommandContext.GetGeneratedKeyContext(), "insertCommandContext.GetGeneratedKeyContext is required");
             ((GroupedParameterBuilder)parameterBuilder).SetDerivedColumnName(insertCommandContext.GetGeneratedKeyContext().GetColumnName());
-            Iterator < Comparable <?>> generatedValues = insertStatementContext.getGeneratedKeyContext().get().getGeneratedValues().descendingIterator();
+            var generatedValues = insertCommandContext.GetGeneratedKeyContext().GetGeneratedValues().Reverse().GetEnumerator();
             int count = 0;
             int parametersCount = 0;
-            for (List<Object> each : insertStatementContext.getGroupedParameters())
+            foreach (var groupedParameter in insertCommandContext.GetGroupedParameters())
             {
-                parametersCount += insertStatementContext.getInsertValueContexts().get(count).getParametersCount();
-                Comparable <?> generatedValue = generatedValues.next();
-                if (!each.isEmpty())
+                parametersCount += insertCommandContext.GetInsertValueContexts()[count].GetParametersCount();
+                var generatedValue = generatedValues.Next();
+                if (groupedParameter.Any())
                 {
-                    ((GroupedParameterBuilder)parameterBuilder).getParameterBuilders().get(count).addAddedParameters(parametersCount, Lists.newArrayList(generatedValue));
+                    ((GroupedParameterBuilder)parameterBuilder).GetParameterBuilders()[count].AddAddedParameters(parametersCount, new List<object>(){generatedValue});
                 }
                 count++;
             }

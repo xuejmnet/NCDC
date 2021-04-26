@@ -88,5 +88,10 @@ namespace ShardingConnector.ParserBinder.Command.DML
         {
             return new List<SimpleTableSegment>() { GetSqlCommand().Table };
         }
+
+        public List<InsertValueContext> GetInsertValueContexts()
+        {
+            return _insertValueContexts;
+        }
     }
 }

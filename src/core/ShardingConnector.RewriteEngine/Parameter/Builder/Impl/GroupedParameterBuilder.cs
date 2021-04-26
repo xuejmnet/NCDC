@@ -66,5 +66,10 @@ namespace ShardingConnector.RewriteEngine.Parameter.Builder.Impl
             }
             return result;
         }
+
+        public List<StandardParameterBuilder> GetParameterBuilders()
+        {
+            return _parameterBuilders;
+        }
     }
 }

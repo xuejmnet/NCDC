@@ -5,6 +5,11 @@ using ShardingConnector.CommandParser.Command;
 using ShardingConnector.ParserBinder.Command;
 using ShardingConnector.ParserBinder.MetaData.Schema;
 using ShardingConnector.RewriteEngine.Parameter.Rewrite;
+using ShardingConnector.RewriteEngine.Sql.Token.Generator.Aware;
+using ShardingConnector.Route.Context;
+using ShardingConnector.ShardingCommon.Core.Rule;
+using ShardingConnector.ShardingCommon.Core.Rule.Aware;
+using ShardingConnector.ShardingRewrite.Parameter.Impl;
 
 namespace ShardingConnector.ShardingRewrite.Parameter
 {
@@ -17,12 +22,22 @@ namespace ShardingConnector.ShardingRewrite.Parameter
     */
     public sealed class ShardingParameterRewriterBuilder:IParameterRewriterBuilder
     {
+        private readonly ShardingRule _shardingRule;
+
+        private readonly RouteContext _routeContext;
+
+        public ShardingParameterRewriterBuilder(ShardingRule shardingRule, RouteContext routeContext)
+        {
+            this._shardingRule = shardingRule;
+            this._routeContext = routeContext;
+        }
+
         public ICollection<IParameterRewriter<ISqlCommandContext<ISqlCommand>>> GetParameterRewriters(SchemaMetaData schemaMetaData)
         {
             ICollection<IParameterRewriter<ISqlCommandContext<ISqlCommand>>> result = GetParameterRewriters();
-            for (ParameterRewriter each : result)
+            foreach (var parameterRewriter in result)
             {
-                setUpParameterRewriters(each, schemaMetaData);
+                SetUpParameterRewriters(parameterRewriter, schemaMetaData);
             }
             return result;
         }
@@ -35,16 +50,16 @@ namespace ShardingConnector.ShardingRewrite.Parameter
             return result;
         }
 
-        private void setUpParameterRewriters(final ParameterRewriter parameterRewriter, final SchemaMetaData schemaMetaData)
+        private void SetUpParameterRewriters(IParameterRewriter<ISqlCommandContext<ISqlCommand>> parameterRewriter, SchemaMetaData schemaMetaData)
         {
-            if (parameterRewriter instanceof SchemaMetaDataAware) {
-                ((SchemaMetaDataAware)parameterRewriter).setSchemaMetaData(schemaMetaData);
+            if (parameterRewriter is ISchemaMetaDataAware schemaMetaDataAware) {
+                schemaMetaDataAware.SetSchemaMetaData(schemaMetaData);
             }
-            if (parameterRewriter instanceof ShardingRuleAware) {
-                ((ShardingRuleAware)parameterRewriter).setShardingRule(shardingRule);
+            if (parameterRewriter is IShardingRuleAware shardingRuleAware) {
+                shardingRuleAware.SetShardingRule(_shardingRule);
             }
-            if (parameterRewriter instanceof RouteContextAware) {
-                ((RouteContextAware)parameterRewriter).setRouteContext(routeContext);
+            if (parameterRewriter is IRouteContextAware routeContextAware) {
+                routeContextAware.SetRouteContext(_routeContext);
             }
         }
     }

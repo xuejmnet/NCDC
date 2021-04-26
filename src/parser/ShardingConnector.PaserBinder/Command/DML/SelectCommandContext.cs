@@ -294,5 +294,10 @@ namespace ShardingConnector.ParserBinder.Command.DML
             return _groupByContext;
         }
 
+        public PaginationContext GetPaginationContext()
+        {
+            return _paginationContext;
+        }
+
     }
 }

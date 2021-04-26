@@ -14,7 +14,7 @@ namespace ShardingConnector.RewriteEngine.Parameter.Rewrite
     * @Ver: 1.0
     * @Email: 326308290@qq.com
     */
-    public interface IParameterRewriter<T> where T:ISqlCommandContext<ISqlCommand>
+    public interface IParameterRewriter<out T> where T:ISqlCommandContext<ISqlCommand>
     {
         /**
          * Judge whether need rewrite.
@@ -31,6 +31,6 @@ namespace ShardingConnector.RewriteEngine.Parameter.Rewrite
          * @param sqlStatementContext SQL statement context
          * @param parameters SQL parameters
          */
-        void Rewrite(IParameterBuilder parameterBuilder, T sqlCommandContext, List<object> parameters);
+        void Rewrite(IParameterBuilder parameterBuilder, ISqlCommandContext<ISqlCommand> sqlCommandContext, List<object> parameters);
     }
 }

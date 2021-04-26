@@ -19,5 +19,11 @@ namespace ShardingConnector.Extensions
                 return false;
             return source.Equals(target, StringComparison.OrdinalIgnoreCase);
         }
+
+        public static void IfPresent<T>(this T source, Action<T> action)
+        {
+            if (source != null)
+                action(source);
+        }
     }
 }
