@@ -50,6 +50,11 @@ namespace ShardingConnector.CommandParser.Constant
         {
             return _endDelimiter;
         }
+
+        public static QuoteCharacter Get(QuoteCharacterEnum quoteCharacterEnum)
+        {
+            return _quotes[quoteCharacterEnum];
+        }
     }
 
     public enum QuoteCharacterEnum

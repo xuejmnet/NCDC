@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Text;
 using ShardingConnector.Common.Config.Properties;
+using ShardingConnector.Extensions;
 using ShardingConnector.RewriteEngine.Context;
 using ShardingConnector.RewriteEngine.Sql.Token.Generator.Aware;
 using ShardingConnector.Route.Context;
 using ShardingConnector.ShardingCommon.Core.Rule;
+using ShardingConnector.ShardingRewrite.Parameter;
 
 namespace ShardingConnector.ShardingRewrite.Context
 {
@@ -19,20 +21,17 @@ namespace ShardingConnector.ShardingRewrite.Context
     public sealed class ShardingSqlRewriteContextDecorator:ISqlRewriteContextDecorator<ShardingRule>,IRouteContextAware
     {
         private RouteContext routeContext;
-        public void Decorate(ShardingRule rule, ConfigurationProperties properties, SqlRewriteContext sqlRewriteContext)
+        public void Decorate(ShardingRule shardingRule, ConfigurationProperties properties, SqlRewriteContext sqlRewriteContext)
         {
-            foreach (var VARIABLE in COLLECTION)
+            var parameterRewriters = new ShardingParameterRewriterBuilder(shardingRule, routeContext).GetParameterRewriters(sqlRewriteContext.GetSchemaMetaData());
+            foreach (var parameterRewriter in parameterRewriters)
             {
-                
-            }
-            for (ParameterRewriter each : new ShardingParameterRewriterBuilder(shardingRule, routeContext).getParameterRewriters(sqlRewriteContext.getSchemaMetaData()))
-            {
-                if (!sqlRewriteContext.getParameters().isEmpty() && each.isNeedRewrite(sqlRewriteContext.getSqlStatementContext()))
+                if (!sqlRewriteContext.GetParameters().IsEmpty() && parameterRewriter.IsNeedRewrite(sqlRewriteContext.GetSqlCommandContext()))
                 {
-                    each.rewrite(sqlRewriteContext.getParameterBuilder(), sqlRewriteContext.getSqlStatementContext(), sqlRewriteContext.getParameters());
+                    parameterRewriter.Rewrite(sqlRewriteContext.GetParameterBuilder(), sqlRewriteContext.GetSqlCommandContext(), sqlRewriteContext.GetParameters());
                 }
             }
-            sqlRewriteContext.addSQLTokenGenerators(new ShardingTokenGenerateBuilder(shardingRule, routeContext).getSQLTokenGenerators());
+            sqlRewriteContext.AddSqlTokenGenerators(new ShardingTokenGenerateBuilder(shardingRule, routeContext).getSQLTokenGenerators());
 
         }
 

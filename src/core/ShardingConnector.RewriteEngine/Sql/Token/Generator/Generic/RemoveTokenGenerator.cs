@@ -17,7 +17,7 @@ namespace ShardingConnector.RewriteEngine.Sql.Token.Generator.Generic
 */
     public sealed class RemoveTokenGenerator:ICollectionSqlTokenGenerator<ISqlCommandContext<ISqlCommand>>
     {
-        // public ICollection<SqlToken> GenerateSQLTokens(ISqlCommandContext<ISqlCommand> sqlCommandContext)
+        // public ICollection<SqlToken> GenerateSqlTokens(ISqlCommandContext<ISqlCommand> sqlCommandContext)
         // { 
         //     if (sqlCommandContext.GetSqlCommand() is ShowTablesStatement) {
         //         Preconditions.checkState(((ShowTablesStatement) sqlStatementContext.getSqlStatement()).getFromSchema().isPresent());
@@ -49,7 +49,7 @@ namespace ShardingConnector.RewriteEngine.Sql.Token.Generator.Generic
         //     }
         //     return false;
         // }
-        public ICollection<SqlToken> GenerateSQLTokens(ISqlCommandContext<ISqlCommand> sqlCommandContext)
+        public ICollection<SqlToken> GenerateSqlTokens(ISqlCommandContext<ISqlCommand> sqlCommandContext)
         {
             if (sqlCommandContext.GetSqlCommand() is ShowTablesCommand showTablesCommand)
             {

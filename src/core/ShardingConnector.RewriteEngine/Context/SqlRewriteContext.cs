@@ -84,7 +84,23 @@ namespace ShardingConnector.RewriteEngine.Context
         {
             return _parameterBuilder;
         }
-        
-        
+
+        public SchemaMetaData GetSchemaMetaData()
+        {
+            return _schemaMetaData;
+        }
+
+        public List<object> GetParameters()
+        {
+            return _parameters;
+        }
+
+        public ISqlCommandContext<ISqlCommand> GetSqlCommandContext()
+        {
+            return _sqlCommandContext;
+
+        }
+
+
     }
 }

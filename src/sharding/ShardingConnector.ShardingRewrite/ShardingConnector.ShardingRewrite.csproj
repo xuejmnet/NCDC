@@ -10,8 +10,4 @@
     <ProjectReference Include="..\ShardingConnector.ShardingRoute\ShardingConnector.ShardingRoute.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Token" />
-  </ItemGroup>
-
 </Project>

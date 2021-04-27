@@ -10,7 +10,7 @@ namespace ShardingConnector.CommandParser.Value.Identifier
     * @Ver: 1.0
     * @Email: 326308290@qq.com
     */
-    public sealed class IdentifierValue: IValueASTNode<string>
+    public sealed class IdentifierValue : IValueASTNode<string>
     {
         private readonly string _value;
 
@@ -24,6 +24,11 @@ namespace ShardingConnector.CommandParser.Value.Identifier
         public string GetValue()
         {
             return _value;
+        }
+
+        public QuoteCharacterEnum GetQuoteCharacter()
+        {
+            return _quoteCharacterEnum;
         }
     }
 }

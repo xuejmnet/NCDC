@@ -11,6 +11,6 @@ namespace ShardingConnector.RewriteEngine.Sql.Token.Generator.Builder
     public interface ISqlTokenGeneratorBuilder
     {
         
-        ICollection<ISqlTokenGenerator> GetSQLTokenGenerators();
+        ICollection<ISqlTokenGenerator> GetSqlTokenGenerators();
     }
 }

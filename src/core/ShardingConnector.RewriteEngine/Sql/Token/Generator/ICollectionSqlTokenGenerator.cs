@@ -13,6 +13,6 @@ namespace ShardingConnector.RewriteEngine.Sql.Token.Generator
 */
     public interface ICollectionSqlTokenGenerator<in T>:ISqlTokenGenerator where T:ISqlCommandContext<ISqlCommand>
     {
-        ICollection<SqlToken> GenerateSQLTokens(T sqlCommandContext);
+        ICollection<SqlToken> GenerateSqlTokens(T sqlCommandContext);
     }
 }
