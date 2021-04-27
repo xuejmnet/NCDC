@@ -14,7 +14,7 @@ namespace ShardingConnector.RewriteEngine.Sql.Token.SimpleObject.Generic
     * @Ver: 1.0
     * @Email: 326308290@qq.com
     */
-    public sealed class InsertValue
+    public  class InsertValue
     {
         private readonly List<IExpressionSegment> _values;
 

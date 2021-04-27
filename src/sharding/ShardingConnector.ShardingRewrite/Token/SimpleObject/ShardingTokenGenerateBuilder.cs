@@ -5,6 +5,8 @@ using ShardingConnector.RewriteEngine.Sql.Token.Generator;
 using ShardingConnector.RewriteEngine.Sql.Token.Generator.Builder;
 using ShardingConnector.Route.Context;
 using ShardingConnector.ShardingCommon.Core.Rule;
+using ShardingConnector.ShardingCommon.Core.Rule.Aware;
+using ShardingConnector.ShardingRewrite.Token.Generator.Impl;
 
 namespace ShardingConnector.ShardingRewrite.Token.SimpleObject
 {
@@ -24,11 +26,11 @@ namespace ShardingConnector.ShardingRewrite.Token.SimpleObject
     public ICollection<ISqlTokenGenerator> GetSqlTokenGenerators()
         {
             ICollection<ISqlTokenGenerator> result = BuildSqlTokenGenerators();
-            for (SQLTokenGenerator each : result)
-            {
-                if (each instanceof ShardingRuleAware) {
-                ((ShardingRuleAware)each).setShardingRule(shardingRule);
-            }
+                foreach (var sqlTokenGenerator in result)
+                {
+                    if (sqlTokenGenerator is IShardingRuleAware shardingRuleAware) {
+                        shardingRuleAware.SetShardingRule(shardingRule);
+                }
             if (each instanceof RouteContextAware) {
                 ((RouteContextAware)each).setRouteContext(routeContext);
             }

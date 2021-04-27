@@ -93,5 +93,10 @@ namespace ShardingConnector.ParserBinder.Command.DML
         {
             return _insertValueContexts;
         }
+
+        public List<string> GetColumnNames()
+        {
+            return _columnNames;
+        }
     }
 }

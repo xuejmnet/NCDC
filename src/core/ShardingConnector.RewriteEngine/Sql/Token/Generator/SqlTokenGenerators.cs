@@ -97,7 +97,7 @@ namespace ShardingConnector.RewriteEngine.Sql.Token.Generator
 
             if (sqlTokenGenerator is IPreviousSqlTokensAware previousSqlTokensAware)
             {
-                previousSqlTokensAware.SetPreviousSQLTokens(previousSqlTokens);
+                previousSqlTokensAware.SetPreviousSqlTokens(previousSqlTokens);
             }
         }
     }

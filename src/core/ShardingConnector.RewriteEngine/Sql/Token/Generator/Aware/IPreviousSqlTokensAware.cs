@@ -12,6 +12,6 @@ namespace ShardingConnector.RewriteEngine.Sql.Token.Generator.Aware
     */
    public interface IPreviousSqlTokensAware
     {
-        void SetPreviousSQLTokens(ICollection<SqlToken> previousSQLTokens);
+        void SetPreviousSqlTokens(ICollection<SqlToken> previousSqlTokens);
     }
 }

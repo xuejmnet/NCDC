@@ -10,16 +10,16 @@ namespace ShardingConnector.ParserBinder.Segment.Select.Projection.Impl
 */
     public sealed class AggregationDistinctProjection:AggregationProjection
     {
-        private readonly int _startIndex;
+        public  int StartIndex { get; }
     
-        private readonly int _stopIndex;
+        public  int StopIndex{ get; }
     
         private readonly string _distinctInnerExpression;
         public AggregationDistinctProjection(int startIndex,int stopIndex,AggregationTypeEnum type, string innerExpression, string alias,string distinctInnerExpression) 
             : base(type, innerExpression, alias)
         {
-            _startIndex = startIndex;
-            _stopIndex = stopIndex;
+            StartIndex = startIndex;
+            StopIndex = stopIndex;
             _distinctInnerExpression = distinctInnerExpression;
         }
         

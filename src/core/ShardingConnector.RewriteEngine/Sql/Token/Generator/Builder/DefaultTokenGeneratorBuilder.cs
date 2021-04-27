@@ -11,7 +11,7 @@ namespace ShardingConnector.RewriteEngine.Sql.Token.Generator.Builder
 */
     public class DefaultTokenGeneratorBuilder:ISqlTokenGeneratorBuilder
     {
-        public ICollection<ISqlTokenGenerator> GetSQLTokenGenerators()
+        public ICollection<ISqlTokenGenerator> GetSqlTokenGenerators()
         {
             ICollection<ISqlTokenGenerator> result = new LinkedList<ISqlTokenGenerator>();
             result.Add(new RemoveTokenGenerator());

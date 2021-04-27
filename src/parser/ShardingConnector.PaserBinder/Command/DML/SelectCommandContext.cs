@@ -298,6 +298,10 @@ namespace ShardingConnector.ParserBinder.Command.DML
         {
             return _paginationContext;
         }
+        public OrderByContext GetOrderByContext()
+        {
+            return _orderByContext;
+        }
 
     }
 }
