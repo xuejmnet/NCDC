@@ -10,8 +10,4 @@
     <ProjectReference Include="..\ShardingConnector.ShardingCommon\ShardingConnector.ShardingCommon.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Engine\RouteType\Complex\" />
-  </ItemGroup>
-
 </Project>

@@ -21,42 +21,42 @@ namespace ShardingConnector.ShardingRoute.Engine.RouteType.Broadcast
         public RouteResult Route(ShardingRule shardingRule)
         {
             RouteResult result = new RouteResult();
-            ICollection<ISet<string>> broadcastDataSourceGroup = getBroadcastDataSourceGroup(getDataSourceGroup(shardingRule));
-            for (Set<String> each : broadcastDataSourceGroup)
+            ICollection<ISet<string>> broadcastDataSourceGroup = GetBroadcastDataSourceGroup(getDataSourceGroup(shardingRule));
+            foreach (var broadcastDataSource in broadcastDataSourceGroup)
             {
-                String dataSourceName = getRandomDataSourceName(each);
-                result.getRouteUnits().add(new RouteUnit(new RouteMapper(dataSourceName, dataSourceName), Collections.emptyList()));
+                var dataSourceName = GetRandomDataSourceName(broadcastDataSource);
+                result.GetRouteUnits().Add(new RouteUnit(new RouteMapper(dataSourceName, dataSourceName), new List<RouteMapper>(0)));
             }
             return result;
         }
 
-        private ICollection<ISet<String>> getBroadcastDataSourceGroup(final ICollection<Set<String>> dataSourceGroup)
+        private ICollection<ISet<string>> GetBroadcastDataSourceGroup(ICollection<ISet<string>> dataSourceGroup)
         {
-            ICollection<ISet<String>> result = new LinkedList<>();
-            for (Set<String> each : dataSourceGroup)
+            ICollection<ISet<string>> result = new LinkedList<ISet<string>>();
+            foreach (var dataSource in dataSourceGroup)
             {
-                result = getCandidateDataSourceGroup(result, each);
+                result=GetCandidateDataSourceGroup(result, dataSource);
             }
             return result;
         }
 
-        private ICollection<ISet<String>> getDataSourceGroup(final ShardingRule shardingRule)
+        private ICollection<ISet<string>> getDataSourceGroup(ShardingRule shardingRule)
         {
-            ICollection<ISet<String>> result = new LinkedList<>();
-            for (TableRule each : shardingRule.getTableRules())
+            ICollection<ISet<string>> result = new LinkedList<ISet<string>>();
+            foreach (var tableRule in shardingRule.TableRules)
             {
-                result.add(each.getDataNodeGroups().keySet());
+                result.Add(tableRule.GetDataNodeGroups().Keys.ToHashSet());
             }
-            if (null != shardingRule.getShardingDataSourceNames().getDefaultDataSourceName())
+            if (null != shardingRule.ShardingDataSourceNames.GetDefaultDataSourceName())
             {
-                result.add(Sets.newHashSet(shardingRule.getShardingDataSourceNames().getDefaultDataSourceName()));
+                result.Add(new HashSet<string>(){shardingRule.ShardingDataSourceNames.GetDefaultDataSourceName()});
             }
             return result;
         }
 
-        private ICollection<ISet<String>> GetCandidateDataSourceGroup(ICollection<ISet<String>> dataSourceSetGroup, ISet<String> compareSet)
+        private ICollection<ISet<string>> GetCandidateDataSourceGroup(ICollection<ISet<string>> dataSourceSetGroup, ISet<string> compareSet)
         {
-            ICollection<ISet<String>> result = new LinkedList<ISet<String>>();
+            ICollection<ISet<string>> result = new LinkedList<ISet<string>>();
             if (dataSourceSetGroup.IsEmpty())
             {
                 result.Add(compareSet);

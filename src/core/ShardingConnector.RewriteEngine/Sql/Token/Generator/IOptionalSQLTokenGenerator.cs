@@ -10,7 +10,7 @@ namespace ShardingConnector.RewriteEngine.Sql.Token.Generator
     * @Date: Monday, 12 April 2021 21:38:57
     * @Email: 326308290@qq.com
     */
-    public interface IOptionalSqlTokenGenerator
+    public interface IOptionalSqlTokenGenerator:ISqlTokenGenerator
     {
         SqlToken GenerateSqlToken(ISqlCommandContext<ISqlCommand> sqlCommandContext);
     }
