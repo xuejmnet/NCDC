@@ -21,7 +21,7 @@ namespace ShardingConnector.ShardingRewrite.Token.Generator.Impl.KeyGen
     public sealed class GeneratedKeyInsertColumnTokenGenerator:BaseGeneratedKeyTokenGenerator
     {
         public override SqlToken GenerateSqlToken(InsertCommandContext sqlCommandContext)
-        { 
+        {
             var generatedKey = sqlCommandContext.GetGeneratedKeyContext();
             ShardingAssert.CantBeNull(generatedKey,"generatedKey is required");
             var sqlSegment = sqlCommandContext.GetSqlCommand().InsertColumns;

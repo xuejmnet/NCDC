@@ -14,10 +14,10 @@ namespace ShardingConnector.Route.Context
     public sealed class RouteContext
     {
         private readonly ISqlCommandContext<ISqlCommand> _sqlCommandContext;
-        private readonly IList<object> _parameters;
+        private readonly List<object> _parameters;
         private readonly RouteResult _routeResult;
 
-        public RouteContext(ISqlCommandContext<ISqlCommand> sqlCommandContext, IList<object> parameters, RouteResult routeResult)
+        public RouteContext(ISqlCommandContext<ISqlCommand> sqlCommandContext, List<object> parameters, RouteResult routeResult)
         {
             _sqlCommandContext = sqlCommandContext;
             _parameters = parameters;
@@ -29,7 +29,7 @@ namespace ShardingConnector.Route.Context
             return _sqlCommandContext;
         }
 
-        public IList<object> GetParameters()
+        public List<object> GetParameters()
         {
             return _parameters;
         }

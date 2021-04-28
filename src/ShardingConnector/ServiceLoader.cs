@@ -23,8 +23,6 @@ namespace ShardingConnector
         }
         public static object[] Load(Type serviceType)
         {
-            
-
             var serviceImpls = RuntimeHelper.GetImplementTypes(serviceType);
             return serviceImpls.Select(o => Activator.CreateInstance(o)).ToArray();
         }

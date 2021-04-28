@@ -23,7 +23,7 @@ namespace ShardingConnector.RewriteEngine
     
         private readonly ConfigurationProperties _properties;
     
-        private readonly IDictionary<IBaseRule, ISqlRewriteContextDecorator<IBaseRule>> _decorators = new Dictionary<IBaseRule, ISqlRewriteContextDecorator<IBaseRule>>();
+        private readonly IDictionary<IBaseRule, ISqlRewriteContextDecorator> _decorators = new Dictionary<IBaseRule, ISqlRewriteContextDecorator>();
 
         public SqlRewriteEntry(SchemaMetaData schemaMetaData, ConfigurationProperties properties)
         {
@@ -37,7 +37,7 @@ namespace ShardingConnector.RewriteEngine
          * @param rule rule
          * @param decorator SQL rewrite context decorator
          */
-        public void RegisterDecorator(IBaseRule rule, ISqlRewriteContextDecorator<IBaseRule> decorator)
+        public void RegisterDecorator(IBaseRule rule, ISqlRewriteContextDecorator decorator)
         {
             _decorators.Add(rule, decorator);
         }
@@ -59,7 +59,7 @@ namespace ShardingConnector.RewriteEngine
             return result;
         }
         
-        private void Decorate(IDictionary<IBaseRule, ISqlRewriteContextDecorator<IBaseRule>> decorators, SqlRewriteContext sqlRewriteContext, RouteContext routeContext)
+        private void Decorate(IDictionary<IBaseRule, ISqlRewriteContextDecorator> decorators, SqlRewriteContext sqlRewriteContext, RouteContext routeContext)
         {
             foreach (var decoratorEntry in decorators)
             {

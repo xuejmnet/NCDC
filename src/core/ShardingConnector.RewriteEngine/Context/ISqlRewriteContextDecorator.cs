@@ -11,7 +11,11 @@ namespace ShardingConnector.RewriteEngine.Context
     * @Ver: 1.0
     * @Email: 326308290@qq.com
     */
-    public interface ISqlRewriteContextDecorator<in T>:IOrderAware where T: IBaseRule
+    public interface ISqlRewriteContextDecorator: IOrderAware
+    {
+        void Decorate(IBaseRule rule, ConfigurationProperties properties, SqlRewriteContext sqlRewriteContext);
+    }
+    public interface ISqlRewriteContextDecorator<in T>: ISqlRewriteContextDecorator where T: IBaseRule
     {
         void Decorate(T rule, ConfigurationProperties properties, SqlRewriteContext sqlRewriteContext);
     }

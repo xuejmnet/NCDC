@@ -19,7 +19,7 @@ namespace ShardingConnector.ParserBinder.Segment.Select.OrderBy
             _segment = segment;
         }
 
-        public OrderByItemSegment GetOrderByItemSegment()
+        public OrderByItemSegment GetSegment()
         {
             return _segment;
         }

@@ -20,6 +20,18 @@ namespace ShardingConnector.ShardingRewrite.Token.Generator.Impl
 */
     public sealed class AggregationDistinctTokenGenerator:ICollectionSqlTokenGenerator<SelectCommandContext>,IIgnoreForSingleRoute
     {
+        public ICollection<SqlToken> GenerateSqlTokens(ISqlCommandContext<ISqlCommand> sqlCommandContext)
+        {
+            return GenerateSqlTokens((SelectCommandContext) sqlCommandContext);
+        }
+    
+        private AggregationDistinctToken GenerateSQLToken(AggregationDistinctProjection projection) {
+            ShardingAssert.CantBeNull(projection.GetAlias(),"alias is required");
+            String derivedAlias = DerivedColumn.IsDerivedColumnName(projection.GetAlias()) ? projection.GetAlias() : null;
+            return new AggregationDistinctToken(projection.StartIndex, projection.StopIndex, projection.GetDistinctInnerExpression(), derivedAlias);
+        }
+
+
         public ICollection<SqlToken> GenerateSqlTokens(SelectCommandContext sqlCommandContext)
         {
             ICollection<SqlToken> result = new LinkedList<SqlToken>();
@@ -29,13 +41,6 @@ namespace ShardingConnector.ShardingRewrite.Token.Generator.Impl
             }
             return result;
         }
-    
-        private AggregationDistinctToken GenerateSQLToken(AggregationDistinctProjection projection) {
-            ShardingAssert.CantBeNull(projection.GetAlias(),"alias is required");
-            String derivedAlias = DerivedColumn.IsDerivedColumnName(projection.GetAlias()) ? projection.GetAlias() : null;
-            return new AggregationDistinctToken(projection.StartIndex, projection.StopIndex, projection.GetDistinctInnerExpression(), derivedAlias);
-        }
-        
 
         public bool IsGenerateSqlToken(ISqlCommandContext<ISqlCommand> sqlCommandContext)
         {

@@ -13,7 +13,11 @@ namespace ShardingConnector.Route
     * @Ver: 1.0
     * @Email: 326308290@qq.com
     */
-    public interface IRouteDecorator<T>:IOrderAware where T: IBaseRule
+    public interface IRouteDecorator:IOrderAware
+    {
+        RouteContext Decorate(RouteContext routeContext, ShardingConnectorMetaData metaData, IBaseRule rule, ConfigurationProperties properties);
+    }
+    public interface IRouteDecorator<in T>: IRouteDecorator where T: IBaseRule
     {
         RouteContext Decorate(RouteContext routeContext, ShardingConnectorMetaData metaData, T rule, ConfigurationProperties properties);
     }

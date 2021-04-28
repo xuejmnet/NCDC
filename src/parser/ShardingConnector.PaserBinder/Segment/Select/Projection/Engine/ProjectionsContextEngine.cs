@@ -80,9 +80,9 @@ namespace ShardingConnector.ParserBinder.Segment.Select.Projection.Engine
             int derivedColumnOffset = 0;
             foreach (var orderItem in orderItems)
             {
-                if (!ContainsProjection(projections, orderItem.GetOrderByItemSegment(), selectCommand))
+                if (!ContainsProjection(projections, orderItem.GetSegment(), selectCommand))
                 {
-                    result.Add(new DerivedProjection(((TextOrderByItemSegment)orderItem.GetOrderByItemSegment()).GetText(), derivedColumn.GetDerivedColumnAlias(derivedColumnOffset++)));
+                    result.Add(new DerivedProjection(((TextOrderByItemSegment)orderItem.GetSegment()).GetText(), derivedColumn.GetDerivedColumnAlias(derivedColumnOffset++)));
                 }
             }
             return result;

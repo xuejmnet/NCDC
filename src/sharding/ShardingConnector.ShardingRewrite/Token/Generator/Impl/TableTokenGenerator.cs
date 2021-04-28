@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Text;
 using ShardingConnector.CommandParser.Command;
+using ShardingConnector.CommandParser.Segment.Generic.Table;
 using ShardingConnector.ParserBinder.Command;
 using ShardingConnector.RewriteEngine.Sql.Token.Generator;
 using ShardingConnector.RewriteEngine.Sql.Token.SimpleObject;
 using ShardingConnector.ShardingCommon.Core.Rule;
 using ShardingConnector.ShardingCommon.Core.Rule.Aware;
+using ShardingConnector.ShardingRewrite.Token.SimpleObject;
 
 namespace ShardingConnector.ShardingRewrite.Token.Generator.Impl
 {
@@ -22,7 +24,12 @@ namespace ShardingConnector.ShardingRewrite.Token.Generator.Impl
         private ShardingRule shardingRule;
         public ICollection<SqlToken> GenerateSqlTokens(ISqlCommandContext<ISqlCommand> sqlCommandContext)
         {
-            return sqlCommandContext is ITableAvailable ? generateSQLTokens((TableAvailable)sqlStatementContext) : Collections.emptyList();
+            if (sqlCommandContext is ITableAvailable tableAvailable)
+            {
+                return GenerateSqlTokens(tableAvailable);
+            }
+
+            return new List<SqlToken>(0);
         }
 
         public bool IsGenerateSqlToken(ISqlCommandContext<ISqlCommand> sqlCommandContext)
@@ -37,14 +44,14 @@ namespace ShardingConnector.ShardingRewrite.Token.Generator.Impl
 
 
 
-        private ICollection<TableToken> generateSQLTokens(final TableAvailable sqlStatementContext)
+        private ICollection<SqlToken> GenerateSqlTokens(ITableAvailable sqlStatementContext)
         {
-            ICollection<TableToken> result = new LinkedList<>();
-            for (SimpleTableSegment each : sqlStatementContext.getAllTables())
+            ICollection<SqlToken> result = new LinkedList<SqlToken>();
+            foreach (var simpleTableSegment in sqlStatementContext.GetAllTables())
             {
-                if (shardingRule.findTableRule(each.getTableName().getIdentifier().getValue()).isPresent())
+                if (shardingRule.FindTableRule(simpleTableSegment.GetTableName().GetIdentifier().GetValue())!=null)
                 {
-                    result.add(new TableToken(each.getStartIndex(), each.getStopIndex(), each.getTableName().getIdentifier(), (SQLStatementContext)sqlStatementContext, shardingRule));
+                    result.Add(new TableToken(simpleTableSegment.GetStartIndex(), simpleTableSegment.GetStopIndex(), simpleTableSegment.GetTableName().GetIdentifier(), (ISqlCommandContext<ISqlCommand>)sqlStatementContext, shardingRule));
                 }
             }
             return result;

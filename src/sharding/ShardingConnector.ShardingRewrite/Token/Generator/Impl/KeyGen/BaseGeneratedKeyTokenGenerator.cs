@@ -18,6 +18,11 @@ namespace ShardingConnector.ShardingRewrite.Token.Generator.Impl.KeyGen
     {
         public abstract SqlToken GenerateSqlToken(InsertCommandContext sqlCommandContext);
 
+        public SqlToken GenerateSqlToken(ISqlCommandContext<ISqlCommand> sqlCommandContext)
+        {
+            return GenerateSqlToken((InsertCommandContext) sqlCommandContext);
+        }
+
 
         public abstract bool IsGenerateSqlToken(InsertCommand insertCommand);
 

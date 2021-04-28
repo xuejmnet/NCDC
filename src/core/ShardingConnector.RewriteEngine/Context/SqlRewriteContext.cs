@@ -40,7 +40,7 @@ namespace ShardingConnector.RewriteEngine.Context
             this._sqlCommandContext = sqlCommandContext;
             this._sql = sql;
             this._parameters = parameters;
-            AddSqlTokenGenerators(new DefaultTokenGeneratorBuilder().GetSQLTokenGenerators());
+            AddSqlTokenGenerators(new DefaultTokenGeneratorBuilder().GetSqlTokenGenerators());
             if (sqlCommandContext is InsertCommandContext insertCommandContext)
             {
                 _parameterBuilder = new GroupedParameterBuilder(insertCommandContext.GetGroupedParameters());

@@ -22,6 +22,11 @@ namespace ShardingConnector.ShardingRewrite.Token.Generator.Impl
             return new DistinctProjectionPrefixToken(sqlCommandContext.GetProjectionsContext().GetStartIndex());
         }
 
+        public SqlToken GenerateSqlToken(ISqlCommandContext<ISqlCommand> sqlCommandContext)
+        {
+            return GenerateSqlToken((SelectCommandContext)sqlCommandContext);
+        }
+
         public bool IsGenerateSqlToken(ISqlCommandContext<ISqlCommand> sqlCommandContext)
         {
             return sqlCommandContext is SelectCommandContext selectCommandContext && selectCommandContext.GetProjectionsContext().GetAggregationDistinctProjections().Any();

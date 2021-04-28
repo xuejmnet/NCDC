@@ -1,4 +1,5 @@
 ﻿using System;
+using ShardingConnector.DataStructure.RangeStructure;
 
 namespace ShardingConnector.ShardingCommon.Core.Strategy.Route.Value
 {
@@ -19,9 +20,9 @@ namespace ShardingConnector.ShardingCommon.Core.Strategy.Route.Value
     
         private readonly string _tableName;
     
-        private readonly T _valueRange;
+        private readonly Range<T> _valueRange;
 
-        public RangeRouteValue(string columnName, string tableName, T valueRange)
+        public RangeRouteValue(string columnName, string tableName, Range<T> valueRange)
         {
             _columnName = columnName;
             _tableName = tableName;
@@ -38,7 +39,7 @@ namespace ShardingConnector.ShardingCommon.Core.Strategy.Route.Value
             return _tableName;
         }
 
-        public T GetValueRange()
+        public Range<T> GetValueRange()
         {
             return _valueRange;
         }

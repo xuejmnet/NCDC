@@ -100,5 +100,10 @@ namespace ShardingConnector.ParserBinder.Segment.Insert.Values
         {
             return _parameters;
         }
+
+        public List<IExpressionSegment> GetValueExpressions()
+        {
+            return _valueExpressions;
+        }
     }
 }

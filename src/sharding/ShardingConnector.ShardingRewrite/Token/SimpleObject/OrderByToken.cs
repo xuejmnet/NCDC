@@ -16,9 +16,9 @@ namespace ShardingConnector.ShardingRewrite.Token.SimpleObject
     */
     public sealed class OrderByToken:SqlToken,IAttachable
     {
-        private readonly ICollection<string> columnLabels = new LinkedList<string>();
+        public readonly ICollection<string> ColumnLabels = new LinkedList<string>();
 
-        private readonly ICollection<OrderDirectionEnum> orderDirections = new LinkedList<OrderDirectionEnum>();
+        public readonly ICollection<OrderDirectionEnum> OrderDirections = new LinkedList<OrderDirectionEnum>();
         public OrderByToken(int startIndex) : base(startIndex)
         {
         }
@@ -27,15 +27,15 @@ namespace ShardingConnector.ShardingRewrite.Token.SimpleObject
         {
             StringBuilder result = new StringBuilder();
             result.Append(" ORDER BY ");
-            for (int i = 0; i < columnLabels.Count; i++)
+            for (int i = 0; i < ColumnLabels.Count; i++)
             {
                 if (0 == i)
                 {
-                    result.Append(columnLabels.ElementAt(i)).Append(" ").Append(orderDirections.ElementAt(i).ToString());
+                    result.Append(ColumnLabels.ElementAt(i)).Append(" ").Append(OrderDirections.ElementAt(i).ToString());
                 }
                 else
                 {
-                    result.Append(",").Append(columnLabels.ElementAt(i)).Append(" ").Append(orderDirections.ElementAt(i).ToString());
+                    result.Append(",").Append(ColumnLabels.ElementAt(i)).Append(" ").Append(OrderDirections.ElementAt(i).ToString());
                 }
             }
             result.Append(" ");

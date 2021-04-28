@@ -17,11 +17,11 @@ namespace ShardingConnector.Common.Rule
     {
 
         private static readonly char DELIMITER = '.';
-    
+
         private readonly string _dataSourceName;
-    
+
         private readonly string _tableName;
-    
+
         /**
      * Constructs a data node with well-formatted string.
      *
@@ -39,7 +39,7 @@ namespace ShardingConnector.Common.Rule
             _tableName = segments[1];
         }
 
-        public DataNode(string dataSourceName,string tableName)
+        public DataNode(string dataSourceName, string tableName)
         {
             _dataSourceName = dataSourceName;
             _tableName = tableName;
@@ -93,6 +93,11 @@ namespace ShardingConnector.Common.Rule
             DataNode dataNode = (DataNode)obj;
             return object.Equals(this._dataSourceName.ToUpper(), dataNode._dataSourceName.ToUpper())
                    && object.Equals(this._tableName.ToUpper(), dataNode._tableName.ToUpper());
+        }
+
+        public override string ToString()
+        {
+            return $"{nameof(_dataSourceName)}: {_dataSourceName}, {nameof(_tableName)}: {_tableName}";
         }
 
         public override int GetHashCode()

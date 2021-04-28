@@ -1,57 +1,77 @@
 using System;
 using System.Linq;
 using ShardingConnector.CommandParser.Command;
+using ShardingConnector.CommandParser.Constant;
+using ShardingConnector.CommandParser.Segment.DML.Order.Item;
 using ShardingConnector.ParserBinder.Command;
 using ShardingConnector.ParserBinder.Command.DML;
+using ShardingConnector.ParserBinder.Segment.Select.OrderBy;
 using ShardingConnector.RewriteEngine.Sql.Token.Generator;
 using ShardingConnector.RewriteEngine.Sql.Token.SimpleObject;
+using ShardingConnector.ShardingRewrite.Token.SimpleObject;
 
 namespace ShardingConnector.ShardingRewrite.Token.Generator.Impl
 {
-/*
-* @Author: xjm
-* @Description:
-* @Date: Tuesday, 27 April 2021 21:57:49
-* @Email: 326308290@qq.com
-*/
-    public sealed class OrderByTokenGenerator:IOptionalSqlTokenGenerator<SelectCommandContext>, IIgnoreForSingleRoute
+    /*
+    * @Author: xjm
+    * @Description:
+    * @Date: Tuesday, 27 April 2021 21:57:49
+    * @Email: 326308290@qq.com
+    */
+    public sealed class OrderByTokenGenerator : IOptionalSqlTokenGenerator<SelectCommandContext>, IIgnoreForSingleRoute
     {
         public SqlToken GenerateSqlToken(SelectCommandContext sqlCommandContext)
-        { 
-            OrderByToken result = new OrderByToken(generateOrderByIndex(selectStatementContext));
-            String columnLabel;
-            for (OrderByItem each : selectStatementContext.getOrderByContext().getItems()) {
-                if (each.getSegment() instanceof ColumnOrderByItemSegment) {
-                    ColumnOrderByItemSegment columnOrderByItemSegment = (ColumnOrderByItemSegment) each.getSegment();
-                    QuoteCharacter quoteCharacter = columnOrderByItemSegment.getColumn().getIdentifier().getQuoteCharacter();
-                    columnLabel = quoteCharacter.getStartDelimiter() + columnOrderByItemSegment.getText() + quoteCharacter.getEndDelimiter();
-                } else if (each.getSegment() instanceof ExpressionOrderByItemSegment) {
-                    columnLabel = ((ExpressionOrderByItemSegment) each.getSegment()).getText();
-                } else {
-                    columnLabel = String.valueOf(each.getIndex());
+        {
+            var result = new OrderByToken(GenerateOrderByIndex(sqlCommandContext));
+
+            foreach (var orderByItem in sqlCommandContext.GetOrderByContext().GetItems())
+            {
+                string columnLabel;
+                if (orderByItem.GetSegment() is ColumnOrderByItemSegment columnOrderByItemSegment)
+                {
+                    var quoteCharacterEnum = columnOrderByItemSegment.GetColumn().GetIdentifier().GetQuoteCharacter();
+                    QuoteCharacter quoteCharacter = QuoteCharacter.Get(quoteCharacterEnum);
+                    columnLabel = quoteCharacter.GetStartDelimiter() + columnOrderByItemSegment.GetText() + quoteCharacter.GetEndDelimiter();
                 }
-                result.getColumnLabels().add(columnLabel);
-                result.getOrderDirections().add(each.getSegment().getOrderDirection());
+                else if (orderByItem.GetSegment() is ExpressionOrderByItemSegment expressionOrderByItemSegment)
+                {
+                    columnLabel = expressionOrderByItemSegment.GetText();
+                }
+                else
+                {
+                    columnLabel = $"{orderByItem.GetIndex()}"; // String.valueOf(each.getIndex());
+                }
+                result.ColumnLabels.Add(columnLabel);
+                result.OrderDirections.Add(orderByItem.GetSegment().GetOrderDirection());
             }
             return result;
         }
-    
-        private int GenerateOrderByIndex(SelectCommandContext selectCommandContext) {
-            if (selectCommandContext.GetGroupByContext().GetLastIndex() > 0) {
+
+        public SqlToken GenerateSqlToken(ISqlCommandContext<ISqlCommand> sqlCommandContext)
+        {
+            return GenerateSqlToken((SelectCommandContext)sqlCommandContext);
+        }
+
+        private int GenerateOrderByIndex(SelectCommandContext selectCommandContext)
+        {
+            if (selectCommandContext.GetGroupByContext().GetLastIndex() > 0)
+            {
                 return selectCommandContext.GetGroupByContext().GetLastIndex() + 1;
             }
             var selectCommand = selectCommandContext.GetSqlCommand();
-            if (selectCommand.Where!=null) {
+            if (selectCommand.Where != null)
+            {
                 return selectCommand.Where.GetStopIndex() + 1;
-            } else {
-                return selectCommand.GetSimpleTableSegments().Select(o=>o.GetStopIndex()).Max() + 1;
+            }
+            else
+            {
+                return selectCommand.GetSimpleTableSegments().Select(o => o.GetStopIndex()).Max() + 1;
             }
         }
 
         public bool IsGenerateSqlToken(ISqlCommandContext<ISqlCommand> sqlCommandContext)
         {
             return sqlCommandContext is SelectCommandContext selectCommandContext && selectCommandContext.GetOrderByContext().IsGenerated();
-
         }
     }
 }

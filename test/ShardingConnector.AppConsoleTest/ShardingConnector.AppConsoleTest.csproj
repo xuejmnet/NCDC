@@ -9,6 +9,7 @@
       <ProjectReference Include="..\..\src\adonet\ShardingConnector.AdoNet\ShardingConnector.AdoNet.csproj" />
       <ProjectReference Include="..\..\src\ShardingConnector\ShardingConnector.csproj" />
       <ProjectReference Include="..\..\src\sharding\ShardingConnector.ShardingCommon\ShardingConnector.ShardingCommon.csproj" />
+      <ProjectReference Include="..\..\src\sharding\ShardingConnector.ShardingRewrite\ShardingConnector.ShardingRewrite.csproj" />
     </ItemGroup>
 
     <ItemGroup>

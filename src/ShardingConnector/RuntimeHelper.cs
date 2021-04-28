@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using Microsoft.Extensions.DependencyModel;
+using ShardingConnector.Extensions;
 
 namespace ShardingConnector
 {
@@ -33,8 +34,7 @@ namespace ShardingConnector
         public static IEnumerable<Type> GetImplementTypes(Type baseInterfaceType)
         {
             return GetAllTypes().Where(type => !string.IsNullOrEmpty(type.Namespace))
-                .Where(type => type.IsClass && !type.IsAbstract && type.GetInterfaces()
-                    .Any(it => it.IsInterface && baseInterfaceType == it)
+                .Where(type => type.IsClass && !type.IsAbstract && (baseInterfaceType.IsAssignableFrom(type)|| type.HasImplementedRawGeneric(baseInterfaceType))
                 );
         }
     }

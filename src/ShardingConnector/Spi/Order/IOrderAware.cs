@@ -14,5 +14,6 @@ namespace ShardingConnector.Spi.Order
     public interface IOrderAware
     {
         int GetOrder();
+        Type GetGenericType();
     }
 }

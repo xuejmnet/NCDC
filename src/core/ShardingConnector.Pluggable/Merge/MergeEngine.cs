@@ -55,7 +55,7 @@ namespace ShardingConnector.Pluggable.Merge
             foreach (var orderAware in OrderedRegistry.GetRegisteredOrderedAware(typeof(IResultProcessEngine<>)))
             {
                 var processEngine = CreateProcessEngine(orderAware.GetType());
-                var ruleType = processEngine.GetType().GetGenericArguments(typeof(IBaseRule)).FirstOrDefault();
+                var ruleType = orderAware.GetGenericType();
                 rules.Where(o => ruleType.IsInstanceOfType(o)).ToList().ForEach(rule => merger.RegisterProcessEngine(rule, processEngine));
             }
         }

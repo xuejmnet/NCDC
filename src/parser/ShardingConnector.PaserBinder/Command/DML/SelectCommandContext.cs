@@ -114,7 +114,7 @@ namespace ShardingConnector.ParserBinder.Command.DML
         {
             foreach (var orderByItem in orderByItems)
             {
-                var orderByItemSegment = orderByItem.GetOrderByItemSegment();
+                var orderByItemSegment = orderByItem.GetSegment();
 
                 if (orderByItemSegment is IndexOrderByItemSegment indexOrderByItemSegment)
                 {
@@ -132,10 +132,10 @@ namespace ShardingConnector.ParserBinder.Command.DML
                     }
                 }
 
-                var columnLabel = GetAlias(((TextOrderByItemSegment)orderByItem.GetOrderByItemSegment()).GetText());
+                var columnLabel = GetAlias(((TextOrderByItemSegment)orderByItem.GetSegment()).GetText());
                 if (columnLabel == null)
                 {
-                    columnLabel = GetOrderItemText((TextOrderByItemSegment)orderByItem.GetOrderByItemSegment());
+                    columnLabel = GetOrderItemText((TextOrderByItemSegment)orderByItem.GetSegment());
                 }
 
                 if (!columnLabelIndexMap.ContainsKey(columnLabel))

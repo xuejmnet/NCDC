@@ -28,7 +28,7 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.DataSource
         static ShardingDataSource()
         {
             NewInstanceServiceLoader.Register(typeof(IRouteDecorator<>));
-            NewInstanceServiceLoader.Register(typeof(ISqlRewriteContextDecorator<>));
+            NewInstanceServiceLoader.Register<ISqlRewriteContextDecorator>();
             NewInstanceServiceLoader.Register(typeof(IResultProcessEngine<>));
         }
 

@@ -14,14 +14,14 @@ namespace ShardingConnector.CommandParser.Segment.DML.Predicate.Value
     /// </summary>
     public sealed class PredicateBetweenRightValue:IPredicateRightValue
     {
-        private readonly IExpressionSegment _betweenExpression;
-    
-        private readonly IExpressionSegment _andExpression;
+        public  IExpressionSegment BetweenExpression { get; }
+
+        public  IExpressionSegment AndExpression { get; }
 
         public PredicateBetweenRightValue(IExpressionSegment betweenExpression, IExpressionSegment andExpression)
         {
-            _betweenExpression = betweenExpression;
-            _andExpression = andExpression;
+            BetweenExpression = betweenExpression;
+            AndExpression = andExpression;
         }
     }
 }

@@ -3,13 +3,10 @@ using ShardingConnector.AdoNet.AdoNet.Core.DataSource;
 using ShardingConnector.AdoNet.Api;
 using ShardingConnector.NewConnector.DataSource;
 using ShardingConnector.ShardingApi.Api.Config.Sharding;
-using ShardingConnector.SqlServerParser;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.Extensions.DependencyModel;
 using ShardingConnector.ShardingApi.Api.Config.Sharding.Strategy;
 using ShardingConnector.ShardingApi.Api.Sharding.Standard;
+using System;
+using System.Collections.Generic;
 
 namespace ShardingConnector.AppConsoleTest
 {
@@ -17,9 +14,9 @@ namespace ShardingConnector.AppConsoleTest
     {
         static void Main(string[] args)
         {
-               //var dbProviderFactory = ShardingCreateDbProviderFactory.CreateDataSource(dataSourceMap, new ShardingRuleConfiguration(),
-               //    new Dictionary<string, object>());
-               var dataSourceMap = new Dictionary<string, IDataSource>()
+            //var dbProviderFactory = ShardingCreateDbProviderFactory.CreateDataSource(dataSourceMap, new ShardingRuleConfiguration(),
+            //    new Dictionary<string, object>());
+            var dataSourceMap = new Dictionary<string, IDataSource>()
             {
                 {
                     "ds0",
