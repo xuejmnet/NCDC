@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using ShardingConnector.ParserBinder.MetaData.Column;
 using ShardingConnector.ParserBinder.MetaData.Index;
 
@@ -47,7 +48,9 @@ namespace ShardingConnector.ParserBinder.MetaData.Table
 
         private bool Equals(TableMetaData other)
         {
-            return Equals(_columns, other._columns) && Equals(_indexes, other._indexes) && Equals(_columnNames, other._columnNames) && Equals(_primaryKeyColumns, other._primaryKeyColumns);
+            return _columns.SequenceEqual(other._columns) && _indexes.SequenceEqual(other._indexes) &&
+                   _columnNames.SequenceEqual(other._columnNames) &&
+                   _primaryKeyColumns.SequenceEqual(other._primaryKeyColumns);
         }
 
         public override bool Equals(object obj)

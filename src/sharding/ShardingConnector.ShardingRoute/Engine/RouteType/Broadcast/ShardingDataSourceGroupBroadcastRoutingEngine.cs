@@ -21,7 +21,7 @@ namespace ShardingConnector.ShardingRoute.Engine.RouteType.Broadcast
         public RouteResult Route(ShardingRule shardingRule)
         {
             RouteResult result = new RouteResult();
-            ICollection<ISet<string>> broadcastDataSourceGroup = GetBroadcastDataSourceGroup(getDataSourceGroup(shardingRule));
+            ICollection<ISet<string>> broadcastDataSourceGroup = GetBroadcastDataSourceGroup(GetDataSourceGroup(shardingRule));
             foreach (var broadcastDataSource in broadcastDataSourceGroup)
             {
                 var dataSourceName = GetRandomDataSourceName(broadcastDataSource);
@@ -40,7 +40,7 @@ namespace ShardingConnector.ShardingRoute.Engine.RouteType.Broadcast
             return result;
         }
 
-        private ICollection<ISet<string>> getDataSourceGroup(ShardingRule shardingRule)
+        private ICollection<ISet<string>> GetDataSourceGroup(ShardingRule shardingRule)
         {
             ICollection<ISet<string>> result = new LinkedList<ISet<string>>();
             foreach (var tableRule in shardingRule.TableRules)

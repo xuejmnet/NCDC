@@ -89,11 +89,11 @@ namespace ShardingConnector.Pluggable.Prepare
             }
         }
         //创建路由装饰器
-        private IRouteDecorator<IBaseRule> CreateRouteDecorator(Type routeDecoratorType)
+        private IRouteDecorator CreateRouteDecorator(Type routeDecoratorType)
         {
             try
             {
-                return (IRouteDecorator<IBaseRule>)Activator.CreateInstance(routeDecoratorType);
+                return (IRouteDecorator)Activator.CreateInstance(routeDecoratorType);
             }
             catch (Exception e)
             {

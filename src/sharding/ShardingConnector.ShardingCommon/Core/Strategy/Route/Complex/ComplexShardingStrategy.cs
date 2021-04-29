@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using ShardingConnector.Base;
 using ShardingConnector.Common.Config.Properties;
+using ShardingConnector.DataStructure.RangeStructure;
 using ShardingConnector.Extensions;
 using ShardingConnector.ShardingApi.Api.Config.Sharding.Strategy;
 using ShardingConnector.ShardingApi.Api.Sharding.Complex;
@@ -41,14 +42,14 @@ namespace ShardingConnector.ShardingCommon.Core.Strategy.Route.Complex
         {
             IDictionary<string, ICollection<IComparable>> columnShardingValues =
                 new Dictionary<string, ICollection<IComparable>>(shardingValues.Count);
-            IDictionary<string,IComparable> columnRangeValues = new Dictionary<string, IComparable>(shardingValues.Count);
+            IDictionary<string,Range<IComparable>> columnRangeValues = new Dictionary<string, Range<IComparable>>(shardingValues.Count);
             string logicTableName = "";
 
             foreach (var shardingValue in shardingValues)
             {
-                if (shardingValue is ListRouteValue<IComparable> listRouteValue) {
+                if (shardingValue is ListRouteValue listRouteValue) {
                     columnShardingValues.Add(shardingValue.GetColumnName(), listRouteValue.GetValues());
-                } else if (shardingValue is RangeRouteValue<IComparable> rangeRouteValue) {
+                } else if (shardingValue is RangeRouteValue rangeRouteValue) {
                     columnRangeValues.Add(shardingValue.GetColumnName(), rangeRouteValue.GetValueRange());
                 }
                 logicTableName = shardingValue.GetTableName();

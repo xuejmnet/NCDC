@@ -1,5 +1,6 @@
 ﻿using System;
 using ShardingConnector.CommandParser.Constant;
+using ShardingConnector.Extensions;
 
 namespace ShardingConnector.CommandParser.Util
 {
@@ -61,7 +62,7 @@ namespace ShardingConnector.CommandParser.Util
         public static string GetExpressionWithoutOutsideParentheses(string value)
         {
             int parenthesesOffset = GetParenthesesOffset(value);
-            return 0 == parenthesesOffset ? value : value.Substring(parenthesesOffset, value.Length - parenthesesOffset);
+            return 0 == parenthesesOffset ? value : value.SubStringWithEndIndex(parenthesesOffset, value.Length - parenthesesOffset);
         }
         private static int GetParenthesesOffset(string value)
         {

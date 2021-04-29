@@ -8,6 +8,7 @@ using ShardingConnector.Extensions;
 using ShardingConnector.ShardingApi.Api.Config.Sharding.Strategy;
 using ShardingConnector.ShardingApi.Api.Sharding.Standard;
 using ShardingConnector.ShardingCommon.Core.Strategy.Route.Value;
+using IComparable = System.IComparable;
 
 namespace ShardingConnector.ShardingCommon.Core.Strategy.Route.Standard
 {
@@ -45,14 +46,14 @@ namespace ShardingConnector.ShardingCommon.Core.Strategy.Route.Standard
             ConfigurationProperties properties)
         {
             IRouteValue shardingValue = shardingValues.First();
-            ICollection<string> shardingResult = shardingValue is ListRouteValue<IComparable> listRouteValue
-                ? DoSharding(availableTargetNames, listRouteValue) : DoSharding(availableTargetNames, (RangeRouteValue<IComparable>)shardingValue);
+            ICollection<string> shardingResult = shardingValue is ListRouteValue listRouteValue
+                ? DoSharding(availableTargetNames, listRouteValue) : DoSharding(availableTargetNames, (RangeRouteValue)shardingValue);
             ICollection<string> result = new SortedSet<string>(StringComparer.OrdinalIgnoreCase);
             result.AddAll(shardingResult);
             return result;
         }
 
-        private ICollection<string> DoSharding(ICollection<string> availableTargetNames, RangeRouteValue<IComparable> shardingValue)
+        private ICollection<string> DoSharding(ICollection<string> availableTargetNames, RangeRouteValue shardingValue)
         {
             if (null == rangeShardingAlgorithm)
             {
@@ -62,7 +63,7 @@ namespace ShardingConnector.ShardingCommon.Core.Strategy.Route.Standard
                 new RangeShardingValue<IComparable>(shardingValue.GetTableName(), shardingValue.GetColumnName(), shardingValue.GetValueRange()));
         }
 
-        private ICollection<string> DoSharding(ICollection<string> availableTargetNames, ListRouteValue<IComparable> shardingValue)
+        private ICollection<string> DoSharding(ICollection<string> availableTargetNames, ListRouteValue shardingValue)
         {
             ICollection<string> result = new LinkedList<string>();
             foreach (var value in shardingValue.GetValues())

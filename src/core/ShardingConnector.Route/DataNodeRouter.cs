@@ -24,8 +24,8 @@ namespace ShardingConnector.Route
         private readonly ShardingConnectorMetaData _metaData;
         private readonly ConfigurationProperties _properties;
         private readonly SqlParserEngine _parserEngine;
-        private readonly IDictionary<IBaseRule, IRouteDecorator<IBaseRule>> _decorators =
-            new Dictionary<IBaseRule, IRouteDecorator<IBaseRule>>();
+        private readonly IDictionary<IBaseRule, IRouteDecorator> _decorators =
+            new Dictionary<IBaseRule, IRouteDecorator>();
         
 
         public DataNodeRouter(ShardingConnectorMetaData metaData, SqlParserEngine parserEngine, ConfigurationProperties properties)
@@ -34,7 +34,7 @@ namespace ShardingConnector.Route
             _parserEngine = parserEngine;
             _properties = properties;
         }
-        public void RegisterDecorator(IBaseRule rule, IRouteDecorator<IBaseRule> decorator)
+        public void RegisterDecorator(IBaseRule rule, IRouteDecorator decorator)
         {
             _decorators.Add(rule, decorator);
         }

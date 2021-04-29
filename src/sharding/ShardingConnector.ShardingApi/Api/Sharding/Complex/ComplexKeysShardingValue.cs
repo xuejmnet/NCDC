@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using ShardingConnector.DataStructure.RangeStructure;
 
 namespace ShardingConnector.ShardingApi.Api.Sharding.Complex
 {
@@ -13,7 +14,7 @@ namespace ShardingConnector.ShardingApi.Api.Sharding.Complex
     */
     public sealed class ComplexKeysShardingValue<T>:IShardingValue where T:IComparable
     {
-        public ComplexKeysShardingValue(string logicTableName, IDictionary<string, ICollection<T>> columnNameAndShardingValuesMap, IDictionary<string, T> columnNameAndRangeValuesMap)
+        public ComplexKeysShardingValue(string logicTableName, IDictionary<string, ICollection<T>> columnNameAndShardingValuesMap, IDictionary<string, Range<T>> columnNameAndRangeValuesMap)
         {
             LogicTableName = logicTableName;
             ColumnNameAndShardingValuesMap = columnNameAndShardingValuesMap;
@@ -22,6 +23,6 @@ namespace ShardingConnector.ShardingApi.Api.Sharding.Complex
 
         public string LogicTableName { get; }
         public  IDictionary<string,ICollection<T>> ColumnNameAndShardingValuesMap { get; }
-        public IDictionary<string,T> ColumnNameAndRangeValuesMap { get; }
+        public IDictionary<string,Range<T>> ColumnNameAndRangeValuesMap { get; }
     }
 }

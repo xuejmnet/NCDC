@@ -8,8 +8,4 @@
     <ProjectReference Include="..\..\core\ShardingConnector.Common\ShardingConnector.Common.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Api\Hint\" />
-  </ItemGroup>
-
 </Project>

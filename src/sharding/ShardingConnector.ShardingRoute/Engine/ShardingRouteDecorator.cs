@@ -2,12 +2,26 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using ShardingConnector.Base;
+using ShardingConnector.CommandParser.Command;
+using ShardingConnector.CommandParser.Command.DML;
 using ShardingConnector.Common.Config.Properties;
 using ShardingConnector.Common.MetaData;
 using ShardingConnector.Common.Rule;
+using ShardingConnector.Extensions;
+using ShardingConnector.ParserBinder.Command;
+using ShardingConnector.ParserBinder.Command.DML;
+using ShardingConnector.ParserBinder.MetaData.Schema;
 using ShardingConnector.Route;
 using ShardingConnector.Route.Context;
+using ShardingConnector.ShardingApi.Api.Hint;
 using ShardingConnector.ShardingCommon.Core.Rule;
+using ShardingConnector.ShardingCommon.Core.Strategy.Route.Hint;
+using ShardingConnector.ShardingCommon.Core.Strategy.Route.Value;
+using ShardingConnector.ShardingRoute.Engine.Condition;
+using ShardingConnector.ShardingRoute.Engine.Condition.Engine;
+using ShardingConnector.ShardingRoute.Engine.RouteType;
+using ShardingConnector.ShardingRoute.Engine.Validator;
 
 namespace ShardingConnector.ShardingRoute.Engine
 {
@@ -20,75 +34,77 @@ namespace ShardingConnector.ShardingRoute.Engine
     */
     public class ShardingRouteDecorator: IRouteDecorator<ShardingRule>
     {
-        public RouteContext Decorate(RouteContext routeContext, ShardingConnectorMetaData metaData, ShardingRule rule,
+        public RouteContext Decorate(RouteContext routeContext, ShardingConnectorMetaData metaData, ShardingRule shardingRule,
             ConfigurationProperties properties)
         {
             var sqlStatementContext = routeContext.GetSqlCommandContext();
             List<object> parameters = routeContext.GetParameters();
-            ShardingStatementValidatorFactory.newInstance(
-                    sqlStatementContext.getSqlStatement()).ifPresent(validator->validator.validate(shardingRule, sqlStatementContext.getSqlStatement(), parameters));
-            ShardingConditions shardingConditions = getShardingConditions(parameters, sqlStatementContext, metaData.getSchema(), shardingRule);
-            boolean needMergeShardingValues = isNeedMergeShardingValues(sqlStatementContext, shardingRule);
-            if (sqlStatementContext.getSqlStatement() instanceof DMLStatement && needMergeShardingValues) {
-                checkSubqueryShardingValues(sqlStatementContext, shardingRule, shardingConditions);
-                mergeShardingConditions(shardingConditions);
+
+            ShardingStatementValidatorFactory.NewInstance(
+                sqlStatementContext.GetSqlCommand()).IfPresent(validator=> validator.Validate(shardingRule, sqlStatementContext.GetSqlCommand(), parameters));
+            ShardingConditions shardingConditions = GetShardingConditions(parameters, sqlStatementContext, metaData.Schema, shardingRule);
+            var needMergeShardingValues = IsNeedMergeShardingValues(sqlStatementContext, shardingRule);
+            if (sqlStatementContext.GetSqlCommand() is DMLCommand && needMergeShardingValues) {
+                CheckSubQueryShardingValues(sqlStatementContext, shardingRule, shardingConditions);
+                MergeShardingConditions(shardingConditions);
             }
-            ShardingRouteEngine shardingRouteEngine = ShardingRouteEngineFactory.newInstance(shardingRule, metaData, sqlStatementContext, shardingConditions, properties);
-            RouteResult routeResult = shardingRouteEngine.route(shardingRule);
+            var shardingRouteEngine = ShardingRouteEngineFactory.NewInstance(shardingRule, metaData, sqlStatementContext, shardingConditions, properties);
+            RouteResult routeResult = shardingRouteEngine.Route(shardingRule);
             if (needMergeShardingValues)
             {
-                Preconditions.checkState(1 == routeResult.getRouteUnits().size(), "Must have one sharding with subquery.");
+                ShardingAssert.Else(1 == routeResult.GetRouteUnits().Count, "Must have one sharding with sub query.");
             }
             return new RouteContext(sqlStatementContext, parameters, routeResult);
         }
 
-        private ShardingConditions getShardingConditions(final List<Object> parameters,
-                                                         final SQLStatementContext sqlStatementContext, final SchemaMetaData schemaMetaData, final ShardingRule shardingRule)
+        private ShardingConditions GetShardingConditions(List<object> parameters,
+                                                         ISqlCommandContext<ISqlCommand> sqlStatementContext, SchemaMetaData schemaMetaData, ShardingRule shardingRule)
         {
-            if (sqlStatementContext.getSqlStatement() instanceof DMLStatement) {
-                if (sqlStatementContext instanceof InsertStatementContext) {
-                    return new ShardingConditions(new InsertClauseShardingConditionEngine(shardingRule).createShardingConditions((InsertStatementContext)sqlStatementContext, parameters));
+            if (sqlStatementContext.GetSqlCommand() is DMLCommand) {
+                if (sqlStatementContext is InsertCommandContext insertCommandContext) {
+                    return new ShardingConditions(new InsertClauseShardingConditionEngine(shardingRule).CreateShardingConditions(insertCommandContext, parameters));
                 }
-                return new ShardingConditions(new WhereClauseShardingConditionEngine(shardingRule, schemaMetaData).createShardingConditions(sqlStatementContext, parameters));
+                return new ShardingConditions(new WhereClauseShardingConditionEngine(shardingRule, schemaMetaData).CreateShardingConditions(sqlStatementContext, parameters));
             }
-            return new ShardingConditions(Collections.emptyList());
+            return new ShardingConditions(new List<ShardingCondition>(0));
         }
 
-        private boolean isNeedMergeShardingValues(final SQLStatementContext sqlStatementContext, final ShardingRule shardingRule)
+        private bool IsNeedMergeShardingValues(ISqlCommandContext<ISqlCommand> sqlStatementContext, ShardingRule shardingRule)
         {
-            return sqlStatementContext instanceof SelectStatementContext && ((SelectStatementContext)sqlStatementContext).isContainsSubquery()
-                    && !shardingRule.getShardingLogicTableNames(sqlStatementContext.getTablesContext().getTableNames()).isEmpty();
+            return sqlStatementContext is SelectCommandContext selectCommandContext && selectCommandContext.IsContainsSubQuery()
+                    && shardingRule.GetShardingLogicTableNames(sqlStatementContext.GetTablesContext().GetTableNames()).Any();
         }
 
-        private void checkSubqueryShardingValues(final SQLStatementContext sqlStatementContext, final ShardingRule shardingRule, final ShardingConditions shardingConditions)
+        private void CheckSubQueryShardingValues(ISqlCommandContext<ISqlCommand> sqlStatementContext, ShardingRule shardingRule, ShardingConditions shardingConditions)
         {
-            for (String each : sqlStatementContext.getTablesContext().getTableNames())
+            foreach (var tableName in sqlStatementContext.GetTablesContext().GetTableNames())
             {
-                Optional<TableRule> tableRule = shardingRule.findTableRule(each);
-                if (tableRule.isPresent() && isRoutingByHint(shardingRule, tableRule.get())
-                        && !HintManager.getDatabaseShardingValues(each).isEmpty() && !HintManager.getTableShardingValues(each).isEmpty())
+                var tableRule = shardingRule.FindTableRule(tableName);
+                if (tableRule!=null && IsRoutingByHint(shardingRule, tableRule)
+                                          && HintManager.GetDatabaseShardingValues(tableName).Any() && HintManager.GetTableShardingValues(tableName).Any())
                 {
                     return;
                 }
             }
-            Preconditions.checkState(!shardingConditions.getConditions().isEmpty(), "Must have sharding column with subquery.");
-            if (shardingConditions.getConditions().size() > 1)
+            ShardingAssert.If(shardingConditions.Conditions.IsEmpty(), "Must have sharding column with subquery.");
+            if (shardingConditions.Conditions.Count > 1)
             {
-                Preconditions.checkState(isSameShardingCondition(shardingRule, shardingConditions), "Sharding value must same with subquery.");
+                ShardingAssert.Else(IsSameShardingCondition(shardingRule, shardingConditions), "Sharding value must same with subquery.");
             }
         }
 
-        private boolean isRoutingByHint(final ShardingRule shardingRule, final TableRule tableRule)
+        private bool IsRoutingByHint(ShardingRule shardingRule, TableRule tableRule)
         {
-            return shardingRule.getDatabaseShardingStrategy(tableRule) instanceof HintShardingStrategy && shardingRule.getTableShardingStrategy(tableRule) instanceof HintShardingStrategy;
+            return shardingRule.GetDatabaseShardingStrategy(tableRule) is HintShardingStrategy && shardingRule.GetTableShardingStrategy(tableRule) is HintShardingStrategy;
         }
 
-        private boolean isSameShardingCondition(final ShardingRule shardingRule, final ShardingConditions shardingConditions)
+        private bool IsSameShardingCondition(ShardingRule shardingRule, ShardingConditions shardingConditions)
         {
-            ShardingCondition example = shardingConditions.getConditions().remove(shardingConditions.getConditions().size() - 1);
-            for (ShardingCondition each : shardingConditions.getConditions())
+            ShardingCondition example = shardingConditions.Conditions.Last();
+            shardingConditions.Conditions.RemoveAt(shardingConditions.Conditions.Count-1);
+            foreach (var condition in shardingConditions.Conditions)
             {
-                if (!isSameShardingCondition(shardingRule, example, each))
+                if (!IsSameShardingCondition(shardingRule, example, condition))
                 {
                     return false;
                 }
@@ -96,17 +112,17 @@ namespace ShardingConnector.ShardingRoute.Engine
             return true;
         }
 
-        private boolean isSameShardingCondition(final ShardingRule shardingRule, final ShardingCondition shardingCondition1, final ShardingCondition shardingCondition2)
+        private bool IsSameShardingCondition(ShardingRule shardingRule, ShardingCondition shardingCondition1, ShardingCondition shardingCondition2)
         {
-            if (shardingCondition1.getRouteValues().size() != shardingCondition2.getRouteValues().size())
+            if (shardingCondition1.RouteValues.Count != shardingCondition2.RouteValues.Count)
             {
                 return false;
             }
-            for (int i = 0; i < shardingCondition1.getRouteValues().size(); i++)
+            for (int i = 0; i < shardingCondition1.RouteValues.Count; i++)
             {
-                RouteValue shardingValue1 = shardingCondition1.getRouteValues().get(i);
-                RouteValue shardingValue2 = shardingCondition2.getRouteValues().get(i);
-                if (!isSameRouteValue(shardingRule, (ListRouteValue)shardingValue1, (ListRouteValue)shardingValue2))
+                var shardingValue1 = shardingCondition1.RouteValues.ElementAt(i);
+                var shardingValue2 = shardingCondition2.RouteValues.ElementAt(i);
+                if (!IsSameRouteValue(shardingRule, (ListRouteValue)shardingValue1, (ListRouteValue)shardingValue2))
                 {
                     return false;
                 }
@@ -114,29 +130,31 @@ namespace ShardingConnector.ShardingRoute.Engine
             return true;
         }
 
-        private boolean isSameRouteValue(final ShardingRule shardingRule, final ListRouteValue routeValue1, final ListRouteValue routeValue2)
+        private bool IsSameRouteValue(ShardingRule shardingRule, ListRouteValue routeValue1, ListRouteValue routeValue2)
         {
-            return isSameLogicTable(shardingRule, routeValue1, routeValue2) && routeValue1.getColumnName().equals(routeValue2.getColumnName()) && routeValue1.getValues().equals(routeValue2.getValues());
+            return IsSameLogicTable(shardingRule, routeValue1, routeValue2) && routeValue1.GetColumnName().Equals(routeValue2.GetColumnName()) && routeValue1.GetValues().SequenceEqual(routeValue2.GetValues());
         }
 
-        private boolean isSameLogicTable(final ShardingRule shardingRule, final ListRouteValue shardingValue1, final ListRouteValue shardingValue2)
+        private bool IsSameLogicTable(ShardingRule shardingRule, ListRouteValue shardingValue1, ListRouteValue shardingValue2)
         {
-            return shardingValue1.getTableName().equals(shardingValue2.getTableName()) || isBindingTable(shardingRule, shardingValue1, shardingValue2);
+            return shardingValue1.GetTableName().Equals(shardingValue2.GetTableName()) || IsBindingTable(shardingRule, shardingValue1, shardingValue2);
         }
 
-        private boolean isBindingTable(final ShardingRule shardingRule, final ListRouteValue shardingValue1, final ListRouteValue shardingValue2)
+        private bool IsBindingTable(ShardingRule shardingRule, ListRouteValue shardingValue1, ListRouteValue shardingValue2)
         {
-            Optional<BindingTableRule> bindingRule = shardingRule.findBindingTableRule(shardingValue1.getTableName());
-            return bindingRule.isPresent() && bindingRule.get().hasLogicTable(shardingValue2.getTableName());
+            var bindingRule = shardingRule.FindBindingTableRule(shardingValue1.GetTableName());
+            return bindingRule!=null && bindingRule.HasLogicTable(shardingValue2.GetTableName());
         }
 
-        private void mergeShardingConditions(final ShardingConditions shardingConditions)
+        private void MergeShardingConditions(ShardingConditions shardingConditions)
         {
-            if (shardingConditions.getConditions().size() > 1)
+            if (shardingConditions.Conditions.Count > 1)
             {
-                ShardingCondition shardingCondition = shardingConditions.getConditions().remove(shardingConditions.getConditions().size() - 1);
-                shardingConditions.getConditions().clear();
-                shardingConditions.getConditions().add(shardingCondition);
+                ShardingCondition shardingCondition =
+                    shardingConditions.Conditions[shardingConditions.Conditions.Count - 1];
+                shardingConditions.Conditions.RemoveAt(shardingConditions.Conditions.Count - 1);
+                shardingConditions.Conditions.Clear();
+                shardingConditions.Conditions.Add(shardingCondition);
             }
         }
 

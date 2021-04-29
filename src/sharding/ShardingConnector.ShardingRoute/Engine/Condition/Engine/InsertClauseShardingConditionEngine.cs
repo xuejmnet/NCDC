@@ -1,13 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
+using System.Linq;
 using System.Text;
+using ShardingConnector.Base;
 using ShardingConnector.CommandParser.Segment.DML.Expr.Simple;
+using ShardingConnector.Exceptions;
+using ShardingConnector.Extensions;
 using ShardingConnector.ParserBinder.Command.DML;
 using ShardingConnector.ParserBinder.Segment.Insert.Keygen;
 using ShardingConnector.ParserBinder.Segment.Insert.Values;
 using ShardingConnector.ShardingCommon.Core.Rule;
 using ShardingConnector.ShardingCommon.Core.Strategy.Route.Value;
+using ShardingConnector.ShardingRoute.SPI;
 
 namespace ShardingConnector.ShardingRoute.Engine.Condition.Engine
 {
@@ -20,96 +24,123 @@ namespace ShardingConnector.ShardingRoute.Engine.Condition.Engine
     */
     public sealed class InsertClauseShardingConditionEngine
     {
-        private readonly ShardingRule shardingRule;
-    
-    /**
-     * Create sharding conditions.
-     * 
-     * @param insertStatementContext insert statement context
-     * @param parameters SQL parameters
-     * @return sharding conditions
-     */
-    public List<ShardingCondition> createShardingConditions(InsertCommandContext insertCommandContext, List<object> parameters)
+        private readonly ShardingRule _shardingRule;
+
+        public InsertClauseShardingConditionEngine(ShardingRule shardingRule)
+        {
+            this._shardingRule = shardingRule;
+        }
+
+        /**
+         * Create sharding conditions.
+         * 
+         * @param insertCommandContext insert statement context
+         * @param parameters SQL parameters
+         * @return sharding conditions
+         */
+        public List<ShardingCondition> CreateShardingConditions(InsertCommandContext insertCommandContext,
+            List<object> parameters)
         {
             ICollection<ShardingCondition> result = new LinkedList<ShardingCondition>();
-            String tableName = insertStatementContext.getSqlStatement().getTable().getTableName().getIdentifier().getValue();
-            Collection<String> columnNames = getColumnNames(insertStatementContext);
-            for (InsertValueContext each : insertStatementContext.getInsertValueContexts())
+            string tableName = insertCommandContext.GetSqlCommand().Table.GetTableName().GetIdentifier().GetValue();
+            ICollection<string> columnNames = GetColumnNames(insertCommandContext);
+            foreach (var insertValueContext in insertCommandContext.GetInsertValueContexts())
             {
-                result.add(createShardingCondition(tableName, columnNames.iterator(), each, parameters));
+                result.Add(CreateShardingCondition(tableName, columnNames.GetEnumerator(), insertValueContext,
+                    parameters));
             }
-            Optional<GeneratedKeyContext> generatedKey = insertStatementContext.getGeneratedKeyContext();
-            if (generatedKey.isPresent() && generatedKey.get().isGenerated())
+
+            var generatedKey = insertCommandContext.GetGeneratedKeyContext();
+            if (generatedKey != null && generatedKey.IsGenerated())
             {
-                generatedKey.get().getGeneratedValues().addAll(getGeneratedKeys(tableName, insertStatementContext.getSqlStatement().getValueListCount()));
-                if (shardingRule.isShardingColumn(generatedKey.get().getColumnName(), tableName))
+                generatedKey.GetGeneratedValues().AddAll(GetGeneratedKeys(tableName,
+                    insertCommandContext.GetSqlCommand().GetValueListCount()));
+                if (_shardingRule.IsShardingColumn(generatedKey.GetColumnName(), tableName))
                 {
-                    appendGeneratedKeyCondition(generatedKey.get(), tableName, result);
+                    AppendGeneratedKeyCondition(generatedKey, tableName, result);
                 }
             }
+
+            return result.ToList();
+        }
+
+        private ICollection<string> GetColumnNames(InsertCommandContext insertCommandContext)
+        {
+            var generatedKey = insertCommandContext.GetGeneratedKeyContext();
+            if (generatedKey != null && generatedKey.IsGenerated())
+            {
+                ICollection<string> result = new LinkedList<string>(insertCommandContext.GetColumnNames());
+                result.Remove(generatedKey.GetColumnName());
+                return result;
+            }
+
+            return insertCommandContext.GetColumnNames();
+        }
+
+        private ShardingCondition CreateShardingCondition(string tableName, IEnumerator<string> columnNames,
+            InsertValueContext insertValueContext, List<object> parameters)
+        {
+            ShardingCondition result = new ShardingCondition();
+            SPITimeService timeService = SPITimeService.GetInstance();
+
+
+            foreach (var valueExpression in insertValueContext.GetValueExpressions())
+            {
+                string columnName = columnNames.Next();
+                if (_shardingRule.IsShardingColumn(columnName, tableName))
+                {
+                    if (valueExpression is ISimpleExpressionSegment simpleExpressionSegment)
+                    {
+                        result.RouteValues.Add(new ListRouteValue(columnName, tableName,
+                            new List<IComparable>() { GetRouteValue(simpleExpressionSegment, parameters) }));
+                    }
+                    else if (ExpressionConditionUtils.IsNowExpression(valueExpression))
+                    {
+                        result.RouteValues.Add(new ListRouteValue(columnName, tableName,
+                            new List<IComparable>() { timeService.GetTime() }));
+                    }
+                    else if (ExpressionConditionUtils.IsNullExpression(valueExpression))
+                    {
+                        throw new ShardingException("Insert clause sharding column can't be null.");
+                    }
+                }
+            }
+
             return result;
         }
 
-        private Collection<String> getColumnNames(InsertStatementContext insertStatementContext)
+        private IComparable GetRouteValue(ISimpleExpressionSegment expressionSegment, List<object> parameters)
         {
-            Optional<GeneratedKeyContext> generatedKey = insertStatementContext.getGeneratedKeyContext();
-            if (generatedKey.isPresent() && generatedKey.get().isGenerated())
+            object result;
+            if (expressionSegment is ParameterMarkerExpressionSegment parameterMarkerExpressionSegment)
             {
-                Collection<String> result = new LinkedList<>(insertStatementContext.getColumnNames());
-                result.remove(generatedKey.get().getColumnName());
-                return result;
+                result = parameters[parameterMarkerExpressionSegment.GetParameterMarkerIndex()];
             }
-            return insertStatementContext.getColumnNames();
+            else
+            {
+                result = ((LiteralExpressionSegment)expressionSegment).GetLiterals();
+            }
+
+            ShardingAssert.Else(result is IComparable, "Sharding value must implements IComparable.");
+            return (IComparable)result;
         }
 
-        private ShardingCondition createShardingCondition(String tableName, Iterator<String> columnNames, InsertValueContext insertValueContext, List<Object> parameters)
+        private ICollection<IComparable> GetGeneratedKeys(string tableName, int valueListCount)
         {
-            ShardingCondition result = new ShardingCondition();
-            SPITimeService timeService = new SPITimeService();
-            for (ExpressionSegment each : insertValueContext.getValueExpressions())
-            {
-                String columnName = columnNames.next();
-                if (shardingRule.isShardingColumn(columnName, tableName))
-                {
-                    if (each instanceof SimpleExpressionSegment) {
-                result.getRouteValues().add(new ListRouteValue<>(columnName, tableName, Collections.singletonList(getRouteValue((SimpleExpressionSegment)each, parameters))));
-            } else if (ExpressionConditionUtils.isNowExpression(each))
-            {
-                result.getRouteValues().add(new ListRouteValue<>(columnName, tableName, Collections.singletonList(timeService.getTime())));
-            }
-            else if (ExpressionConditionUtils.isNullExpression(each))
-            {
-                throw new ShardingSphereException("Insert clause sharding column can't be null.");
-            }
+            return Enumerable.Range(0, valueListCount).Select(o => _shardingRule.GenerateKey(tableName)).ToList();
         }
-    }
-        return result;
-    }
 
-private Comparable<?> getRouteValue(SimpleExpressionSegment expressionSegment, List<Object> parameters)
-{
-    Object result;
-    if (expressionSegment instanceof ParameterMarkerExpressionSegment) {
-    result = parameters.get(((ParameterMarkerExpressionSegment)expressionSegment).getParameterMarkerIndex());
-} else
-{
-    result = ((LiteralExpressionSegment)expressionSegment).getLiterals();
-}
-Preconditions.checkArgument(result instanceof Comparable, "Sharding value must implements Comparable.");
-return (Comparable)result;
-    }
-    
-    private Collection<Comparable<?>> getGeneratedKeys(String tableName, int valueListCount)
-{
-    return IntStream.range(0, valueListCount).mapToObj(i->shardingRule.generateKey(tableName)).collect(Collectors.toCollection(LinkedList::new));
-}
+        private void AppendGeneratedKeyCondition(GeneratedKeyContext generatedKey, string tableName,
+            ICollection<ShardingCondition> shardingConditions)
+        {
+            var enumerator = generatedKey.GetGeneratedValues().GetEnumerator();
+            foreach (var shardingCondition in shardingConditions)
+            {
+                shardingCondition.RouteValues.Add(new ListRouteValue(generatedKey.GetColumnName(),
+                    tableName, new List<IComparable>() { enumerator.Next() }));
 
-private void appendGeneratedKeyCondition(GeneratedKeyContext generatedKey, String tableName, List<ShardingCondition> shardingConditions)
-{
-    Iterator < Comparable <?>> generatedValuesIterator = generatedKey.getGeneratedValues().iterator();
-    for (ShardingCondition each : shardingConditions) {
-    each.getRouteValues().add(new ListRouteValue<>(generatedKey.getColumnName(), tableName, Collections.< Comparable <?>> singletonList(generatedValuesIterator.next())));
-}
-    }
+            }
+
+        }
     }
 }

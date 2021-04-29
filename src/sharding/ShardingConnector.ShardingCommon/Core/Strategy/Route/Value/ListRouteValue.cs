@@ -15,15 +15,15 @@ namespace ShardingConnector.ShardingCommon.Core.Strategy.Route.Value
     /// <summary>
     /// 
     /// </summary>
-    public class ListRouteValue<T>:IRouteValue where T:IComparable
+    public class ListRouteValue: IRouteValue
     {
         private readonly string _columnName;
     
         private readonly string _tableName;
     
-        private readonly ICollection<T> _values;
+        private readonly ICollection<IComparable> _values;
 
-        public ListRouteValue(string columnName, string tableName, ICollection<T> values)
+        public ListRouteValue(string columnName, string tableName, ICollection<IComparable> values)
         {
             _columnName = columnName;
             _tableName = tableName;
@@ -40,7 +40,7 @@ namespace ShardingConnector.ShardingCommon.Core.Strategy.Route.Value
             return _tableName;
         }
 
-        public ICollection<T> GetValues()
+        public ICollection<IComparable> GetValues()
         {
             return _values;
         }

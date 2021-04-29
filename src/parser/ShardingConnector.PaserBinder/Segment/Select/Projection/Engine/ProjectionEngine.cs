@@ -4,6 +4,7 @@ using System.Linq;
 using ShardingConnector.CommandParser.Constant;
 using ShardingConnector.CommandParser.Segment.DML.Item;
 using ShardingConnector.CommandParser.Segment.Generic.Table;
+using ShardingConnector.Extensions;
 using ShardingConnector.ParserBinder.MetaData.Schema;
 using ShardingConnector.ParserBinder.Segment.Select.Projection.Impl;
 
@@ -83,7 +84,7 @@ namespace ShardingConnector.ParserBinder.Segment.Select.Projection.Engine
 
         private AggregationDistinctProjection CreateProjection(string sql, AggregationDistinctProjectionSegment projectionSegment)
         {
-            var innerExpression = sql.Substring(projectionSegment.GetInnerExpressionStartIndex(), projectionSegment.GetStopIndex() + 1);
+            var innerExpression = sql.SubStringWithEndIndex(projectionSegment.GetInnerExpressionStartIndex(), projectionSegment.GetStopIndex() + 1);
             var alias = projectionSegment.GetAlias() ?? DerivedColumn.Get(DerivedColumnEnum.AGGREGATION_DISTINCT_DERIVED).GetDerivedColumnAlias(aggregationDistinctDerivedColumnCount++);
             AggregationDistinctProjection result = new AggregationDistinctProjection(
                     projectionSegment.GetStartIndex(), projectionSegment.GetStopIndex(), projectionSegment.GetAggregationType(), innerExpression, alias, projectionSegment.GetDistinctExpression());
@@ -96,7 +97,7 @@ namespace ShardingConnector.ParserBinder.Segment.Select.Projection.Engine
 
         private AggregationProjection CreateProjection(string sql, AggregationProjectionSegment projectionSegment)
         {
-            var innerExpression = sql.Substring(projectionSegment.GetInnerExpressionStartIndex(), projectionSegment.GetStopIndex() + 1);
+            var innerExpression = sql.SubStringWithEndIndex(projectionSegment.GetInnerExpressionStartIndex(), projectionSegment.GetStopIndex() + 1);
             AggregationProjection result = new AggregationProjection(projectionSegment.GetAggregationType(), innerExpression, projectionSegment.GetAlias());
             if (AggregationTypeEnum.AVG == result.GetAggregationType())
             {

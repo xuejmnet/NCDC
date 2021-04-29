@@ -54,15 +54,15 @@ namespace ShardingConnector.ShardingRoute.Engine.Condition.Generator.Impl
             switch (@operator)
             {
                 case EQUAL:
-                    return new ListRouteValue<IComparable>(columnName, tableName, new List<IComparable>() { comparable });
+                    return new ListRouteValue(columnName, tableName, new List<IComparable>() { comparable });
                 case GREATER_THAN:
-                    return new RangeRouteValue<IComparable>(columnName, tableName, Range.GreaterThan(comparable));
+                    return new RangeRouteValue(columnName, tableName, Range.GreaterThan(comparable));
                 case LESS_THAN:
-                    return new RangeRouteValue<IComparable>(columnName, tableName, Range.LessThan(comparable));
+                    return new RangeRouteValue(columnName, tableName, Range.LessThan(comparable));
                 case AT_MOST:
-                    return new RangeRouteValue<IComparable>(columnName, tableName, Range.AtMost(comparable));
+                    return new RangeRouteValue(columnName, tableName, Range.AtMost(comparable));
                 case AT_LEAST:
-                    return new RangeRouteValue<IComparable>(columnName, tableName, Range.AtLeast(comparable));
+                    return new RangeRouteValue(columnName, tableName, Range.AtLeast(comparable));
                 default:
                     return null;
             }

@@ -14,11 +14,11 @@ namespace ShardingConnector.ShardingRoute.Engine.Condition
     */
     public sealed class ShardingConditions
     {
-        private readonly List<ShardingCondition> conditions;
+        public  List<ShardingCondition> Conditions { get; }
 
         public ShardingConditions(List<ShardingCondition> conditions)
         {
-            this.conditions = conditions;
+            this.Conditions = conditions;
         }
 
         /**
@@ -26,13 +26,13 @@ namespace ShardingConnector.ShardingRoute.Engine.Condition
          *
          * @return sharding conditions is always false or not
          */
-        public bool isAlwaysFalse()
+        public bool IsAlwaysFalse()
         {
-            if (conditions.IsEmpty())
+            if (Conditions.IsEmpty())
             {
                 return false;
             }
-            foreach (var condition in conditions)
+            foreach (var condition in Conditions)
             {
                 
                 if (!(condition is AlwaysFalseShardingCondition)) {

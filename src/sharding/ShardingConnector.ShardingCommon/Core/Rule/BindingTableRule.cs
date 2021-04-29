@@ -84,5 +84,10 @@ namespace ShardingConnector.ShardingCommon.Core.Rule
         }
         return result;
     }
+
+   public List<TableRule> GetTableRules()
+   {
+       return tableRules;
+   }
     }
 }

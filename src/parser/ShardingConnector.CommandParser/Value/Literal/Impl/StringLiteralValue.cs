@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using ShardingConnector.Extensions;
 
 namespace ShardingConnector.CommandParser.Value.Literal.Impl
 {
@@ -17,7 +18,7 @@ namespace ShardingConnector.CommandParser.Value.Literal.Impl
 
         public StringLiteralValue(string value)
         {
-            _value = value.Substring(1,value.Length-1);
+            _value = value.SubStringWithEndIndex(1,value.Length-1);
         }
         public string GetValue()
         {

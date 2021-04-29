@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using ShardingConnector.DataStructure.RangeStructure;
 
 namespace ShardingConnector.ShardingApi.Api.Sharding.Standard
 {
@@ -13,7 +14,7 @@ namespace ShardingConnector.ShardingApi.Api.Sharding.Standard
     */
     public sealed class RangeShardingValue<T>:IShardingValue where T:IComparable
     {
-        public RangeShardingValue(string logicTableName, string columnName, T valueRange)
+        public RangeShardingValue(string logicTableName, string columnName, Range<T> valueRange)
         {
             LogicTableName = logicTableName;
             ColumnName = columnName;
@@ -22,6 +23,6 @@ namespace ShardingConnector.ShardingApi.Api.Sharding.Standard
 
         public string LogicTableName { get; }
         public string ColumnName { get; }
-        public T ValueRange { get; }
+        public Range<T> ValueRange { get; }
     }
 }

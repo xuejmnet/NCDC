@@ -1,26 +1,30 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using ShardingConnector.CommandParser.Command;
 using ShardingConnector.Common.Config.Properties;
+using ShardingConnector.Exceptions;
+using ShardingConnector.Extensions;
 using ShardingConnector.ParserBinder.Command;
 using ShardingConnector.Route.Context;
 using ShardingConnector.ShardingCommon.Core.Rule;
 using ShardingConnector.ShardingRoute.Engine.Condition;
+using ShardingConnector.ShardingRoute.Engine.RouteType.Standard;
 
 namespace ShardingConnector.ShardingRoute.Engine.RouteType.Complex
 {
-/*
-* @Author: xjm
-* @Description:
-* @Date: Wednesday, 28 April 2021 22:01:04
-* @Email: 326308290@qq.com
-*/
-    public sealed class ShardingComplexRoutingEngine:IShardingRouteEngine
+    /*
+    * @Author: xjm
+    * @Description:
+    * @Date: Wednesday, 28 April 2021 22:01:04
+    * @Email: 326308290@qq.com
+    */
+    public sealed class ShardingComplexRoutingEngine : IShardingRouteEngine
     {
         private readonly ICollection<String> logicTables;
-    
+
         private readonly ISqlCommandContext<ISqlCommand> sqlStatementContext;
-    
+
         private readonly ShardingConditions shardingConditions;
 
         private readonly ConfigurationProperties properties;
@@ -37,34 +41,28 @@ namespace ShardingConnector.ShardingRoute.Engine.RouteType.Complex
         {
             ICollection<RouteResult> result = new List<RouteResult>(logicTables.Count);
             ICollection<String> bindingTableNames = new SortedSet<string>(StringComparer.OrdinalIgnoreCase);
-            // for (String each : logicTables) {
-            //     Optional<TableRule> tableRule = shardingRule.findTableRule(each);
-            //     if (tableRule.isPresent()) {
-            //         if (!bindingTableNames.contains(each)) {
-            //             result.add(new ShardingStandardRoutingEngine(tableRule.get().getLogicTable(), sqlStatementContext, shardingConditions, properties).route(shardingRule));
-            //         }
-            //         shardingRule.findBindingTableRule(each).ifPresent(bindingTableRule -> bindingTableNames.addAll(
-            //             bindingTableRule.getTableRules().stream().map(TableRule::getLogicTable).collect(Collectors.toList())));
-            //     }
-            // }
             foreach (var logicTable in logicTables)
             {
                 var tableRule = shardingRule.FindTableRule(logicTable);
-                if (tableRule!=null) {
-                    if (!bindingTableNames.Contains(logicTable)) {
-                        result.Add(new ShardingStandardRoutingEngine(tableRule.get().getLogicTable(), sqlStatementContext, shardingConditions, properties).route(shardingRule));
+                if (tableRule != null)
+                {
+                    if (!bindingTableNames.Contains(logicTable))
+                    {
+                        result.Add(new ShardingStandardRoutingEngine(tableRule.LogicTable, sqlStatementContext, shardingConditions, properties).Route(shardingRule));
                     }
-                    shardingRule.findBindingTableRule(each).ifPresent(bindingTableRule -> bindingTableNames.addAll(
-                        bindingTableRule.getTableRules().stream().map(TableRule::getLogicTable).collect(Collectors.toList())));
+                    shardingRule.FindBindingTableRule(logicTable).IfPresent(bindingTableRule => bindingTableNames.AddAll(
+                        bindingTableRule.GetTableRules().Select(o => o.LogicTable).ToList()));
                 }
             }
-            if (result.isEmpty()) {
-                throw new ShardingSphereException("Cannot find table rule and default data source with logic tables: '%s'", logicTables);
+            if (result.IsEmpty())
+            {
+                throw new ShardingException($"Cannot find table rule and default data source with logic tables: '{logicTables}'");
             }
-            if (1 == result.size()) {
-                return result.iterator().next();
+            if (1 == result.Count)
+            {
+                return result.First();
             }
-            return new ShardingCartesianRoutingEngine(result).route(shardingRule);
+            return new ShardingCartesianRoutingEngine(result).Route(shardingRule);
         }
     }
 }

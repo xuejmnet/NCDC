@@ -98,5 +98,9 @@ namespace ShardingConnector.ParserBinder.Command.DML
         {
             return _columnNames;
         }
+        public override TablesContext GetTablesContext()
+        {
+            return _tablesContext;
+        }
     }
 }

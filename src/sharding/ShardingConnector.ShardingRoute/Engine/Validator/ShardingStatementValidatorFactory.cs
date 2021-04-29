@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using ShardingConnector.CommandParser.Command;
 using ShardingConnector.CommandParser.Command.DML;
+using ShardingConnector.ShardingRoute.Engine.Validator.Impl;
 
 namespace ShardingConnector.ShardingRoute.Engine.Validator
 {
@@ -22,10 +23,10 @@ namespace ShardingConnector.ShardingRoute.Engine.Validator
         public static IShardingStatementValidator NewInstance(ISqlCommand sqlCommand)
         {
             if (sqlCommand is InsertCommand) {
-                return new ShardingInsertStatementValidator();
+                return new ShardingInsertCommandValidator();
             }
             if (sqlCommand is UpdateCommand) {
-                return new ShardingUpdateStatementValidator();
+                return new ShardingUpdateCommandValidator();
             }
             return null;
         }

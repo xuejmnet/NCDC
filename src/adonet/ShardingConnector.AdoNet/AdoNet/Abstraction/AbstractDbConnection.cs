@@ -31,35 +31,35 @@ namespace ShardingConnector.AdoNet.AdoNet.Abstraction
             if (!dataSourceMap.ContainsKey(dataSourceName))
                 throw new ShardingException($"missing the data source name: '{dataSourceName}'");
             IDataSource dataSource = dataSourceMap[dataSourceName];
-            ICollection<DbConnection> connections;
-            lock (cachedConnections)
-            {
-                connections = cachedConnections.GetValues(dataSourceName, true);
-            }
-            List<DbConnection> result;
-            if (connections.Count >= connectionSize)
-            {
-                result = new List<DbConnection>(connections).GetRange(0, connectionSize);
-            }
-            else if (connections.Any())
-            {
-                result = new List<DbConnection>(connections);
-                List<DbConnection> newConnections = CreateConnections(dataSourceName, connectionMode, dataSource, connectionSize - connections.Count);
-                result.AddRange(newConnections);
-                lock (cachedConnections)
-                {
-                    cachedConnections.AddRange(dataSourceName, newConnections);
-                }
-            }
-            else
-            {
-                result = new List<DbConnection>(CreateConnections(dataSourceName, connectionMode, dataSource, connectionSize));
-                lock (cachedConnections)
-                {
-                    cachedConnections.AddRange(dataSourceName, result);
-                }
-            }
-            return result;
+            //ICollection<DbConnection> connections;
+            //lock (cachedConnections)
+            //{
+            //    connections = cachedConnections.GetValues(dataSourceName, true);
+            //}
+            //List<DbConnection> result;
+            //if (connections.Count >= connectionSize)
+            //{
+            //    result = new List<DbConnection>(connections).GetRange(0, connectionSize);
+            //}
+            //else if (connections.Any())
+            //{
+            //    result = new List<DbConnection>(connections);
+            //    List<DbConnection> newConnections = CreateConnections(dataSourceName, connectionMode, dataSource, connectionSize - connections.Count);
+            //    result.AddRange(newConnections);
+            //    lock (cachedConnections)
+            //    {
+            //        cachedConnections.AddRange(dataSourceName, newConnections);
+            //    }
+            //}
+            //else
+            //{
+            //    result = new List<DbConnection>(CreateConnections(dataSourceName, connectionMode, dataSource, connectionSize));
+            //    lock (cachedConnections)
+            //    {
+            //        cachedConnections.AddRange(dataSourceName, result);
+            //    }
+            //}
+            return new List<DbConnection>(CreateConnections(dataSourceName, connectionMode, dataSource, connectionSize)); ;
         }
 
 

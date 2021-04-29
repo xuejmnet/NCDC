@@ -14,15 +14,15 @@ namespace ShardingConnector.ShardingCommon.Core.Strategy.Route.Value
     /// <summary>
     /// 
     /// </summary>
-    public class RangeRouteValue<T> :IRouteValue where T:IComparable
+    public class RangeRouteValue : IRouteValue
     {
         private readonly string _columnName;
     
         private readonly string _tableName;
     
-        private readonly Range<T> _valueRange;
+        private readonly Range<IComparable> _valueRange;
 
-        public RangeRouteValue(string columnName, string tableName, Range<T> valueRange)
+        public RangeRouteValue(string columnName, string tableName, Range<IComparable> valueRange)
         {
             _columnName = columnName;
             _tableName = tableName;
@@ -39,7 +39,8 @@ namespace ShardingConnector.ShardingCommon.Core.Strategy.Route.Value
             return _tableName;
         }
 
-        public Range<T> GetValueRange()
+
+        public Range<IComparable> GetValueRange()
         {
             return _valueRange;
         }

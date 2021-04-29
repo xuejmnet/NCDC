@@ -1,184 +1,236 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using Antlr4.Runtime.Misc;
+using ShardingConnector.Base;
 using ShardingConnector.CommandParser.Command;
+using ShardingConnector.CommandParser.Command.DML;
 using ShardingConnector.Common.Config.Properties;
 using ShardingConnector.Common.Rule;
+using ShardingConnector.Exceptions;
+using ShardingConnector.Extensions;
 using ShardingConnector.ParserBinder.Command;
+using ShardingConnector.ParserBinder.Command.DML;
 using ShardingConnector.Route.Context;
+using ShardingConnector.ShardingApi.Api.Hint;
 using ShardingConnector.ShardingCommon.Core.Rule;
+using ShardingConnector.ShardingCommon.Core.Strategy.Route;
+using ShardingConnector.ShardingCommon.Core.Strategy.Route.Hint;
+using ShardingConnector.ShardingCommon.Core.Strategy.Route.Value;
 using ShardingConnector.ShardingRoute.Engine.Condition;
 
 namespace ShardingConnector.ShardingRoute.Engine.RouteType.Standard
 {
-/*
-* @Author: xjm
-* @Description:
-* @Date: Wednesday, 28 April 2021 22:15:46
-* @Email: 326308290@qq.com
-*/
-    public sealed class ShardingStandardRoutingEngine:IShardingRouteEngine
+    /*
+    * @Author: xjm
+    * @Description:
+    * @Date: Wednesday, 28 April 2021 22:15:46
+    * @Email: 326308290@qq.com
+    */
+    public sealed class ShardingStandardRoutingEngine : IShardingRouteEngine
     {
-        private readonly String logicTableName;
-    
-        private readonly ISqlCommandContext<ISqlCommand> sqlStatementContext;
-    
-        private readonly ShardingConditions shardingConditions;
-    
-        private readonly ConfigurationProperties properties;
-    
-        private readonly ICollection<ICollection<DataNode>> originalDataNodes = new LinkedList<ICollection<DataNode>>();
+        public  String LogicTableName { get; }
+
+        public ISqlCommandContext<ISqlCommand> SqlCommandContext { get; }
+
+        public ShardingConditions ShardingConditions { get; }
+
+        public ConfigurationProperties Properties { get; }
+
+        public readonly ICollection<ICollection<DataNode>> OriginalDataNodes = new LinkedList<ICollection<DataNode>>();
+
+        public ShardingStandardRoutingEngine(string logicTableName, ISqlCommandContext<ISqlCommand> sqlCommandContext, ShardingConditions shardingConditions, ConfigurationProperties properties)
+        {
+            this.LogicTableName = logicTableName;
+            this.SqlCommandContext = sqlCommandContext;
+            this.ShardingConditions = shardingConditions;
+            this.Properties = properties;
+        }
+
         public RouteResult Route(ShardingRule shardingRule)
         {
-             if (isDMLForModify(sqlStatementContext) && 1 != ((TableAvailable) sqlStatementContext).getAllTables().size()) {
-            throw new ShardingSphereException("Cannot support Multiple-Table for '%s'.", sqlStatementContext.getSqlStatement());
-        }
-        return generateRouteResult(getDataNodes(shardingRule, shardingRule.getTableRule(logicTableName)));
-    }
-    
-    private boolean isDMLForModify(final SQLStatementContext sqlStatementContext) {
-        return sqlStatementContext instanceof InsertStatementContext || sqlStatementContext instanceof UpdateStatementContext || sqlStatementContext instanceof DeleteStatementContext;
-    }
-    
-    private RouteResult generateRouteResult(final Collection<DataNode> routedDataNodes) {
-        RouteResult result = new RouteResult();
-        result.getOriginalDataNodes().addAll(originalDataNodes);
-        for (DataNode each : routedDataNodes) {
-            result.getRouteUnits().add(
-                    new RouteUnit(new RouteMapper(each.getDataSourceName(), each.getDataSourceName()), Collections.singletonList(new RouteMapper(logicTableName, each.getTableName()))));
-        }
-        return result;
-    }
-    
-    private Collection<DataNode> getDataNodes(final ShardingRule shardingRule, final TableRule tableRule) {
-        if (isRoutingByHint(shardingRule, tableRule)) {
-            return routeByHint(shardingRule, tableRule);
-        }
-        if (isRoutingByShardingConditions(shardingRule, tableRule)) {
-            return routeByShardingConditions(shardingRule, tableRule);
-        }
-        return routeByMixedConditions(shardingRule, tableRule);
-    }
-    
-    private boolean isRoutingByHint(final ShardingRule shardingRule, final TableRule tableRule) {
-        return shardingRule.getDatabaseShardingStrategy(tableRule) instanceof HintShardingStrategy && shardingRule.getTableShardingStrategy(tableRule) instanceof HintShardingStrategy;
-    }
-    
-    private Collection<DataNode> routeByHint(final ShardingRule shardingRule, final TableRule tableRule) {
-        return route0(shardingRule, tableRule, getDatabaseShardingValuesFromHint(), getTableShardingValuesFromHint());
-    }
-    
-    private boolean isRoutingByShardingConditions(final ShardingRule shardingRule, final TableRule tableRule) {
-        return !(shardingRule.getDatabaseShardingStrategy(tableRule) instanceof HintShardingStrategy || shardingRule.getTableShardingStrategy(tableRule) instanceof HintShardingStrategy);
-    }
-    
-    private Collection<DataNode> routeByShardingConditions(final ShardingRule shardingRule, final TableRule tableRule) {
-        return shardingConditions.getConditions().isEmpty()
-                ? route0(shardingRule, tableRule, Collections.emptyList(), Collections.emptyList()) : routeByShardingConditionsWithCondition(shardingRule, tableRule);
-    }
-    
-    private Collection<DataNode> routeByShardingConditionsWithCondition(final ShardingRule shardingRule, final TableRule tableRule) {
-        Collection<DataNode> result = new LinkedList<>();
-        for (ShardingCondition each : shardingConditions.getConditions()) {
-            Collection<DataNode> dataNodes = route0(shardingRule, tableRule, 
-                    getShardingValuesFromShardingConditions(shardingRule, shardingRule.getDatabaseShardingStrategy(tableRule).getShardingColumns(), each),
-                    getShardingValuesFromShardingConditions(shardingRule, shardingRule.getTableShardingStrategy(tableRule).getShardingColumns(), each));
-            result.addAll(dataNodes);
-            originalDataNodes.add(dataNodes);
-        }
-        return result;
-    }
-    
-    private Collection<DataNode> routeByMixedConditions(final ShardingRule shardingRule, final TableRule tableRule) {
-        return shardingConditions.getConditions().isEmpty() ? routeByMixedConditionsWithHint(shardingRule, tableRule) : routeByMixedConditionsWithCondition(shardingRule, tableRule);
-    }
-    
-    private Collection<DataNode> routeByMixedConditionsWithCondition(final ShardingRule shardingRule, final TableRule tableRule) {
-        Collection<DataNode> result = new LinkedList<>();
-        for (ShardingCondition each : shardingConditions.getConditions()) {
-            Collection<DataNode> dataNodes = route0(shardingRule, tableRule, getDatabaseShardingValues(shardingRule, tableRule, each), getTableShardingValues(shardingRule, tableRule, each));
-            result.addAll(dataNodes);
-            originalDataNodes.add(dataNodes);
-        }
-        return result;
-    }
-    
-    private Collection<DataNode> routeByMixedConditionsWithHint(final ShardingRule shardingRule, final TableRule tableRule) {
-        if (shardingRule.getDatabaseShardingStrategy(tableRule) instanceof HintShardingStrategy) {
-            return route0(shardingRule, tableRule, getDatabaseShardingValuesFromHint(), Collections.emptyList());
-        }
-        return route0(shardingRule, tableRule, Collections.emptyList(), getTableShardingValuesFromHint());
-    }
-    
-    private List<RouteValue> getDatabaseShardingValues(final ShardingRule shardingRule, final TableRule tableRule, final ShardingCondition shardingCondition) {
-        ShardingStrategy dataBaseShardingStrategy = shardingRule.getDatabaseShardingStrategy(tableRule);
-        return isGettingShardingValuesFromHint(dataBaseShardingStrategy)
-                ? getDatabaseShardingValuesFromHint() : getShardingValuesFromShardingConditions(shardingRule, dataBaseShardingStrategy.getShardingColumns(), shardingCondition);
-    }
-    
-    private List<RouteValue> getTableShardingValues(final ShardingRule shardingRule, final TableRule tableRule, final ShardingCondition shardingCondition) {
-        ShardingStrategy tableShardingStrategy = shardingRule.getTableShardingStrategy(tableRule);
-        return isGettingShardingValuesFromHint(tableShardingStrategy)
-                ? getTableShardingValuesFromHint() : getShardingValuesFromShardingConditions(shardingRule, tableShardingStrategy.getShardingColumns(), shardingCondition);
-    }
-    
-    private boolean isGettingShardingValuesFromHint(final ShardingStrategy shardingStrategy) {
-        return shardingStrategy instanceof HintShardingStrategy;
-    }
-    
-    private List<RouteValue> getDatabaseShardingValuesFromHint() {
-        return getRouteValues(HintManager.isDatabaseShardingOnly() ? HintManager.getDatabaseShardingValues() : HintManager.getDatabaseShardingValues(logicTableName));
-    }
-    
-    private List<RouteValue> getTableShardingValuesFromHint() {
-        return getRouteValues(HintManager.getTableShardingValues(logicTableName));
-    }
-    
-    private List<RouteValue> getRouteValues(final Collection<Comparable<?>> shardingValue) {
-        return shardingValue.isEmpty() ? Collections.emptyList() : Collections.singletonList(new ListRouteValue<>("", logicTableName, shardingValue));
-    }
-    
-    private List<RouteValue> getShardingValuesFromShardingConditions(final ShardingRule shardingRule, final Collection<String> shardingColumns, final ShardingCondition shardingCondition) {
-        List<RouteValue> result = new ArrayList<>(shardingColumns.size());
-        for (RouteValue each : shardingCondition.getRouteValues()) {
-            Optional<BindingTableRule> bindingTableRule = shardingRule.findBindingTableRule(logicTableName);
-            if ((logicTableName.equals(each.getTableName()) || bindingTableRule.isPresent() && bindingTableRule.get().hasLogicTable(logicTableName)) 
-                    && shardingColumns.contains(each.getColumnName())) {
-                result.add(each);
+            if (IsDMLForModify(SqlCommandContext) && 1 != ((ITableAvailable)SqlCommandContext).GetAllTables().Count)
+            {
+                throw new ShardingException($"Cannot support Multiple-Table for '{SqlCommandContext.GetSqlCommand()}'.");
             }
+            return GenerateRouteResult(GetDataNodes(shardingRule, shardingRule.GetTableRule(LogicTableName)));
         }
-        return result;
-    }
-    
-    private Collection<DataNode> route0(final ShardingRule shardingRule, final TableRule tableRule, final List<RouteValue> databaseShardingValues, final List<RouteValue> tableShardingValues) {
-        Collection<String> routedDataSources = routeDataSources(shardingRule, tableRule, databaseShardingValues);
-        Collection<DataNode> result = new LinkedList<>();
-        for (String each : routedDataSources) {
-            result.addAll(routeTables(shardingRule, tableRule, each, tableShardingValues));
+
+        private bool IsDMLForModify(ISqlCommandContext<ISqlCommand> sqlStatementContext)
+        {
+            return sqlStatementContext is InsertCommandContext || sqlStatementContext is UpdateCommandContext || sqlStatementContext is DeleteCommandContext;
         }
-        return result;
-    }
-    
-    private Collection<String> routeDataSources(final ShardingRule shardingRule, final TableRule tableRule, final List<RouteValue> databaseShardingValues) {
-        if (databaseShardingValues.isEmpty()) {
-            return tableRule.getActualDatasourceNames();
+
+        private RouteResult GenerateRouteResult(ICollection<DataNode> routedDataNodes)
+        {
+            RouteResult result = new RouteResult();
+            result.GetOriginalDataNodes().AddAll(OriginalDataNodes);
+            foreach (var routedDataNode in routedDataNodes)
+            {
+                result.GetRouteUnits().Add(
+                        new RouteUnit(new RouteMapper(routedDataNode.GetDataSourceName(), routedDataNode.GetDataSourceName()), new List<RouteMapper>(){ new RouteMapper(LogicTableName, routedDataNode.GetTableName()) }));
+            }
+            return result;
         }
-        Collection<String> result = new LinkedHashSet<>(shardingRule.getDatabaseShardingStrategy(tableRule).doSharding(tableRule.getActualDatasourceNames(), databaseShardingValues, this.properties));
-        Preconditions.checkState(!result.isEmpty(), "no database route info");
-        Preconditions.checkState(tableRule.getActualDatasourceNames().containsAll(result), 
-                "Some routed data sources do not belong to configured data sources. routed data sources: `%s`, configured data sources: `%s`", result, tableRule.getActualDatasourceNames());
-        return result;
-    }
-    
-    private Collection<DataNode> routeTables(final ShardingRule shardingRule, final TableRule tableRule, final String routedDataSource, final List<RouteValue> tableShardingValues) {
-        Collection<String> availableTargetTables = tableRule.getActualTableNames(routedDataSource);
-        Collection<String> routedTables = new LinkedHashSet<>(tableShardingValues.isEmpty() ? availableTargetTables
-                : shardingRule.getTableShardingStrategy(tableRule).doSharding(availableTargetTables, tableShardingValues, this.properties));
-        Preconditions.checkState(!routedTables.isEmpty(), "no table route info");
-        Collection<DataNode> result = new LinkedList<>();
-        for (String each : routedTables) {
-            result.add(new DataNode(routedDataSource, each));
+
+        private ICollection<DataNode> GetDataNodes(ShardingRule shardingRule, TableRule tableRule)
+        {
+            if (IsRoutingByHint(shardingRule, tableRule))
+            {
+                return RouteByHint(shardingRule, tableRule);
+            }
+            if (IsRoutingByShardingConditions(shardingRule, tableRule))
+            {
+                return RouteByShardingConditions(shardingRule, tableRule);
+            }
+            return RouteByMixedConditions(shardingRule, tableRule);
         }
-        return result;
-    }
+
+        private bool IsRoutingByHint(ShardingRule shardingRule, TableRule tableRule)
+        {
+            return shardingRule.GetDatabaseShardingStrategy(tableRule) is HintShardingStrategy && shardingRule.GetTableShardingStrategy(tableRule) is HintShardingStrategy;
+        }
+
+        private ICollection<DataNode> RouteByHint(ShardingRule shardingRule, TableRule tableRule)
+        {
+            return Route0(shardingRule, tableRule, GetDatabaseShardingValuesFromHint(), GetTableShardingValuesFromHint());
+        }
+
+        private bool IsRoutingByShardingConditions(ShardingRule shardingRule, TableRule tableRule)
+        {
+            return !(shardingRule.GetDatabaseShardingStrategy(tableRule) is HintShardingStrategy  || shardingRule.GetTableShardingStrategy(tableRule) is HintShardingStrategy);
+        }
+
+        private ICollection<DataNode> RouteByShardingConditions(ShardingRule shardingRule, TableRule tableRule)
+        {
+            return ShardingConditions.Conditions.IsEmpty()
+                    ? Route0(shardingRule, tableRule, new List<IRouteValue>(0), new ArrayList<IRouteValue>(0)) : RouteByShardingConditionsWithCondition(shardingRule, tableRule);
+        }
+
+        private ICollection<DataNode> RouteByShardingConditionsWithCondition(ShardingRule shardingRule, TableRule tableRule)
+        {
+            ICollection<DataNode> result = new LinkedList<DataNode>();
+            foreach (var condition in ShardingConditions.Conditions)
+            {
+                ICollection<DataNode> dataNodes = Route0(shardingRule, tableRule,
+                    GetShardingValuesFromShardingConditions(shardingRule, shardingRule.GetDatabaseShardingStrategy(tableRule).GetShardingColumns(), condition),
+                    GetShardingValuesFromShardingConditions(shardingRule, shardingRule.GetTableShardingStrategy(tableRule).GetShardingColumns(), condition));
+                result.AddAll(dataNodes);
+                OriginalDataNodes.Add(dataNodes);
+            }
+            return result;
+        }
+
+        private ICollection<DataNode> RouteByMixedConditions(ShardingRule shardingRule, TableRule tableRule)
+        {
+            return ShardingConditions.Conditions.IsEmpty() ? RouteByMixedConditionsWithHint(shardingRule, tableRule) :RouteByMixedConditionsWithCondition(shardingRule, tableRule);
+        }
+
+        private ICollection<DataNode> RouteByMixedConditionsWithCondition(ShardingRule shardingRule, TableRule tableRule)
+        {
+            ICollection<DataNode> result = new LinkedList<DataNode>();
+            foreach (var condition in ShardingConditions.Conditions)
+            {
+                ICollection<DataNode> dataNodes = Route0(shardingRule, tableRule, GetDatabaseShardingValues(shardingRule, tableRule, condition), GetTableShardingValues(shardingRule, tableRule, condition));
+                result.AddAll(dataNodes);
+                OriginalDataNodes.Add(dataNodes);
+            }
+            return result;
+        }
+
+        private ICollection<DataNode> RouteByMixedConditionsWithHint(ShardingRule shardingRule, TableRule tableRule)
+        {
+            if (shardingRule.GetDatabaseShardingStrategy(tableRule) is HintShardingStrategy) {
+                return Route0(shardingRule, tableRule, GetDatabaseShardingValuesFromHint(), new List<IRouteValue>(0));
+            }
+            return Route0(shardingRule, tableRule, new ArrayList<IRouteValue>(0), GetTableShardingValuesFromHint());
+        }
+
+        private List<IRouteValue> GetDatabaseShardingValues(ShardingRule shardingRule, TableRule tableRule, ShardingCondition shardingCondition)
+        {
+            var dataBaseShardingStrategy = shardingRule.GetDatabaseShardingStrategy(tableRule);
+            return IsGettingShardingValuesFromHint(dataBaseShardingStrategy)
+                    ? GetDatabaseShardingValuesFromHint() : GetShardingValuesFromShardingConditions(shardingRule, dataBaseShardingStrategy.GetShardingColumns(), shardingCondition);
+        }
+
+        private List<IRouteValue> GetTableShardingValues(ShardingRule shardingRule, TableRule tableRule, ShardingCondition shardingCondition)
+        {
+            IShardingStrategy tableShardingStrategy = shardingRule.GetTableShardingStrategy(tableRule);
+            return IsGettingShardingValuesFromHint(tableShardingStrategy)
+                    ? GetTableShardingValuesFromHint() : GetShardingValuesFromShardingConditions(shardingRule, tableShardingStrategy.GetShardingColumns(), shardingCondition);
+        }
+
+        private bool IsGettingShardingValuesFromHint(IShardingStrategy shardingStrategy)
+        {
+            return shardingStrategy is HintShardingStrategy;
+        }
+
+        private List<IRouteValue> GetDatabaseShardingValuesFromHint()
+        {
+            return GetRouteValues(HintManager.IsDatabaseShardingOnly() ? HintManager.GetDatabaseShardingValues() : HintManager.GetDatabaseShardingValues(LogicTableName));
+        }
+
+        private List<IRouteValue> GetTableShardingValuesFromHint()
+        {
+            return GetRouteValues(HintManager.GetTableShardingValues(LogicTableName));
+        }
+
+        private List<IRouteValue> GetRouteValues(ICollection<IComparable> shardingValue)
+        {
+            return shardingValue.IsEmpty() ?new List<IRouteValue>(0) : new List<IRouteValue>(){ new ListRouteValue("", LogicTableName, shardingValue) };
+        }
+
+        private List<IRouteValue> GetShardingValuesFromShardingConditions(ShardingRule shardingRule, ICollection<string> shardingColumns, ShardingCondition shardingCondition)
+        {
+            List<IRouteValue> result = new List<IRouteValue>(shardingColumns.Count);
+            foreach (var routeValue in shardingCondition.RouteValues)
+            {
+                var bindingTableRule = shardingRule.FindBindingTableRule(LogicTableName);
+                if ((LogicTableName.Equals(routeValue.GetTableName()) || bindingTableRule!=null && bindingTableRule.HasLogicTable(LogicTableName))
+                    && shardingColumns.Contains(routeValue.GetColumnName()))
+                {
+                    result.Add(routeValue);
+                }
+            }
+            return result;
+        }
+
+        private ICollection<DataNode> Route0(ShardingRule shardingRule, TableRule tableRule, List<IRouteValue> databaseShardingValues, List<IRouteValue> tableShardingValues)
+        {
+            ICollection<String> routedDataSources = RouteDataSources(shardingRule, tableRule, databaseShardingValues);
+            ICollection<DataNode> result = new LinkedList<DataNode>();
+            foreach (var routedDataSource in routedDataSources)
+            {
+                result.AddAll(RouteTables(shardingRule, tableRule, routedDataSource, tableShardingValues));
+            }
+            return result;
+        }
+
+        private ICollection<string> RouteDataSources(ShardingRule shardingRule, TableRule tableRule, List<IRouteValue> databaseShardingValues)
+        {
+            if (databaseShardingValues.IsEmpty())
+            {
+                return tableRule.GetActualDatasourceNames();
+            }
+            ICollection<string> result = new HashSet<string>(shardingRule.GetDatabaseShardingStrategy(tableRule).DoSharding(tableRule.GetActualDatasourceNames(), databaseShardingValues, this.Properties));
+            ShardingAssert.If(result.IsEmpty(), "no database route info");
+            ShardingAssert.Else(tableRule.GetActualDatasourceNames().All(o=>result.Contains(o)), $"Some routed data sources do not belong to configured data sources. routed data sources: `{result}`, configured data sources: `{tableRule.GetActualDatasourceNames()}`");
+           
+            return result;
+        }
+
+        private ICollection<DataNode> RouteTables(ShardingRule shardingRule, TableRule tableRule, string routedDataSource, List<IRouteValue> tableShardingValues)
+        {
+            ICollection<string> availableTargetTables = tableRule.GetActualTableNames(routedDataSource);
+            ICollection<string> routedTables = new HashSet<string>(tableShardingValues.IsEmpty() ? availableTargetTables
+                    : shardingRule.GetTableShardingStrategy(tableRule).DoSharding(availableTargetTables, tableShardingValues, this.Properties));
+            ShardingAssert.If(routedTables.IsEmpty(), "no table route info");
+            ICollection<DataNode> result = new LinkedList<DataNode>();
+            foreach (var routedTable in routedTables)
+            {
+                result.Add(new DataNode(routedDataSource, routedTable));
+            }
+            return result;
+        }
     }
 }

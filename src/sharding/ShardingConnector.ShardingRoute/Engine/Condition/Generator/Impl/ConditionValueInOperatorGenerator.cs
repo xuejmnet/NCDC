@@ -34,7 +34,7 @@ namespace ShardingConnector.ShardingRoute.Engine.Condition.Generator.Impl
                     routeValues.Add(timeService.GetTime());
                 }
             }
-            return routeValues.IsEmpty() ? null : new ListRouteValue<IComparable>(column.Name, column.TableName, routeValues);
+            return routeValues.IsEmpty() ? null : new ListRouteValue(column.Name, column.TableName, routeValues);
 
         }
 

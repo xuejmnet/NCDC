@@ -25,7 +25,7 @@ namespace ShardingConnector.ShardingRoute.Engine.Condition.Generator.Impl
             if (betweenRouteValue!=null && andRouteValue!=null)
             {
                
-                return new RangeRouteValue<IComparable>(column.Name, column.TableName, Range.Closed(betweenRouteValue, andRouteValue));
+                return new RangeRouteValue(column.Name, column.TableName, Range.Closed(betweenRouteValue, andRouteValue));
             }
             var date = SPITimeService.GetInstance().GetTime();
             if (betweenRouteValue==null && ExpressionConditionUtils.IsNowExpression(predicateRightValue.BetweenExpression))
@@ -38,7 +38,7 @@ namespace ShardingConnector.ShardingRoute.Engine.Condition.Generator.Impl
             }
             if(betweenRouteValue != null && andRouteValue != null)
             {
-                return new RangeRouteValue<IComparable>(column.Name, column.TableName, Range.Closed(betweenRouteValue, andRouteValue));
+                return new RangeRouteValue(column.Name, column.TableName, Range.Closed(betweenRouteValue, andRouteValue));
             }
             return null;
         }

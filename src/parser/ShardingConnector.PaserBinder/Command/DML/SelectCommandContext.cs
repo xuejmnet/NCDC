@@ -302,6 +302,14 @@ namespace ShardingConnector.ParserBinder.Command.DML
         {
             return _orderByContext;
         }
+        public bool IsContainsSubQuery()
+        {
+            return _containsSubQuery;
+        }
+        public override TablesContext GetTablesContext()
+        {
+            return _tablesContext;
+        }
 
     }
 }

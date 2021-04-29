@@ -27,7 +27,7 @@ namespace ShardingConnector.RewriteEngine.Sql.Impl
             }
             _context.GetSqlTokens().Sort();
             StringBuilder result = new StringBuilder();
-            result.Append(_context.GetSql().Substring(0, _context.GetSqlTokens()[0].GetStartIndex()));
+            result.Append(_context.GetSql().SubStringWithEndIndex(0, _context.GetSqlTokens()[0].GetStartIndex()));
            
             foreach (var sqlToken in _context.GetSqlTokens())
             {
@@ -41,7 +41,7 @@ namespace ShardingConnector.RewriteEngine.Sql.Impl
         protected abstract string GetSqlTokenText(SqlToken sqlToken);
     
         private string GetConjunctionText(SqlToken sqlToken) {
-            return _context.GetSql().Substring(GetStartIndex(sqlToken), GetStopIndex(sqlToken));
+            return _context.GetSql().SubStringWithEndIndex(GetStartIndex(sqlToken), GetStopIndex(sqlToken));
         }
     
         private int GetStartIndex(SqlToken sqlToken) {

@@ -37,7 +37,7 @@ namespace ShardingConnector.ShardingCommon.Core.Strategy.Route.Hint
         public ICollection<string> DoSharding(ICollection<string> availableTargetNames, ICollection<IRouteValue> shardingValues,
             ConfigurationProperties properties)
         {
-            var shardingValue = (ListRouteValue<IComparable>)shardingValues.First();
+            var shardingValue = (ListRouteValue)shardingValues.First();
             var shardingResult = ShardingAlgorithm.DoSharding(availableTargetNames,
                 new HintShardingValue<IComparable>(shardingValue.GetTableName(), shardingValue.GetColumnName(), shardingValue.GetValues()));
             var result = new SortedSet<string>(StringComparer.OrdinalIgnoreCase);

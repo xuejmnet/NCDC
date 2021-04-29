@@ -27,7 +27,12 @@ namespace ShardingConnector.ParserBinder.Command
             return _sqlCommand;
         }
 
-        public TablesContext GetTablesContext()
+        public override string ToString()
+        {
+            return $"{nameof(_sqlCommand)}: {_sqlCommand}, {nameof(_tablesContext)}: {_tablesContext}";
+        }
+
+        public virtual TablesContext GetTablesContext()
         {
             return _tablesContext;
         }

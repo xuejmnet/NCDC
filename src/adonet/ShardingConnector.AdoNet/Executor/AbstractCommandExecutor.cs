@@ -54,7 +54,7 @@ namespace ShardingConnector.AdoNet.Executor
             this.DatabaseType = shardingConnection.GetRuntimeContext().GetDatabaseType();
             this.Connection = shardingConnection;
             // int maxConnectionsSizePerQuery = connection.GetRuntimeContext().GetProperties().<Integer>getValue(ConfigurationPropertyKey.MAX_CONNECTIONS_SIZE_PER_QUERY);
-            int maxConnectionsSizePerQuery = 100;
+            int maxConnectionsSizePerQuery = 1;
             ExecutorEngine executorEngine = Connection.GetRuntimeContext().GetExecutorEngine();
             SqlExecutePrepareTemplate = new SqlExecutePrepareTemplate(maxConnectionsSizePerQuery);
             SqlExecuteTemplate = new SqlExecuteTemplate(executorEngine, Connection.IsHoldTransaction());
@@ -117,7 +117,7 @@ namespace ShardingConnector.AdoNet.Executor
         public bool IsAccumulate()
         {
             return false;
-            // return !connection.GetRuntimeContext().GetRule().isAllBroadcastTables(SqlStatementContext.GetTablesContext().GetTableNames());
+            // return !connection.GetRuntimeContext().GetRule().isAllBroadcastTables(SqlCommandContext.GetTablesContext().GetTableNames());
         }
 
 

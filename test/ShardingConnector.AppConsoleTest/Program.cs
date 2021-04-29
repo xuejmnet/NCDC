@@ -7,6 +7,7 @@ using ShardingConnector.ShardingApi.Api.Config.Sharding.Strategy;
 using ShardingConnector.ShardingApi.Api.Sharding.Standard;
 using System;
 using System.Collections.Generic;
+using ShardingConnector.Executor.SqlLog;
 
 namespace ShardingConnector.AppConsoleTest
 {
@@ -14,6 +15,7 @@ namespace ShardingConnector.AppConsoleTest
     {
         static void Main(string[] args)
         {
+            SqlLogger.AddLog((msg)=>Console.WriteLine(msg));
             //var dbProviderFactory = ShardingCreateDbProviderFactory.CreateDataSource(dataSourceMap, new ShardingRuleConfiguration(),
             //    new Dictionary<string, object>());
             var dataSourceMap = new Dictionary<string, IDataSource>()
