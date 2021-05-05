@@ -490,5 +490,6 @@ namespace ShardingConnector.ShardingCommon.Core.Rule
             }
             return result;
         }
+        
     }
 }

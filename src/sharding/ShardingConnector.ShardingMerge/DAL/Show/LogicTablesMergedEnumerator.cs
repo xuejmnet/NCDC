@@ -1,6 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using ShardingConnector.CommandParser.Command;
 using ShardingConnector.Executor;
+using ShardingConnector.Extensions;
 using ShardingConnector.Merge.Reader.Memory;
 using ShardingConnector.ParserBinder.Command;
 using ShardingConnector.ParserBinder.MetaData.Schema;
@@ -24,7 +27,29 @@ namespace ShardingConnector.ShardingMerge.DAL.Show
         protected override List<MemoryQueryResultRow> Init(ShardingRule rule, SchemaMetaData schemaMetaData, ISqlCommandContext<ISqlCommand> sqlCommandContext,
             List<IQueryEnumerator> queryEnumerators)
         {
-            throw new System.NotImplementedException();
+            ICollection<MemoryQueryResultRow> result = new LinkedList<MemoryQueryResultRow>();
+            var tableNames = new HashSet<string>();
+            foreach (var queryEnumerator in queryEnumerators)
+            {
+                while (queryEnumerator.MoveNext()) {
+                    MemoryQueryResultRow memoryResultSetRow = new MemoryQueryResultRow(queryEnumerator);
+                    var actualTableName = memoryResultSetRow.GetCell(1).ToString();
+                    var tableRule = rule.FindTableRuleByActualTable(actualTableName);
+                    if (tableRule==null) {
+                        if (rule.TableRules.IsEmpty() || schemaMetaData.ContainsTable(actualTableName) && tableNames.Add(actualTableName)) {
+                            result.Add(memoryResultSetRow);
+                        }
+                    } else if (tableNames.Add(tableRule.LogicTable)) {
+                        memoryResultSetRow.SetCell(1, tableRule.LogicTable);
+                        SetCellValue(memoryResultSetRow, tableRule.LogicTable, actualTableName);
+                        result.Add(memoryResultSetRow);
+                    }
+                }
+            }
+            return result.ToList();
+        }
+    
+        protected virtual void SetCellValue( MemoryQueryResultRow memoryResultSetRow,  string logicTableName,  string actualTableName) {
         }
     }
 }

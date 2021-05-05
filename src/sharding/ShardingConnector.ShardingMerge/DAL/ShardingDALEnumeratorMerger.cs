@@ -7,10 +7,12 @@ using ShardingConnector.CommandParser.Command.DAL.Dialect.MySql;
 using ShardingConnector.Executor;
 using ShardingConnector.Merge.Engine.Merger;
 using ShardingConnector.Merge.Reader;
+using ShardingConnector.Merge.Reader.Transparent;
 using ShardingConnector.ParserBinder.Command;
 using ShardingConnector.ParserBinder.MetaData.Schema;
 using ShardingConnector.ShardingCommon.Core.Rule;
 using ShardingConnector.ShardingMerge.DAL.Common;
+using ShardingConnector.ShardingMerge.DAL.Show;
 
 namespace ShardingConnector.ShardingMerge.DAL
 {
@@ -21,28 +23,28 @@ namespace ShardingConnector.ShardingMerge.DAL
     * @Ver: 1.0
     * @Email: 326308290@qq.com
     */
-    public sealed class ShardingDALResultMerger:IResultMerger
+    public sealed class ShardingDALEnumeratorMerger:IResultMerger
     {
         private readonly ShardingRule shardingRule;
 
-        public ShardingDALResultMerger(ShardingRule shardingRule)
+        public ShardingDALEnumeratorMerger(ShardingRule shardingRule)
         {
             this.shardingRule = shardingRule;
         }
 
-        public IMergedEnumerator Merge(List<IQueryEnumerator> queryResults, ISqlCommandContext<ISqlCommand> sqlCommandContext, SchemaMetaData schemaMetaData)
+        public IMergedEnumerator Merge(List<IQueryEnumerator> queryEnumerators, ISqlCommandContext<ISqlCommand> sqlCommandContext, SchemaMetaData schemaMetaData)
         {
             var dalStatement = sqlCommandContext.GetSqlCommand();
             if (dalStatement is ShowDatabasesCommand showDatabasesCommand) {
                 return new SingleLocalDataMergedEnumerator(new List<object>(){ DefaultSchema.LOGIC_NAME });
             }
             if (dalStatement is ShowTablesCommand || dalStatement is ShowTableStatusCommand || dalStatement is ShowIndexCommand) {
-                return new LogicTablesMergedResult(shardingRule, sqlStatementContext, schemaMetaData, queryResults);
+                return new LogicTablesMergedEnumerator(shardingRule, schemaMetaData,sqlCommandContext, queryEnumerators);
             }
-            if (dalStatement instanceof ShowCreateTableStatement) {
-                return new ShowCreateTableMergedResult(shardingRule, sqlStatementContext, schemaMetaData, queryResults);
+            if (dalStatement is ShowCreateTableCommand) {
+                return new ShowCreateTableMergedEnumerator(shardingRule,schemaMetaData, sqlCommandContext, queryEnumerators);
             }
-            return new TransparentMergedResult(queryResults.get(0));
+            return new TransparentMergedEnumerator(queryEnumerators[0]);
         }
     }
 }

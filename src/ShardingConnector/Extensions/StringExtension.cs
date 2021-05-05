@@ -13,6 +13,24 @@ namespace ShardingConnector.Extensions
     */
     public static class StringExtension
     {
+        /// <summary>
+        /// 替换第一个符合条件的字符串
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="oldValue">所要替换掉的值</param>
+        /// <param name="newValue">所要替换的值</param>
+        /// <returns>返回替换后的值 所要替换掉的值为空或Null，返回原值</returns>
+        public static string ReplaceFirst(this string value, string oldValue, string newValue)
+        {
+            if (string.IsNullOrEmpty(oldValue))
+                return value;
+ 
+            int idx = value.IndexOf(oldValue);
+            if (idx == -1)
+                return value;
+            value = value.Remove(idx, oldValue.Length);
+            return value.Insert(idx, newValue);
+        }
         public static string SubStringWithEndIndex(this string source,int startIndex,int endIndex,bool includeEndChar=false)
         {
             if (endIndex < startIndex)

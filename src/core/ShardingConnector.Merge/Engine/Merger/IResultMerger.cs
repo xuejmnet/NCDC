@@ -18,7 +18,7 @@ namespace ShardingConnector.Merge.Engine.Merger
     */
     public interface IResultMerger
     {
-        IMergedEnumerator Merge(List<IQueryEnumerator> queryResults, ISqlCommandContext<ISqlCommand> sqlCommandContext, SchemaMetaData schemaMetaData);
+        IMergedEnumerator Merge(List<IQueryEnumerator> queryEnumerators, ISqlCommandContext<ISqlCommand> sqlCommandContext, SchemaMetaData schemaMetaData);
 
     }
 }
