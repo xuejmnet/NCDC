@@ -116,8 +116,7 @@ namespace ShardingConnector.AdoNet.Executor
          */
         public bool IsAccumulate()
         {
-            return false;
-            // return !connection.GetRuntimeContext().GetRule().isAllBroadcastTables(SqlCommandContext.GetTablesContext().GetTableNames());
+            return !Connection.GetRuntimeContext().GetRule().IsAllBroadcastTables(SqlStatementContext.GetTablesContext().GetTableNames());
         }
 
 

@@ -53,7 +53,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShardingConnector.ShardingC
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShardingConnector.ShardingRoute", "src\sharding\ShardingConnector.ShardingRoute\ShardingConnector.ShardingRoute.csproj", "{A25565CC-24DA-4F0F-AD77-35BB266EE4F4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShardingConnector.ShardingRewrite", "src\sharding\ShardingConnector.ShardingRewrite\ShardingConnector.ShardingRewrite.csproj", "{0A587439-01C7-47F0-9F2E-7C5713C44A78}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShardingConnector.ShardingRewrite", "src\sharding\ShardingConnector.ShardingRewrite\ShardingConnector.ShardingRewrite.csproj", "{0A587439-01C7-47F0-9F2E-7C5713C44A78}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShardingConnector.ShardingMerge", "src\sharding\ShardingConnector.ShardingMerge\ShardingConnector.ShardingMerge.csproj", "{428A15F0-EC6B-455A-9BE2-77D2BE0F4B52}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -137,6 +139,10 @@ Global
 		{0A587439-01C7-47F0-9F2E-7C5713C44A78}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0A587439-01C7-47F0-9F2E-7C5713C44A78}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0A587439-01C7-47F0-9F2E-7C5713C44A78}.Release|Any CPU.Build.0 = Release|Any CPU
+		{428A15F0-EC6B-455A-9BE2-77D2BE0F4B52}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{428A15F0-EC6B-455A-9BE2-77D2BE0F4B52}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{428A15F0-EC6B-455A-9BE2-77D2BE0F4B52}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{428A15F0-EC6B-455A-9BE2-77D2BE0F4B52}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -166,6 +172,7 @@ Global
 		{A3BDA0AD-3416-4DF0-AB42-F5ED51C97E7F} = {396DB147-8FBA-4C69-B72F-BEF4E62B2076}
 		{A25565CC-24DA-4F0F-AD77-35BB266EE4F4} = {396DB147-8FBA-4C69-B72F-BEF4E62B2076}
 		{0A587439-01C7-47F0-9F2E-7C5713C44A78} = {396DB147-8FBA-4C69-B72F-BEF4E62B2076}
+		{428A15F0-EC6B-455A-9BE2-77D2BE0F4B52} = {396DB147-8FBA-4C69-B72F-BEF4E62B2076}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FE6C7648-4D94-4A48-B67D-3161C6FE3BC0}

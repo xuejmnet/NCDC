@@ -20,7 +20,7 @@ namespace ShardingConnector.CommandParser.Constant
             _quotes.Add(QuoteCharacterEnum.BACK_QUOTE, new QuoteCharacter("`", "`"));
             _quotes.Add(QuoteCharacterEnum.SINGLE_QUOTE, new QuoteCharacter("'", "'"));
             _quotes.Add(QuoteCharacterEnum.QUOTE, new QuoteCharacter("\"", "\""));
-            _quotes.Add(QuoteCharacterEnum.BRACKETS, new QuoteCharacter("[", "["));
+            _quotes.Add(QuoteCharacterEnum.BRACKETS, new QuoteCharacter("[", "]"));
             _quotes.Add(QuoteCharacterEnum.NONE, new QuoteCharacter("", ""));
         }
         private QuoteCharacter(string startDelimiter, string endDelimiter)

@@ -20,9 +20,9 @@ namespace ShardingConnector.Merge.Reader.Memory
     /// </summary>
     public abstract class MemoryMergedEnumerator<T> : IMergedEnumerator where T : IBaseRule
     {
-        private readonly IEnumerator<MemoryQueryRow> _memoryResultSetRows;
+        private readonly IEnumerator<MemoryQueryResultRow> _memoryResultSetRows;
 
-        private MemoryQueryRow _currentSetRow;
+        private MemoryQueryResultRow _currentSetResultRow;
 
 
         protected MemoryMergedEnumerator(T rule, SchemaMetaData schemaMetaData,
@@ -33,18 +33,18 @@ namespace ShardingConnector.Merge.Reader.Memory
             _memoryResultSetRows = memoryQueryResultRowList.GetEnumerator();
             if (memoryQueryResultRowList.Any())
             {
-                _currentSetRow = memoryQueryResultRowList.First();
+                _currentSetResultRow = memoryQueryResultRowList.First();
             }
         }
 
-        protected abstract List<MemoryQueryRow> Init(T rule, SchemaMetaData schemaMetaData,
+        protected abstract List<MemoryQueryResultRow> Init(T rule, SchemaMetaData schemaMetaData,
             ISqlCommandContext<ISqlCommand> sqlCommandContext, List<IQueryEnumerator> queryEnumerators);
 
         public bool MoveNext()
         {
             if (_memoryResultSetRows.MoveNext())
             {
-                _currentSetRow = _memoryResultSetRows.Current;
+                _currentSetResultRow = _memoryResultSetRows.Current;
                 return true;
             }
 
@@ -53,19 +53,19 @@ namespace ShardingConnector.Merge.Reader.Memory
 
         public object GetValue(int columnIndex)
         {
-            object result = _currentSetRow.GetCell(columnIndex);
+            object result = _currentSetResultRow.GetCell(columnIndex);
             return result;
         }
 
         public T1 GetValue<T1>(int columnIndex)
         {
-            object result = _currentSetRow.GetCell(columnIndex);
+            object result = _currentSetResultRow.GetCell(columnIndex);
             return (T1)result;
         }
 
         public bool IsDBNull(int columnIndex)
         {
-            return _currentSetRow.IsDBNull(columnIndex);
+            return _currentSetResultRow.IsDBNull(columnIndex);
         }
 
     }

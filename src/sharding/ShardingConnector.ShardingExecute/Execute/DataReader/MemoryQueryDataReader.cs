@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.Data.Common;
+using System.Linq;
 using ShardingConnector.Executor;
 
 namespace ShardingConnector.ShardingExecute.Execute.DataReader
@@ -13,40 +15,42 @@ namespace ShardingConnector.ShardingExecute.Execute.DataReader
     public class MemoryQueryDataReader:IQueryEnumerator
     {
         private readonly DbDataReader _dataReader;
+        private readonly List<DbColumn> _columnSchema;
 
         public MemoryQueryDataReader(DbDataReader dataReader)
         {
+            _columnSchema = dataReader.GetColumnSchema().ToList();
             _dataReader = dataReader;
         }
         public bool MoveNext()
         {
-            throw new NotImplementedException();
+            return _dataReader.Read();
         }
 
         public object GetValue(int columnIndex)
         {
-            throw new NotImplementedException();
+           return _dataReader[columnIndex];
         }
 
         public T GetValue<T>(int columnIndex)
         {
-            throw new NotImplementedException();
+            return (T)_dataReader[columnIndex];
         }
 
-        public int ColumnCount { get; }
+        public int ColumnCount => _dataReader.FieldCount;
         public string GetColumnName(int columnIndex)
         {
-            throw new NotImplementedException();
+            return _columnSchema[columnIndex].BaseColumnName;
         }
 
         public string GetColumnLabel(int columnIndex)
         {
-            throw new NotImplementedException();
+            return _columnSchema[columnIndex].ColumnName;
         }
 
         public bool IsDBNull(int columnIndex)
         {
-            throw new NotImplementedException();
+            return _dataReader.IsDBNull(columnIndex);
         }
     }
 }

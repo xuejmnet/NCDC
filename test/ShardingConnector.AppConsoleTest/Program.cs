@@ -23,7 +23,7 @@ namespace ShardingConnector.AppConsoleTest
                 {
                     "ds0",
                     new GenericDataSource(SqlClientFactory.Instance,
-                        "Data Source=localhost;Initial Catalog=ShardingCoreDB;Integrated Security=True")
+                        "Data Source=localhost;Initial Catalog=ShardingCoreDB;Integrated Security=True;MultipleActiveResultSets=True")
                 }
             };
             //2、分库分表配置
@@ -42,7 +42,8 @@ namespace ShardingConnector.AppConsoleTest
 
 
             var dbCommand = dbConnection.CreateCommand();
-            dbCommand.CommandText = "select * from SysUserMod where Id='21' ";
+            dbCommand.CommandText = @"select [d].[Id],[d].[Name],[d].[Age] from [dbo].[SysUserMod] as [d] where [d].[Id]='21' ";
+            //dbCommand.CommandText = @"select [d].[Id],[d].[Name],[d].[Age] from [dbo].[SysUserMod] as [d] ";
             var dbDataReader = dbCommand.ExecuteReader();
             while (dbDataReader.Read())
             {

@@ -87,7 +87,7 @@ namespace ShardingConnector.ShardingCommon.Core.Rule
                 : ShardingStrategyFactory.NewInstance(tableRuleConfig.DatabaseShardingStrategyConfig);
             TableShardingStrategy = null == tableRuleConfig.TableShardingStrategyConfig
                 ? null
-                : ShardingStrategyFactory.NewInstance(tableRuleConfig.DatabaseShardingStrategyConfig);
+                : ShardingStrategyFactory.NewInstance(tableRuleConfig.TableShardingStrategyConfig);
             KeyGeneratorConfiguration keyGeneratorConfiguration = tableRuleConfig.KeyGeneratorConfig;
             generateKeyColumn =
                 null != keyGeneratorConfiguration && !string.IsNullOrWhiteSpace(keyGeneratorConfiguration.Column)

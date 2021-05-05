@@ -16,7 +16,7 @@ namespace ShardingConnector.Merge.Engine.Merger
     * @Ver: 1.0
     * @Email: 326308290@qq.com
     */
-    public interface IResultMergerEngine<T>:IResultProcessEngine<T> where  T:IBaseRule
+    public interface IResultMergerEngine<in T>:IResultProcessEngine<T> where  T:IBaseRule
     {
         IResultMerger NewInstance(IDatabaseType databaseType, T rule, ConfigurationProperties properties, ISqlCommandContext<ISqlCommand> sqlCommandContext);
 

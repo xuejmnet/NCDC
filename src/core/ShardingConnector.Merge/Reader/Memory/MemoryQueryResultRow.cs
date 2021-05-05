@@ -14,11 +14,11 @@ namespace ShardingConnector.Merge.Reader.Memory
     /// <summary>
     /// 
     /// </summary>
-    public sealed class MemoryQueryRow
+    public sealed class MemoryQueryResultRow
     {
         private readonly object[] data;
 
-        public MemoryQueryRow(IQueryEnumerator queryEnumerator)
+        public MemoryQueryResultRow(IQueryEnumerator queryEnumerator)
         {
             data = Load(queryEnumerator);
         }
