@@ -19,7 +19,7 @@
             MergedEnumerator = mergedEnumerator;
         }
 
-        public bool MoveNext()
+        public virtual bool MoveNext()
         {
             return MergedEnumerator.MoveNext();
         }

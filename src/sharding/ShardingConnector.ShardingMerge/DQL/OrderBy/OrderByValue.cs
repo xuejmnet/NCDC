@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using ShardingConnector.Base;
 using ShardingConnector.CommandParser.Segment.DML.Order.Item;
 using ShardingConnector.CommandParser.Segment.Generic.Table;
 using ShardingConnector.Executor;
@@ -41,15 +42,16 @@ namespace ShardingConnector.ShardingMerge.DQL.OrderBy
             List<bool> result = new List<bool>(orderByItems.Count);
             foreach (var orderByItem in orderByItems)
             {
-                result.Add(GetOrderValuesCaseSensitiveFromTables(selectCommandContext,schemaMetaData,orderByItem));
+                result.Add(GetOrderValuesCaseSensitiveFromTables(selectCommandContext, schemaMetaData, orderByItem));
             }
+
             return result;
         }
+
         private bool GetOrderValuesCaseSensitiveFromTables(SelectCommandContext selectCommandContext, SchemaMetaData schemaMetaData, OrderByItem eachOrderByItem)
         {
             foreach (var simpleTableSegment in selectCommandContext.GetAllTables())
             {
-
                 var tableName = simpleTableSegment.GetTableName().GetIdentifier().GetValue();
                 var tableMetaData = schemaMetaData.Get(tableName);
                 IDictionary<String, ColumnMetaData> columns = tableMetaData.GetColumns();
@@ -79,14 +81,53 @@ namespace ShardingConnector.ShardingMerge.DQL.OrderBy
 
             return false;
         }
+
+        public bool MoveNext()
+        {
+            var result = queryEnumerator.MoveNext();
+            orderValues = result ? GetOrderValues() : new List<IComparable>(0);
+            return result;
+        }
+
+        private List<IComparable> GetOrderValues()
+        {
+            var result = new List<IComparable>(orderByItems.Count);
+            foreach (var orderByItem in orderByItems)
+            {
+                var value = queryEnumerator.GetValue(orderByItem.GetIndex());
+                ShardingAssert.If(value == null || !(value is IComparable), "Order by value must implements Comparable");
+                result.Add((IComparable) value);
+            }
+
+            return result;
+        }
+
         public int CompareTo(object obj)
         {
-            throw new NotImplementedException();
+            return CompareTo((OrderByValue) obj);
         }
 
         public int CompareTo(OrderByValue other)
         {
-            throw new NotImplementedException();
+            int i = 0;
+            foreach (var orderByItem in orderByItems)
+            {
+                int result = CompareUtil.CompareTo(orderValues[i], other.orderValues[i], orderByItem.GetSegment().GetOrderDirection(),
+                    orderByItem.GetSegment().GetNullOrderDirection(), orderValuesCaseSensitive[i]);
+                if (0 != result)
+                {
+                    return result;
+                }
+
+                i++;
+            }
+
+            return 0;
+        }
+
+        public IQueryEnumerator GetQueryEnumerator()
+        {
+            return queryEnumerator;
         }
     }
 }
