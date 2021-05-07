@@ -66,5 +66,10 @@ namespace ShardingConnector.ParserBinder.Segment.Select.Projection.Impl
         {
             return _type;
         }
+
+        public int GetIndex()
+        {
+            return index;
+        }
     }
 }
