@@ -19,59 +19,59 @@ namespace ShardingConnector.ShardingMerge.DQL.OrderBy
     */
     public class OrderByStreamMergedEnumerator : StreamMergedEnumerator
     {
-        protected ICollection<OrderByItem> orderByItems { get; }
+        protected ICollection<OrderByItem> OrderByItems { get; }
 
-        protected PriorityQueue<OrderByValue> orderByValuesQueue { get; }
+        protected PriorityQueue<OrderByValue> OrderByValuesQueue { get; }
 
-        protected bool isFirstNext { get; set; }
+        protected bool IsFirstNext { get; set; }
 
         public OrderByStreamMergedEnumerator(List<IQueryEnumerator> queryResults, SelectCommandContext selectCommandContext, SchemaMetaData schemaMetaData)
         {
-            this.orderByItems = selectCommandContext.GetOrderByContext().GetItems();
-            this.orderByValuesQueue = new PriorityQueue<OrderByValue>(queryResults.Count);
+            this.OrderByItems = selectCommandContext.GetOrderByContext().GetItems();
+            this.OrderByValuesQueue = new PriorityQueue<OrderByValue>(queryResults.Count);
             OrderResultSetsToQueue(queryResults, selectCommandContext, schemaMetaData);
-            isFirstNext = true;
+            IsFirstNext = true;
         }
 
         private void OrderResultSetsToQueue(List<IQueryEnumerator> queryResults, SelectCommandContext selectCommandContext, SchemaMetaData schemaMetaData)
         {
             foreach (var queryResult in queryResults)
             {
-                OrderByValue orderByValue = new OrderByValue(queryResult, orderByItems, selectCommandContext, schemaMetaData);
+                OrderByValue orderByValue = new OrderByValue(queryResult, OrderByItems, selectCommandContext, schemaMetaData);
                 if (orderByValue.MoveNext())
                 {
-                    orderByValuesQueue.Offer(orderByValue);
+                    OrderByValuesQueue.Offer(orderByValue);
                 }
             }
 
-            SetCurrentQueryEnumerator(orderByValuesQueue.IsEmpty() ? queryResults[0] : orderByValuesQueue.Peek().GetQueryEnumerator());
+            SetCurrentQueryEnumerator(OrderByValuesQueue.IsEmpty() ? queryResults[0] : OrderByValuesQueue.Peek().GetQueryEnumerator());
         }
 
         public override bool MoveNext()
         {
-            if (orderByValuesQueue.IsEmpty())
+            if (OrderByValuesQueue.IsEmpty())
             {
                 return false;
             }
 
-            if (isFirstNext)
+            if (IsFirstNext)
             {
-                isFirstNext = false;
+                IsFirstNext = false;
                 return true;
             }
 
-            OrderByValue firstOrderByValue = orderByValuesQueue.Poll();
+            OrderByValue firstOrderByValue = OrderByValuesQueue.Poll();
             if (firstOrderByValue.MoveNext())
             {
-                orderByValuesQueue.Offer(firstOrderByValue);
+                OrderByValuesQueue.Offer(firstOrderByValue);
             }
 
-            if (orderByValuesQueue.IsEmpty())
+            if (OrderByValuesQueue.IsEmpty())
             {
                 return false;
             }
 
-            SetCurrentQueryEnumerator(orderByValuesQueue.Peek().GetQueryEnumerator());
+            SetCurrentQueryEnumerator(OrderByValuesQueue.Peek().GetQueryEnumerator());
             return true;
         }
     }

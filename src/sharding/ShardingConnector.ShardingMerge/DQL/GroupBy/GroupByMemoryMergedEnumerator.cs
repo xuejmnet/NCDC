@@ -19,40 +19,43 @@ using ShardingConnector.ShardingMerge.DQL.GroupBy.Aggregation;
 
 namespace ShardingConnector.ShardingMerge.DQL.GroupBy
 {
-/*
-* @Author: xjm
-* @Description:
-* @Date: Friday, 07 May 2021 22:37:22
-* @Email: 326308290@qq.com
-*/
-    public sealed class GroupByMemoryMergedResult : MemoryMergedEnumerator<ShardingRule>
+    /*
+    * @Author: xjm
+    * @Description:
+    * @Date: Friday, 07 May 2021 22:37:22
+    * @Email: 326308290@qq.com
+    */
+    public sealed class GroupByMemoryMergedEnumerator : MemoryMergedEnumerator<ShardingRule>
     {
-        public GroupByMemoryMergedResult(List<IQueryEnumerator> queryEnumerators, SelectCommandContext sqlCommandContext, SchemaMetaData schemaMetaData) : base(null, schemaMetaData, sqlCommandContext, queryEnumerators)
+        public GroupByMemoryMergedEnumerator(List<IQueryEnumerator> queryEnumerators, SelectCommandContext sqlCommandContext, SchemaMetaData schemaMetaData) : base(null, schemaMetaData, sqlCommandContext, queryEnumerators)
         {
         }
 
         protected override List<MemoryQueryResultRow> Init(ShardingRule rule, SchemaMetaData schemaMetaData, ISqlCommandContext<ISqlCommand> sqlCommandContext, List<IQueryEnumerator> queryEnumerators)
         {
-            var selectCommandContext = (SelectCommandContext) sqlCommandContext;
-            Map<GroupByValue, MemoryQueryResultRow> dataMap = new HashMap<>(1024);
-            Map<GroupByValue, Map<AggregationProjection, AggregationUnit>> aggregationMap = new HashMap<>(1024);
-            for (QueryResult each :
-            queryResults) {
-                while (each.next())
+            var selectCommandContext = (SelectCommandContext)sqlCommandContext;
+            IDictionary<GroupByValue, MemoryQueryResultRow> dataMap = new Dictionary<GroupByValue, MemoryQueryResultRow>(1024);
+            IDictionary<GroupByValue, IDictionary<AggregationProjection, IAggregationUnit>> aggregationMap = new Dictionary<GroupByValue, IDictionary<AggregationProjection, IAggregationUnit>>(1024);
+
+
+            foreach (var queryEnumerator in queryEnumerators)
+            {
+                while (queryEnumerator.MoveNext())
                 {
-                    GroupByValue groupByValue = new GroupByValue(each, selectStatementContext.getGroupByContext().getItems());
-                    initForFirstGroupByValue(selectStatementContext, each, groupByValue, dataMap, aggregationMap);
-                    aggregate(selectStatementContext, each, groupByValue, aggregationMap);
+                    GroupByValue groupByValue = new GroupByValue(queryEnumerator, selectCommandContext.GetGroupByContext().GetItems());
+                    InitForFirstGroupByValue(selectCommandContext, queryEnumerator, groupByValue, dataMap, aggregationMap);
+                    Aggregate(selectCommandContext, queryEnumerator, groupByValue, aggregationMap);
                 }
             }
-            setAggregationValueToMemoryRow(selectStatementContext, dataMap, aggregationMap);
-            List<Boolean> valueCaseSensitive = queryResults.isEmpty() ? Collections.emptyList() : getValueCaseSensitive(queryResults.iterator().next(), selectStatementContext, schemaMetaData);
-            return getMemoryResultSetRows(selectStatementContext, dataMap, valueCaseSensitive);
+            SetAggregationValueToMemoryRow(selectCommandContext, dataMap, aggregationMap);
+            List<bool> valueCaseSensitive = queryEnumerators.IsEmpty() ? new List<bool>(0) : GetValueCaseSensitive(queryEnumerators.First(), selectCommandContext, schemaMetaData);
+            return GetMemoryResultSetRows(selectCommandContext, dataMap, valueCaseSensitive);
         }
 
-        private void InitForFirstGroupByValue( SelectCommandContext selectCommandContext,  IQueryEnumerator queryResult,
-         GroupByValue groupByValue,  IDictionary<GroupByValue, MemoryQueryResultRow> dataMap,
-         IDictionary<GroupByValue, IDictionary<AggregationProjection, IAggregationUnit>> aggregationMap) {
+        private void InitForFirstGroupByValue(SelectCommandContext selectCommandContext, IQueryEnumerator queryResult,
+         GroupByValue groupByValue, IDictionary<GroupByValue, MemoryQueryResultRow> dataMap,
+         IDictionary<GroupByValue, IDictionary<AggregationProjection, IAggregationUnit>> aggregationMap)
+        {
             if (!dataMap.ContainsKey(groupByValue))
             {
                 dataMap.Add(groupByValue, new MemoryQueryResultRow(queryResult));
@@ -60,16 +63,17 @@ namespace ShardingConnector.ShardingMerge.DQL.GroupBy
 
             if (!aggregationMap.ContainsKey(groupByValue))
             {
-                selectCommandContext.GetProjectionsContext().GetAggregationProjections().ToDictionary()
-                Map<AggregationProjection, AggregationUnit> map = Maps.toMap(selectStatementContext.getProjectionsContext().getAggregationProjections(),
-                    input->AggregationUnitFactory.create(input.getType(), input instanceof AggregationDistinctProjection));
-                aggregationMap.put(groupByValue, map);
+                var map = selectCommandContext.GetProjectionsContext().GetAggregationProjections().ToDictionary(o => o,
+                    o => AggregationUnitFactory.Create(o.GetAggregationType(), o is AggregationDistinctProjection));
+
+                aggregationMap.Add(groupByValue, map);
             }
         }
 
-        private void Aggregate( SelectCommandContext selectCommandContext,  IQueryEnumerator queryEnumerator,
-         GroupByValue groupByValue,  IDictionary<GroupByValue, IDictionary<AggregationProjection, IAggregationUnit>> aggregationMap) {
-            
+        private void Aggregate(SelectCommandContext selectCommandContext, IQueryEnumerator queryEnumerator,
+         GroupByValue groupByValue, IDictionary<GroupByValue, IDictionary<AggregationProjection, IAggregationUnit>> aggregationMap)
+        {
+
             var aggregationProjections = selectCommandContext.GetProjectionsContext().GetAggregationProjections();
             foreach (var aggregationProjection in aggregationProjections)
             {
@@ -90,10 +94,11 @@ namespace ShardingConnector.ShardingMerge.DQL.GroupBy
             }
         }
 
-        private IComparable GetAggregationValue( IQueryEnumerator queryResult,  AggregationProjection aggregationProjection) {
+        private IComparable GetAggregationValue(IQueryEnumerator queryResult, AggregationProjection aggregationProjection)
+        {
             object result = queryResult.GetValue(aggregationProjection.GetIndex());
             ShardingAssert.Else(null == result || result is IComparable, "Aggregation value must implements Comparable");
-            return (IComparable) result;
+            return (IComparable)result;
         }
 
         private void SetAggregationValueToMemoryRow(SelectCommandContext selectCommandContext,
