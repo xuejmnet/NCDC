@@ -19,7 +19,6 @@
 	  <ProjectReference Include="..\..\parser\ShardingConnector.AbstractParser\ShardingConnector.AbstractParser.csproj" />
 	  <ProjectReference Include="..\..\parser\ShardingConnector.CommandParser\ShardingConnector.CommandParser.csproj" />
 	  <ProjectReference Include="..\..\parser\ShardingConnector.ParserEngine\ShardingConnector.ParserEngine.csproj" />
-	  <ProjectReference Include="..\..\ShardingConnector\ShardingConnector.csproj" />
 	</ItemGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

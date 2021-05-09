@@ -56,8 +56,9 @@ namespace ShardingConnector.ParserBinder.Segment.Select.OrderBy.Engine
                     {
                         var columnOrderByItemSegment = new ColumnOrderByItemSegment(columnProjectionSegment.GetColumn(), OrderDirectionEnum.ASC);
                         OrderByItem item = new OrderByItem(columnOrderByItemSegment);
-                        item.SetIndex(index++);
+                        item.SetIndex(index);
                         orderByItems.Add(item);
+                        index++;
                     }
                 }
 

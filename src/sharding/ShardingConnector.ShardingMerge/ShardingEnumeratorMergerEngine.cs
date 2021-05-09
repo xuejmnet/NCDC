@@ -2,6 +2,7 @@ using System;
 using ShardingConnector.CommandParser.Command;
 using ShardingConnector.CommandParser.Command.DAL.Dialect;
 using ShardingConnector.Common.Config.Properties;
+using ShardingConnector.Common.Rule;
 using ShardingConnector.Merge.Engine.Merger;
 using ShardingConnector.ParserBinder.Command;
 using ShardingConnector.ParserBinder.Command.DML;
@@ -20,6 +21,10 @@ namespace ShardingConnector.ShardingMerge
     */
     public class ShardingEnumeratorMergerEngine : IResultMergerEngine<ShardingRule>
     {
+        public IResultMerger NewInstance(IDatabaseType databaseType, IBaseRule rule, ConfigurationProperties properties, ISqlCommandContext<ISqlCommand> sqlCommandContext)
+        {
+            return NewInstance(databaseType, (ShardingRule) rule, properties, sqlCommandContext);
+        }
         public IResultMerger NewInstance(IDatabaseType databaseType, ShardingRule rule, ConfigurationProperties properties, ISqlCommandContext<ISqlCommand> sqlCommandContext)
         {
             if (sqlCommandContext is SelectCommandContext)
@@ -42,5 +47,6 @@ namespace ShardingConnector.ShardingMerge
         {
             return typeof(ShardingRule);
         }
+
     }
 }

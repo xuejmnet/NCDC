@@ -29,7 +29,7 @@ namespace ShardingConnector.Merge.Reader.Memory
             object[] result = new object[columnCount];
             for (int i = 0; i < columnCount; i++)
             {
-                result[i] = queryEnumerator.GetValue(i + 1);
+                result[i] = queryEnumerator.GetValue(i);
             }
 
             return result;

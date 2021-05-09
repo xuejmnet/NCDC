@@ -52,7 +52,7 @@ namespace ShardingConnector.Pluggable.Merge
 
         private void RegisterMergeDecorator()
         {
-            foreach (var orderAware in OrderedRegistry.GetRegisteredOrderedAware(typeof(IResultProcessEngine<>)))
+            foreach (var orderAware in OrderedRegistry.GetRegisteredOrderedAware<IResultProcessEngine>())
             {
                 var processEngine = CreateProcessEngine(orderAware.GetType());
                 var ruleType = orderAware.GetGenericType();
@@ -60,11 +60,11 @@ namespace ShardingConnector.Pluggable.Merge
             }
         }
 
-        private IResultProcessEngine<IBaseRule> CreateProcessEngine(Type type)
+        private IResultProcessEngine CreateProcessEngine(Type type)
         {
             try
             {
-                return (IResultProcessEngine<IBaseRule>)Activator.CreateInstance(type);
+                return (IResultProcessEngine)Activator.CreateInstance(type);
             }
             catch (Exception ex)
             {

@@ -28,7 +28,7 @@ namespace ShardingConnector.Merge
 
         private readonly ConfigurationProperties properties;
 
-        private readonly IDictionary<IBaseRule, IResultProcessEngine<IBaseRule>> engines = new Dictionary<IBaseRule, IResultProcessEngine<IBaseRule>>();
+        private readonly IDictionary<IBaseRule, IResultProcessEngine> engines = new Dictionary<IBaseRule, IResultProcessEngine>();
 
         public MergeEntry(IDatabaseType databaseType, SchemaMetaData schemaMetaData, ConfigurationProperties properties)
         {
@@ -43,7 +43,7 @@ namespace ShardingConnector.Merge
          * @param rule rule
          * @param processEngine result process engine
          */
-        public void RegisterProcessEngine(IBaseRule rule, IResultProcessEngine<IBaseRule> processEngine)
+        public void RegisterProcessEngine(IBaseRule rule, IResultProcessEngine processEngine)
         {
             engines.Add(rule, processEngine);
         }
@@ -75,7 +75,8 @@ namespace ShardingConnector.Merge
         {
             foreach (var engineEntry in engines)
             {
-                if (engineEntry.Value is IResultMergerEngine<IBaseRule> resultMergerEngine)
+                
+                if (engineEntry.Value is IResultMergerEngine resultMergerEngine)
                 {
                     var resultMerger = resultMergerEngine.NewInstance(databaseType, engineEntry.Key, properties, sqlCommandContext);
                     return resultMerger.Merge(queryResults, sqlCommandContext, schemaMetaData);

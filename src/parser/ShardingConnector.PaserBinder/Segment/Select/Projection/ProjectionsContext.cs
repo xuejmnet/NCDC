@@ -88,7 +88,7 @@ namespace ShardingConnector.ParserBinder.Segment.Select.Projection
         /// <returns></returns>
         public int? FindProjectionIndex(string projectionName)
         {
-            int result = 1;
+            int result = 0;
             foreach (var projection in _projections)
             {
                 if (projectionName.Equals(projection.GetExpression(), StringComparison.OrdinalIgnoreCase))

@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\ShardingConnector\ShardingConnector.csproj" />
+    <ProjectReference Include="..\..\core\ShardingConnector\ShardingConnector.csproj" />
   </ItemGroup>
 
 </Project>

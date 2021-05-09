@@ -29,7 +29,7 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.DataSource
         {
             NewInstanceServiceLoader.Register<IRouteDecorator>();
             NewInstanceServiceLoader.Register<ISqlRewriteContextDecorator>();
-            NewInstanceServiceLoader.Register(typeof(IResultProcessEngine<>));
+            NewInstanceServiceLoader.Register<IResultProcessEngine>();
         }
 
 

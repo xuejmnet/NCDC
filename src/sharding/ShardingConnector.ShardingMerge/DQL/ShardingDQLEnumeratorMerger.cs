@@ -52,7 +52,7 @@ namespace ShardingConnector.ShardingMerge.DQL
         private IDictionary<string, int> GetColumnLabelIndexMap(IQueryEnumerator queryResult)
         {
             IDictionary<string, int> result = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
-            for (int i = queryResult.ColumnCount; i > 0; i--)
+            for (int i = queryResult.ColumnCount-1; i >= 0; i--)
             {
                 result.Add(SqlUtil.GetExactlyValue(queryResult.GetColumnLabel(i)), i);
             }
@@ -90,7 +90,7 @@ namespace ShardingConnector.ShardingMerge.DQL
 
         private void SetGroupByForDistinctRow(SelectCommandContext selectCommandContext)
         {
-            for (int index = 1; index <= selectCommandContext.GetProjectionsContext().GetExpandProjections().Count; index++)
+            for (int index = 0; index < selectCommandContext.GetProjectionsContext().GetExpandProjections().Count; index++)
             {
                 OrderByItem orderByItem = new OrderByItem(new IndexOrderByItemSegment(-1, -1, index, OrderDirectionEnum.ASC, OrderDirectionEnum.ASC));
                 orderByItem.SetIndex(index);

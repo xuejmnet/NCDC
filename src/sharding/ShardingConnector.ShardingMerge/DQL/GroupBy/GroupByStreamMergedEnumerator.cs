@@ -97,7 +97,7 @@ namespace ShardingConnector.ShardingMerge.DQL.GroupBy
         {
             for (int i = 0; i < GetCurrentQueryEnumerator().ColumnCount; i++)
             {
-                _currentRow.Add(GetCurrentQueryEnumerator().GetValue(i + 1));
+                _currentRow.Add(GetCurrentQueryEnumerator().GetValue(i));
             }
         }
 
