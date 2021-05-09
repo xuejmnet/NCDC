@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
+using System.Linq;
 using ShardingDataReader = ShardingConnector.AdoNet.AdoNet.Core.DataReader.ShardingDataReader;
 using ShardingRuntimeContext = ShardingConnector.AdoNet.AdoNet.Core.Context.ShardingRuntimeContext;
 
@@ -69,7 +70,22 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Command
 
         protected override DbParameter CreateDbParameter()
         {
-            throw new NotImplementedException();
+            var shardingConnection = (ShardingConnection)this.Connection;
+            var dbConnection = shardingConnection.GetDataSourceMap().First().Value.GetDbConnection();
+            return dbConnection.CreateCommand().CreateParameter();
+        }
+        new public DbParameterCollection Parameters
+        {
+            get
+            {
+                if (null == _parameters)
+                {
+                    // delay the creation of the SqlParameterCollection
+                    // until user actually uses the Parameters property
+                    _parameters = new SqlParameterCollection();
+                }
+                return _parameters;
+            }
         }
 
         protected override DbDataReader ExecuteDbDataReader(CommandBehavior behavior)
@@ -83,7 +99,7 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Command
                 executionContext = Prepare(CommandText);
                 List<IQueryEnumerator> queryResults = _commandExecutor.ExecuteQuery();
                 IMergedEnumerator mergedResult = MergeQuery(queryResults);
-                result = new ShardingDataReader(_commandExecutor.ResultSets, mergedResult, this, executionContext);
+                result = new ShardingDataReader(_commandExecutor.DbDataReaders, mergedResult, this, executionContext);
             }
             finally
             {
@@ -97,7 +113,7 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Command
         {
             ShardingRuntimeContext runtimeContext = ((ShardingConnection)DbConnection).GetRuntimeContext();
             MergeEngine mergeEngine = new MergeEngine(runtimeContext.GetRule().ToRules(), runtimeContext.GetProperties(), runtimeContext.GetDatabaseType(), runtimeContext.GetMetaData().Schema);
-            return mergeEngine.Merge(queryResults, executionContext.GetSqlStatementContext());
+            return mergeEngine.Merge(queryResults, executionContext.GetSqlCommandContext());
         }
 
         private ExecutionContext Prepare(string sql)
@@ -108,6 +124,7 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Command
                 runtimeContext.GetRule().ToRules(), runtimeContext.GetProperties(), runtimeContext.GetMetaData(), runtimeContext.GetSqlParserEngine());
             ExecutionContext result = prepareEngine.Prepare(sql, new List<object>());
             _commandExecutor.Init(result);
+            _commandExecutor.Commands.for
             // statementExecutor.getStatements().forEach(this::replayMethodsInvocation);
             return result;
         }
