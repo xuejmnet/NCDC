@@ -22,7 +22,7 @@ namespace ShardingConnector.Executor.Context
             _sqlCommandContext = sqlCommandContext;
         }
 
-        public ISqlCommandContext<ISqlCommand> GetSqlStatementContext()
+        public ISqlCommandContext<ISqlCommand> GetSqlCommandContext()
         {
             return _sqlCommandContext;
         }

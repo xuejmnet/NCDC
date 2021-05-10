@@ -54,7 +54,7 @@ namespace ShardingConnector.Pluggable.Prepare
             result.GetExecutionUnits().AddAll(ExecuteRewrite(sql, cloneParameters, routeContext));
             if (true)
             {
-                SqlLogger.LogSql(sql,false,result.GetSqlStatementContext(),result.GetExecutionUnits());
+                SqlLogger.LogSql(sql,false,result.GetSqlCommandContext(),result.GetExecutionUnits());
             }
             return result;
         }

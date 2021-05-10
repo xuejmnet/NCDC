@@ -27,7 +27,7 @@ namespace ShardingConnector.AdoNet.Executor
 
         public void Init(ExecutionContext executionContext)
         {
-            SqlStatementContext = executionContext.GetSqlStatementContext();
+            SqlCommandContext = executionContext.GetSqlCommandContext();
             InputGroups.AddAll(GetExecuteGroups(executionContext.GetExecutionUnits()));
             CacheCommands();
         }
@@ -56,7 +56,7 @@ namespace ShardingConnector.AdoNet.Executor
             // DbDataReader resultSet = command.ExecuteReader(sql);
             command.CommandText = sql;
             DbDataReader resultSet = command.ExecuteReader();
-            ResultSets.Add(resultSet);
+            DbDataReaders.Add(resultSet);
             if (ConnectionModeEnum.MEMORY_STRICTLY == connectionMode)
                 return new StreamQueryDataReader(resultSet);
             return new MemoryQueryDataReader(resultSet);

@@ -38,16 +38,16 @@ namespace ShardingConnector.AdoNet.Executor
 
         public readonly List<List<object>> ParameterSets = new List<List<object>>();
 
-        public readonly List<DbCommand> Statements = new List<DbCommand>();
+        public readonly List<DbCommand> Commands = new List<DbCommand>();
 
         /// <summary>
         /// 并发?
         /// </summary>
-        public readonly List<DbDataReader> ResultSets = new List<DbDataReader>();
+        public readonly List<DbDataReader> DbDataReaders = new List<DbDataReader>();
 
         public readonly ICollection<InputGroup<CommandExecuteUnit>> InputGroups = new LinkedList<InputGroup<CommandExecuteUnit>>();
 
-        public ISqlCommandContext<ISqlCommand> SqlStatementContext { get; set; }
+        public ISqlCommandContext<ISqlCommand> SqlCommandContext { get; set; }
 
         public AbstractCommandExecutor(ShardingConnection shardingConnection)
         {
@@ -68,16 +68,16 @@ namespace ShardingConnector.AdoNet.Executor
         public void Clear()
         {
             ClearStatements();
-            Statements.Clear();
+            Commands.Clear();
             ParameterSets.Clear();
             Connections.Clear();
-            ResultSets.Clear();
+            DbDataReaders.Clear();
             InputGroups.Clear();
         }
 
         private void ClearStatements()
         {
-            foreach (var dbCommand in Statements)
+            foreach (var dbCommand in Commands)
             {
                 dbCommand.Dispose();
             }
@@ -86,7 +86,7 @@ namespace ShardingConnector.AdoNet.Executor
         {
             foreach (var inputGroup in InputGroups)
             {
-                Statements.AddAll(inputGroup.Inputs.Select(o => o.Command).ToList());
+                Commands.AddAll(inputGroup.Inputs.Select(o => o.Command).ToList());
                 ParameterSets.AddAll(inputGroup.Inputs.Select(o => o.ExecutionUnit.GetSqlUnit().GetParameters()).ToList());
             }
         }
@@ -105,7 +105,7 @@ namespace ShardingConnector.AdoNet.Executor
         protected List<T> ExecuteCallback<T>(SqlExecuteCallback<T> executeCallback)
         {
             List<T> result = SqlExecuteTemplate.Execute(InputGroups, executeCallback);
-            refreshMetaDataIfNeeded(Connection.GetRuntimeContext(), SqlStatementContext);
+            refreshMetaDataIfNeeded(Connection.GetRuntimeContext(), SqlCommandContext);
             return result;
         }
 
@@ -116,7 +116,7 @@ namespace ShardingConnector.AdoNet.Executor
          */
         public bool IsAccumulate()
         {
-            return !Connection.GetRuntimeContext().GetRule().IsAllBroadcastTables(SqlStatementContext.GetTablesContext().GetTableNames());
+            return !Connection.GetRuntimeContext().GetRule().IsAllBroadcastTables(SqlCommandContext.GetTablesContext().GetTableNames());
         }
 
 

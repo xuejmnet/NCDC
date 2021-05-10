@@ -57,6 +57,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShardingConnector.ShardingR
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShardingConnector.ShardingMerge", "src\sharding\ShardingConnector.ShardingMerge\ShardingConnector.ShardingMerge.csproj", "{428A15F0-EC6B-455A-9BE2-77D2BE0F4B52}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "orm", "orm", "{221F76CC-2181-4F93-89BE-61EED7D889C1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShardingConnector.EFCore", "src\orm\ShardingConnector.EFCore\ShardingConnector.EFCore.csproj", "{B7CEBD52-D1E7-4801-A940-45BC3D0C48EE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -143,6 +147,10 @@ Global
 		{428A15F0-EC6B-455A-9BE2-77D2BE0F4B52}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{428A15F0-EC6B-455A-9BE2-77D2BE0F4B52}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{428A15F0-EC6B-455A-9BE2-77D2BE0F4B52}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B7CEBD52-D1E7-4801-A940-45BC3D0C48EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B7CEBD52-D1E7-4801-A940-45BC3D0C48EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B7CEBD52-D1E7-4801-A940-45BC3D0C48EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B7CEBD52-D1E7-4801-A940-45BC3D0C48EE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -173,6 +181,8 @@ Global
 		{0A587439-01C7-47F0-9F2E-7C5713C44A78} = {396DB147-8FBA-4C69-B72F-BEF4E62B2076}
 		{428A15F0-EC6B-455A-9BE2-77D2BE0F4B52} = {396DB147-8FBA-4C69-B72F-BEF4E62B2076}
 		{97DE1EEA-3582-4B5A-B978-484BCF975FEA} = {13416211-E7FD-42AB-9728-E17F58F306CA}
+		{221F76CC-2181-4F93-89BE-61EED7D889C1} = {8D052C6C-F76F-420E-AE82-241352E5ABB4}
+		{B7CEBD52-D1E7-4801-A940-45BC3D0C48EE} = {221F76CC-2181-4F93-89BE-61EED7D889C1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FE6C7648-4D94-4A48-B67D-3161C6FE3BC0}
