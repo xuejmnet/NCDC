@@ -24,7 +24,7 @@ namespace ShardingConnector.AppConsoleTest
                     "ds0",
                     new GenericDataSource(SqlClientFactory.Instance,
                         // "Data Source=localhost;Initial Catalog=ShardingCoreDB;Integrated Security=True;"
-                    Constant.ConnectString
+                    IgnoreConstant.ConnectString
                         )
                 }
             };
