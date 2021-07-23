@@ -70,11 +70,12 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Command
 
         protected override DbParameter CreateDbParameter()
         {
-            var shardingConnection = (ShardingConnection)this.Connection;
-            var dbConnection = shardingConnection.GetDataSourceMap().First().Value.GetDbConnection();
-            return dbConnection.CreateCommand().CreateParameter();
+            return new ShardingParameter();
         }
-        new public DbParameterCollection Parameters
+
+        public DbParameter CreateParameter() => this.CreateDbParameter();
+        private ShardingParameterCollection _parameters;
+        new public ShardingParameterCollection Parameters
         {
             get
             {
@@ -82,7 +83,7 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Command
                 {
                     // delay the creation of the SqlParameterCollection
                     // until user actually uses the Parameters property
-                    _parameters = new SqlParameterCollection();
+                    _parameters = new ShardingParameterCollection();
                 }
                 return _parameters;
             }
@@ -124,7 +125,7 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Command
                 runtimeContext.GetRule().ToRules(), runtimeContext.GetProperties(), runtimeContext.GetMetaData(), runtimeContext.GetSqlParserEngine());
             ExecutionContext result = prepareEngine.Prepare(sql, new List<object>());
             _commandExecutor.Init(result);
-            _commandExecutor.Commands.for
+            //_commandExecutor.Commands.for
             // statementExecutor.getStatements().forEach(this::replayMethodsInvocation);
             return result;
         }
