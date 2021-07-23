@@ -23,7 +23,7 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Command
     * @Ver: 1.0
     * @Email: 326308290@qq.com
     */
-    public class ShardingCommand: DbCommand
+    public class ShardingCommand : DbCommand
     {
         private readonly CommandExecutor _commandExecutor;
 
@@ -64,18 +64,7 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Command
         public override CommandType CommandType { get; set; }
         public override UpdateRowSource UpdatedRowSource { get; set; }
         protected override DbConnection DbConnection { get; set; }
-        protected override DbParameterCollection DbParameterCollection { get; }
-        protected override DbTransaction DbTransaction { get; set; }
-        public override bool DesignTimeVisible { get; set; }
-
-        protected override DbParameter CreateDbParameter()
-        {
-            return new ShardingParameter();
-        }
-
-        public DbParameter CreateParameter() => this.CreateDbParameter();
-        private ShardingParameterCollection _parameters;
-        new public ShardingParameterCollection Parameters
+        protected override DbParameterCollection DbParameterCollection
         {
             get
             {
@@ -88,6 +77,16 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Command
                 return _parameters;
             }
         }
+        protected override DbTransaction DbTransaction { get; set; }
+        public override bool DesignTimeVisible { get; set; }
+
+        protected override DbParameter CreateDbParameter()
+        {
+            return new ShardingParameter();
+        }
+
+        public DbParameter CreateParameter() => this.CreateDbParameter();
+        private ShardingParameterCollection _parameters;
 
         protected override DbDataReader ExecuteDbDataReader(CommandBehavior behavior)
         {
