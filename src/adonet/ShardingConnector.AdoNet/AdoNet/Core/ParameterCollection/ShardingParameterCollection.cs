@@ -1,42 +1,20 @@
-﻿using System;
+using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Data.Common;
-using System.Text;
 
-namespace ShardingConnector.AdoNet.AdoNet.Core.Command
+namespace ShardingConnector.AdoNet.AdoNet.Core.ParameterCollection
 {
-    /*
-    * @Author: xjm
-    * @Description:
-    * @Date: 2021/7/23 15:41:38
-    * @Ver: 1.0
-    * @Email: 326308290@qq.com
-    */
-    public sealed class ShardingParameterCollection:DbParameterCollection
+/*
+* @Author: xjm
+* @Description:
+* @Date: Monday, 10 May 2021 20:59:14
+* @Email: 326308290@qq.com
+*/
+    public class ShardingParameterCollection:DbParameterCollection
     {
-        private readonly ICollection<ShardingMethodInvocation> shardingMethodInvocations =
-            new LinkedList<ShardingMethodInvocation>();
-
-        private readonly List<ShardingParameter> @params = new List<ShardingParameter>();
-
-        public List<ShardingParameter> GetParams()
-        {
-            return @params;
-        }
-        public void ReplyMethodsInvocation(object target)
-        {
-            foreach (var shardingMethodInvocation in shardingMethodInvocations)
-            {
-                shardingMethodInvocation.Inovke(target);
-            }
-        }
         public override int Add(object value)
         {
-            shardingMethodInvocations.Add(new ShardingMethodInvocation(typeof(DbParameterCollection).GetMethod("Add"),new object[]{value}));
-             
-            @params.Add((ShardingParameter)value);
-            return @params.Count - 1;
+            throw new NotImplementedException();
         }
 
         public override void Clear()

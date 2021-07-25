@@ -43,7 +43,7 @@ namespace ShardingConnector.AppConsoleTest
             var dbConnection = dataSource.GetDbConnection();
 
             var dbCommand = dbConnection.CreateCommand();
-            dbCommand.CommandText = @"select [d].[Id],[d].[Name],[d].[Age] from [dbo].[SysUserMod] as [d] where [d].[Id]='@Id' ";
+            dbCommand.CommandText = @"select [d].[Id],[d].[Name],[d].[Age] from [dbo].[SysUserMod] as [d] where [d].[Id]=@Id ";
             var dbParameter = dbCommand.CreateParameter();
             dbParameter.ParameterName = "@Id";
             dbParameter.Value = "21";

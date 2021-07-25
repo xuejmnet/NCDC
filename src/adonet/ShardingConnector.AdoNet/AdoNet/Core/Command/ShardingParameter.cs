@@ -28,5 +28,9 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Command
         public override object Value { get; set; }
         public override bool SourceColumnNullMapping { get; set; }
         public override int Size { get; set; }
+        public override string ToString()
+        {
+            return $"{ParameterName}:{Value}";
+        }
     }
 }

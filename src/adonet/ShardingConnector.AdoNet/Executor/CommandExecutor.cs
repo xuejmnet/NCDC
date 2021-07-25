@@ -54,7 +54,7 @@ namespace ShardingConnector.AdoNet.Executor
         private IQueryEnumerator GetQueryEnumerator(string sql, DbCommand command, ConnectionModeEnum connectionMode)
         {
             // DbDataReader resultSet = command.ExecuteReader(sql);
-            command.CommandText = sql;
+            // command.CommandText = sql;
             DbDataReader resultSet = command.ExecuteReader();
             DbDataReaders.Add(resultSet);
             if (ConnectionModeEnum.MEMORY_STRICTLY == connectionMode)

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Common;
+using System.Linq;
 using System.Text;
+using ShardingConnector.AdoNet.AdoNet.Core.Command;
 using ShardingConnector.Executor.Constant;
 using ShardingConnector.Executor.Context;
 using ShardingConnector.ShardingExecute.Execute;
@@ -34,7 +36,17 @@ namespace ShardingConnector.AdoNet.Executor
         public CommandExecuteUnit CreateStatementExecuteUnit(DbConnection connection, ExecutionUnit executionUnit,
             ConnectionModeEnum connectionMode)
         {
-            return new CommandExecuteUnit(executionUnit, connection.CreateCommand(), connectionMode);
+            var shardingParameters = executionUnit.GetSqlUnit().GetParameters().Select(o=>(ShardingParameter)o).ToList();
+            var dbCommand = connection.CreateCommand();
+            dbCommand.CommandText = executionUnit.GetSqlUnit().GetSql();
+            foreach (var shardingParameter in shardingParameters)
+            {
+                var dbParameter = dbCommand.CreateParameter();
+                dbParameter.ParameterName = shardingParameter.ParameterName;
+                dbParameter.Value = shardingParameter.Value;
+                dbCommand.Parameters.Add(dbParameter);
+            }
+            return new CommandExecuteUnit(executionUnit,dbCommand , connectionMode);
         }
 
     }

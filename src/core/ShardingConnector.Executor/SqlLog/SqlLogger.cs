@@ -98,7 +98,7 @@ namespace ShardingConnector.Executor.SqlLog
                 }
                 else
                 {
-                    _sqlLogger.Show($"Actual SQL: {executionUnit.GetDataSourceName()} ::: {executionUnit.GetSqlUnit().GetSql()} ::: {string.Join(",", executionUnit.GetSqlUnit().GetParameters())}");
+                    _sqlLogger.Show($"Actual SQL: {executionUnit.GetDataSourceName()} ::: {executionUnit.GetSqlUnit().GetSql()} ::: {string.Join(",", executionUnit.GetSqlUnit().GetParameters().Select(o=>o.ToString()))}");
                 }
             }
         }
