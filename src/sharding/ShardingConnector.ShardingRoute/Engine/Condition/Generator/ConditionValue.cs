@@ -9,7 +9,7 @@ namespace ShardingConnector.ShardingRoute.Engine.Condition.Generator
 {
     /*
     * @Author: xjm
-    * @Description:
+    * @Description: 1
     * @Date: 2021/4/28 12:13:09
     * @Ver: 1.0
     * @Email: 326308290@qq.com
