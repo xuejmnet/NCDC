@@ -20,9 +20,12 @@ grammar BaseRule;
 import Symbol, Keyword, SqlServerKeyword, Literals;
 
 parameterMarker
-    : '@' *
+    : AdoParameter
     ;
-         
+
+AdoParameter
+    : ('@'|[A-Za-z0-9])[A-Za-z0-9]+
+    ;
 
 literals
     : stringLiterals

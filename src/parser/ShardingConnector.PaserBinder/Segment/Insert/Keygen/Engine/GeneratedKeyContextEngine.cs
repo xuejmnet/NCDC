@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using ShardingConnector.CommandParser.Command.DML;
+using ShardingConnector.CommandParser.Extensions;
 using ShardingConnector.CommandParser.Segment.DML.Expr;
 using ShardingConnector.CommandParser.Segment.DML.Expr.Simple;
 using ShardingConnector.ParserBinder.MetaData.Schema;
@@ -81,7 +82,7 @@ namespace ShardingConnector.ParserBinder.Segment.Insert.Keygen.Engine
             {
                 if (expression is ParameterMarkerExpressionSegment parameterMarkerExpressionSegment)
                 {
-                    result.GetGeneratedValues().Add((IComparable)parameters[parameterMarkerExpressionSegment.GetParameterMarkerIndex()]);
+                    result.GetGeneratedValues().Add((IComparable)parameters.GetParameterValue(parameterMarkerExpressionSegment));
                 }
                 else if (expression is LiteralExpressionSegment literalExpressionSegment)
                 {

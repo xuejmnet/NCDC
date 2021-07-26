@@ -42,14 +42,19 @@ namespace ShardingConnector.AppConsoleTest
             var dataSource = ShardingDataSourceFactory.CreateDataSource(dataSourceMap, shardingRuleConfig, new Dictionary<string, object>());
             var dbConnection = dataSource.GetDbConnection();
 
-            var dbCommand = dbConnection.CreateCommand();
-            dbCommand.CommandText = @"select [d].[Id],[d].[Name],[d].[Age] from [dbo].[SysUserMod] as [d] where [d].[Id]= @Id ";
+            var dbCommand = dbConnection.CreateCommand();                     
+            dbCommand.CommandText = @"select [d].[Id],[d].[Name],[d].[Age] from [dbo].[SysUserMod] as [d] where [d].[Id]  in (@p1,@p2)";
             var dbParameter = dbCommand.CreateParameter();
-            dbParameter.ParameterName = "@Id";
+            dbParameter.ParameterName = "@p1";
             dbParameter.Value = "21";
+
+            var dbParameter2 = dbCommand.CreateParameter();
+            dbParameter2.ParameterName = "@p2";
+            dbParameter2.Value = "22";
             //dbParameter.ParameterName = "@Id";
             //dbParameter.Value = 21;
             dbCommand.Parameters.Add(dbParameter);
+            dbCommand.Parameters.Add(dbParameter2);
             //dbCommand.CommandText = @"select [d].[Id],[d].[Name],[d].[Age] from [dbo].[SysUserMod] as [d] where id='1'  order by [d].[Age] desc";
             var dbDataReader = dbCommand.ExecuteReader();
             while (dbDataReader.Read())

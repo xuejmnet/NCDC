@@ -43,7 +43,7 @@ namespace ShardingConnector.ShardingRewrite.Token.Generator.Impl.KeyGen
                 }
                 else
                 {
-                    expressionSegment = new DerivedParameterMarkerExpressionSegment(insertValueContext.GetParametersCount());
+                    expressionSegment = new DerivedParameterMarkerExpressionSegment(insertValueContext.GetParametersCount(), string.Empty);
                 }
                 insertValueToken.GetValues().Add(expressionSegment);
                 count++;

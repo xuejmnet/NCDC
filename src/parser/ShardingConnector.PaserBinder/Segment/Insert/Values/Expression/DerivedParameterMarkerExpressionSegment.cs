@@ -11,7 +11,7 @@ namespace ShardingConnector.ParserBinder.Segment.Insert.Values.Expression
     */
     public sealed class DerivedParameterMarkerExpressionSegment: ParameterMarkerExpressionSegment,IDerivedSimpleExpressionSegment
     {
-        public DerivedParameterMarkerExpressionSegment(int parameterMarkerIndex) : base(0, 0, parameterMarkerIndex)
+        public DerivedParameterMarkerExpressionSegment(int parameterMarkerIndex,string parameterName) : base(0, 0, parameterMarkerIndex, parameterName)
         {
         }
     }

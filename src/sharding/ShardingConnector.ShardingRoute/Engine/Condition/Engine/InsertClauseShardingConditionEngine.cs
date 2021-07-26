@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using ShardingConnector.Base;
+using ShardingConnector.CommandParser.Extensions;
 using ShardingConnector.CommandParser.Segment.DML.Expr.Simple;
 using ShardingConnector.Exceptions;
 using ShardingConnector.Extensions;
@@ -114,7 +115,7 @@ namespace ShardingConnector.ShardingRoute.Engine.Condition.Engine
             object result;
             if (expressionSegment is ParameterMarkerExpressionSegment parameterMarkerExpressionSegment)
             {
-                result = parameters[parameterMarkerExpressionSegment.GetParameterMarkerIndex()];
+                result = parameters.GetParameterValue(parameterMarkerExpressionSegment); ;
             }
             else
             {

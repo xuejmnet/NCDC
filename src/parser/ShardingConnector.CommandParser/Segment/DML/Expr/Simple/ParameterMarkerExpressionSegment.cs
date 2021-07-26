@@ -1,4 +1,9 @@
-﻿namespace ShardingConnector.CommandParser.Segment.DML.Expr.Simple
+﻿using System.Collections.Generic;
+using System.Data.Common;
+using System.Linq;
+using ShardingConnector.Base;
+
+namespace ShardingConnector.CommandParser.Segment.DML.Expr.Simple
 {
     /*
     * @Author: xjm
@@ -14,12 +19,14 @@
         private readonly int _stopIndex;
 
         private readonly int _parameterMarkerIndex;
+        private readonly string _paramName;
 
-        public ParameterMarkerExpressionSegment(int startIndex, int stopIndex, int parameterMarkerIndex)
+        public ParameterMarkerExpressionSegment(int startIndex, int stopIndex, int parameterMarkerIndex,string paramName)
         {
             _startIndex = startIndex;
             _stopIndex = stopIndex;
             _parameterMarkerIndex = parameterMarkerIndex;
+            _paramName = paramName;
         }
 
         public int GetStartIndex()
@@ -35,6 +42,11 @@
         public int GetParameterMarkerIndex()
         {
             return _parameterMarkerIndex;
+        }
+
+        public string GetParameterName()
+        {
+            return _paramName;
         }
     }
 }

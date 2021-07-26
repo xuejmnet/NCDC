@@ -376,7 +376,7 @@ namespace ShardingConnector.SqlServerParser.Visitor
 
             if (astNode is ParameterMarkerValue parameterMarkerValue)
             {
-                return new ParameterMarkerExpressionSegment(context.Start.StartIndex, context.Stop.StopIndex, parameterMarkerValue.GetValue());
+                return new ParameterMarkerExpressionSegment(context.Start.StartIndex, context.Stop.StopIndex, parameterMarkerValue.GetValue(), context.GetText());
             }
 
             if (astNode is SubQuerySegment subQuerySegment)
