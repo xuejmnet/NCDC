@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Text;
 using ShardingConnector.Base;
 using ShardingConnector.CommandParser.Segment.DML.Expr;
@@ -38,7 +39,7 @@ namespace ShardingConnector.ShardingRoute.Engine.Condition.Generator
 
         private IComparable GetValue(ParameterMarkerExpressionSegment expressionSegment, List<object> parameters)
         {
-            object result = parameters[expressionSegment.GetParameterMarkerIndex()];
+            object result = ((DbParameter)parameters[expressionSegment.GetParameterMarkerIndex()]).Value;
             ShardingAssert.Else(result is IComparable, "Sharding value must implements IComparable.");
             return (IComparable)result;
         }

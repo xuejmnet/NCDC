@@ -20,8 +20,9 @@ grammar BaseRule;
 import Symbol, Keyword, SqlServerKeyword, Literals;
 
 parameterMarker
-    : QUESTION_
+    : '@' *
     ;
+         
 
 literals
     : stringLiterals
@@ -412,3 +413,4 @@ ignoredIdentifiers_
 matchNone
     : 'Default does not match anything'
     ;
+
