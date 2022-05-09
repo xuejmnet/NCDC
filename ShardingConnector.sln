@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31019.35
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{8D052C6C-F76F-420E-AE82-241352E5ABB4}"
 EndProject
@@ -55,11 +55,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShardingConnector.ShardingR
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShardingConnector.ShardingRewrite", "src\sharding\ShardingConnector.ShardingRewrite\ShardingConnector.ShardingRewrite.csproj", "{0A587439-01C7-47F0-9F2E-7C5713C44A78}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShardingConnector.ShardingMerge", "src\sharding\ShardingConnector.ShardingMerge\ShardingConnector.ShardingMerge.csproj", "{428A15F0-EC6B-455A-9BE2-77D2BE0F4B52}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShardingConnector.ShardingMerge", "src\sharding\ShardingConnector.ShardingMerge\ShardingConnector.ShardingMerge.csproj", "{428A15F0-EC6B-455A-9BE2-77D2BE0F4B52}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "orm", "orm", "{221F76CC-2181-4F93-89BE-61EED7D889C1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShardingConnector.EFCore", "src\orm\ShardingConnector.EFCore\ShardingConnector.EFCore.csproj", "{B7CEBD52-D1E7-4801-A940-45BC3D0C48EE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShardingConnector.EFCore", "src\orm\ShardingConnector.EFCore\ShardingConnector.EFCore.csproj", "{B7CEBD52-D1E7-4801-A940-45BC3D0C48EE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShardingConnector.MySQLParser", "src\antlr4\ShardingConnector.MySQLParser\ShardingConnector.MySQLParser.csproj", "{E9893BD0-A7B4-4714-AB9D-42352C16E22E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -151,11 +153,16 @@ Global
 		{B7CEBD52-D1E7-4801-A940-45BC3D0C48EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B7CEBD52-D1E7-4801-A940-45BC3D0C48EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B7CEBD52-D1E7-4801-A940-45BC3D0C48EE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E9893BD0-A7B4-4714-AB9D-42352C16E22E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E9893BD0-A7B4-4714-AB9D-42352C16E22E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E9893BD0-A7B4-4714-AB9D-42352C16E22E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E9893BD0-A7B4-4714-AB9D-42352C16E22E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
+		{97DE1EEA-3582-4B5A-B978-484BCF975FEA} = {13416211-E7FD-42AB-9728-E17F58F306CA}
 		{0A0AB1E5-FF3A-455B-A2B9-E3BD843636A3} = {C37A1D9B-9BAA-435C-857B-0BB3E2C010B2}
 		{28CC1DDF-6535-418A-A081-1C72203EBDDD} = {8D052C6C-F76F-420E-AE82-241352E5ABB4}
 		{81CCA66E-A081-4880-8421-BBED2E64ACDB} = {28CC1DDF-6535-418A-A081-1C72203EBDDD}
@@ -180,9 +187,9 @@ Global
 		{A25565CC-24DA-4F0F-AD77-35BB266EE4F4} = {396DB147-8FBA-4C69-B72F-BEF4E62B2076}
 		{0A587439-01C7-47F0-9F2E-7C5713C44A78} = {396DB147-8FBA-4C69-B72F-BEF4E62B2076}
 		{428A15F0-EC6B-455A-9BE2-77D2BE0F4B52} = {396DB147-8FBA-4C69-B72F-BEF4E62B2076}
-		{97DE1EEA-3582-4B5A-B978-484BCF975FEA} = {13416211-E7FD-42AB-9728-E17F58F306CA}
 		{221F76CC-2181-4F93-89BE-61EED7D889C1} = {8D052C6C-F76F-420E-AE82-241352E5ABB4}
 		{B7CEBD52-D1E7-4801-A940-45BC3D0C48EE} = {221F76CC-2181-4F93-89BE-61EED7D889C1}
+		{E9893BD0-A7B4-4714-AB9D-42352C16E22E} = {28CC1DDF-6535-418A-A081-1C72203EBDDD}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FE6C7648-4D94-4A48-B67D-3161C6FE3BC0}
