@@ -5,6 +5,7 @@ using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
 using ShardingConnector.AbstractParser.SqlParser;
 using ShardingConnector.Exceptions;
+using ShardingConnector.Extensions;
 
 namespace ShardingConnector.ParserEngine.Core.Parser
 {
