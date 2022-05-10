@@ -7,6 +7,7 @@ using ShardingConnector.ShardingApi.Api.Config.Sharding.Strategy;
 using ShardingConnector.ShardingApi.Api.Sharding.Standard;
 using System;
 using System.Collections.Generic;
+using ShardingConnector.AdoNet.AdoNet.Core.Command;
 using ShardingConnector.Executor.SqlLog;
 
 namespace ShardingConnector.AppConsoleTest
@@ -37,7 +38,6 @@ namespace ShardingConnector.AppConsoleTest
             shardingRuleConfig.DefaultDatabaseShardingStrategyConfig = new NoneShardingStrategyConfiguration();
             //2.7、配置默认数据源
             shardingRuleConfig.DefaultDataSourceName= "ds0";
-
             var dataSource = ShardingDataSourceFactory.CreateDataSource(dataSourceMap, shardingRuleConfig, new Dictionary<string, object>());
             var dbConnection = dataSource.GetDbConnection();
 

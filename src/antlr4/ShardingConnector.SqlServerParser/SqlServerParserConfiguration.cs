@@ -35,7 +35,7 @@ namespace ShardingConnector.SqlServerParser
 
         public ISqlVisitorFacade CreateVisitorFacade()
         {
-            throw new NotImplementedException();
+            return new SqlServerVisitorFacade();
         }
 
     }

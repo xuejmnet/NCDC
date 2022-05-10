@@ -90,7 +90,7 @@ namespace ShardingConnector.AppConsoleMySQLTest
         }
     }
 
-    public class SysUserModId : IPreciseShardingAlgorithm<string>,IRangeShardingAlgorithm<long>
+    public class SysUserModId : IPreciseShardingAlgorithm<string>
     {
         public string DoSharding(ICollection<string> availableTargetNames, PreciseShardingValue shardingValue)
         {
@@ -101,11 +101,6 @@ namespace ShardingConnector.AppConsoleMySQLTest
             }
 
             return null;
-        }
-
-        public ICollection<string> DoSharding(ICollection<string> availableTargetNames, RangeShardingValue<long> shardingValue)
-        {
-            throw new NotImplementedException();
         }
     }
 }
