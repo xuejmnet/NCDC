@@ -5,6 +5,7 @@ using System.Data.Common;
 using System.Linq;
 using System.Text;
 using Antlr4.Runtime.Misc;
+using ShardingConnector.Extensions;
 using ShardingConnector.ParserBinder.MetaData.Column;
 
 namespace ShardingConnector.ParserBinder.MetaData.Column
@@ -37,7 +38,7 @@ namespace ShardingConnector.ParserBinder.MetaData.Column
          */
         public static ICollection<ColumnMetaData> Load(DbConnection connection, string table, string databaseType)
         {
-            if (!IsTableExist(connection, table))
+            if (!IsTableExist(connection, databaseType, table))
             {
                 return new List<ColumnMetaData>(0);
             }
@@ -85,7 +86,7 @@ namespace ShardingConnector.ParserBinder.MetaData.Column
             // TODO consider add a getDialectDelimeter() interface in parse module
             string delimiterLeft;
             string delimiterRight;
-            if ("MySql".Equals(databaseType) || "MariaDB".Equals(databaseType))
+            if ("MySQL".Equals(databaseType) || "MariaDB".Equals(databaseType))
             {
                 delimiterLeft = "`";
                 delimiterRight = "`";
@@ -103,7 +104,44 @@ namespace ShardingConnector.ParserBinder.MetaData.Column
             return $"SELECT  * FROM {delimiterLeft}{table}{delimiterRight} WHERE 1!=1";
         }
 
-        private static bool IsTableExist(DbConnection connection, string table)
+        private static bool IsTableExist(DbConnection connection, string databaseType, string table)
+        {
+            if ("MySQL".Equals(databaseType) || "MariaDB".Equals(databaseType))
+            {
+                return MySQLIsTableExist(connection, table);
+            }
+            else
+            {
+                return SqlServerIsTableExist(connection, table);
+            }
+        }
+
+        private const string MySQL_Tables = "Tables";
+        private const string MySQL_TABLE_SCHEMA = "TABLE_SCHEMA";
+        private const string MySQL_TABLE_NAME = "TABLE_NAME";
+        private static bool MySQLIsTableExist(DbConnection connection, string table)
+        {
+            var database = connection.Database;
+            using (var dataTable = connection.GetSchema(MySQL_Tables))
+            {
+                for (int i = 0; i < dataTable.Rows.Count; i++)
+                {
+                    var schema = dataTable.Rows[i][MySQL_TABLE_SCHEMA];
+                    if (database.Equals($"{schema}", StringComparison.OrdinalIgnoreCase))
+                    {
+                        if (dataTable.Rows[i][MySQL_TABLE_NAME].ToString().EqualsIgnoreCase(table))
+                        {
+                            return true;
+                        }
+                    }
+                    //if (dataTable.Rows[i][TABLE_NAME].Equals(table))
+                    //    return true;
+                }
+
+                return false;
+            }
+        }
+        private static bool SqlServerIsTableExist(DbConnection connection, string table)
         {
             using (var dataTable = connection.GetSchema(TABLE_SCHEMA))
             {
@@ -116,6 +154,5 @@ namespace ShardingConnector.ParserBinder.MetaData.Column
                 return false;
             }
         }
-
     }
 }

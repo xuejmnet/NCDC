@@ -28,6 +28,34 @@ namespace ShardingConnector.ParserBinder.MetaData.Index
      */
         public static ICollection<IndexMetaData> Load(DbConnection connection, string table, string databaseType)
         {
+            if ("MySQL".Equals(databaseType) || "MariaDB".Equals(databaseType))
+            {
+                return LoadMySQL(connection, table);
+            }
+            else
+            {
+                return LoadSqlServer(connection, table);
+            }
+        }
+        public static ICollection<IndexMetaData> LoadMySQL(DbConnection connection, string table)
+        {
+            ICollection<IndexMetaData> result = new HashSet<IndexMetaData>();
+            //var schema = connection.GetSchema();
+            //using (var dataTable = connection.GetSchema("IndexColumns"))
+            //{
+            //    for (int i = 0; i < dataTable.Rows.Count; i++)
+            //    {
+            //        if (dataTable.Rows[i][TABLE_NAME].Equals(table))
+            //        {
+            //            result.Add(new IndexMetaData(dataTable.Rows[i][INDEX_NAME].ToString()));
+            //        }
+            //    }
+            //}
+
+            return result;
+        }
+        public static ICollection<IndexMetaData> LoadSqlServer(DbConnection connection, string table)
+        {
             ICollection<IndexMetaData> result = new HashSet<IndexMetaData>();
             using (var dataTable = connection.GetSchema("IndexColumns"))
             {

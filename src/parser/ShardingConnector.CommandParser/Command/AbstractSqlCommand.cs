@@ -9,15 +9,15 @@
     */
     public abstract class AbstractSqlCommand : ISqlCommand
     {
-        private int parameterCount;
+        private int _parameterCount;
 
         public int GetParameterCount()
         {
-            return parameterCount;
+            return _parameterCount;
         }
         public void SetParameterCount(int paramCount)
         {
-            this.parameterCount = paramCount;
+            this._parameterCount = paramCount;
         }
     }
 }

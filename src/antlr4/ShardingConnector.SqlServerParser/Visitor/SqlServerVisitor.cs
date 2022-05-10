@@ -39,16 +39,16 @@ namespace ShardingConnector.SqlServerParser.Visitor
     */
     public abstract class SqlServerVisitor : SqlServerCommandBaseVisitor<IASTNode>
     {
-        private int currentParameterIndex;
+        private int _currentParameterIndex;
 
         public override IASTNode VisitParameterMarker(SqlServerCommandParser.ParameterMarkerContext context)
         {
-            return new ParameterMarkerValue(currentParameterIndex++);
+            return new ParameterMarkerValue(_currentParameterIndex++);
         }
 
         public int GetCurrentParameterIndex()
         {
-            return currentParameterIndex;
+            return _currentParameterIndex;
         }
 
         public override IASTNode VisitLiterals(SqlServerCommandParser.LiteralsContext context)
@@ -563,7 +563,7 @@ namespace ShardingConnector.SqlServerParser.Visitor
         {
             DataTypeLengthSegment dataTypeLengthSegment = new DataTypeLengthSegment();
             dataTypeLengthSegment.SetStartIndex(context.Start.StartIndex);
-            dataTypeLengthSegment.SetStopIndex(context.Stop.StopIndex);
+            dataTypeLengthSegment.SetStopIndex(context.Stop.StartIndex);
             ITerminalNode[] numbers = context.NUMBER_();
             if (numbers.Length == 1) {
                 dataTypeLengthSegment.SetPrecision(int.Parse(numbers[0].GetText()));

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using ShardingConnector.Api.Database.MetaData.Dialect;
 using ShardingConnector.Spi.DataBase.DataBaseType;
 using ShardingConnector.Spi.DataBase.MetaData;
 
@@ -19,17 +20,17 @@ namespace ShardingConnector.Api.Database.DatabaseType.Dialect
     {
         public string GetName()
         {
-            return "MySql";
+            return "MySQL";
         }
 
         public ICollection<string> GetAdoNetUrlPrefixAlias()
         {
-            throw new System.NotImplementedException();
+            return new List<string>() { "adonet:mysql:mysql:" };
         }
 
         public IDataSourceMetaData GetDataSourceMetaData(string url, string username)
         {
-            throw new System.NotImplementedException();
+            return new MySqlDataSourceMetaData(url);
         }
     }
 }

@@ -63,6 +63,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShardingConnector.EFCore", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShardingConnector.MySQLParser", "src\antlr4\ShardingConnector.MySQLParser\ShardingConnector.MySQLParser.csproj", "{E9893BD0-A7B4-4714-AB9D-42352C16E22E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShardingConnector.AppConsoleMySQLTest", "test\ShardingConnector.AppConsoleMySQLTest\ShardingConnector.AppConsoleMySQLTest.csproj", "{0D276528-EC51-43F9-877B-9EFE3E75DE41}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -157,6 +159,10 @@ Global
 		{E9893BD0-A7B4-4714-AB9D-42352C16E22E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E9893BD0-A7B4-4714-AB9D-42352C16E22E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E9893BD0-A7B4-4714-AB9D-42352C16E22E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0D276528-EC51-43F9-877B-9EFE3E75DE41}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0D276528-EC51-43F9-877B-9EFE3E75DE41}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0D276528-EC51-43F9-877B-9EFE3E75DE41}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0D276528-EC51-43F9-877B-9EFE3E75DE41}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -190,6 +196,7 @@ Global
 		{221F76CC-2181-4F93-89BE-61EED7D889C1} = {8D052C6C-F76F-420E-AE82-241352E5ABB4}
 		{B7CEBD52-D1E7-4801-A940-45BC3D0C48EE} = {221F76CC-2181-4F93-89BE-61EED7D889C1}
 		{E9893BD0-A7B4-4714-AB9D-42352C16E22E} = {28CC1DDF-6535-418A-A081-1C72203EBDDD}
+		{0D276528-EC51-43F9-877B-9EFE3E75DE41} = {C37A1D9B-9BAA-435C-857B-0BB3E2C010B2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FE6C7648-4D94-4A48-B67D-3161C6FE3BC0}

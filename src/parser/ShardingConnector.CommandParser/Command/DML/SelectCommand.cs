@@ -18,17 +18,17 @@ namespace ShardingConnector.CommandParser.Command.DML
     */
     public sealed class SelectCommand : DMLCommand
     {
-        public ProjectionsSegment Projections;
+        public ProjectionsSegment Projections { get; set; }
         /// <summary>
         /// 
         /// </summary>
         public readonly ICollection<TableReferenceSegment> TableReferences = new LinkedList<TableReferenceSegment>();
-        public WhereSegment Where;
-        public GroupBySegment GroupBy;
-        public OrderBySegment OrderBy;
-        public LimitSegment Limit;
-        public SelectCommand ParentCommand;
-        public LockSegment Lock;
+        public WhereSegment Where { get; set; }
+        public GroupBySegment GroupBy { get; set; }
+        public OrderBySegment OrderBy { get; set; }
+        public LimitSegment Limit { get; set; }
+        public SelectCommand ParentCommand { get; set; }
+        public LockSegment Lock { get; set; }
 
 
         /// <summary>

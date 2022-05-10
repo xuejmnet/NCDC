@@ -1,4 +1,5 @@
-﻿using ShardingConnector.Spi.DataBase.MetaData;
+﻿using System.Text.RegularExpressions;
+using ShardingConnector.Spi.DataBase.MetaData;
 
 namespace ShardingConnector.Api.Database.MetaData.Dialect
 {
@@ -15,24 +16,49 @@ namespace ShardingConnector.Api.Database.MetaData.Dialect
     /// </summary>
     public class MySqlDataSourceMetaData:IDataSourceMetaData
     {
+        private const string MySQL =
+            "adonet:(mysql:)?mysql://([\\w\\-\\.]+):?([0-9]*);\\S*(DatabaseName|database)=([\\w\\-]+);?";
+        private static readonly int DEFAULT_PORT = 1433;
+
+        private readonly string _hostName;
+
+        private readonly int _port;
+
+        private readonly string _catalog;
+
+        private readonly string _schema;
+
+        private readonly Regex _pattern = new Regex(MySQL, RegexOptions.IgnoreCase);
+
+        public MySqlDataSourceMetaData(string url)
+        {
+            //var match = _pattern.Match(url);
+            //if (!_pattern.IsMatch(url)) {
+            //    throw new ShardingException($"The URL: '{url}' is not recognized. Please refer to this pattern: '{SqlServer}'.");
+            //}
+            //_hostName = match.Groups[2].Value;
+            //_port = string.IsNullOrEmpty(match.Groups[3].Value) ? DEFAULT_PORT : int.Parse(match.Groups[3].Value);
+            //_catalog = match.Groups[5].Value;
+            //_schema = null;
+        }
         public string GetHostName()
         {
-            throw new System.NotImplementedException();
+            return _hostName;
         }
 
         public int GetPort()
         {
-            throw new System.NotImplementedException();
+            return _port;
         }
 
         public string GetCatalog()
         {
-            throw new System.NotImplementedException();
+            return _catalog;
         }
 
         public string GetSchema()
         {
-            throw new System.NotImplementedException();
+            return _schema;
         }
     }
 }

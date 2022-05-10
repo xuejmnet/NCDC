@@ -52,9 +52,9 @@ namespace ShardingConnector
             if (!ServiceMap.TryGetValue(serviceType, out var serviceTypes))
             {
                 serviceTypes = new LinkedList<Type>();
+                ServiceMap.Add(serviceType, serviceTypes);
             }
             serviceTypes.Add(instance.GetType());
-            ServiceMap.Add(serviceType,serviceTypes);
         }
 
 

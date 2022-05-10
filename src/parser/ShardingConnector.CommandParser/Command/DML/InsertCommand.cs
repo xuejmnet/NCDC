@@ -16,13 +16,13 @@ namespace ShardingConnector.CommandParser.Command.DML
     public sealed class InsertCommand : DMLCommand
     {
 
-        public SimpleTableSegment Table;
+        public SimpleTableSegment Table { get; set; }
 
-        public InsertColumnsSegment InsertColumns;
+        public InsertColumnsSegment InsertColumns { get; set; }
 
-        public SetAssignmentSegment SetAssignment;
+        public SetAssignmentSegment SetAssignment { get; set; }
 
-        public OnDuplicateKeyColumnsSegment OnDuplicateKeyColumns;
+        public OnDuplicateKeyColumnsSegment OnDuplicateKeyColumns { get; set; }
 
         public readonly ICollection<InsertValuesSegment> Values = new LinkedList<InsertValuesSegment>();
 
