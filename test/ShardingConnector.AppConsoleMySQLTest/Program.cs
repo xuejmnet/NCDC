@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using Antlr4.Runtime.Tree;
 using MySqlConnector;
 using ShardingConnector.AdoNet.AdoNet.Core.DataSource;
 using ShardingConnector.AdoNet.Api;
+using ShardingConnector.CommandParser.Command;
 using ShardingConnector.Executor.SqlLog;
+using ShardingConnector.MySQLParser.Visitor.Impl;
 using ShardingConnector.NewConnector.DataSource;
+using ShardingConnector.ParserEngine.Core.Parser;
 using ShardingConnector.ShardingApi.Api.Config.Sharding;
 using ShardingConnector.ShardingApi.Api.Config.Sharding.Strategy;
 using ShardingConnector.ShardingApi.Api.Sharding.Standard;
@@ -15,6 +19,7 @@ namespace ShardingConnector.AppConsoleMySQLTest
     {
         static void Main(string[] args)
         {
+
             SqlLogger.AddLog((msg) => Console.WriteLine(msg));
             //var dbProviderFactory = ShardingCreateDbProviderFactory.CreateDataSource(dataSourceMap, new ShardingRuleConfiguration(),
             //    new Dictionary<string, object>());
@@ -39,6 +44,38 @@ namespace ShardingConnector.AppConsoleMySQLTest
             shardingRuleConfig.DefaultDataSourceName = "ds0";
 
             var dataSource = ShardingDataSourceFactory.CreateDataSource(dataSourceMap, shardingRuleConfig, new Dictionary<string, object>());
+            //Insert(dataSource);
+            Query(dataSource);
+        }
+
+        static void Insert(IDataSource dataSource)
+        {
+            var dbConnection = dataSource.GetDbConnection();
+
+            var dbCommand = dbConnection.CreateCommand();
+            dbCommand.CommandText = @"insert into SysUserMod values(@id,@name,@age)";
+            var dbParameter = dbCommand.CreateParameter();
+            dbParameter.ParameterName = "@id";
+            dbParameter.Value = "2000";
+
+            var dbParameter2 = dbCommand.CreateParameter();
+            dbParameter2.ParameterName = "@name";
+            dbParameter2.Value = "2000";
+            var dbParameter3 = dbCommand.CreateParameter();
+            dbParameter3.ParameterName = "@age";
+            dbParameter3.Value = 2000;
+            //dbParameter.ParameterName = "@Id";
+            //dbParameter.Value = 21;
+            dbCommand.Parameters.Add(dbParameter);
+            dbCommand.Parameters.Add(dbParameter2);
+            dbCommand.Parameters.Add(dbParameter3);
+            //dbCommand.CommandText = @"select [d].[Id],[d].[Name],[d].[Age] from [dbo].[SysUserMod] as [d] where id='1'  order by [d].[Age] desc";
+            var i = dbCommand.ExecuteNonQuery();
+            Console.WriteLine($"effect rows:{i}");
+            Console.WriteLine("Hello World!");
+        }
+        static void Query(IDataSource dataSource)
+        {
             var dbConnection = dataSource.GetDbConnection();
 
             var dbCommand = dbConnection.CreateCommand();

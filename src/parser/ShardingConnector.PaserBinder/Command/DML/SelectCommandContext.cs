@@ -50,10 +50,10 @@ namespace ShardingConnector.ParserBinder.Command.DML
         OrderByContext orderByContext, ProjectionsContext projectionsContext, PaginationContext paginationContext) : base(sqlCommand)
         {
             _tablesContext = new TablesContext(sqlCommand.GetSimpleTableSegments());
-            this._groupByContext = _groupByContext;
-            this._orderByContext = _orderByContext;
-            this._projectionsContext = _projectionsContext;
-            this._paginationContext = _paginationContext;
+            this._groupByContext =groupByContext;
+            this._orderByContext = orderByContext;
+            this._projectionsContext =projectionsContext;
+            this._paginationContext =paginationContext;
             _containsSubQuery = ContainsSubQuery();
         }
 

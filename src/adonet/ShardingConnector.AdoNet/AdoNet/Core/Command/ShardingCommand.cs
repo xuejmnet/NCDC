@@ -2,7 +2,6 @@
 using ShardingConnector.AdoNet.Executor;
 using ShardingConnector.Exceptions;
 using ShardingConnector.Executor;
-using ShardingConnector.Executor.Context;
 using ShardingConnector.Merge.Reader;
 using ShardingConnector.Pluggable.Merge;
 using ShardingConnector.Pluggable.Prepare;
@@ -11,6 +10,9 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using ExecutionContext = ShardingConnector.Executor.Context.ExecutionContext;
 using ShardingDataReader = ShardingConnector.AdoNet.AdoNet.Core.DataReader.ShardingDataReader;
 using ShardingRuntimeContext = ShardingConnector.AdoNet.AdoNet.Core.Context.ShardingRuntimeContext;
 
@@ -87,6 +89,10 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Command
 
         public DbParameter CreateParameter() => this.CreateDbParameter();
         private ShardingParameterCollection _parameters;
+        protected override Task<DbDataReader> ExecuteDbDataReaderAsync(CommandBehavior behavior, CancellationToken cancellationToken)
+        {
+            return base.ExecuteDbDataReaderAsync(behavior, cancellationToken);
+        }
 
         protected override DbDataReader ExecuteDbDataReader(CommandBehavior behavior)
         {
