@@ -30,7 +30,7 @@ namespace ShardingConnector.ParserEngine.Core.Visitor
          * @param visitorRule visitor rule
          * @return parse tree visitor
          */
-        public static IParseTreeVisitor<object> NewInstance(string dataSourceName, VisitorRuleEnum visitorRule)
+        public static IParseTreeVisitor<IASTNode> NewInstance(string dataSourceName, VisitorRuleEnum visitorRule)
         {
             var sqlParserConfigurations = NewInstanceServiceLoader.NewServiceInstances<ISqlParserConfiguration>();
             foreach (var configuration in sqlParserConfigurations)
@@ -43,23 +43,23 @@ namespace ShardingConnector.ParserEngine.Core.Visitor
             throw new NotSupportedException($"Cannot support database type '{dataSourceName}'");
         }
     
-        private static IParseTreeVisitor<object> CreateParseTreeVisitor(ISqlParserConfiguration configuration, SqlCommandTypeEnum type)
+        private static IParseTreeVisitor<IASTNode> CreateParseTreeVisitor(ISqlParserConfiguration configuration, SqlCommandTypeEnum type)
         {
-            ISqlVisitorFacade visitorFacade = (ISqlVisitorFacade) Activator.CreateInstance(configuration.GetVisitorFacadeType());
+            ISqlVisitorFacade visitorFacade = configuration.CreateVisitorFacade();
             switch (type)
             {
                 case SqlCommandTypeEnum.DML:
-                    return (IParseTreeVisitor<object>)Activator.CreateInstance(visitorFacade.GetDMLVisitorType());
+                    return (IParseTreeVisitor<IASTNode>)visitorFacade.CreateDMLVisitor();
                 case SqlCommandTypeEnum.DDL:
-                    return (IParseTreeVisitor<object>)Activator.CreateInstance(visitorFacade.GetDDLVisitorType());
+                    return (IParseTreeVisitor<IASTNode>)visitorFacade.CreateDDLVisitor();
                 case SqlCommandTypeEnum.TCL:
-                    return (IParseTreeVisitor<object>)Activator.CreateInstance(visitorFacade.GetTCLVisitorType());
+                    return (IParseTreeVisitor<IASTNode>)visitorFacade.CreateTCLVisitor();
                 case SqlCommandTypeEnum.DCL:
-                    return (IParseTreeVisitor<object>)Activator.CreateInstance(visitorFacade.GetDCLVisitorType());
+                    return (IParseTreeVisitor<IASTNode>)visitorFacade.CreateDCLVisitor();
                 case SqlCommandTypeEnum.DAL:
-                    return (IParseTreeVisitor<object>)Activator.CreateInstance(visitorFacade.GetDALVisitorType());
+                    return (IParseTreeVisitor<IASTNode>)visitorFacade.CreateDALVisitor();
                 case SqlCommandTypeEnum.RL:
-                    return (IParseTreeVisitor<object>)Activator.CreateInstance(visitorFacade.GetRLVisitorType());
+                    return (IParseTreeVisitor<IASTNode>)visitorFacade.CreateRLVisitor();
                 default:
                     throw new ShardingSqlParsingException($"Can not support SQL statement type: `{type}`");
             }

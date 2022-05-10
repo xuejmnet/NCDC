@@ -1,4 +1,5 @@
-﻿using ShardingConnector.CommandParser.Command;
+﻿
+using ShardingConnector.CommandParser.Command;
 using ShardingConnector.ParserBinder.Command;
 
 namespace ShardingConnector.RewriteEngine.Sql.Token.Generator

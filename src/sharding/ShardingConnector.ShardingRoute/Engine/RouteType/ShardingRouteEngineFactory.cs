@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+
 using ShardingConnector.CommandParser.Command;
 using ShardingConnector.CommandParser.Command.DAL.Dialect;
 using ShardingConnector.CommandParser.Command.DAL.Dialect.MySql;

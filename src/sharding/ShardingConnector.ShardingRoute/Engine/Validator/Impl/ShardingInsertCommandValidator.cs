@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+
 using ShardingConnector.CommandParser.Command;
 using ShardingConnector.CommandParser.Command.DML;
 using ShardingConnector.CommandParser.Segment.DML.Assignment;

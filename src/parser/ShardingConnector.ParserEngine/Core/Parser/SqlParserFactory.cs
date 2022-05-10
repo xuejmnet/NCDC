@@ -40,10 +40,7 @@ namespace ShardingConnector.ParserEngine.Core.Parser
 
         private static ISqlParser CreateSqlParser(string sql, ISqlParserConfiguration configuration)
         {
-            var lexerType = configuration.GetLexerType();
-            Lexer lexer = (Lexer) lexerType.GetConstructor(new[] {typeof(ICharStream)})?.Invoke(new object[] {CharStreams.fromString(sql)});
-            var parserType = configuration.GetParserType();
-            return (ISqlParser) parserType.GetConstructor(new[] {typeof(ITokenStream)})?.Invoke(new object[] {new CommonTokenStream(lexer)});
+            return configuration.CreateSqlParser(sql);
         }
     }
 }

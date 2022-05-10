@@ -1,4 +1,5 @@
-﻿namespace ShardingConnector.AbstractParser.Visitor.Commands
+﻿
+namespace ShardingConnector.AbstractParser.Visitor.Commands
 {
     /*
     * @Author: xjm

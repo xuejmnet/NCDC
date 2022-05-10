@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+
 using ShardingConnector.CommandParser.Command;
 using ShardingConnector.CommandParser.Segment.Generic.Table;
 using ShardingConnector.ParserBinder.Segment.Table;

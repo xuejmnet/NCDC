@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Antlr4.Runtime;
 using ShardingConnector.AbstractParser;
+using ShardingConnector.AbstractParser.SqlParser;
+using ShardingConnector.AbstractParser.Visitor;
 using ShardingConnector.SqlServerParser.SqlLexer;
 using ShardingConnector.SqlServerParser.Visitor;
 
@@ -22,19 +25,18 @@ namespace ShardingConnector.SqlServerParser
             return "SqlServer";
         }
 
-        public Type GetLexerType()
+        public ISqlParser CreateSqlParser(string sql)
         {
-            return typeof(SqlServerLexer);
+            var charStream = CharStreams.fromString(sql);
+            var mySqlLexer = new SqlServerLexer(charStream);
+            var commonTokenStream = new CommonTokenStream(mySqlLexer);
+            return new SqlParser.SqlServerParser(commonTokenStream);
         }
 
-        public Type GetParserType()
+        public ISqlVisitorFacade CreateVisitorFacade()
         {
-            return typeof(SqlParser.SqlServerParser);
+            throw new NotImplementedException();
         }
 
-        public Type GetVisitorFacadeType()
-        {
-            return typeof(SqlServerVisitorFacade);
-        }
     }
 }

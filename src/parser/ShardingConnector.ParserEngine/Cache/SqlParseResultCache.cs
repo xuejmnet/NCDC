@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.Extensions.Caching.Memory;
+
 using ShardingConnector.CommandParser.Command;
 
 namespace ShardingConnector.ParserEngine.Cache

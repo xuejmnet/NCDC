@@ -1,4 +1,7 @@
 ﻿using System;
+using ShardingConnector.AbstractParser.SqlLexer;
+using ShardingConnector.AbstractParser.SqlParser;
+using ShardingConnector.AbstractParser.Visitor;
 
 namespace ShardingConnector.AbstractParser
 {
@@ -17,9 +20,26 @@ namespace ShardingConnector.AbstractParser
         /// <returns></returns>
         string GetDataSourceName();
 
-        Type GetLexerType();
-        Type GetParserType();
-        Type GetVisitorFacadeType();
+        //Type GetLexerType();
+        //Type GetParserType();
+        //Type GetVisitorFacadeType();
+        ///// <summary>
+        ///// 词法分析
+        ///// </summary>
+        ///// <param name="sql"></param>
+        ///// <returns></returns>
+        //ISqlLexer CreateSqlLexer(string sql);
+        /// <summary>
+        /// 通过sql创建sql解析器
+        /// </summary>
+        /// <param name="sqlLexer"></param>
+        /// <returns></returns>
+        ISqlParser CreateSqlParser(string sql);
+        /// <summary>
+        /// 创建一个访问器
+        /// </summary>
+        /// <returns></returns>
+        ISqlVisitorFacade CreateVisitorFacade();
 
     }
 }

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime.Misc;
+
 using ShardingConnector.Base;
 using ShardingConnector.CommandParser.Command;
 using ShardingConnector.CommandParser.Segment.Generic.Table;

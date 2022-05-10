@@ -6,6 +6,7 @@ using ShardingConnector.ParserBinder.MetaData.Schema;
 using System.Collections.Generic;
 using System.Linq;
 
+
 namespace ShardingConnector.Merge.Reader.Memory
 {
     /*

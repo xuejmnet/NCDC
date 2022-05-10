@@ -1,5 +1,6 @@
 using System;
 using ShardingConnector.AbstractParser.Visitor;
+using ShardingConnector.AbstractParser.Visitor.Commands;
 using ShardingConnector.SqlServerParser.Visitor.Impl;
 
 namespace ShardingConnector.SqlServerParser.Visitor
@@ -12,34 +13,64 @@ namespace ShardingConnector.SqlServerParser.Visitor
 */
     public sealed class SqlServerVisitorFacade:ISqlVisitorFacade
     {
-        public Type GetDMLVisitorType()
+        //public Type GetDMLVisitorType()
+        //{
+        //    return typeof(SqlServerDMLVisitor);
+        //}
+
+        //public Type GetDDLVisitorType()
+        //{
+        //    return typeof(SqlServerDDLVisitor);
+        //}
+
+        //public Type GetTCLVisitorType()
+        //{
+        //    return typeof(SqlServerTCLVisitor);
+        //}
+
+        //public Type GetDCLVisitorType()
+        //{
+        //    return typeof(SqlServerDCLVisitor);
+        //}
+
+        //public Type GetDALVisitorType()
+        //{
+        //    return typeof(SqlServerDALVisitor);
+        //}
+
+        //public Type GetRLVisitorType()
+        //{
+        //    return null;
+        //}
+
+        public IDMLVisitor CreateDMLVisitor()
         {
-            return typeof(SqlServerDMLVisitor);
+            return new SqlServerDMLVisitor();
         }
 
-        public Type GetDDLVisitorType()
+        public IDDLVisitor CreateDDLVisitor()
         {
-            return typeof(SqlServerDDLVisitor);
+            return new SqlServerDDLVisitor();
         }
 
-        public Type GetTCLVisitorType()
+        public ITCLVisitor CreateTCLVisitor()
         {
-            return typeof(SqlServerTCLVisitor);
+            return new SqlServerTCLVisitor();
         }
 
-        public Type GetDCLVisitorType()
+        public IDCLVisitor CreateDCLVisitor()
         {
-            return typeof(SqlServerDCLVisitor);
+            return new SqlServerDCLVisitor();
         }
 
-        public Type GetDALVisitorType()
+        public IDALVisitor CreateDALVisitor()
         {
-            return typeof(SqlServerDALVisitor);
+            return new SqlServerDALVisitor();
         }
 
-        public Type GetRLVisitorType()
+        public IRLVisitor CreateRLVisitor()
         {
-            return null;
+            throw new NotImplementedException();
         }
     }
 }

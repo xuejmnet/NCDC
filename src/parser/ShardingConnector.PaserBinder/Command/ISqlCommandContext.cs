@@ -1,3 +1,4 @@
+
 using ShardingConnector.CommandParser.Command;
 using ShardingConnector.ParserBinder.Segment.Table;
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+
 using ShardingConnector.Api.Database;
 using ShardingConnector.CommandParser.Command;
 using ShardingConnector.CommandParser.Command.DAL.Dialect.MySql;

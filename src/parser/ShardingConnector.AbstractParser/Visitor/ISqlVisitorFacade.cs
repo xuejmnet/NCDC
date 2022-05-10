@@ -1,4 +1,5 @@
 ﻿using System;
+using ShardingConnector.AbstractParser.Visitor.Commands;
 
 namespace ShardingConnector.AbstractParser.Visitor
 {
@@ -14,11 +15,17 @@ namespace ShardingConnector.AbstractParser.Visitor
     /// </summary>
     public interface ISqlVisitorFacade
     {
-        Type GetDMLVisitorType();
-        Type GetDDLVisitorType();
-        Type GetTCLVisitorType();
-        Type GetDCLVisitorType();
-        Type GetDALVisitorType();
-        Type GetRLVisitorType();
+        IDMLVisitor CreateDMLVisitor();
+        IDDLVisitor CreateDDLVisitor();
+        ITCLVisitor CreateTCLVisitor();
+        IDCLVisitor CreateDCLVisitor();
+        IDALVisitor CreateDALVisitor();
+        IRLVisitor CreateRLVisitor();
+        //Type GetDMLVisitorType();
+        //Type GetDDLVisitorType();
+        //Type GetTCLVisitorType();
+        //Type GetDCLVisitorType();
+        //Type GetDALVisitorType();
+        //Type GetRLVisitorType();
     }
 }

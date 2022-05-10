@@ -1,7 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Antlr4.Runtime;
 using ShardingConnector.AbstractParser;
+using ShardingConnector.AbstractParser.SqlLexer;
+using ShardingConnector.AbstractParser.SqlParser;
+using ShardingConnector.AbstractParser.Visitor;
 using ShardingConnector.MySQLParser.SqlLexer;
 using ShardingConnector.MySQLParser.Visitor;
 
@@ -14,26 +18,23 @@ namespace ShardingConnector.MySQLParser
     /// Created: 2022/5/10 9:49:26
     /// Email: 326308290@qq.com
     public sealed class MySQLParserConfiguration:ISqlParserConfiguration
-
     {
         public string GetDataSourceName()
         {
             return "MySQL";
         }
 
-        public Type GetLexerType()
+        public ISqlParser CreateSqlParser(string sql)
         {
-            return typeof(MySQLLexer);
+            var charStream = CharStreams.fromString(sql);
+            var mySqlLexer = new MySQLLexer(charStream);
+            var commonTokenStream = new CommonTokenStream(mySqlLexer);
+            return new SqlParser.MySQLParser(commonTokenStream);
         }
 
-        public Type GetParserType()
+        public ISqlVisitorFacade CreateVisitorFacade()
         {
-            return typeof(SqlParser.MySQLParser);
-        }
-
-        public Type GetVisitorFacadeType()
-        {
-            return typeof(MySqlVisitorFacade);
+            return new MySQLVisitorFacade();
         }
     }
 }

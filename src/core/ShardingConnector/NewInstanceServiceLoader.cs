@@ -20,6 +20,7 @@ namespace ShardingConnector
         private static readonly IDictionary<Type, ICollection<Type>> ServiceMap =
             new Dictionary<Type, ICollection<Type>>();
 
+
         /// <summary>
         /// 注册接口对应的多实例实现
         /// </summary>

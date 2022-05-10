@@ -15,7 +15,6 @@ namespace ShardingConnector.AppConsoleMySQLTest
     {
         static void Main(string[] args)
         {
-            var fullName = typeof(MySqlConnection).FullName;
             SqlLogger.AddLog((msg) => Console.WriteLine(msg));
             //var dbProviderFactory = ShardingCreateDbProviderFactory.CreateDataSource(dataSourceMap, new ShardingRuleConfiguration(),
             //    new Dictionary<string, object>());
@@ -91,7 +90,7 @@ namespace ShardingConnector.AppConsoleMySQLTest
         }
     }
 
-    public class SysUserModId : IPreciseShardingAlgorithm<string>
+    public class SysUserModId : IPreciseShardingAlgorithm<string>,IRangeShardingAlgorithm<long>
     {
         public string DoSharding(ICollection<string> availableTargetNames, PreciseShardingValue shardingValue)
         {
@@ -102,6 +101,11 @@ namespace ShardingConnector.AppConsoleMySQLTest
             }
 
             return null;
+        }
+
+        public ICollection<string> DoSharding(ICollection<string> availableTargetNames, RangeShardingValue<long> shardingValue)
+        {
+            throw new NotImplementedException();
         }
     }
 }

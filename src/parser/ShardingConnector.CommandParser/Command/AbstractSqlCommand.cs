@@ -1,4 +1,6 @@
-﻿namespace ShardingConnector.CommandParser.Command
+﻿
+
+namespace ShardingConnector.CommandParser.Command
 {
     /*
     * @Author: xjm
