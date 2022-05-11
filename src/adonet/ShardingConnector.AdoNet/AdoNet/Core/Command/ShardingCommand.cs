@@ -48,7 +48,15 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Command
 
         public override int ExecuteNonQuery()
         {
-            throw new NotImplementedException();
+            try
+            {
+                executionContext = Prepare(CommandText);
+                return _commandExecutor.ExecuteNonQuery();
+            }
+            finally
+            {
+                currentResultSet = null;
+            }
         }
 
         public override object ExecuteScalar()

@@ -53,9 +53,9 @@ namespace ShardingConnector.ParserBinder
             //if (sqlStatement instanceof DeleteStatement) {
             //    return new DeleteStatementContext((DeleteStatement)sqlStatement);
             //}
-            //if (sqlStatement instanceof InsertStatement) {
-            //    return new InsertStatementContext(schemaMetaData, parameters, (InsertStatement)sqlStatement);
-            //}
+            if (sqlCommand is InsertCommand insertCommand) {
+                return new InsertCommandContext(schemaMetaData, parameters, insertCommand);
+            }
             throw new NotSupportedException($"Unsupported SQL statement `{sqlCommand.GetType().Name}`");
         }
     }

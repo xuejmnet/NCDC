@@ -6,6 +6,7 @@ using ShardingConnector.ShardingExecute.Execute.DataReader;
 using System;
 using System.Collections.Generic;
 using System.Data.Common;
+using System.Linq;
 using ShardingConnector.Executor.Context;
 using ShardingConnector.Executor.Engine;
 using ShardingConnector.Extensions;
@@ -60,6 +61,21 @@ namespace ShardingConnector.AdoNet.Executor
             if (ConnectionModeEnum.MEMORY_STRICTLY == connectionMode)
                 return new StreamQueryDataReader(resultSet);
             return new MemoryQueryDataReader(resultSet);
+        }
+        public int ExecuteNonQuery()
+        {
+            bool isExceptionThrown = ExecutorExceptionHandler.IsThrowException();
+            var executeCallback = new SqlExecuteCallback<int>(DatabaseType, isExceptionThrown);
+            executeCallback.OnSqlExecute += DoExecuteNonQuery;
+            var callback = ExecuteCallback(executeCallback);
+            return callback.Sum();
+        }
+        private int DoExecuteNonQuery(string sql, DbCommand command, ConnectionModeEnum connectionMode)
+        {
+            // DbDataReader resultSet = command.ExecuteReader(sql);
+            // command.CommandText = sql;
+            var i = command.ExecuteNonQuery();
+            return i;
         }
     }
 }

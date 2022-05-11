@@ -44,8 +44,8 @@ namespace ShardingConnector.AppConsoleMySQLTest
             shardingRuleConfig.DefaultDataSourceName = "ds0";
 
             var dataSource = ShardingDataSourceFactory.CreateDataSource(dataSourceMap, shardingRuleConfig, new Dictionary<string, object>());
-            //Insert(dataSource);
-            Query(dataSource);
+            Insert(dataSource);
+            //Query(dataSource);
         }
 
         static void Insert(IDataSource dataSource)
