@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data.Common;
+using System.Threading.Tasks;
 using ShardingConnector.Executor.Constant;
 using ShardingConnector.Executor.Context;
 using ShardingConnector.Executor.Engine;
@@ -30,6 +31,7 @@ namespace ShardingConnector.ShardingExecute.Execute
 
         private readonly bool isExceptionThrown;
         public event Func<string, DbCommand, ConnectionModeEnum, T> OnSqlExecute;
+        public event Func<string, DbCommand, ConnectionModeEnum, Task<T>> OnSqlExecuteAsync;
 
 
         public SqlExecuteCallback(IDatabaseType databaseType, bool isExceptionThrown)

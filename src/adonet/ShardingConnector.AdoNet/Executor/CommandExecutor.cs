@@ -7,9 +7,12 @@ using System;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using ShardingConnector.Executor.Context;
 using ShardingConnector.Executor.Engine;
 using ShardingConnector.Extensions;
+using ExecutionContext = ShardingConnector.Executor.Context.ExecutionContext;
 
 namespace ShardingConnector.AdoNet.Executor
 {
