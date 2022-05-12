@@ -32,9 +32,9 @@ namespace ShardingConnector.AdoNet.AdoNet.Core
 
         static ShardingDbProviderFactory()
         {
-            NewInstanceServiceLoader.Register<IRouteDecorator>();
-            NewInstanceServiceLoader.Register<ISqlRewriteContextDecorator>();
-            NewInstanceServiceLoader.Register<IResultProcessEngine>();
+            //NewInstanceServiceLoader.Register<IRouteDecorator>();
+            //NewInstanceServiceLoader.Register<ISqlRewriteContextDecorator>();
+            //NewInstanceServiceLoader.Register<IResultProcessEngine>();
         }
 
 

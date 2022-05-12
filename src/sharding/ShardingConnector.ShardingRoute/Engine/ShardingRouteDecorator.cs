@@ -41,11 +41,12 @@ namespace ShardingConnector.ShardingRoute.Engine
             var sqlStatementContext = routeContext.GetSqlCommandContext();
             List<object> parameters = routeContext.GetParameters();
 
-            ShardingStatementValidatorFactory.NewInstance(
-                sqlStatementContext.GetSqlCommand()).IfPresent(validator=> validator.Validate(shardingRule, sqlStatementContext.GetSqlCommand(), parameters));
+            ShardingCommandValidatorFactory.NewInstance(
+                sqlStatementContext.GetSqlCommand())
+                .IfPresent(validator=> validator.Validate(shardingRule, sqlStatementContext.GetSqlCommand(), parameters));
             ShardingConditions shardingConditions = GetShardingConditions(parameters, sqlStatementContext, metaData.Schema, shardingRule);
             var needMergeShardingValues = IsNeedMergeShardingValues(sqlStatementContext, shardingRule);
-            if (sqlStatementContext.GetSqlCommand() is DMLCommand && needMergeShardingValues) {
+            if (needMergeShardingValues && sqlStatementContext.GetSqlCommand() is DMLCommand) {
                 CheckSubQueryShardingValues(sqlStatementContext, shardingRule, shardingConditions);
                 MergeShardingConditions(shardingConditions);
             }

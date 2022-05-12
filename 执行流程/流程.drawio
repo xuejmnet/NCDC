@@ -1,0 +1,283 @@
+<mxfile host="65bd71144e">
+    <diagram id="X8oTSZ4Y2eFCrqhY_nRG" name="第 1 页">
+        <mxGraphModel dx="1205" dy="2051" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" background="#ffffff" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="7" style="edgeStyle=none;html=1;strokeColor=#1A1A1A;" edge="1" parent="1" source="2" target="3">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="2" value="开始" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;" vertex="1" parent="1">
+                    <mxGeometry x="10" y="10" width="80" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="9" style="edgeStyle=none;html=1;fontColor=#1A1A1A;strokeColor=#1A1A1A;" edge="1" parent="1" source="3" target="8">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="3" value="创建ShardingRuleConfiguration" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="160" y="20" width="290" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="5" value="配置数据库哪些表有哪些分片规则默认的分表分库的规则,默认的数据源名称" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontColor=#1A1A1A;" vertex="1" parent="1">
+                    <mxGeometry x="180" y="90" width="250" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="18" style="edgeStyle=none;html=1;fontFamily=Helvetica;fontSize=12;fontColor=#f1f1f1;strokeColor=#1A1A1A;" edge="1" parent="1" source="8" target="17">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="63" style="edgeStyle=orthogonalEdgeStyle;html=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;fontFamily=Helvetica;fontSize=12;fontColor=#FFFFFF;strokeColor=#1A1A1A;" edge="1" parent="1" source="8" target="62">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="8" value="&lt;font color=&quot;#ffffff&quot;&gt;创建ShardingDataSourceFactory&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fontColor=#1A1A1A;" vertex="1" parent="1">
+                    <mxGeometry x="520" y="20" width="230" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="10" value="用于程序创建数据源IDataSource" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontColor=#333333;" vertex="1" parent="1">
+                    <mxGeometry x="500" y="90" width="290" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="20" style="edgeStyle=none;html=1;fontFamily=Helvetica;fontSize=12;fontColor=#f1f1f1;strokeColor=#1A1A1A;" edge="1" parent="1" source="17" target="19">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="17" value="IDataSource.GetDbConnection&lt;br&gt;创建ShardingConnection" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=12;fontColor=#f1f1f1;strokeColor=default;fillColor=default;" vertex="1" parent="1">
+                    <mxGeometry x="820" y="20" width="210" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="36" style="edgeStyle=orthogonalEdgeStyle;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;fontFamily=Helvetica;fontSize=12;fontColor=#f1f1f1;strokeColor=#1A1A1A;" edge="1" parent="1" source="19" target="30">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="1205" y="160"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="19" value="CreateCommand&lt;br&gt;创建ShardingCommand" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=12;fontColor=#f1f1f1;strokeColor=default;fillColor=default;" vertex="1" parent="1">
+                    <mxGeometry x="1110" y="20" width="190" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="22" value="添加CommandText=sql" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;fontSize=12;fontColor=#333333;" vertex="1" parent="1">
+                    <mxGeometry x="1140" y="90" width="150" height="25" as="geometry"/>
+                </mxCell>
+                <mxCell id="26" value="ExecuteReader" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=12;fontColor=#f1f1f1;strokeColor=default;fillColor=default;" vertex="1" parent="1">
+                    <mxGeometry x="420" y="230" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="27" value="ExecuteNonQuery" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=12;fontColor=#f1f1f1;strokeColor=default;fillColor=default;" vertex="1" parent="1">
+                    <mxGeometry x="730" y="230" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="38" style="edgeStyle=orthogonalEdgeStyle;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontFamily=Helvetica;fontSize=12;fontColor=#f1f1f1;strokeColor=#1A1A1A;" edge="1" parent="1" source="30" target="27">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="630" y="260"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="39" style="edgeStyle=orthogonalEdgeStyle;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;fontFamily=Helvetica;fontSize=12;fontColor=#f1f1f1;strokeColor=#1A1A1A;" edge="1" parent="1" source="30" target="26">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="630" y="260"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="30" value="执行" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=12;fontColor=#f1f1f1;strokeColor=default;fillColor=default;" vertex="1" parent="1">
+                    <mxGeometry x="570" y="130" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="44" style="edgeStyle=orthogonalEdgeStyle;html=1;fontFamily=Helvetica;fontSize=12;fontColor=#f1f1f1;strokeColor=#1A1A1A;" edge="1" parent="1" source="40" target="42">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="46" style="edgeStyle=orthogonalEdgeStyle;html=1;fontFamily=Helvetica;fontSize=12;fontColor=#f1f1f1;strokeColor=#1A1A1A;" edge="1" parent="1" source="40" target="41">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="47" style="edgeStyle=orthogonalEdgeStyle;html=1;fontFamily=Helvetica;fontSize=12;fontColor=#f1f1f1;strokeColor=#1A1A1A;" edge="1" parent="1" source="40" target="45">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="40" value="SimpleQueryPrepareEngine创建简单的查询预处理引擎" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=12;fontColor=#f1f1f1;strokeColor=default;fillColor=default;" vertex="1" parent="1">
+                    <mxGeometry x="520" y="360" width="340" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="54" style="edgeStyle=orthogonalEdgeStyle;html=1;fontFamily=Helvetica;fontSize=12;fontColor=#f1f1f1;strokeColor=#1A1A1A;" edge="1" parent="1" source="41" target="52">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="41" value="创建DataNodeRouter" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=12;fontColor=#f1f1f1;strokeColor=default;fillColor=default;" vertex="1" parent="1">
+                    <mxGeometry x="540" y="480" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="42" value="&lt;div style=&quot;color: rgb(212 , 212 , 212) ; background-color: rgb(30 , 30 , 30) ; font-family: &amp;#34;menlo&amp;#34; , &amp;#34;consolas&amp;#34; , &amp;#34;courier new&amp;#34; , monospace , &amp;#34;consolas&amp;#34; , &amp;#34;courier new&amp;#34; , monospace ; font-size: 14px ; line-height: 19px&quot;&gt;&lt;span style=&quot;color: #569cd6 ; font-weight: bold&quot;&gt;ShardingRuntimeContext&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;color: rgb(212 , 212 , 212) ; background-color: rgb(30 , 30 , 30) ; font-family: &amp;#34;menlo&amp;#34; , &amp;#34;consolas&amp;#34; , &amp;#34;courier new&amp;#34; , monospace , &amp;#34;consolas&amp;#34; , &amp;#34;courier new&amp;#34; , monospace ; font-size: 14px ; line-height: 19px&quot;&gt;&lt;span style=&quot;color: #569cd6 ; font-weight: bold&quot;&gt;Rule:规则&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;color: rgb(212 , 212 , 212) ; background-color: rgb(30 , 30 , 30) ; font-family: &amp;#34;menlo&amp;#34; , &amp;#34;consolas&amp;#34; , &amp;#34;courier new&amp;#34; , monospace , &amp;#34;consolas&amp;#34; , &amp;#34;courier new&amp;#34; , monospace ; font-size: 14px ; line-height: 19px&quot;&gt;&lt;span style=&quot;color: #569cd6 ; font-weight: bold&quot;&gt;Properties:配置&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;color: rgb(212 , 212 , 212) ; background-color: rgb(30 , 30 , 30) ; font-family: &amp;#34;menlo&amp;#34; , &amp;#34;consolas&amp;#34; , &amp;#34;courier new&amp;#34; , monospace , &amp;#34;consolas&amp;#34; , &amp;#34;courier new&amp;#34; , monospace ; font-size: 14px ; line-height: 19px&quot;&gt;&lt;span style=&quot;color: #569cd6 ; font-weight: bold&quot;&gt;MetaData:元数据信 息&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;background-color: rgb(30 , 30 , 30) ; line-height: 19px&quot;&gt;&lt;font color=&quot;#569cd6&quot; face=&quot;menlo, consolas, courier new, monospace, consolas, courier new, monospace&quot;&gt;&lt;span style=&quot;font-size: 14px&quot;&gt;&lt;b&gt;SQLParserEngine:sql解析&lt;/b&gt;&lt;/span&gt;&lt;/font&gt;&lt;br&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=12;fontColor=#f1f1f1;strokeColor=default;fillColor=default;" vertex="1" parent="1">
+                    <mxGeometry x="60" y="240" width="320" height="185" as="geometry"/>
+                </mxCell>
+                <mxCell id="53" style="edgeStyle=orthogonalEdgeStyle;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontFamily=Helvetica;fontSize=12;fontColor=#f1f1f1;strokeColor=#1A1A1A;" edge="1" parent="1" source="45" target="52">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="45" value="创建SQLRewriteEntry" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=12;fontColor=#f1f1f1;strokeColor=default;fillColor=default;" vertex="1" parent="1">
+                    <mxGeometry x="770" y="480" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="48" value="&lt;font color=&quot;#1a1a1a&quot;&gt;数据节点路由&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;fontSize=12;fontColor=#f1f1f1;" vertex="1" parent="1">
+                    <mxGeometry x="410" y="497.5" width="80" height="25" as="geometry"/>
+                </mxCell>
+                <mxCell id="49" value="&lt;font color=&quot;#1a1a1a&quot;&gt;sql语句重新&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;fontSize=12;fontColor=#f1f1f1;" vertex="1" parent="1">
+                    <mxGeometry x="930" y="495" width="80" height="25" as="geometry"/>
+                </mxCell>
+                <mxCell id="60" style="edgeStyle=orthogonalEdgeStyle;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontFamily=Helvetica;fontSize=12;fontColor=#FFFFFF;strokeColor=#1A1A1A;" edge="1" parent="1" source="52" target="59">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="52" value="SimpleQueryPrepareEngine.Prepare" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=12;fontColor=#f1f1f1;strokeColor=default;fillColor=default;" vertex="1" parent="1">
+                    <mxGeometry x="550" y="600" width="300" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="55" value="&lt;font color=&quot;#1a1a1a&quot;&gt;调用调用预处理方法，&lt;br&gt;获取ExecutionContext上下文&lt;br&gt;&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;fontSize=12;fontColor=#f1f1f1;" vertex="1" parent="1">
+                    <mxGeometry x="870" y="610" width="250" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="56" value="ExecutionContext&lt;br&gt;ISqlCommandContext:SQL命令上下文&lt;br&gt;ExecutionUnit:执行单元" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=12;fontColor=#FFFFFF;strokeColor=default;fillColor=default;" vertex="1" parent="1">
+                    <mxGeometry x="1090" y="564" width="270" height="132" as="geometry"/>
+                </mxCell>
+                <mxCell id="57" value="ISqlCommandContext&lt;br&gt;ISqlCommand:SQL命令:DML.DCL...Select,Insert...&lt;br&gt;TablesContext:涉及的表" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=12;fontColor=#FFFFFF;strokeColor=default;fillColor=default;" vertex="1" parent="1">
+                    <mxGeometry x="1370" y="564" width="270" height="132" as="geometry"/>
+                </mxCell>
+                <mxCell id="66" style="edgeStyle=orthogonalEdgeStyle;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontFamily=Helvetica;fontSize=12;fontColor=#FFFFFF;strokeColor=#1A1A1A;" edge="1" parent="1" source="59" target="61">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="59" value="拷贝参数" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=12;fontColor=#FFFFFF;strokeColor=default;fillColor=default;" vertex="1" parent="1">
+                    <mxGeometry x="640" y="710" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="68" style="edgeStyle=orthogonalEdgeStyle;html=1;fontFamily=Helvetica;fontSize=12;fontColor=#FFFFFF;strokeColor=#1A1A1A;" edge="1" parent="1" source="61" target="67">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="61" value="执行路由,对DataNodeRouter注册RouteDecorator,&lt;br&gt;需要实现接口IRouteDecorator,反射创建路由包装器" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=12;fontColor=#FFFFFF;strokeColor=default;fillColor=default;" vertex="1" parent="1">
+                    <mxGeometry x="545" y="810" width="310" height="130" as="geometry"/>
+                </mxCell>
+                <mxCell id="62" value="自动注册:&lt;br&gt;IRouteDecorator,&lt;br&gt;ISqlRewriteContextDecorator,&lt;br&gt;IResultProcessEngine" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=12;fontColor=#FFFFFF;strokeColor=default;fillColor=default;" vertex="1" parent="1">
+                    <mxGeometry x="527.5" y="-140" width="215" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="64" value="&lt;span&gt;IRouteDecorator:&lt;br&gt;&lt;/span&gt;可以对RouteContext进行增强设置等操作。&lt;br&gt;ShardingRouteDecorator：&lt;br&gt;1.分片命令校验&lt;br&gt;2.获取分片条件&lt;br&gt;3.判断是否需要合并分片值&lt;br&gt;4.校验子查询分片值&lt;br&gt;5.合并分片条件&lt;br&gt;6.创建分片路由引擎&lt;br&gt;7.根据路由结果创建路由上下文" style="whiteSpace=wrap;html=1;aspect=fixed;rounded=0;fontFamily=Helvetica;fontSize=12;fontColor=#FFFFFF;strokeColor=default;fillColor=default;" vertex="1" parent="1">
+                    <mxGeometry x="265" y="-180" width="180" height="180" as="geometry"/>
+                </mxCell>
+                <mxCell id="65" value="&lt;span&gt;IRouteDecorator:&lt;br&gt;&lt;/span&gt;可以对RouteContext进行增强设置等操作。&lt;br&gt;ShardingRouteDecorator：&lt;br&gt;1.分片命令校验&lt;br&gt;2.获取分片条件&lt;br&gt;3.判断是否需要合并分片值&lt;br&gt;4.校验子查询分片值&lt;br&gt;5.合并分片条件&lt;br&gt;6.创建分片路由引擎&lt;br&gt;7.根据路由结果创建路由上下文" style="whiteSpace=wrap;html=1;aspect=fixed;rounded=0;fontFamily=Helvetica;fontSize=12;fontColor=#FFFFFF;strokeColor=default;fillColor=default;" vertex="1" parent="1">
+                    <mxGeometry x="200" y="760" width="180" height="180" as="geometry"/>
+                </mxCell>
+                <mxCell id="73" style="edgeStyle=orthogonalEdgeStyle;html=1;fontFamily=Helvetica;fontSize=12;fontColor=#FFFFFF;strokeColor=#1A1A1A;" edge="1" parent="1" source="67" target="69">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="67" value="DataNodeRouter.Route" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=12;fontColor=#FFFFFF;strokeColor=default;fillColor=default;" vertex="1" parent="1">
+                    <mxGeometry x="610" y="990" width="180" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="74" style="edgeStyle=orthogonalEdgeStyle;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;fontFamily=Helvetica;fontSize=12;fontColor=#FFFFFF;strokeColor=#1A1A1A;" edge="1" parent="1" source="69" target="70">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="78" style="edgeStyle=orthogonalEdgeStyle;html=1;fontFamily=Helvetica;fontSize=12;fontColor=#FFFFFF;strokeColor=#1A1A1A;" edge="1" parent="1" source="69" target="76">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="69" value="解析Sql生成SqlCommand并且创建ISqlCommandContext" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=12;fontColor=#FFFFFF;strokeColor=default;fillColor=default;" vertex="1" parent="1">
+                    <mxGeometry x="605" y="1160" width="190" height="100" as="geometry"/>
+                </mxCell>
+                <mxCell id="75" style="edgeStyle=orthogonalEdgeStyle;html=1;fontFamily=Helvetica;fontSize=12;fontColor=#FFFFFF;strokeColor=#1A1A1A;" edge="1" parent="1" source="70" target="71">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="70" value="SqlParserEngine:&lt;br&gt;解析数据库命令创建ISqlCommand" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=12;fontColor=#FFFFFF;strokeColor=default;fillColor=default;" vertex="1" parent="1">
+                    <mxGeometry x="180" y="1030" width="230" height="101" as="geometry"/>
+                </mxCell>
+                <mxCell id="81" style="edgeStyle=orthogonalEdgeStyle;html=1;fontFamily=Helvetica;fontSize=12;fontColor=#FFFFFF;strokeColor=#1A1A1A;" edge="1" parent="1" source="71" target="77">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="71" value="自动注册ISqlParserConfiguration" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=12;fontColor=#FFFFFF;strokeColor=default;fillColor=default;" vertex="1" parent="1">
+                    <mxGeometry x="170" y="1190" width="250" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="82" style="edgeStyle=orthogonalEdgeStyle;html=1;fontFamily=Helvetica;fontSize=12;fontColor=#FFFFFF;strokeColor=#1A1A1A;" edge="1" parent="1" source="76" target="80">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="76" value="路由上下文RouteContext" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=12;fontColor=#FFFFFF;strokeColor=default;fillColor=default;" vertex="1" parent="1">
+                    <mxGeometry x="585" y="1330" width="230" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="77" value="创建对应的增删改查SqlCommand" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=12;fontColor=#FFFFFF;strokeColor=default;fillColor=default;" vertex="1" parent="1">
+                    <mxGeometry x="235" y="1335" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="84" style="edgeStyle=orthogonalEdgeStyle;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontFamily=Helvetica;fontSize=12;fontColor=#FFFFFF;strokeColor=#1A1A1A;" edge="1" parent="1" source="80" target="83">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="80" value="循环处理路由装饰器" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=12;fontColor=#FFFFFF;strokeColor=default;fillColor=default;" vertex="1" parent="1">
+                    <mxGeometry x="640" y="1450" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="86" style="edgeStyle=orthogonalEdgeStyle;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontFamily=Helvetica;fontSize=12;fontColor=#FFFFFF;strokeColor=#1A1A1A;" edge="1" parent="1" source="83" target="85">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="83" value="根据SqlCommandContext创建ExecutionContext" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=12;fontColor=#FFFFFF;strokeColor=default;fillColor=default;" vertex="1" parent="1">
+                    <mxGeometry x="640" y="1550" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="90" style="edgeStyle=orthogonalEdgeStyle;html=1;fontFamily=Helvetica;fontSize=12;fontColor=#FFFFFF;strokeColor=#1A1A1A;" edge="1" parent="1" source="85" target="88">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="85" value="注册重写装饰器&lt;br&gt;RegisterRewriteDecorator" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=12;fontColor=#FFFFFF;strokeColor=default;fillColor=default;" vertex="1" parent="1">
+                    <mxGeometry x="1090" y="840" width="180" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="87" value="ISqlRewriteContextDecorator" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=12;fontColor=#FFFFFF;strokeColor=default;fillColor=default;" vertex="1" parent="1">
+                    <mxGeometry x="1330" y="840" width="220" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="92" style="edgeStyle=orthogonalEdgeStyle;html=1;fontFamily=Helvetica;fontSize=12;fontColor=#FFFFFF;strokeColor=#1A1A1A;" edge="1" parent="1" source="88" target="91">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="88" value="创建SQLRewriteContext" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=12;fontColor=#FFFFFF;strokeColor=default;fillColor=default;" vertex="1" parent="1">
+                    <mxGeometry x="1095" y="970" width="170" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="94" style="edgeStyle=orthogonalEdgeStyle;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontFamily=Helvetica;fontSize=12;fontColor=#FFFFFF;strokeColor=#1A1A1A;" edge="1" parent="1" source="91" target="93">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="99" style="edgeStyle=orthogonalEdgeStyle;html=1;fontFamily=Helvetica;fontSize=12;fontColor=#1A1A1A;strokeColor=#1A1A1A;" edge="1" parent="1" source="91" target="98">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="91" value="循环处理所有装饰器" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=12;fontColor=#FFFFFF;strokeColor=default;fillColor=default;" vertex="1" parent="1">
+                    <mxGeometry x="1095" y="1099" width="170" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="96" style="edgeStyle=orthogonalEdgeStyle;html=1;entryX=0.431;entryY=0.013;entryDx=0;entryDy=0;entryPerimeter=0;fontFamily=Helvetica;fontSize=12;fontColor=#FFFFFF;strokeColor=#1A1A1A;" edge="1" parent="1" source="93" target="95">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="93" value="创建:ShardingSqlRewriteContextDecorator" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=12;fontColor=#FFFFFF;strokeColor=default;fillColor=default;" vertex="1" parent="1">
+                    <mxGeometry x="1380" y="960" width="250" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="95" value="创建:ShardingParameterRewriterBuilder&lt;br&gt;1.ShardingGeneratedKeyInsertValueParameterRewriter&lt;br&gt;2.ShardingPaginationParameterRewriter" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=12;fontColor=#FFFFFF;strokeColor=default;fillColor=default;" vertex="1" parent="1">
+                    <mxGeometry x="1350" y="1099" width="360" height="100" as="geometry"/>
+                </mxCell>
+                <mxCell id="97" value="&lt;font color=&quot;#1a1a1a&quot;&gt;如果你是分页那么需要将参数重写,如果你是自动生成的key那么如果存在了也可能需要重写去掉&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;fontSize=12;fontColor=#FFFFFF;" vertex="1" parent="1">
+                    <mxGeometry x="1370" y="1210" width="370" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="102" style="edgeStyle=orthogonalEdgeStyle;html=1;fontFamily=Helvetica;fontSize=12;fontColor=#E6E6E6;strokeColor=#1A1A1A;" edge="1" parent="1" source="98" target="100">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="107" style="edgeStyle=orthogonalEdgeStyle;html=1;fontFamily=Helvetica;fontSize=12;fontColor=#1A1A1A;strokeColor=#1A1A1A;" edge="1" parent="1" source="98" target="106">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="98" value="存在路由单元" style="rhombus;whiteSpace=wrap;html=1;rounded=0;fontFamily=Helvetica;fontSize=12;fontColor=#E6E6E6;strokeColor=default;fillColor=default;" vertex="1" parent="1">
+                    <mxGeometry x="1125" y="1270" width="110" height="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="110" style="edgeStyle=orthogonalEdgeStyle;html=1;fontFamily=Helvetica;fontSize=12;fontColor=#1A1A1A;strokeColor=#1A1A1A;" edge="1" parent="1" source="100" target="108">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="100" value="根据重写上下文重写" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=12;fontColor=#E6E6E6;strokeColor=default;fillColor=default;" vertex="1" parent="1">
+                    <mxGeometry x="990" y="1380" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="103" value="不存在" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;fontSize=12;fontColor=#1A1A1A;" vertex="1" parent="1">
+                    <mxGeometry x="1010" y="1290" width="60" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="104" value="存在" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;fontSize=12;fontColor=#1A1A1A;" vertex="1" parent="1">
+                    <mxGeometry x="1300" y="1290" width="60" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="109" style="edgeStyle=orthogonalEdgeStyle;html=1;fontFamily=Helvetica;fontSize=12;fontColor=#1A1A1A;strokeColor=#1A1A1A;" edge="1" parent="1" source="106" target="108">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="106" value="根据重写上下文和路由上下文重写" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=12;fontColor=#E6E6E6;strokeColor=default;fillColor=default;" vertex="1" parent="1">
+                    <mxGeometry x="1280" y="1380" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="114" style="edgeStyle=orthogonalEdgeStyle;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontFamily=Helvetica;fontSize=12;fontColor=#FFFFFF;strokeColor=#1A1A1A;" edge="1" parent="1" source="108" target="113">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="108" value="ExecutionContext&lt;br&gt;添加执行结果集合&lt;br&gt;List&amp;lt;ExecutionUnit&amp;gt;" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=12;fontColor=#FFFFFF;strokeColor=default;fillColor=default;" vertex="1" parent="1">
+                    <mxGeometry x="1060" y="1550" width="290" height="110" as="geometry"/>
+                </mxCell>
+                <mxCell id="111" value="单个执行单元" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;fontSize=12;fontColor=#1A1A1A;" vertex="1" parent="1">
+                    <mxGeometry x="995" y="1450" width="100" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="112" value="多个执行单元" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;fontSize=12;fontColor=#1A1A1A;" vertex="1" parent="1">
+                    <mxGeometry x="1290" y="1450" width="100" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="117" style="edgeStyle=orthogonalEdgeStyle;html=1;fontFamily=Helvetica;fontSize=12;fontColor=#FFFFFF;strokeColor=#1A1A1A;" edge="1" parent="1" source="113" target="116">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="113" value="CommandExecutor" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=12;fontColor=#FFFFFF;strokeColor=default;fillColor=default;" vertex="1" parent="1">
+                    <mxGeometry x="860" y="1760" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="115" value="初始化" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;fontSize=12;fontColor=#1A1A1A;" vertex="1" parent="1">
+                    <mxGeometry x="810" y="1650" width="100" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="116" value="对执行单元进行分组,分组规则同库按&lt;br&gt;max connection limit size&lt;br&gt;为一组并行查询" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=12;fontColor=#FFFFFF;strokeColor=default;fillColor=default;" vertex="1" parent="1">
+                    <mxGeometry x="780" y="1880" width="280" height="120" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>

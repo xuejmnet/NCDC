@@ -14,15 +14,11 @@ namespace ShardingConnector.ParserEngine.Core.Parser
     * @Ver: 1.0
     * @Email: 326308290@qq.com
     */
-    public sealed class SqlParserFactory
+    public static class SqlParserFactory
     {
         static SqlParserFactory()
         {
             NewInstanceServiceLoader.Register<ISqlParserConfiguration>();
-        }
-
-        private SqlParserFactory()
-        {
         }
 
         public static ISqlParser NewInstance(string dataSourceName, string sql)

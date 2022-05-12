@@ -18,7 +18,7 @@ namespace ShardingConnector.ShardingRoute.Engine.Validator.Impl
     * @Ver: 1.0
     * @Email: 326308290@qq.com
     */
-    public sealed class ShardingInsertCommandValidator: IShardingStatementValidator<InsertCommand>
+    public sealed class ShardingInsertCommandValidator: IShardingCommandValidator<InsertCommand>
     {
         public void Validate(ShardingRule shardingRule, InsertCommand sqlCommand, List<object> parameters)
         {
