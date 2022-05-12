@@ -22,7 +22,7 @@ namespace ShardingConnector.CommandParser.Extensions
         {
 
             var parameter = parameters.Select(o => (DbParameter)o).FirstOrDefault(o => o.ParameterName.Equals(parameterMarkerExpressionSegment.GetParameterName()));
-            ShardingAssert.CantBeNull(parameter, $"Sharding value cant find parameter name ;[{parameterMarkerExpressionSegment.GetParameterName()}].");
+            ShardingAssert.CantBeNull(parameter, $"Sharding value cant find parameter name :[{parameterMarkerExpressionSegment.GetParameterName()}].");
             return parameter.Value;
         }
     }

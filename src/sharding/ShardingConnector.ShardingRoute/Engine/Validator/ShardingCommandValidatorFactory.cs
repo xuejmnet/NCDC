@@ -15,19 +15,17 @@ namespace ShardingConnector.ShardingRoute.Engine.Validator
     * @Ver: 1.0
     * @Email: 326308290@qq.com
     */
-    public sealed class ShardingStatementValidatorFactory
+    public static class ShardingCommandValidatorFactory
     {
-        private ShardingStatementValidatorFactory()
-        {
-
-        }
-        public static IShardingStatementValidator NewInstance(ISqlCommand sqlCommand)
+        private static readonly IShardingCommandValidator ShardingInsertCommandValidator = new ShardingInsertCommandValidator();
+        private static readonly IShardingCommandValidator ShardingUpdateCommandValidator = new ShardingUpdateCommandValidator();
+        public static IShardingCommandValidator NewInstance(ISqlCommand sqlCommand)
         {
             if (sqlCommand is InsertCommand) {
-                return new ShardingInsertCommandValidator();
+                return ShardingInsertCommandValidator;
             }
             if (sqlCommand is UpdateCommand) {
-                return new ShardingUpdateCommandValidator();
+                return ShardingUpdateCommandValidator;
             }
             return null;
         }

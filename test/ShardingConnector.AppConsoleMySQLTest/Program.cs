@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Antlr4.Runtime.Tree;
 using MySqlConnector;
+using ShardingConnector.AdoNet.AdoNet.Core;
 using ShardingConnector.AdoNet.AdoNet.Core.DataSource;
 using ShardingConnector.AdoNet.Api;
 using ShardingConnector.CommandParser.Command;
@@ -42,12 +43,27 @@ namespace ShardingConnector.AppConsoleMySQLTest
             shardingRuleConfig.DefaultDatabaseShardingStrategyConfig = new NoneShardingStrategyConfiguration();
             //2.7、配置默认数据源
             shardingRuleConfig.DefaultDataSourceName = "ds0";
-
             var dataSource = ShardingDataSourceFactory.CreateDataSource(dataSourceMap, shardingRuleConfig, new Dictionary<string, object>());
+            Delete(dataSource);
             Insert(dataSource);
-            //Query(dataSource);
+            Query(dataSource);
         }
 
+        static void Delete(IDataSource dataSource)
+        {
+            var dbConnection = dataSource.GetDbConnection();
+
+            var dbCommand = dbConnection.CreateCommand();
+            dbCommand.CommandText = @"delete from  SysUserMod where id = @id";
+            var dbParameter = dbCommand.CreateParameter();
+            dbParameter.ParameterName = "@id";
+            dbParameter.Value = "2000";
+            dbCommand.Parameters.Add(dbParameter);
+            //dbCommand.CommandText = @"select [d].[Id],[d].[Name],[d].[Age] from [dbo].[SysUserMod] as [d] where id='1'  order by [d].[Age] desc";
+            var i = dbCommand.ExecuteNonQuery();
+            Console.WriteLine($"effect rows:{i}");
+            Console.WriteLine("Hello World!");
+        }
         static void Insert(IDataSource dataSource)
         {
             var dbConnection = dataSource.GetDbConnection();

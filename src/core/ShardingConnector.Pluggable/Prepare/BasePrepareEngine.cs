@@ -76,7 +76,7 @@ namespace ShardingConnector.Pluggable.Prepare
         /// </summary>
         private void RegisterRouteDecorator()
         {
-            var registeredOrderedAware = OrderedRegistry.GetRegisteredOrderedAware(typeof(IRouteDecorator));
+            var registeredOrderedAware = OrderedRegistry.GetRegisteredOrderedAware<IRouteDecorator>();
             foreach (var routeDecorator in registeredOrderedAware)
             {
                 var decorator = CreateRouteDecorator(routeDecorator.GetType());
