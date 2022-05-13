@@ -59,6 +59,20 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Command
             }
         }
 
+        public override  Task<int> ExecuteNonQueryAsync(CancellationToken cancellationToken)
+        {
+            try
+            {
+                executionContext = Prepare(CommandText);
+                var executeNonQuery = _commandExecutor.ExecuteNonQuery();
+                return Task.FromResult(executeNonQuery);
+            }
+            finally
+            {
+                currentResultSet = null;
+            }
+        }
+
         public override object ExecuteScalar()
         {
             throw new NotImplementedException();
@@ -94,12 +108,27 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Command
         {
             return new ShardingParameter();
         }
-
-        public DbParameter CreateParameter() => this.CreateDbParameter();
+        public new DbParameter CreateParameter() => this.CreateDbParameter();
         private ShardingParameterCollection _parameters;
         protected override Task<DbDataReader> ExecuteDbDataReaderAsync(CommandBehavior behavior, CancellationToken cancellationToken)
         {
-            return base.ExecuteDbDataReaderAsync(behavior, cancellationToken);
+            if (string.IsNullOrWhiteSpace(this.CommandText))
+                throw new ShardingException("sql command text null or empty");
+
+            DbDataReader result;
+            try
+            {
+                executionContext = Prepare(CommandText);
+                List<IQueryEnumerator> queryResults = _commandExecutor.ExecuteQuery();
+                IMergedEnumerator mergedResult = MergeQuery(queryResults);
+                result = new ShardingDataReader(_commandExecutor.DbDataReaders, mergedResult, this, executionContext);
+            }
+            finally
+            {
+                currentResultSet = null;
+            }
+            currentResultSet = result;
+            return Task.FromResult<DbDataReader>(result);
         }
 
         protected override DbDataReader ExecuteDbDataReader(CommandBehavior behavior)
