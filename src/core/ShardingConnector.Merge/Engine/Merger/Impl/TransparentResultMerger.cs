@@ -20,9 +20,9 @@ namespace ShardingConnector.Merge.Engine.Merger.Impl
     */
     public sealed class TransparentResultMerger:IResultMerger
     {
-        public IMergedEnumerator Merge(List<IQueryEnumerator> queryEnumerators, ISqlCommandContext<ISqlCommand> sqlCommandContext, SchemaMetaData schemaMetaData)
+        public IMergedDataReader Merge(List<IQueryDataReader> queryEnumerators, ISqlCommandContext<ISqlCommand> sqlCommandContext, SchemaMetaData schemaMetaData)
         {
-            return new TransparentMergedEnumerator(queryEnumerators[0]);
+            return new TransparentMergedDataReader(queryEnumerators[0]);
         }
     }
 }

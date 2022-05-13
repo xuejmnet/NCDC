@@ -6,9 +6,8 @@ using Antlr4.Runtime;
 using ShardingConnector.AbstractParser;
 using ShardingConnector.AbstractParser.SqlParser;
 using ShardingConnector.ParserEngine.Core;
-using ShardingConnector.SqlServerParser;
 
-namespace ShardingConnector.MySQLParser.SqlParser
+namespace ShardingConnector.MySqlParser.SqlParser
 {
     /// <summary>
     /// 
@@ -16,13 +15,13 @@ namespace ShardingConnector.MySQLParser.SqlParser
     /// Author: xjm
     /// Created: 2022/5/10 8:08:30
     /// Email: 326308290@qq.com
-    public sealed class MySQLParser:MySQLCommandParser,ISqlParser
+    public sealed class MySqlParser:MySqlCommandParser,ISqlParser
     {
-        public MySQLParser(ITokenStream input) : base(input)
+        public MySqlParser(ITokenStream input) : base(input)
         {
         }
 
-        public MySQLParser(ITokenStream input, TextWriter output, TextWriter errorOutput) : base(input, output, errorOutput)
+        public MySqlParser(ITokenStream input, TextWriter output, TextWriter errorOutput) : base(input, output, errorOutput)
         {
         }
 

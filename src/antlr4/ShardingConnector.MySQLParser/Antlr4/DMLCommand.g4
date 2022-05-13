@@ -17,7 +17,7 @@
 
 grammar DMLCommand;
 
-import Symbol, Keyword, MySQLKeyword, Literals, BaseRule;
+import Symbol, Keyword, MySqlKeyword, Literals, BaseRule;
 
 insert
     : INSERT insertSpecification_ INTO? tableName partitionNames_? (insertValuesClause | setAssignmentsClause | insertSelectClause) onDuplicateKeyClause?

@@ -20,13 +20,13 @@ namespace ShardingConnector.Merge.Engine.Decorator
     */
     public sealed class TransparentResultDecorator:IResultDecorator
     {
-        public IMergedEnumerator Decorate(IQueryEnumerator queryResult, ISqlCommandContext<ISqlCommand> sqlCommandContext,
+        public IMergedDataReader Decorate(IQueryDataReader queryResult, ISqlCommandContext<ISqlCommand> sqlCommandContext,
             SchemaMetaData schemaMetaData)
         {
-            return new TransparentMergedEnumerator(queryResult);
+            return new TransparentMergedDataReader(queryResult);
         }
 
-        public IMergedEnumerator Decorate(IMergedEnumerator mergedResult, ISqlCommandContext<ISqlCommand> sqlCommandContext,
+        public IMergedDataReader Decorate(IMergedDataReader mergedResult, ISqlCommandContext<ISqlCommand> sqlCommandContext,
             SchemaMetaData schemaMetaData)
         {
             return mergedResult;

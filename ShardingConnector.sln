@@ -61,9 +61,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "orm", "orm", "{221F76CC-218
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShardingConnector.EFCore", "src\orm\ShardingConnector.EFCore\ShardingConnector.EFCore.csproj", "{B7CEBD52-D1E7-4801-A940-45BC3D0C48EE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShardingConnector.MySQLParser", "src\antlr4\ShardingConnector.MySQLParser\ShardingConnector.MySQLParser.csproj", "{E9893BD0-A7B4-4714-AB9D-42352C16E22E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShardingConnector.MySqlParser", "src\antlr4\ShardingConnector.MySqlParser\ShardingConnector.MySqlParser.csproj", "{E9893BD0-A7B4-4714-AB9D-42352C16E22E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShardingConnector.AppConsoleMySQLTest", "test\ShardingConnector.AppConsoleMySQLTest\ShardingConnector.AppConsoleMySQLTest.csproj", "{0D276528-EC51-43F9-877B-9EFE3E75DE41}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShardingConnector.AppConsoleMySQLTest", "test\ShardingConnector.AppConsoleMySQLTest\ShardingConnector.AppConsoleMySQLTest.csproj", "{0D276528-EC51-43F9-877B-9EFE3E75DE41}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-grammar MySQLCommand;
+grammar MySqlCommand;
 
 import Symbol, Comments, DMLCommand, DDLCommand, TCLCommand, DCLCommand, DALCommand, RLCommand;
 

@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\antlr4\ShardingConnector.MySQLParser\ShardingConnector.MySQLParser.csproj" />
+    <ProjectReference Include="..\..\antlr4\ShardingConnector.MySqlParser\ShardingConnector.MySqlParser.csproj" />
     <ProjectReference Include="..\..\antlr4\ShardingConnector.SqlServerParser\ShardingConnector.SqlServerParser.csproj" />
     <ProjectReference Include="..\..\core\ShardingConnector.Pluggable\ShardingConnector.Pluggable.csproj" />
     <ProjectReference Include="..\..\sharding\ShardingConnector.ShardingCommon\ShardingConnector.ShardingCommon.csproj" />

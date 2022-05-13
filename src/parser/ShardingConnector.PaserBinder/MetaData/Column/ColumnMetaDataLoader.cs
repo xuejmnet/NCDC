@@ -86,7 +86,7 @@ namespace ShardingConnector.ParserBinder.MetaData.Column
             // TODO consider add a getDialectDelimeter() interface in parse module
             string delimiterLeft;
             string delimiterRight;
-            if ("MySQL".Equals(databaseType) || "MariaDB".Equals(databaseType))
+            if ("MySql".Equals(databaseType) || "MariaDB".Equals(databaseType))
             {
                 delimiterLeft = "`";
                 delimiterRight = "`";
@@ -106,7 +106,7 @@ namespace ShardingConnector.ParserBinder.MetaData.Column
 
         private static bool IsTableExist(DbConnection connection, string databaseType, string table)
         {
-            if ("MySQL".Equals(databaseType) || "MariaDB".Equals(databaseType))
+            if ("MySql".Equals(databaseType) || "MariaDB".Equals(databaseType))
             {
                 return MySQLIsTableExist(connection, table);
             }

@@ -4,7 +4,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data.Common;
-using ShardingConnector.Executor.Context;
+using System.Threading;
+using System.Threading.Tasks;
+using ExecutionContext = ShardingConnector.Executor.Context.ExecutionContext;
 
 namespace ShardingConnector.AdoNet.AdoNet.Core.DataReader
 {
@@ -20,31 +22,32 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.DataReader
     /// </summary>
     public class ShardingDataReader : AbstractDataReader
     {
-        private readonly IMergedEnumerator _mergedEnumerator;
-        private readonly IDictionary<string, int> _columnLabelAndIndexMap;
 
-        public ShardingDataReader(List<DbDataReader> dataReaders, IMergedEnumerator mergedEnumerator, DbCommand command,
+        private readonly IMergedDataReader _mergedDataReader;
+        //private readonly IDictionary<string, int> _columnLabelAndIndexMap;
+
+        public ShardingDataReader(List<DbDataReader> dataReaders, IMergedDataReader mergedDataReader, DbCommand command,
             ExecutionContext executionContext) : base(dataReaders, command, executionContext)
         {
-            _mergedEnumerator = mergedEnumerator;
-            _columnLabelAndIndexMap = CreateColumnLabelAndIndexMap(dataReaders[0]);
+            _mergedDataReader = mergedDataReader;
+            //_columnLabelAndIndexMap = CreateColumnLabelAndIndexMap(dataReaders[0]);
         }
 
-        private IDictionary<string, int> CreateColumnLabelAndIndexMap(DbDataReader dataReader)
-        {
-            IDictionary<string, int> result = new SortedDictionary<string, int>(StringComparer.OrdinalIgnoreCase);
-            for (int columnIndex = 0; columnIndex < dataReader.FieldCount; columnIndex++)
-            {
-                result.Add(dataReader.GetName(columnIndex), columnIndex);
-            }
+        //private IDictionary<string, int> CreateColumnLabelAndIndexMap(DbDataReader dataReader)
+        //{
+        //    IDictionary<string, int> result = new SortedDictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+        //    for (int columnIndex = 0; columnIndex < dataReader.FieldCount; columnIndex++)
+        //    {
+        //        result.Add(dataReader.GetName(columnIndex), columnIndex);
+        //    }
 
-            return result;
-        }
+        //    return result;
+        //}
         
 
         public override bool IsDBNull(int ordinal)
         {
-            return _mergedEnumerator.IsDBNull(ordinal);
+            return _mergedDataReader.IsDBNull(ordinal);
         }
         /// <summary>
         /// 读取下个结果集比如批处理返回多个结果集
@@ -58,27 +61,26 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.DataReader
 
         public override bool Read()
         {
-            return _mergedEnumerator.MoveNext();
+            return _mergedDataReader.Read();
         }
 
-        public override object this[int ordinal] => _mergedEnumerator.GetValue(ordinal);
+        public override object this[int ordinal] => _mergedDataReader.GetValue(ordinal);
 
         public override object this[string name] => GetValueByName(name);
 
         private object GetValueByName(string name)
         {
-            var columnLabelAndIndex = _columnLabelAndIndexMap[name];
-            return _mergedEnumerator.GetValue(columnLabelAndIndex);
+            return _mergedDataReader.GetValue(name);
         }
 
         public override bool GetBoolean(int ordinal)
         {
-            throw new NotImplementedException();
+            return _mergedDataReader.GetValue<bool>(ordinal);
         }
 
         public override byte GetByte(int ordinal)
         {
-            throw new NotImplementedException();
+            return _mergedDataReader.GetValue<byte>(ordinal);
         }
 
         public override long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length)
@@ -88,7 +90,7 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.DataReader
 
         public override char GetChar(int ordinal)
         {
-            throw new NotImplementedException();
+            return _mergedDataReader.GetValue<char>(ordinal);
         }
 
         public override long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length)
@@ -103,17 +105,17 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.DataReader
 
         public override DateTime GetDateTime(int ordinal)
         {
-            throw new NotImplementedException();
+            return _mergedDataReader.GetValue<DateTime>(ordinal);
         }
 
         public override decimal GetDecimal(int ordinal)
         {
-            throw new NotImplementedException();
+            return _mergedDataReader.GetValue<decimal>(ordinal);
         }
 
         public override double GetDouble(int ordinal)
         {
-            throw new NotImplementedException();
+            return _mergedDataReader.GetValue<double>(ordinal);
         }
 
         public override IEnumerator GetEnumerator()

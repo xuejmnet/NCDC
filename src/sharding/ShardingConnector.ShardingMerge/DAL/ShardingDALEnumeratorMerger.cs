@@ -33,19 +33,19 @@ namespace ShardingConnector.ShardingMerge.DAL
             this.shardingRule = shardingRule;
         }
 
-        public IMergedEnumerator Merge(List<IQueryEnumerator> queryEnumerators, ISqlCommandContext<ISqlCommand> sqlCommandContext, SchemaMetaData schemaMetaData)
+        public IMergedDataReader Merge(List<IQueryDataReader> queryEnumerators, ISqlCommandContext<ISqlCommand> sqlCommandContext, SchemaMetaData schemaMetaData)
         {
             var dalStatement = sqlCommandContext.GetSqlCommand();
             if (dalStatement is ShowDatabasesCommand showDatabasesCommand) {
-                return new SingleLocalDataMergedEnumerator(new List<object>(){ DefaultSchema.LOGIC_NAME });
+                return new SingleLocalDataMergedDataReader(new List<object>(){ DefaultSchema.LOGIC_NAME });
             }
             if (dalStatement is ShowTablesCommand || dalStatement is ShowTableStatusCommand || dalStatement is ShowIndexCommand) {
-                return new LogicTablesMergedEnumerator(shardingRule, schemaMetaData,sqlCommandContext, queryEnumerators);
+                return new LogicTablesMergedDataReader(shardingRule, schemaMetaData,sqlCommandContext, queryEnumerators);
             }
             if (dalStatement is ShowCreateTableCommand) {
-                return new ShowCreateTableMergedEnumerator(shardingRule,schemaMetaData, sqlCommandContext, queryEnumerators);
+                return new ShowCreateTableMergedDataReader(shardingRule,schemaMetaData, sqlCommandContext, queryEnumerators);
             }
-            return new TransparentMergedEnumerator(queryEnumerators[0]);
+            return new TransparentMergedDataReader(queryEnumerators[0]);
         }
     }
 }

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-lexer grammar MySQLKeyword;
+lexer grammar MySqlKeyword;
 
 import Alphabet;
 

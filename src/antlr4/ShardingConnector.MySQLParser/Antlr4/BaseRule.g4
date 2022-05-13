@@ -17,7 +17,7 @@
 
 grammar BaseRule;
 
-import Symbol, Keyword, MySQLKeyword, Literals;
+import Symbol, Keyword, MySqlKeyword, Literals;
 
 parameterMarker
     : AdoParameter

@@ -17,7 +17,7 @@
 
 grammar RLCommand;
 
-import Symbol, Keyword, MySQLKeyword, Literals, BaseRule;
+import Symbol, Keyword, MySqlKeyword, Literals, BaseRule;
 
 changeMasterTo
     : CHANGE MASTER TO (identifier EQ_ (identifier | ignoredIdentifiers_))+  (FOR CHANNEL identifier)?

@@ -5,7 +5,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
-using ShardingConnector.Executor.Context;
+using System.Threading;
+using System.Threading.Tasks;
+using ExecutionContext = ShardingConnector.Executor.Context.ExecutionContext;
 
 namespace ShardingConnector.AdoNet.AdoNet.Abstraction
 {
@@ -24,7 +26,7 @@ namespace ShardingConnector.AdoNet.AdoNet.Abstraction
     {
         private readonly List<DbDataReader> _dataReaders;
 
-        private readonly DbCommand statement;
+        private readonly DbCommand _command;
         private readonly ExecutionContext executionContext;
 
         private bool closed;
@@ -38,7 +40,7 @@ namespace ShardingConnector.AdoNet.AdoNet.Abstraction
             if (dataReaders.IsEmpty())
                 throw new ArgumentNullException(nameof(dataReaders));
             this._dataReaders = dataReaders;
-            this.statement = statement;
+            this._command = command;
             this.executionContext = executionContext;
         }
 
@@ -95,7 +97,7 @@ namespace ShardingConnector.AdoNet.AdoNet.Abstraction
 
         public abstract override object this[string name] { get; }
 
-        public override int RecordsAffected => _dataReaders[0].RecordsAffected;
+        public override int RecordsAffected => _dataReaders.Sum(o=>o.RecordsAffected);
 
         public override bool HasRows
         {

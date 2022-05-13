@@ -7,7 +7,6 @@ using ShardingConnector.AdoNet.AdoNet.Core.DataSource;
 using ShardingConnector.AdoNet.Api;
 using ShardingConnector.CommandParser.Command;
 using ShardingConnector.Executor.SqlLog;
-using ShardingConnector.MySQLParser.Visitor.Impl;
 using ShardingConnector.NewConnector.DataSource;
 using ShardingConnector.ParserEngine.Core.Parser;
 using ShardingConnector.ShardingApi.Api.Config.Sharding;

@@ -4,9 +4,8 @@ using System.IO;
 using System.Text;
 using Antlr4.Runtime;
 using ShardingConnector.AbstractParser.SqlLexer;
-using ShardingConnector.SqlServerParser;
 
-namespace ShardingConnector.MySQLParser.SqlLexer
+namespace ShardingConnector.MySqlParser.SqlLexer
 {
     /// <summary>
     /// 
@@ -14,13 +13,13 @@ namespace ShardingConnector.MySQLParser.SqlLexer
     /// Author: xjm
     /// Created: 2022/5/10 8:07:46
     /// Email: 326308290@qq.com
-    public sealed class MySQLLexer:MySQLCommandLexer, ISqlLexer
+    public sealed class MySqlLexer:MySqlCommandLexer, ISqlLexer
     {
-        public MySQLLexer(ICharStream input) : base(input)
+        public MySqlLexer(ICharStream input) : base(input)
         {
         }
 
-        public MySQLLexer(ICharStream input, TextWriter output, TextWriter errorOutput) : base(input, output, errorOutput)
+        public MySqlLexer(ICharStream input, TextWriter output, TextWriter errorOutput) : base(input, output, errorOutput)
         {
         }
     }

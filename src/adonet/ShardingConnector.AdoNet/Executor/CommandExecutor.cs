@@ -44,15 +44,15 @@ namespace ShardingConnector.AdoNet.Executor
      * @return result set list
      * @throws SQLException SQL exception
      */
-        public List<IQueryEnumerator> ExecuteQuery()
+        public List<IQueryDataReader> ExecuteQuery()
         {
             var isExceptionThrown = ExecutorExceptionHandler.IsThrowException();
-            SqlExecuteCallback<IQueryEnumerator> executeCallback = new SqlExecuteCallback<IQueryEnumerator>(DatabaseType, isExceptionThrown);
+            SqlExecuteCallback<IQueryDataReader> executeCallback = new SqlExecuteCallback<IQueryDataReader>(DatabaseType, isExceptionThrown);
             executeCallback.OnSqlExecute += GetQueryEnumerator;
             return ExecuteCallback(executeCallback);
         }
 
-        private IQueryEnumerator GetQueryEnumerator(string sql, DbCommand command, ConnectionModeEnum connectionMode)
+        private IQueryDataReader GetQueryEnumerator(string sql, DbCommand command, ConnectionModeEnum connectionMode)
         {
             // DbDataReader resultSet = command.ExecuteReader(sql);
             // command.CommandText = sql;

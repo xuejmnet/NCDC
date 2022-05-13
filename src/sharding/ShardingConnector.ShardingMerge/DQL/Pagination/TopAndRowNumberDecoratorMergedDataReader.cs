@@ -11,7 +11,7 @@ namespace ShardingConnector.ShardingMerge.DQL.Pagination
 * @Date: Friday, 07 May 2021 22:14:58
 * @Email: 326308290@qq.com
 */
-    public sealed class TopAndRowNumberDecoratorMergedEnumerator : DecoratorMergedEnumerator
+    public sealed class TopAndRowNumberDecoratorMergedDataReader : DecoratorMergedDataReader
     {
         private readonly PaginationContext pagination;
 
@@ -19,7 +19,7 @@ namespace ShardingConnector.ShardingMerge.DQL.Pagination
 
         private long rowNumber;
 
-        public TopAndRowNumberDecoratorMergedEnumerator(IMergedEnumerator mergedEnumerator, PaginationContext pagination) : base(mergedEnumerator)
+        public TopAndRowNumberDecoratorMergedDataReader(IMergedDataReader mergedDataReader, PaginationContext pagination) : base(mergedDataReader)
         {
             this.pagination = pagination;
             skipAll = SkipOffset();
@@ -30,7 +30,7 @@ namespace ShardingConnector.ShardingMerge.DQL.Pagination
             long end = pagination.GetActualOffset();
             for (int i = 0; i < end; i++)
             {
-                if (!MergedEnumerator.MoveNext())
+                if (!MergedDataReader.Read())
                 {
                     return true;
                 }
@@ -40,7 +40,7 @@ namespace ShardingConnector.ShardingMerge.DQL.Pagination
             return false;
         }
 
-        public override bool MoveNext()
+        public override bool Read()
         {
             if (skipAll)
             {
@@ -49,10 +49,10 @@ namespace ShardingConnector.ShardingMerge.DQL.Pagination
 
             if (pagination.GetActualRowCount() == null)
             {
-                return MergedEnumerator.MoveNext();
+                return MergedDataReader.Read();
             }
 
-            return rowNumber++ <= pagination.GetActualRowCount() && MergedEnumerator.MoveNext();
+            return rowNumber++ <= pagination.GetActualRowCount() && MergedDataReader.Read();
         }
     }
 }

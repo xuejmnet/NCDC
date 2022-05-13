@@ -1,12 +1,12 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
 
 	<ItemGroup>
-		<Antlr4 Include="Antlr4\MySQLCommand.g4">
-			<Package>ShardingConnector.SqlServerParser</Package>
+		<Antlr4 Include="Antlr4\MySqlCommand.g4">
+			<Package>ShardingConnector.MySqlParser</Package>
 		</Antlr4>
 	</ItemGroup>
 

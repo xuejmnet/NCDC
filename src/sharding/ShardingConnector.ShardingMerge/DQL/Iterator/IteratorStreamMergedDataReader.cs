@@ -14,18 +14,18 @@ namespace ShardingConnector.ShardingMerge.DQL.Iterator
     * @Ver: 1.0
     * @Email: 326308290@qq.com
     */
-    public sealed class IteratorStreamMergedEnumerator:StreamMergedEnumerator
+    public sealed class IteratorStreamMergedDataReader:StreamMergedDataReader
     {
-        private readonly IEnumerator<IQueryEnumerator> _queryEnumerator;
+        private readonly IEnumerator<IQueryDataReader> _queryEnumerator;
 
-        public IteratorStreamMergedEnumerator( List<IQueryEnumerator> queryResults)
+        public IteratorStreamMergedDataReader( List<IQueryDataReader> queryResults)
         {
             this._queryEnumerator = queryResults.GetEnumerator();
             SetCurrentQueryEnumerator(this._queryEnumerator.Next());
         }
-        public override bool MoveNext()
+        public override bool Read()
         {
-            if (GetCurrentQueryEnumerator().MoveNext())
+            if (GetCurrentQueryDataReader().Read())
             {
                 return true;
             }
@@ -34,7 +34,7 @@ namespace ShardingConnector.ShardingMerge.DQL.Iterator
                 return false;
             }
             SetCurrentQueryEnumerator(_queryEnumerator.Current);
-            var hasNext = GetCurrentQueryEnumerator().MoveNext();
+            var hasNext = GetCurrentQueryDataReader().Read();
             if (hasNext)
             {
                 return true;
@@ -42,7 +42,7 @@ namespace ShardingConnector.ShardingMerge.DQL.Iterator
             while (!hasNext && _queryEnumerator.MoveNext())
             {
                 SetCurrentQueryEnumerator(_queryEnumerator.Current);
-                hasNext = GetCurrentQueryEnumerator().MoveNext();
+                hasNext = GetCurrentQueryDataReader().Read();
             }
             return hasNext;
         }

@@ -17,7 +17,7 @@
 
 grammar DCLCommand;
 
-import Symbol, Keyword, MySQLKeyword, Literals, BaseRule;
+import Symbol, Keyword, MySqlKeyword, Literals, BaseRule;
 
 grant
     : GRANT (proxyClause_ | privilegeClause | roleClause_)

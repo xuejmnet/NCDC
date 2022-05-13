@@ -17,9 +17,9 @@ namespace ShardingConnector.ShardingMerge.DAL.Show
 * @Date: Wednesday, 05 May 2021 20:22:04
 * @Email: 326308290@qq.com
 */
-    public sealed class ShowCreateTableMergedEnumerator:LogicTablesMergedEnumerator
+    public sealed class ShowCreateTableMergedDataReader:LogicTablesMergedDataReader
     {
-        public ShowCreateTableMergedEnumerator(ShardingRule rule, SchemaMetaData schemaMetaData, ISqlCommandContext<ISqlCommand> sqlCommandContext, List<IQueryEnumerator> queryEnumerators) : base(rule, schemaMetaData, sqlCommandContext, queryEnumerators)
+        public ShowCreateTableMergedDataReader(ShardingRule rule, SchemaMetaData schemaMetaData, ISqlCommandContext<ISqlCommand> sqlCommandContext, List<IQueryDataReader> queryDataReaders) : base(rule, schemaMetaData, sqlCommandContext, queryDataReaders)
         {
         }
 

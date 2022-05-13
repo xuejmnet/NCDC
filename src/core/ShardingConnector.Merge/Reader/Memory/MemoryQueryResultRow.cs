@@ -1,4 +1,5 @@
-﻿using ShardingConnector.Exceptions;
+﻿using System.Collections.Generic;
+using ShardingConnector.Exceptions;
 using ShardingConnector.Executor;
 
 namespace ShardingConnector.Merge.Reader.Memory
@@ -16,65 +17,91 @@ namespace ShardingConnector.Merge.Reader.Memory
     /// </summary>
     public sealed class MemoryQueryResultRow
     {
-        private readonly object[] data;
+        private readonly object[] _data;
+        private readonly Dictionary<string,int> _columns;
 
-        public MemoryQueryResultRow(IQueryEnumerator queryEnumerator)
+        public MemoryQueryResultRow(IQueryDataReader queryDataReader)
         {
-            data = Load(queryEnumerator);
+            var (data,columns) = Load(queryDataReader);
+            _data = data;
+            _columns = columns;
         }
 
-        private object[] Load(IQueryEnumerator queryEnumerator)
+        private (object[] data, Dictionary<string, int> columns) Load(IQueryDataReader queryDataReader)
         {
-            int columnCount = queryEnumerator.ColumnCount;
+            int columnCount = queryDataReader.ColumnCount;
             object[] result = new object[columnCount];
+            var columns = new Dictionary<string, int>(columnCount);
             for (int i = 0; i < columnCount; i++)
             {
-                result[i] = queryEnumerator.GetValue(i);
+                result[i] = queryDataReader.GetValue(i);
+                var columnName = queryDataReader.GetColumnName(i);
+                columns[columnName] = i;
             }
 
-            return result;
+            return (result, columns);
         }
 
         /**
-         * Get data from cell.
+         * Get _data from cell.
          * 
          * @param columnIndex column index
-         * @return data from cell
+         * @return _data from cell
          */
         public object GetCell(int columnIndex)
         {
-            if (columnIndex <= 0 || columnIndex >= (data.Length + 1))
+            if (columnIndex < 0 || columnIndex >= _data.Length)
             {
                 throw new ShardingException($"Get Cell {columnIndex}");
             }
 
-            return data[columnIndex - 1];
+            return _data[columnIndex];
+        }
+        public object GetCell(string columnName)
+        {
+            if (!_columns.ContainsKey(columnName))
+            {
+                throw new ShardingException($"Get Cell {columnName}");
+            }
+
+            var columnIndex = _columns[columnName];
+            return _data[columnIndex];
         }
 
         /**
-         * Set data for cell.
+         * Set _data for cell.
          *
          * @param columnIndex column index
-         * @param value data for cell
+         * @param value _data for cell
          */
         public void SetCell(int columnIndex, object value)
         {
-            if (columnIndex <= 0 || columnIndex >= (data.Length + 1))
+            if (columnIndex < 0 || columnIndex >= _data.Length)
             {
                 throw new ShardingException($"Set Cell {columnIndex}");
             }
 
-            data[columnIndex - 1] = value;
+            _data[columnIndex] = value;
+        }
+        public void SetCell(string columnName, object value)
+        {
+            if (!_columns.ContainsKey(columnName))
+            {
+                throw new ShardingException($"Set Cell {columnName}");
+            }
+
+            var columnIndex = _columns[columnName];
+            _data[columnIndex] = value;
         }
 
         public bool IsDBNull(int columnIndex)
         {
-            if (columnIndex <= 0 || columnIndex >= (data.Length + 1))
+            if (columnIndex < 0 || columnIndex >= _data.Length)
             {
                 throw new ShardingException($"Get Cell {columnIndex}");
             }
 
-            return null==data[columnIndex];
+            return null==_data[columnIndex];
         }
     }
 }

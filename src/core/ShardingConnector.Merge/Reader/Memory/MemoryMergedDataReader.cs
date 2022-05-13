@@ -19,18 +19,18 @@ namespace ShardingConnector.Merge.Reader.Memory
     /// <summary>
     /// 
     /// </summary>
-    public abstract class MemoryMergedEnumerator<T> : IMergedEnumerator where T : IBaseRule
+    public abstract class MemoryMergedDataReader<T> : IMergedDataReader where T : IBaseRule
     {
         private readonly IEnumerator<MemoryQueryResultRow> _memoryResultSetRows;
 
         private MemoryQueryResultRow _currentSetResultRow;
 
 
-        protected MemoryMergedEnumerator(T rule, SchemaMetaData schemaMetaData,
-            ISqlCommandContext<ISqlCommand> sqlCommandContext, List<IQueryEnumerator> queryEnumerators)
+        protected MemoryMergedDataReader(T rule, SchemaMetaData schemaMetaData,
+            ISqlCommandContext<ISqlCommand> sqlCommandContext, List<IQueryDataReader> queryDataReaders)
         {
             // ReSharper disable once VirtualMemberCallInConstructor
-            var memoryQueryResultRowList = Init(rule, schemaMetaData, sqlCommandContext, queryEnumerators);
+            var memoryQueryResultRowList = Init(rule, schemaMetaData, sqlCommandContext, queryDataReaders);
             _memoryResultSetRows = memoryQueryResultRowList.GetEnumerator();
             if (memoryQueryResultRowList.Any())
             {
@@ -39,9 +39,9 @@ namespace ShardingConnector.Merge.Reader.Memory
         }
 
         protected abstract List<MemoryQueryResultRow> Init(T rule, SchemaMetaData schemaMetaData,
-            ISqlCommandContext<ISqlCommand> sqlCommandContext, List<IQueryEnumerator> queryEnumerators);
+            ISqlCommandContext<ISqlCommand> sqlCommandContext, List<IQueryDataReader> queryEnumerators);
 
-        public bool MoveNext()
+        public bool Read()
         {
             if (_memoryResultSetRows.MoveNext())
             {
@@ -64,10 +64,34 @@ namespace ShardingConnector.Merge.Reader.Memory
             return (T1)result;
         }
 
+        public object GetValue(string columnName)
+        {
+            return _currentSetResultRow.GetCell(columnName);
+        }
+
+        public T1 GetValue<T1>(string columnName)
+        {
+            return (T1)_currentSetResultRow.GetCell(columnName);
+        }
+
+        public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length)
+        {
+            throw new System.NotImplementedException();
+        }
+
         public bool IsDBNull(int columnIndex)
         {
             return _currentSetResultRow.IsDBNull(columnIndex);
         }
 
+        public bool NextResult()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

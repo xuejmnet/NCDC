@@ -28,7 +28,7 @@ namespace ShardingConnector.ParserBinder.MetaData.Index
      */
         public static ICollection<IndexMetaData> Load(DbConnection connection, string table, string databaseType)
         {
-            if ("MySQL".Equals(databaseType) || "MariaDB".Equals(databaseType))
+            if ("MySql".Equals(databaseType) || "MariaDB".Equals(databaseType))
             {
                 return LoadMySQL(connection, table);
             }

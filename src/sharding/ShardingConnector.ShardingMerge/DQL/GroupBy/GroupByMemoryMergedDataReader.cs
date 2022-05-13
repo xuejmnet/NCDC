@@ -26,13 +26,13 @@ namespace ShardingConnector.ShardingMerge.DQL.GroupBy
     * @Date: Friday, 07 May 2021 22:37:22
     * @Email: 326308290@qq.com
     */
-    public sealed class GroupByMemoryMergedEnumerator : MemoryMergedEnumerator<ShardingRule>
+    public sealed class GroupByMemoryMergedDataReader : MemoryMergedDataReader<ShardingRule>
     {
-        public GroupByMemoryMergedEnumerator(List<IQueryEnumerator> queryEnumerators, SelectCommandContext sqlCommandContext, SchemaMetaData schemaMetaData) : base(null, schemaMetaData, sqlCommandContext, queryEnumerators)
+        public GroupByMemoryMergedDataReader(List<IQueryDataReader> queryDataReaders, SelectCommandContext sqlCommandContext, SchemaMetaData schemaMetaData) : base(null, schemaMetaData, sqlCommandContext, queryDataReaders)
         {
         }
 
-        protected override List<MemoryQueryResultRow> Init(ShardingRule rule, SchemaMetaData schemaMetaData, ISqlCommandContext<ISqlCommand> sqlCommandContext, List<IQueryEnumerator> queryEnumerators)
+        protected override List<MemoryQueryResultRow> Init(ShardingRule rule, SchemaMetaData schemaMetaData, ISqlCommandContext<ISqlCommand> sqlCommandContext, List<IQueryDataReader> queryEnumerators)
         {
             var selectCommandContext = (SelectCommandContext)sqlCommandContext;
             IDictionary<GroupByValue, MemoryQueryResultRow> dataMap = new Dictionary<GroupByValue, MemoryQueryResultRow>(1024);
@@ -41,7 +41,7 @@ namespace ShardingConnector.ShardingMerge.DQL.GroupBy
 
             foreach (var queryEnumerator in queryEnumerators)
             {
-                while (queryEnumerator.MoveNext())
+                while (queryEnumerator.Read())
                 {
                     GroupByValue groupByValue = new GroupByValue(queryEnumerator, selectCommandContext.GetGroupByContext().GetItems());
                     InitForFirstGroupByValue(selectCommandContext, queryEnumerator, groupByValue, dataMap, aggregationMap);
@@ -53,7 +53,7 @@ namespace ShardingConnector.ShardingMerge.DQL.GroupBy
             return GetMemoryResultSetRows(selectCommandContext, dataMap, valueCaseSensitive);
         }
 
-        private void InitForFirstGroupByValue(SelectCommandContext selectCommandContext, IQueryEnumerator queryResult,
+        private void InitForFirstGroupByValue(SelectCommandContext selectCommandContext, IQueryDataReader queryResult,
          GroupByValue groupByValue, IDictionary<GroupByValue, MemoryQueryResultRow> dataMap,
          IDictionary<GroupByValue, IDictionary<AggregationProjection, IAggregationUnit>> aggregationMap)
         {
@@ -71,7 +71,7 @@ namespace ShardingConnector.ShardingMerge.DQL.GroupBy
             }
         }
 
-        private void Aggregate(SelectCommandContext selectCommandContext, IQueryEnumerator queryEnumerator,
+        private void Aggregate(SelectCommandContext selectCommandContext, IQueryDataReader queryDataReader,
          GroupByValue groupByValue, IDictionary<GroupByValue, IDictionary<AggregationProjection, IAggregationUnit>> aggregationMap)
         {
 
@@ -81,13 +81,13 @@ namespace ShardingConnector.ShardingMerge.DQL.GroupBy
                 List<IComparable> values = new List<IComparable>(2);
                 if (aggregationProjection.GetDerivedAggregationProjections().IsEmpty())
                 {
-                    values.Add(GetAggregationValue(queryEnumerator, aggregationProjection));
+                    values.Add(GetAggregationValue(queryDataReader, aggregationProjection));
                 }
                 else
                 {
                     foreach (var derived in aggregationProjection.GetDerivedAggregationProjections())
                     {
-                        values.Add(GetAggregationValue(queryEnumerator, derived));
+                        values.Add(GetAggregationValue(queryDataReader, derived));
                     }
                 }
 
@@ -95,7 +95,7 @@ namespace ShardingConnector.ShardingMerge.DQL.GroupBy
             }
         }
 
-        private IComparable GetAggregationValue(IQueryEnumerator queryResult, AggregationProjection aggregationProjection)
+        private IComparable GetAggregationValue(IQueryDataReader queryResult, AggregationProjection aggregationProjection)
         {
             object result = queryResult.GetValue(aggregationProjection.GetIndex());
             ShardingAssert.Else(null == result || result is IComparable, "Aggregation value must implements Comparable");
@@ -115,21 +115,21 @@ namespace ShardingConnector.ShardingMerge.DQL.GroupBy
             }
         }
 
-        private List<bool> GetValueCaseSensitive(IQueryEnumerator queryEnumerator, SelectCommandContext selectCommandContext, SchemaMetaData schemaMetaData)
+        private List<bool> GetValueCaseSensitive(IQueryDataReader queryDataReader, SelectCommandContext selectCommandContext, SchemaMetaData schemaMetaData)
         {
-            List<bool> result = new List<bool>(queryEnumerator.ColumnCount + 1)
+            List<bool> result = new List<bool>(queryDataReader.ColumnCount + 1)
             {
                 false
             };
-            for (int columnIndex = 1; columnIndex <= queryEnumerator.ColumnCount; columnIndex++)
+            for (int columnIndex = 1; columnIndex <= queryDataReader.ColumnCount; columnIndex++)
             {
-                result.Add(GetValueCaseSensitiveFromTables(queryEnumerator, selectCommandContext, schemaMetaData, columnIndex));
+                result.Add(GetValueCaseSensitiveFromTables(queryDataReader, selectCommandContext, schemaMetaData, columnIndex));
             }
 
             return result;
         }
 
-        private bool GetValueCaseSensitiveFromTables(IQueryEnumerator queryEnumerator, SelectCommandContext selectCommandContext,
+        private bool GetValueCaseSensitiveFromTables(IQueryDataReader queryDataReader, SelectCommandContext selectCommandContext,
             SchemaMetaData schemaMetaData, int columnIndex)
         {
             foreach (var simpleTableSegment in selectCommandContext.GetAllTables())
@@ -137,7 +137,7 @@ namespace ShardingConnector.ShardingMerge.DQL.GroupBy
                 String tableName = simpleTableSegment.GetTableName().GetIdentifier().GetValue();
                 TableMetaData tableMetaData = schemaMetaData.Get(tableName);
                 IDictionary<String, ColumnMetaData> columns = tableMetaData.GetColumns();
-                String columnName = queryEnumerator.GetColumnName(columnIndex);
+                String columnName = queryDataReader.GetColumnName(columnIndex);
                 if (columns.ContainsKey(columnName))
                 {
                     return columns[columnName].CaseSensitive;

@@ -17,7 +17,7 @@ namespace ShardingConnector.ShardingMerge.DQL.OrderBy
     * @Ver: 1.0
     * @Email: 326308290@qq.com
     */
-    public class OrderByStreamMergedEnumerator : StreamMergedEnumerator
+    public class OrderByStreamMergedDataReader : StreamMergedDataReader
     {
         protected ICollection<OrderByItem> OrderByItems { get; }
 
@@ -25,7 +25,7 @@ namespace ShardingConnector.ShardingMerge.DQL.OrderBy
 
         protected bool IsFirstNext { get; set; }
 
-        public OrderByStreamMergedEnumerator(List<IQueryEnumerator> queryResults, SelectCommandContext selectCommandContext, SchemaMetaData schemaMetaData)
+        public OrderByStreamMergedDataReader(List<IQueryDataReader> queryResults, SelectCommandContext selectCommandContext, SchemaMetaData schemaMetaData)
         {
             this.OrderByItems = selectCommandContext.GetOrderByContext().GetItems();
             this.OrderByValuesQueue = new PriorityQueue<OrderByValue>(queryResults.Count);
@@ -33,7 +33,7 @@ namespace ShardingConnector.ShardingMerge.DQL.OrderBy
             IsFirstNext = true;
         }
 
-        private void OrderResultSetsToQueue(List<IQueryEnumerator> queryResults, SelectCommandContext selectCommandContext, SchemaMetaData schemaMetaData)
+        private void OrderResultSetsToQueue(List<IQueryDataReader> queryResults, SelectCommandContext selectCommandContext, SchemaMetaData schemaMetaData)
         {
             foreach (var queryResult in queryResults)
             {
@@ -47,7 +47,7 @@ namespace ShardingConnector.ShardingMerge.DQL.OrderBy
             SetCurrentQueryEnumerator(OrderByValuesQueue.IsEmpty() ? queryResults[0] : OrderByValuesQueue.Peek().GetQueryEnumerator());
         }
 
-        public override bool MoveNext()
+        public override bool Read()
         {
             if (OrderByValuesQueue.IsEmpty())
             {

@@ -17,7 +17,7 @@
 
 grammar DALCommand;
 
-import Symbol, Keyword, MySQLKeyword, Literals, BaseRule;
+import Symbol, Keyword, MySqlKeyword, Literals, BaseRule;
 
 use
     : USE schemaName

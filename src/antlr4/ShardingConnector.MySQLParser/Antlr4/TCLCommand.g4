@@ -17,7 +17,7 @@
 
 grammar TCLCommand;
 
-import Symbol, Keyword, MySQLKeyword, Literals, BaseRule;
+import Symbol, Keyword, MySqlKeyword, Literals, BaseRule;
 
 setTransaction
     : SET scope_? TRANSACTION

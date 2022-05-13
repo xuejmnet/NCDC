@@ -57,10 +57,10 @@ namespace ShardingConnector.Merge
          * @return merged result
          * @throws SQLException SQL exception
          */
-        public IMergedEnumerator Process(List<IQueryEnumerator> queryResults, ISqlCommandContext<ISqlCommand> sqlCommandContext)
+        public IMergedDataReader Process(List<IQueryDataReader> queryResults, ISqlCommandContext<ISqlCommand> sqlCommandContext)
         {
             var mergedResult = Merge(queryResults, sqlCommandContext);
-            IMergedEnumerator result = null;
+            IMergedDataReader result = null;
             if (mergedResult != null)
             {
                  result = Decorate(mergedResult, sqlCommandContext);
@@ -69,10 +69,10 @@ namespace ShardingConnector.Merge
             {
                 result = Decorate(queryResults[0], sqlCommandContext);
             }
-            return result??new TransparentMergedEnumerator(queryResults[0]);
+            return result??new TransparentMergedDataReader(queryResults[0]);
         }
 
-        private IMergedEnumerator Merge(List<IQueryEnumerator> queryResults, ISqlCommandContext<ISqlCommand> sqlCommandContext)
+        private IMergedDataReader Merge(List<IQueryDataReader> queryResults, ISqlCommandContext<ISqlCommand> sqlCommandContext)
         {
             foreach (var engineEntry in engines)
             {
@@ -86,9 +86,9 @@ namespace ShardingConnector.Merge
             return null;
         }
 
-        private IMergedEnumerator Decorate(IMergedEnumerator mergedResult, ISqlCommandContext<ISqlCommand> sqlCommandContext)
+        private IMergedDataReader Decorate(IMergedDataReader mergedResult, ISqlCommandContext<ISqlCommand> sqlCommandContext)
         {
-            IMergedEnumerator result = null;
+            IMergedDataReader result = null;
             foreach (var engineEntry in engines)
             {
                 if (engineEntry.Key is IResultDecoratorEngine<IBaseRule> resultDecoratorEngine)
@@ -101,9 +101,9 @@ namespace ShardingConnector.Merge
             return result ?? mergedResult;
         }
 
-        private IMergedEnumerator Decorate(IQueryEnumerator queryResult, ISqlCommandContext<ISqlCommand> sqlCommandContext)
+        private IMergedDataReader Decorate(IQueryDataReader queryResult, ISqlCommandContext<ISqlCommand> sqlCommandContext)
         {
-            IMergedEnumerator result = null;
+            IMergedDataReader result = null;
             foreach (var engineEntry in engines)
             {
                 if (engineEntry.Value is IResultDecoratorEngine<IBaseRule> resultDecoratorEngine)

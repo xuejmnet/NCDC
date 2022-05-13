@@ -25,6 +25,6 @@ namespace ShardingConnector.Spi.DataBase.DataBaseType.DataBaseDiscover
             return dbConnectionFullNames.Contains(type.FullName);
         }
 
-        public string DataBaseTypeName => "MySQL";
+        public string DataBaseTypeName => "MySql";
     }
 }

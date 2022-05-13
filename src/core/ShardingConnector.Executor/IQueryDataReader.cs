@@ -10,14 +10,19 @@
     /// <summary>
     /// 
     /// </summary>
-    public interface IQueryEnumerator
+    public interface IQueryDataReader
     {
-        bool MoveNext();
+        bool Read();
         object GetValue(int columnIndex);
         T GetValue<T>(int columnIndex);
+        object GetValue(string columnName);
+        T GetValue<T>(string columnName);
         int ColumnCount { get; }
         string GetColumnName(int columnIndex);
         string GetColumnLabel(int columnIndex);
         bool IsDBNull(int columnIndex);
+        long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length);
+        long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length);
+        bool NextResult();
     }
 }

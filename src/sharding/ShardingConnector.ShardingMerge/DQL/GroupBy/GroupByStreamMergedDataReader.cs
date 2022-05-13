@@ -19,23 +19,23 @@ namespace ShardingConnector.ShardingMerge.DQL.GroupBy
     * @Date: Wednesday, 05 May 2021 21:42:19
     * @Email: 326308290@qq.com
     */
-    public sealed class GroupByStreamMergedEnumerator : OrderByStreamMergedEnumerator
+    public sealed class GroupByStreamMergedDataReader : OrderByStreamMergedDataReader
     {
         private readonly SelectCommandContext _selectCommandContext;
 
         private readonly List<object> _currentRow;
 
         private List<object> _currentGroupByValues;
-        public GroupByStreamMergedEnumerator(IDictionary<string, int> labelAndIndexMap, List<IQueryEnumerator> queryResults, SelectCommandContext selectCommandContext, SchemaMetaData schemaMetaData) : base(queryResults, selectCommandContext, schemaMetaData)
+        public GroupByStreamMergedDataReader(IDictionary<string, int> labelAndIndexMap, List<IQueryDataReader> queryResults, SelectCommandContext selectCommandContext, SchemaMetaData schemaMetaData) : base(queryResults, selectCommandContext, schemaMetaData)
         {
             this._selectCommandContext = selectCommandContext;
             _currentRow = new List<object>(labelAndIndexMap.Count);
             _currentGroupByValues = OrderByValuesQueue.IsEmpty()
-                ? new List<object>(0) : new GroupByValue(GetCurrentQueryEnumerator(), selectCommandContext.GetGroupByContext().GetItems()).GetGroupValues();
+                ? new List<object>(0) : new GroupByValue(GetCurrentQueryDataReader(), selectCommandContext.GetGroupByContext().GetItems()).GetGroupValues();
 
         }
 
-        public override bool MoveNext()
+        public override bool Read()
         {
             _currentRow.Clear();
             if (OrderByValuesQueue.IsEmpty())
@@ -44,11 +44,11 @@ namespace ShardingConnector.ShardingMerge.DQL.GroupBy
             }
             if (IsFirstNext)
             {
-                base.MoveNext();
+                base.Read();
             }
             if (AggregateCurrentGroupByRowAndNext())
             {
-                _currentGroupByValues = new GroupByValue(GetCurrentQueryEnumerator(), _selectCommandContext.GetGroupByContext().GetItems()).GetGroupValues();
+                _currentGroupByValues = new GroupByValue(GetCurrentQueryDataReader(), _selectCommandContext.GetGroupByContext().GetItems()).GetGroupValues();
             }
             return true;
         }
@@ -59,11 +59,11 @@ namespace ShardingConnector.ShardingMerge.DQL.GroupBy
             IDictionary<AggregationProjection, IAggregationUnit> aggregationUnitMap =
                 _selectCommandContext.GetProjectionsContext().GetAggregationProjections().ToDictionary(o => o,
                     o => AggregationUnitFactory.Create(o.GetAggregationType(), o is AggregationDistinctProjection));
-            while (_currentGroupByValues.Equals(new GroupByValue(GetCurrentQueryEnumerator(), _selectCommandContext.GetGroupByContext().GetItems()).GetGroupValues()))
+            while (_currentGroupByValues.Equals(new GroupByValue(GetCurrentQueryDataReader(), _selectCommandContext.GetGroupByContext().GetItems()).GetGroupValues()))
             {
                 Aggregate(aggregationUnitMap);
                 CacheCurrentRow();
-                result = base.MoveNext();
+                result = base.Read();
                 if (!result)
                 {
                     break;
@@ -95,15 +95,15 @@ namespace ShardingConnector.ShardingMerge.DQL.GroupBy
 
         private void CacheCurrentRow()
         {
-            for (int i = 0; i < GetCurrentQueryEnumerator().ColumnCount; i++)
+            for (int i = 0; i < GetCurrentQueryDataReader().ColumnCount; i++)
             {
-                _currentRow.Add(GetCurrentQueryEnumerator().GetValue(i));
+                _currentRow.Add(GetCurrentQueryDataReader().GetValue(i));
             }
         }
 
         private IComparable GetAggregationValue(AggregationProjection aggregationProjection)
         {
-            object result = GetCurrentQueryEnumerator().GetValue(aggregationProjection.GetIndex());
+            object result = GetCurrentQueryDataReader().GetValue(aggregationProjection.GetIndex());
             ShardingAssert.Else(null == result || result is IComparable, "Aggregation value must implements Comparable");
             return (IComparable)result;
         }

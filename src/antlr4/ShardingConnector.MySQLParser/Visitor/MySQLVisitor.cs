@@ -28,9 +28,8 @@ using ShardingConnector.CommandParser.Value.KeyWord;
 using ShardingConnector.CommandParser.Value.Literal.Impl;
 using ShardingConnector.CommandParser.Value.ParameterMaker;
 using ShardingConnector.Exceptions;
-using ShardingConnector.SqlServerParser;
 
-namespace ShardingConnector.MySQLParser.Visitor
+namespace ShardingConnector.MySqlParser.Visitor
 {
     /// <summary>
     /// 
@@ -38,7 +37,7 @@ namespace ShardingConnector.MySQLParser.Visitor
     /// Author: xjm
     /// Created: 2022/5/10 8:09:26
     /// Email: 326308290@qq.com
-    public  class MySQLVisitor : MySQLCommandBaseVisitor<IASTNode>
+    public  class MySqlVisitor : MySqlCommandBaseVisitor<IASTNode>
     {
         private int _currentParameterIndex;
 
@@ -46,12 +45,12 @@ namespace ShardingConnector.MySQLParser.Visitor
         {
             return _currentParameterIndex;
         }
-        public override IASTNode VisitParameterMarker(MySQLCommandParser.ParameterMarkerContext context)
+        public override IASTNode VisitParameterMarker(MySqlCommandParser.ParameterMarkerContext context)
         {
             return new ParameterMarkerValue(_currentParameterIndex++);
         }
 
-        public override IASTNode VisitLiterals(MySQLCommandParser.LiteralsContext ctx)
+        public override IASTNode VisitLiterals(MySqlCommandParser.LiteralsContext ctx)
         {
             if (null != ctx.stringLiterals())
             {
@@ -84,67 +83,67 @@ namespace ShardingConnector.MySQLParser.Visitor
             throw new ShardingException("Literals must have string, number, dateTime, hex, bit, boolean or null.");
         }
 
-        public override IASTNode VisitStringLiterals(MySQLCommandParser.StringLiteralsContext ctx)
+        public override IASTNode VisitStringLiterals(MySqlCommandParser.StringLiteralsContext ctx)
         {
             return new StringLiteralValue(ctx.GetText());
         }
 
-        public override IASTNode VisitNumberLiterals(MySQLCommandParser.NumberLiteralsContext ctx)
+        public override IASTNode VisitNumberLiterals(MySqlCommandParser.NumberLiteralsContext ctx)
         {
             return new NumberLiteralValue(ctx.GetText());
         }
 
-        public override IASTNode VisitDateTimeLiterals(MySQLCommandParser.DateTimeLiteralsContext ctx)
+        public override IASTNode VisitDateTimeLiterals(MySqlCommandParser.DateTimeLiteralsContext ctx)
         {
             // TODO deal with dateTimeLiterals
             return new OtherLiteralValue(ctx.GetText());
         }
 
-        public override IASTNode VisitHexadecimalLiterals(MySQLCommandParser.HexadecimalLiteralsContext ctx)
+        public override IASTNode VisitHexadecimalLiterals(MySqlCommandParser.HexadecimalLiteralsContext ctx)
         {
             // TODO deal with hexadecimalLiterals
             return new OtherLiteralValue(ctx.GetText());
         }
 
 
-        public override IASTNode VisitBitValueLiterals(MySQLCommandParser.BitValueLiteralsContext ctx)
+        public override IASTNode VisitBitValueLiterals(MySqlCommandParser.BitValueLiteralsContext ctx)
         {
             // TODO deal with bitValueLiterals
             return new OtherLiteralValue(ctx.GetText());
         }
 
-        public override IASTNode VisitBooleanLiterals(MySQLCommandParser.BooleanLiteralsContext ctx)
+        public override IASTNode VisitBooleanLiterals(MySqlCommandParser.BooleanLiteralsContext ctx)
         {
             return new BooleanLiteralValue(ctx.GetText());
         }
 
-        public override IASTNode VisitNullValueLiterals(MySQLCommandParser.NullValueLiteralsContext ctx)
+        public override IASTNode VisitNullValueLiterals(MySqlCommandParser.NullValueLiteralsContext ctx)
         {
             // TODO deal with nullValueLiterals
             return new OtherLiteralValue(ctx.GetText());
         }
 
-        public override IASTNode VisitIdentifier(MySQLCommandParser.IdentifierContext ctx)
+        public override IASTNode VisitIdentifier(MySqlCommandParser.IdentifierContext ctx)
         {
-            MySQLCommandParser.UnreservedWordContext unreservedWord = ctx.unreservedWord();
+            MySqlCommandParser.UnreservedWordContext unreservedWord = ctx.unreservedWord();
             return null != unreservedWord ? Visit(unreservedWord) : new IdentifierValue(ctx.GetText());
         }
 
 
-        public override IASTNode VisitUnreservedWord(MySQLCommandParser.UnreservedWordContext ctx)
+        public override IASTNode VisitUnreservedWord(MySqlCommandParser.UnreservedWordContext ctx)
         {
             return new IdentifierValue(ctx.GetText());
         }
 
-        public override IASTNode VisitSchemaName(MySQLCommandParser.SchemaNameContext ctx)
+        public override IASTNode VisitSchemaName(MySqlCommandParser.SchemaNameContext ctx)
         {
             return Visit(ctx.identifier());
         }
 
-        public override IASTNode VisitTableName(MySQLCommandParser.TableNameContext ctx)
+        public override IASTNode VisitTableName(MySqlCommandParser.TableNameContext ctx)
         {
             SimpleTableSegment result = new SimpleTableSegment(new TableNameSegment(ctx.Start.StartIndex, ctx.Stop.StopIndex, (IdentifierValue)Visit(ctx.name())));
-            MySQLCommandParser.OwnerContext owner = ctx.owner();
+            MySqlCommandParser.OwnerContext owner = ctx.owner();
             if (null != owner)
             {
                 result.SetOwner(new OwnerSegment(owner.Start.StartIndex, owner.Stop.StopIndex, (IdentifierValue)Visit(owner.identifier())));
@@ -152,10 +151,10 @@ namespace ShardingConnector.MySQLParser.Visitor
             return result;
         }
 
-        public override IASTNode VisitColumnName(MySQLCommandParser.ColumnNameContext ctx)
+        public override IASTNode VisitColumnName(MySqlCommandParser.ColumnNameContext ctx)
         {
             ColumnSegment result = new ColumnSegment(ctx.Start.StartIndex, ctx.Stop.StopIndex, (IdentifierValue)Visit(ctx.name()));
-            MySQLCommandParser.OwnerContext owner = ctx.owner();
+            MySqlCommandParser.OwnerContext owner = ctx.owner();
             if (null != owner)
             {
                 result.SetOwner(new OwnerSegment(owner.Start.StartIndex, owner.Stop.StopIndex, (IdentifierValue)Visit(owner.identifier())));
@@ -163,12 +162,12 @@ namespace ShardingConnector.MySQLParser.Visitor
             return result;
         }
 
-        public override IASTNode VisitIndexName(MySQLCommandParser.IndexNameContext ctx)
+        public override IASTNode VisitIndexName(MySqlCommandParser.IndexNameContext ctx)
         {
             return new IndexSegment(ctx.Start.StartIndex, ctx.Stop.StopIndex, (IdentifierValue)Visit(ctx.identifier()));
         }
 
-        public override IASTNode VisitTableNames(MySQLCommandParser.TableNamesContext ctx)
+        public override IASTNode VisitTableNames(MySqlCommandParser.TableNamesContext ctx)
         {
             CollectionValue<SimpleTableSegment> result = new CollectionValue<SimpleTableSegment>();
             foreach (var each in ctx.tableName())
@@ -179,7 +178,7 @@ namespace ShardingConnector.MySQLParser.Visitor
             return result;
         }
 
-        public override IASTNode VisitColumnNames(MySQLCommandParser.ColumnNamesContext ctx)
+        public override IASTNode VisitColumnNames(MySqlCommandParser.ColumnNamesContext ctx)
         {
             CollectionValue<ColumnSegment> result = new CollectionValue<ColumnSegment>();
             foreach (var each in ctx.columnName())
@@ -189,7 +188,7 @@ namespace ShardingConnector.MySQLParser.Visitor
             return result;
         }
 
-        public override IASTNode VisitExpr(MySQLCommandParser.ExprContext ctx)
+        public override IASTNode VisitExpr(MySqlCommandParser.ExprContext ctx)
         {
             if (null != ctx.booleanPrimary())
             {
@@ -203,7 +202,7 @@ namespace ShardingConnector.MySQLParser.Visitor
             return Visit(ctx.expr()[0]);
         }
 
-        public override IASTNode VisitBooleanPrimary(MySQLCommandParser.BooleanPrimaryContext ctx)
+        public override IASTNode VisitBooleanPrimary(MySqlCommandParser.BooleanPrimaryContext ctx)
         {
             if (null != ctx.comparisonOperator() || null != ctx.SAFE_EQ_())
             {
@@ -221,7 +220,7 @@ namespace ShardingConnector.MySQLParser.Visitor
             return new CommonExpressionSegment(ctx.Start.StartIndex, ctx.Stop.StopIndex, ctx.GetText());
         }
 
-        private IASTNode CreateCompareSegment(MySQLCommandParser.BooleanPrimaryContext ctx)
+        private IASTNode CreateCompareSegment(MySqlCommandParser.BooleanPrimaryContext ctx)
         {
             IASTNode leftValue = Visit(ctx.booleanPrimary());
             if (!(leftValue is ColumnSegment))
@@ -232,7 +231,7 @@ namespace ShardingConnector.MySQLParser.Visitor
             return new PredicateSegment(ctx.Start.StartIndex, ctx.Stop.StopIndex, (ColumnSegment)leftValue, rightValue);
         }
 
-        private IASTNode CreatePredicateRightValue(MySQLCommandParser.BooleanPrimaryContext ctx)
+        private IASTNode CreatePredicateRightValue(MySqlCommandParser.BooleanPrimaryContext ctx)
         {
             if (null != ctx.subquery())
             {
@@ -242,7 +241,7 @@ namespace ShardingConnector.MySQLParser.Visitor
             return CreatePredicateRightValue(ctx, rightValue);
         }
 
-        private IASTNode CreatePredicateRightValue(MySQLCommandParser.BooleanPrimaryContext ctx, IASTNode rightValue)
+        private IASTNode CreatePredicateRightValue(MySqlCommandParser.BooleanPrimaryContext ctx, IASTNode rightValue)
         {
             if (rightValue is ColumnSegment)
             {
@@ -252,7 +251,7 @@ namespace ShardingConnector.MySQLParser.Visitor
                     : new PredicateCompareRightValue(ctx.comparisonOperator().GetText(), (IExpressionSegment)rightValue);
         }
 
-        public override IASTNode VisitPredicate(MySQLCommandParser.PredicateContext ctx)
+        public override IASTNode VisitPredicate(MySqlCommandParser.PredicateContext ctx)
         {
             if (null != ctx.IN() && null == ctx.NOT())
             {
@@ -269,19 +268,19 @@ namespace ShardingConnector.MySQLParser.Visitor
             return VisitRemainPredicate(ctx);
         }
 
-        private PredicateSegment CreateInSegment(MySQLCommandParser.PredicateContext ctx)
+        private PredicateSegment CreateInSegment(MySqlCommandParser.PredicateContext ctx)
         {
             ColumnSegment column = (ColumnSegment)Visit(ctx.bitExpr(0));
             PredicateBracketValue predicateBracketValue = CreateBracketValue(ctx);
             return new PredicateSegment(ctx.Start.StartIndex, ctx.Stop.StopIndex, column, new PredicateInRightValue(predicateBracketValue, GetExpressionSegments(ctx)));
         }
 
-        private ICollection<IExpressionSegment> GetExpressionSegments(MySQLCommandParser.PredicateContext ctx)
+        private ICollection<IExpressionSegment> GetExpressionSegments(MySqlCommandParser.PredicateContext ctx)
         {
             ICollection<IExpressionSegment> result = new LinkedList<IExpressionSegment>();
             if (null != ctx.subquery())
             {
-                MySQLCommandParser.SubqueryContext subquery = ctx.subquery();
+                MySqlCommandParser.SubqueryContext subquery = ctx.subquery();
                 result.Add(new SubQueryExpressionSegment(new SubQuerySegment(subquery.Start.StartIndex, subquery.Stop.StopIndex, (SelectCommand)Visit(ctx.subquery()))));
                 return result;
             }
@@ -292,7 +291,7 @@ namespace ShardingConnector.MySQLParser.Visitor
             return result;
         }
 
-        private PredicateBracketValue CreateBracketValue(MySQLCommandParser.PredicateContext ctx)
+        private PredicateBracketValue CreateBracketValue(MySqlCommandParser.PredicateContext ctx)
         {
             PredicateLeftBracketValue predicateLeftBracketValue = null != ctx.subquery()
                     ? new PredicateLeftBracketValue(ctx.subquery().LP_().Symbol.StartIndex, ctx.subquery().LP_().Symbol.StopIndex)
@@ -303,7 +302,7 @@ namespace ShardingConnector.MySQLParser.Visitor
             return new PredicateBracketValue(predicateLeftBracketValue, predicateRightBracketValue);
         }
 
-        private PredicateSegment CreateBetweenSegment(MySQLCommandParser.PredicateContext ctx)
+        private PredicateSegment CreateBetweenSegment(MySqlCommandParser.PredicateContext ctx)
         {
             ColumnSegment column = (ColumnSegment)Visit(ctx.bitExpr(0));
             IExpressionSegment between = (IExpressionSegment)Visit(ctx.bitExpr(1));
@@ -311,7 +310,7 @@ namespace ShardingConnector.MySQLParser.Visitor
             return new PredicateSegment(ctx.Start.StartIndex, ctx.Stop.StopIndex, column, new PredicateBetweenRightValue(between, and));
         }
 
-        private IASTNode VisitRemainPredicate(MySQLCommandParser.PredicateContext ctx)
+        private IASTNode VisitRemainPredicate(MySqlCommandParser.PredicateContext ctx)
         {
             foreach (var each in ctx.bitExpr())
             {
@@ -333,7 +332,7 @@ namespace ShardingConnector.MySQLParser.Visitor
         }
 
 
-        public override IASTNode VisitBitExpr(MySQLCommandParser.BitExprContext ctx)
+        public override IASTNode VisitBitExpr(MySqlCommandParser.BitExprContext ctx)
         {
             if (null != ctx.simpleExpr())
             {
@@ -372,7 +371,7 @@ namespace ShardingConnector.MySQLParser.Visitor
             return astNode;
         }
 
-        private void VisitRemainBitExpr(MySQLCommandParser.BitExprContext ctx)
+        private void VisitRemainBitExpr(MySqlCommandParser.BitExprContext ctx)
         {
             if (null != ctx.intervalExpression())
             {
@@ -386,7 +385,7 @@ namespace ShardingConnector.MySQLParser.Visitor
         }
 
 
-        public override IASTNode VisitSimpleExpr(MySQLCommandParser.SimpleExprContext ctx)
+        public override IASTNode VisitSimpleExpr(MySqlCommandParser.SimpleExprContext ctx)
         {
             if (null != ctx.subquery())
             {
@@ -416,14 +415,14 @@ namespace ShardingConnector.MySQLParser.Visitor
         }
 
 
-        public override IASTNode VisitIntervalExpression(MySQLCommandParser.IntervalExpressionContext ctx)
+        public override IASTNode VisitIntervalExpression(MySqlCommandParser.IntervalExpressionContext ctx)
         {
-            CalculateParameterCount(new List<MySQLCommandParser.ExprContext>() { ctx.expr() });
+            CalculateParameterCount(new List<MySqlCommandParser.ExprContext>() { ctx.expr() });
             return new ExpressionProjectionSegment(ctx.Start.StartIndex, ctx.Stop.StopIndex, ctx.GetText());
         }
 
 
-        public override IASTNode VisitFunctionCall(MySQLCommandParser.FunctionCallContext ctx)
+        public override IASTNode VisitFunctionCall(MySqlCommandParser.FunctionCallContext ctx)
         {
             if (null != ctx.aggregationFunction())
             {
@@ -441,14 +440,14 @@ namespace ShardingConnector.MySQLParser.Visitor
         }
 
 
-        public override IASTNode VisitAggregationFunction(MySQLCommandParser.AggregationFunctionContext ctx)
+        public override IASTNode VisitAggregationFunction(MySqlCommandParser.AggregationFunctionContext ctx)
         {
             String aggregationType = ctx.aggregationFunctionName().GetText();
             return AggregationType.IsAggregationType(aggregationType)
                     ? CreateAggregationSegment(ctx, aggregationType) : new ExpressionProjectionSegment(ctx.Start.StartIndex, ctx.Stop.StopIndex, ctx.GetText());
         }
 
-        private IASTNode CreateAggregationSegment(MySQLCommandParser.AggregationFunctionContext ctx, String aggregationType)
+        private IASTNode CreateAggregationSegment(MySqlCommandParser.AggregationFunctionContext ctx, String aggregationType)
         {
             AggregationTypeEnum type = AggregationType.ValueOf(aggregationType.ToUpper());
             int innerExpressionStartIndex = ((ITerminalNode)ctx.GetChild(1)).Symbol.StartIndex;
@@ -459,7 +458,7 @@ namespace ShardingConnector.MySQLParser.Visitor
             return new AggregationDistinctProjectionSegment(ctx.Start.StartIndex, ctx.Stop.StopIndex, type, innerExpressionStartIndex, getDistinctExpression(ctx));
         }
 
-        private String getDistinctExpression(MySQLCommandParser.AggregationFunctionContext ctx)
+        private String getDistinctExpression(MySqlCommandParser.AggregationFunctionContext ctx)
         {
             StringBuilder result = new StringBuilder();
             for (int i = 3; i < ctx.ChildCount - 1; i++)
@@ -470,7 +469,7 @@ namespace ShardingConnector.MySQLParser.Visitor
         }
 
 
-        public override IASTNode VisitSpecialFunction(MySQLCommandParser.SpecialFunctionContext ctx)
+        public override IASTNode VisitSpecialFunction(MySqlCommandParser.SpecialFunctionContext ctx)
         {
             if (null != ctx.groupConcatFunction())
             {
@@ -512,76 +511,76 @@ namespace ShardingConnector.MySQLParser.Visitor
         }
 
 
-        public override IASTNode VisitGroupConcatFunction(MySQLCommandParser.GroupConcatFunctionContext ctx)
+        public override IASTNode VisitGroupConcatFunction(MySqlCommandParser.GroupConcatFunctionContext ctx)
         {
             CalculateParameterCount(ctx.expr());
             return new ExpressionProjectionSegment(ctx.Start.StartIndex, ctx.Stop.StopIndex, ctx.GetText());
         }
 
 
-        public override IASTNode VisitWindowFunction(MySQLCommandParser.WindowFunctionContext ctx)
+        public override IASTNode VisitWindowFunction(MySqlCommandParser.WindowFunctionContext ctx)
         {
             CalculateParameterCount(ctx.expr());
             return new ExpressionProjectionSegment(ctx.Start.StartIndex, ctx.Stop.StopIndex, ctx.GetText());
         }
 
 
-        public override IASTNode VisitCastFunction(MySQLCommandParser.CastFunctionContext ctx)
+        public override IASTNode VisitCastFunction(MySqlCommandParser.CastFunctionContext ctx)
         {
-            CalculateParameterCount(new List<MySQLCommandParser.ExprContext>() { ctx.expr() });
+            CalculateParameterCount(new List<MySqlCommandParser.ExprContext>() { ctx.expr() });
             return new ExpressionProjectionSegment(ctx.Start.StartIndex, ctx.Stop.StopIndex, ctx.GetText());
         }
 
 
-        public override IASTNode VisitConvertFunction(MySQLCommandParser.ConvertFunctionContext ctx)
+        public override IASTNode VisitConvertFunction(MySqlCommandParser.ConvertFunctionContext ctx)
         {
-            CalculateParameterCount(new List<MySQLCommandParser.ExprContext>() { ctx.expr() });
+            CalculateParameterCount(new List<MySqlCommandParser.ExprContext>() { ctx.expr() });
             return new ExpressionProjectionSegment(ctx.Start.StartIndex, ctx.Stop.StopIndex, ctx.GetText());
         }
 
 
-        public override IASTNode VisitPositionFunction(MySQLCommandParser.PositionFunctionContext ctx)
-        {
-            CalculateParameterCount(ctx.expr());
-            return new ExpressionProjectionSegment(ctx.Start.StartIndex, ctx.Stop.StopIndex, ctx.GetText());
-        }
-
-
-        public override IASTNode VisitSubstringFunction(MySQLCommandParser.SubstringFunctionContext ctx)
-        {
-            CalculateParameterCount(new List<MySQLCommandParser.ExprContext>() { ctx.expr() });
-            return new ExpressionProjectionSegment(ctx.Start.StartIndex, ctx.Stop.StopIndex, ctx.GetText());
-        }
-
-
-        public override IASTNode VisitExtractFunction(MySQLCommandParser.ExtractFunctionContext ctx)
-        {
-            CalculateParameterCount(new List<MySQLCommandParser.ExprContext>() { ctx.expr() });
-            return new ExpressionProjectionSegment(ctx.Start.StartIndex, ctx.Stop.StopIndex, ctx.GetText());
-        }
-
-
-        public override IASTNode VisitCharFunction(MySQLCommandParser.CharFunctionContext ctx)
+        public override IASTNode VisitPositionFunction(MySqlCommandParser.PositionFunctionContext ctx)
         {
             CalculateParameterCount(ctx.expr());
             return new ExpressionProjectionSegment(ctx.Start.StartIndex, ctx.Stop.StopIndex, ctx.GetText());
         }
 
 
-        public override IASTNode VisitWeightStringFunction(MySQLCommandParser.WeightStringFunctionContext ctx)
+        public override IASTNode VisitSubstringFunction(MySqlCommandParser.SubstringFunctionContext ctx)
         {
-            CalculateParameterCount(new List<MySQLCommandParser.ExprContext>() { ctx.expr() });
+            CalculateParameterCount(new List<MySqlCommandParser.ExprContext>() { ctx.expr() });
             return new ExpressionProjectionSegment(ctx.Start.StartIndex, ctx.Stop.StopIndex, ctx.GetText());
         }
 
 
-        public override IASTNode VisitRegularFunction(MySQLCommandParser.RegularFunctionContext ctx)
+        public override IASTNode VisitExtractFunction(MySqlCommandParser.ExtractFunctionContext ctx)
+        {
+            CalculateParameterCount(new List<MySqlCommandParser.ExprContext>() { ctx.expr() });
+            return new ExpressionProjectionSegment(ctx.Start.StartIndex, ctx.Stop.StopIndex, ctx.GetText());
+        }
+
+
+        public override IASTNode VisitCharFunction(MySqlCommandParser.CharFunctionContext ctx)
         {
             CalculateParameterCount(ctx.expr());
             return new ExpressionProjectionSegment(ctx.Start.StartIndex, ctx.Stop.StopIndex, ctx.GetText());
         }
 
-        private IASTNode VisitRemainSimpleExpr(MySQLCommandParser.SimpleExprContext ctx)
+
+        public override IASTNode VisitWeightStringFunction(MySqlCommandParser.WeightStringFunctionContext ctx)
+        {
+            CalculateParameterCount(new List<MySqlCommandParser.ExprContext>() { ctx.expr() });
+            return new ExpressionProjectionSegment(ctx.Start.StartIndex, ctx.Stop.StopIndex, ctx.GetText());
+        }
+
+
+        public override IASTNode VisitRegularFunction(MySqlCommandParser.RegularFunctionContext ctx)
+        {
+            CalculateParameterCount(ctx.expr());
+            return new ExpressionProjectionSegment(ctx.Start.StartIndex, ctx.Stop.StopIndex, ctx.GetText());
+        }
+
+        private IASTNode VisitRemainSimpleExpr(MySqlCommandParser.SimpleExprContext ctx)
         {
             if (null != ctx.caseExpression())
             {
@@ -599,19 +598,19 @@ namespace ShardingConnector.MySQLParser.Visitor
         }
 
 
-        public override IASTNode VisitCaseExpression(MySQLCommandParser.CaseExpressionContext ctx)
+        public override IASTNode VisitCaseExpression(MySqlCommandParser.CaseExpressionContext ctx)
         {
             return new OtherLiteralValue(ctx.GetText());
         }
 
 
-        public override IASTNode VisitDataTypeName(MySQLCommandParser.DataTypeNameContext ctx)
+        public override IASTNode VisitDataTypeName(MySqlCommandParser.DataTypeNameContext ctx)
         {
             return new KeywordValue(ctx.GetText());
         }
 
         // TODO :FIXME, sql case id: insert_with_str_to_date
-        private void CalculateParameterCount(ICollection<MySQLCommandParser.ExprContext> exprContexts)
+        private void CalculateParameterCount(ICollection<MySqlCommandParser.ExprContext> exprContexts)
         {
             foreach (var each in exprContexts)
             {
@@ -620,7 +619,7 @@ namespace ShardingConnector.MySQLParser.Visitor
         }
 
 
-        public override IASTNode VisitDataType(MySQLCommandParser.DataTypeContext ctx)
+        public override IASTNode VisitDataType(MySqlCommandParser.DataTypeContext ctx)
         {
             DataTypeSegment dataTypeSegment = new DataTypeSegment();
             dataTypeSegment.SetDataTypeName(((KeywordValue)Visit(ctx.dataTypeName())).GetValue());
@@ -635,7 +634,7 @@ namespace ShardingConnector.MySQLParser.Visitor
         }
 
 
-        public override IASTNode VisitDataTypeLength(MySQLCommandParser.DataTypeLengthContext ctx)
+        public override IASTNode VisitDataTypeLength(MySqlCommandParser.DataTypeLengthContext ctx)
         {
             DataTypeLengthSegment dataTypeLengthSegment = new DataTypeLengthSegment();
             dataTypeLengthSegment.SetStartIndex(ctx.Start.StartIndex);
@@ -654,7 +653,7 @@ namespace ShardingConnector.MySQLParser.Visitor
         }
 
 
-        public override IASTNode VisitOrderByClause(MySQLCommandParser.OrderByClauseContext ctx)
+        public override IASTNode VisitOrderByClause(MySqlCommandParser.OrderByClauseContext ctx)
         {
             ICollection<OrderByItemSegment> items = new LinkedList<OrderByItemSegment>();
             foreach (var each in ctx.orderByItem())
@@ -665,7 +664,7 @@ namespace ShardingConnector.MySQLParser.Visitor
         }
 
 
-        public override IASTNode VisitOrderByItem(MySQLCommandParser.OrderByItemContext ctx)
+        public override IASTNode VisitOrderByItem(MySqlCommandParser.OrderByItemContext ctx)
         {
             OrderDirectionEnum orderDirection = null != ctx.DESC() ? OrderDirectionEnum.DESC : OrderDirectionEnum.ASC;
             if (null != ctx.columnName())

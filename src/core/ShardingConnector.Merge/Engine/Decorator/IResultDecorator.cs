@@ -27,7 +27,7 @@ namespace ShardingConnector.Merge.Engine.Decorator
      * @return merged result
      * @throws SQLException SQL exception
      */
-        IMergedEnumerator Decorate(IQueryEnumerator queryResult, ISqlCommandContext<ISqlCommand> sqlCommandContext, SchemaMetaData schemaMetaData);
+        IMergedDataReader Decorate(IQueryDataReader queryResult, ISqlCommandContext<ISqlCommand> sqlCommandContext, SchemaMetaData schemaMetaData);
 
         /**
          * Decorate merged result.
@@ -38,7 +38,7 @@ namespace ShardingConnector.Merge.Engine.Decorator
          * @return merged result
          * @throws SQLException SQL exception
          */
-        IMergedEnumerator Decorate(IMergedEnumerator mergedResult, ISqlCommandContext<ISqlCommand> sqlCommandContext, SchemaMetaData schemaMetaData);
+        IMergedDataReader Decorate(IMergedDataReader mergedResult, ISqlCommandContext<ISqlCommand> sqlCommandContext, SchemaMetaData schemaMetaData);
 
     }
 }

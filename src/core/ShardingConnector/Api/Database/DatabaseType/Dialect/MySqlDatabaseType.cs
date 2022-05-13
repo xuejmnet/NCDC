@@ -20,7 +20,7 @@ namespace ShardingConnector.Api.Database.DatabaseType.Dialect
     {
         public string GetName()
         {
-            return "MySQL";
+            return "MySql";
         }
 
         public ICollection<string> GetAdoNetUrlPrefixAlias()
