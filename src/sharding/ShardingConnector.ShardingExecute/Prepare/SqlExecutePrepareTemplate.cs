@@ -73,6 +73,13 @@ namespace ShardingConnector.ShardingExecute.Prepare
             return result;
         }
 
+        /// <summary>
+        /// 优化主要包括的是支持顺序查询
+        /// </summary>
+        /// <param name="dataSourceName"></param>
+        /// <param name="sqlUnits"></param>
+        /// <param name="callback"></param>
+        /// <returns></returns>
         private List<InputGroup<CommandExecuteUnit>> GetSqlExecuteGroups(string dataSourceName, List<SqlUnit> sqlUnits,
             ISqlExecutePrepareCallback callback)
         {

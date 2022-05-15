@@ -12,7 +12,7 @@ namespace ShardingConnector.ShardingExecute.Execute.DataReader
 * @Date: Saturday, 17 April 2021 17:48:21
 * @Email: 326308290@qq.com
 */
-    public class MemoryQueryDataReader:IQueryDataReader
+    public class MemoryQueryDataReader:IStreamDataReader
     {
         private readonly DbDataReader _dataReader;
         private readonly List<DbColumn> _columnSchema;
@@ -27,24 +27,35 @@ namespace ShardingConnector.ShardingExecute.Execute.DataReader
             return _dataReader.Read();
         }
 
+        public Type GetFieldType(int columnIndex)
+        {
+            return _dataReader.GetFieldType(columnIndex);
+        }
+
         public object GetValue(int columnIndex)
         {
            return _dataReader[columnIndex];
         }
 
-        public T GetValue<T>(int columnIndex)
+        public int GetValues(object[] values)
         {
-            return (T)_dataReader[columnIndex];
+            return _dataReader.GetValues(values);
         }
 
-        public object GetValue(string columnName)
+        public int GetOrdinal(string name)
         {
-            return _dataReader[columnName];
+            return _dataReader.GetOrdinal(name);
         }
 
-        public T GetValue<T>(string columnName)
+        public bool GetBoolean(int columnIndex)
         {
-            return (T)_dataReader[columnName];
+            return _dataReader.GetBoolean(columnIndex);
+
+        }
+
+        public byte GetByte(int columnIndex)
+        {
+            return _dataReader.GetByte(columnIndex);
         }
 
         public int ColumnCount => _dataReader.FieldCount;
@@ -70,6 +81,25 @@ namespace ShardingConnector.ShardingExecute.Execute.DataReader
             return _columnSchema[columnIndex].ColumnName;
         }
 
+        public object this[int columnIndex] => GetValue(columnIndex);
+
+        public object this[string name] => GetValue(GetOrdinal(name));
+
+        public string GetName(int columnIndex)
+        {
+            return _dataReader.GetName(columnIndex);
+        }
+
+        public string GetDataTypeName(int columnIndex)
+        {
+            return _dataReader.GetDataTypeName(columnIndex);
+        }
+
+        public DateTime GetDateTime(int columnIndex)
+        {
+            return _dataReader.GetDateTime(columnIndex);
+        }
+
         public bool IsDBNull(int columnIndex)
         {
             return _dataReader.IsDBNull(columnIndex);
@@ -80,9 +110,54 @@ namespace ShardingConnector.ShardingExecute.Execute.DataReader
             return _dataReader.GetBytes(ordinal, dataOffset, buffer, bufferOffset, length);
         }
 
+        public char GetChar(int columnIndex)
+        {
+            return _dataReader.GetChar(columnIndex);
+        }
+
         public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length)
         {
             return _dataReader.GetChars(ordinal, dataOffset, buffer, bufferOffset, length);
+        }
+
+        public Guid GetGuid(int columnIndex)
+        {
+            return _dataReader.GetGuid(columnIndex);
+        }
+
+        public short GetInt16(int columnIndex)
+        {
+            return _dataReader.GetInt16(columnIndex);
+        }
+
+        public int GetInt32(int columnIndex)
+        {
+            return _dataReader.GetInt32(columnIndex);
+        }
+
+        public long GetInt64(int columnIndex)
+        {
+            return _dataReader.GetInt64(columnIndex);
+        }
+
+        public float GetFloat(int columnIndex)
+        {
+            return _dataReader.GetFloat(columnIndex);
+        }
+
+        public double GetDouble(int columnIndex)
+        {
+            return _dataReader.GetDouble(columnIndex);
+        }
+
+        public string GetString(int columnIndex)
+        {
+            return _dataReader.GetString(columnIndex);
+        }
+
+        public decimal GetDecimal(int columnIndex)
+        {
+            return _dataReader.GetDecimal(columnIndex);
         }
 
         public bool NextResult()

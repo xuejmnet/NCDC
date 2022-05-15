@@ -20,7 +20,7 @@ namespace ShardingConnector.Merge.Engine.Decorator
     */
     public interface IResultDecoratorEngine<T>:IResultProcessEngine<T> where T:IBaseRule
     {
-        IResultDecorator NewInstance(IDatabaseType databaseType, SchemaMetaData schemaMetaData, T rule, ConfigurationProperties properties, ISqlCommandContext<ISqlCommand> sqlCommandContext);
+        IDataReaderDecorator NewInstance(IDatabaseType databaseType, SchemaMetaData schemaMetaData, T rule, ConfigurationProperties properties, ISqlCommandContext<ISqlCommand> sqlCommandContext);
 
     }
 }

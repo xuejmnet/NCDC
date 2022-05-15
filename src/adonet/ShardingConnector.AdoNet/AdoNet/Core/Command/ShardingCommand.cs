@@ -110,26 +110,6 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Command
         }
         public new DbParameter CreateParameter() => this.CreateDbParameter();
         private ShardingParameterCollection _parameters;
-        protected override Task<DbDataReader> ExecuteDbDataReaderAsync(CommandBehavior behavior, CancellationToken cancellationToken)
-        {
-            if (string.IsNullOrWhiteSpace(this.CommandText))
-                throw new ShardingException("sql command text null or empty");
-
-            DbDataReader result;
-            try
-            {
-                executionContext = Prepare(CommandText);
-                List<IQueryEnumerator> queryResults = _commandExecutor.ExecuteQuery();
-                IMergedEnumerator mergedResult = MergeQuery(queryResults);
-                result = new ShardingDataReader(_commandExecutor.DbDataReaders, mergedResult, this, executionContext);
-            }
-            finally
-            {
-                currentResultSet = null;
-            }
-            currentResultSet = result;
-            return Task.FromResult<DbDataReader>(result);
-        }
 
         protected override DbDataReader ExecuteDbDataReader(CommandBehavior behavior)
         {

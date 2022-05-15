@@ -32,6 +32,7 @@ namespace ShardingConnector.AppConsoleMySQLTest
                         )
                 }
             };
+            new MySqlDataReader().GetBoolean()
             //2、分库分表配置
             ShardingRuleConfiguration shardingRuleConfig = new ShardingRuleConfiguration();
             //2.2、配置各个表的分库分表策略，这里只配了一张表的就是t_order

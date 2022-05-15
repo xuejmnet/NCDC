@@ -18,18 +18,12 @@ namespace ShardingConnector.Merge.Engine.Decorator
     * @Ver: 1.0
     * @Email: 326308290@qq.com
     */
-    public sealed class TransparentResultDecorator:IResultDecorator
+    public sealed class TransparentDataReaderDecorator:IDataReaderDecorator
     {
-        public IMergedDataReader Decorate(IQueryDataReader queryResult, ISqlCommandContext<ISqlCommand> sqlCommandContext,
+        public IStreamDataReader Decorate(IStreamDataReader streamDataReader, ISqlCommandContext<ISqlCommand> sqlCommandContext,
             SchemaMetaData schemaMetaData)
         {
-            return new TransparentMergedDataReader(queryResult);
-        }
-
-        public IMergedDataReader Decorate(IMergedDataReader mergedResult, ISqlCommandContext<ISqlCommand> sqlCommandContext,
-            SchemaMetaData schemaMetaData)
-        {
-            return mergedResult;
+            return new TransparentMergedDataReader(streamDataReader);
         }
     }
 }

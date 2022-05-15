@@ -20,9 +20,9 @@ namespace ShardingConnector.Merge.Reader.Memory
         private readonly object[] _data;
         private readonly Dictionary<string,int> _columns;
 
-        public MemoryQueryResultRow(IQueryDataReader queryDataReader)
+        public MemoryQueryResultRow(IStreamDataReader streamDataReader)
         {
-            var (data,columns) = Load(queryDataReader);
+            var (data,columns) = Load(streamDataReader);
             _data = data;
             _columns = columns;
         }

@@ -19,7 +19,7 @@ namespace ShardingConnector.Merge.Reader.Memory
     /// <summary>
     /// 
     /// </summary>
-    public abstract class MemoryMergedDataReader<T> : IMergedDataReader where T : IBaseRule
+    public abstract class MemoryMergedDataReader<T> : IStreamDataReader where T : IBaseRule
     {
         private readonly IEnumerator<MemoryQueryResultRow> _memoryResultSetRows;
 
@@ -27,7 +27,7 @@ namespace ShardingConnector.Merge.Reader.Memory
 
 
         protected MemoryMergedDataReader(T rule, SchemaMetaData schemaMetaData,
-            ISqlCommandContext<ISqlCommand> sqlCommandContext, List<IQueryDataReader> queryDataReaders)
+            ISqlCommandContext<ISqlCommand> sqlCommandContext, List<IStreamDataReader> streamDataReaders)
         {
             // ReSharper disable once VirtualMemberCallInConstructor
             var memoryQueryResultRowList = Init(rule, schemaMetaData, sqlCommandContext, queryDataReaders);
