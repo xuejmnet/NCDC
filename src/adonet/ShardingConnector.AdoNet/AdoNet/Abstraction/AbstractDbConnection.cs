@@ -25,6 +25,7 @@ namespace ShardingConnector.AdoNet.AdoNet.Abstraction
         public readonly MultiValueDictionary<string, DbConnection> cachedConnections = new MultiValueDictionary<string, DbConnection>();
         public abstract IDictionary<string, IDataSource> GetDataSourceMap();
         public abstract DbConnection CreateConnection(string dataSourceName, IDataSource dataSource);
+        private List<DbConnection> _connections;
         public List<DbConnection> GetConnections(ConnectionModeEnum connectionMode, string dataSourceName, int connectionSize)
         {
             var dataSourceMap = GetDataSourceMap();
@@ -59,7 +60,8 @@ namespace ShardingConnector.AdoNet.AdoNet.Abstraction
             //        cachedConnections.AddRange(dataSourceName, result);
             //    }
             //}
-            return new List<DbConnection>(CreateConnections(dataSourceName, connectionMode, dataSource, connectionSize)); ;
+            _connections= new List<DbConnection>(CreateConnections(dataSourceName, connectionMode, dataSource, connectionSize));
+            return _connections;
         }
 
 
@@ -106,5 +108,13 @@ namespace ShardingConnector.AdoNet.AdoNet.Abstraction
             return result;
         }
 
+        protected override void Dispose(bool disposing)
+        {
+            base.Dispose(disposing);
+            foreach (var dbConnection in _connections)
+            {
+                dbConnection.Dispose();
+            }
+        }
     }
 }

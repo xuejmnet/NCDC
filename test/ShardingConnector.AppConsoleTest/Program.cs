@@ -39,7 +39,7 @@ namespace ShardingConnector.AppConsoleTest
             //2.7、配置默认数据源
             shardingRuleConfig.DefaultDataSourceName= "ds0";
             var dataSource = ShardingDataSourceFactory.CreateDataSource(dataSourceMap, shardingRuleConfig, new Dictionary<string, object>());
-            var dbConnection = dataSource.GetDbConnection();
+            var dbConnection = dataSource.CreateConnection();
 
             var dbCommand = dbConnection.CreateCommand();                     
             dbCommand.CommandText = @"select [d].[Id],[d].[Name],[d].[Age] from [dbo].[SysUserMod] as [d] where [d].[Id]  in (@p1,@p2)";

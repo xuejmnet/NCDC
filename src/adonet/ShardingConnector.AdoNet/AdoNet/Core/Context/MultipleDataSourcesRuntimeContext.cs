@@ -51,7 +51,7 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Context
             foreach (var dataSource in dataSourceMap)
             {
                 var dbProviderFactory = dataSource.Value;
-                using (var connection = dbProviderFactory.GetDbConnection())
+                using (var connection = dbProviderFactory.CreateConnection())
                 {
                     connection.Open();
                     result.Add(dataSource.Key,

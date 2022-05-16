@@ -41,7 +41,7 @@ namespace ShardingConnector.ParserBinder.MetaData.Schema
         public static async Task<SchemaMetaData> Load(IDataSource dataSource, int maxConnectionCount, string databaseType)
         {
             List<string> tableNames;
-            using (var connection = dataSource.GetDbConnection())
+            using (var connection = dataSource.CreateConnection())
             {
                 await connection.OpenAsync();
                 tableNames = LoadAllTableNames(connection,databaseType);
@@ -59,7 +59,7 @@ namespace ShardingConnector.ParserBinder.MetaData.Schema
             }).GroupBy(o => o.Index).Select(o => o.Select(g=>g.TableName).ToList()).ToList();
 
             IDictionary<string, TableMetaData> tableMetaDataMap = 1 == tableGroups.Count
-                    ? Load(dataSource.GetDbConnection(), tableGroups[0], databaseType) :await AsyncLoad(dataSource, maxConnectionCount, tableNames, tableGroups, databaseType);
+                    ? Load(dataSource.CreateConnection(), tableGroups[0], databaseType) :await AsyncLoad(dataSource, maxConnectionCount, tableNames, tableGroups, databaseType);
             return new SchemaMetaData(tableMetaDataMap);
         }
 
@@ -150,7 +150,7 @@ namespace ShardingConnector.ParserBinder.MetaData.Schema
             ConcurrentDictionary<string, TableMetaData> result = new ConcurrentDictionary<string, TableMetaData>();
             var tasks = tableGroups.Select(o => Task.Run(() =>
             {
-                var tableMetaData = Load(dataSource.GetDbConnection(), o, databaseType);
+                var tableMetaData = Load(dataSource.CreateConnection(), o, databaseType);
                 foreach (var entry in tableMetaData)
                 {
                     result.TryAdd(entry.Key, entry.Value);

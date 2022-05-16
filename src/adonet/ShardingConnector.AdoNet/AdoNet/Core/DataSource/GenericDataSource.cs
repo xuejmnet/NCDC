@@ -21,7 +21,7 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.DataSource
             _connectionString = connectionString;
         }
 
-        public DbConnection GetDbConnection()
+        public DbConnection CreateConnection()
         {
             var dbConnection = _dbProviderFactory.CreateConnection();
             dbConnection.ConnectionString = _connectionString;

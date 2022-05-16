@@ -82,7 +82,7 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Connection
 
         public override DbConnection CreateConnection(string dataSourceName, IDataSource dataSource)
         {
-            return dataSource.GetDbConnection();
+            return dataSource.CreateConnection();
         }
     }
 }

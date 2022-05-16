@@ -33,7 +33,7 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.DataSource
         }
 
 
-        public override DbConnection GetDbConnection()
+        public override DbConnection CreateConnection()
         {
             return new ShardingConnection(DataSourceMap, _runtimeContext,
                 TransactionTypeHolder.Get() ?? TransactionTypeEnum.LOCAL);

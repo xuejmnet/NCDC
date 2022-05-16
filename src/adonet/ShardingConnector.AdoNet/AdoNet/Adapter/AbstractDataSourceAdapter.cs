@@ -60,11 +60,11 @@ namespace ShardingConnector.AdoNet.AdoNet.Adapter
                 return abstractDataSourceAdapter.DatabaseType;
             }
 
-            using (var connection = dataSource.GetDbConnection())
+            using (var connection = dataSource.CreateConnection())
             {
                 return DatabaseTypes.GetDataBaseTypeByDbConnection(connection);
             }
         }
-        public abstract DbConnection GetDbConnection();
+        public abstract DbConnection CreateConnection();
     }
 }
