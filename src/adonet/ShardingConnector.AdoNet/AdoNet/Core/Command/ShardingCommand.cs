@@ -120,8 +120,8 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Command
             try
             {
                 executionContext = Prepare(CommandText);
-                List<IQueryDataReader> queryResults = _commandExecutor.ExecuteQuery();
-                IMergedDataReader mergedResult = MergeQuery(queryResults);
+                List<IStreamDataReader> queryResults = _commandExecutor.ExecuteQuery();
+                IStreamDataReader mergedResult = MergeQuery(queryResults);
                 result = new ShardingDataReader(_commandExecutor.DbDataReaders, mergedResult, this, executionContext);
             }
             finally
@@ -132,11 +132,11 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Command
             return result;
         }
 
-        private IMergedDataReader MergeQuery(List<IQueryDataReader> queryResults)
+        private IStreamDataReader MergeQuery(List<IStreamDataReader> streamDataReaders)
         {
             ShardingRuntimeContext runtimeContext = ((ShardingConnection)DbConnection).GetRuntimeContext();
             MergeEngine mergeEngine = new MergeEngine(runtimeContext.GetRule().ToRules(), runtimeContext.GetProperties(), runtimeContext.GetDatabaseType(), runtimeContext.GetMetaData().Schema);
-            return mergeEngine.Merge(queryResults, executionContext.GetSqlCommandContext());
+            return mergeEngine.Merge(streamDataReaders, executionContext.GetSqlCommandContext());
         }
 
         private ExecutionContext Prepare(string sql)

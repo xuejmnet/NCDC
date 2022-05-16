@@ -5,7 +5,6 @@ using System.Text;
 using ShardingConnector.CommandParser.Command;
 using ShardingConnector.Executor;
 using ShardingConnector.Merge.Reader;
-using ShardingConnector.Merge.Reader.Transparent;
 using ShardingConnector.ParserBinder.Command;
 using ShardingConnector.ParserBinder.MetaData.Schema;
 
@@ -14,15 +13,13 @@ namespace ShardingConnector.Merge.Engine.Merger
     /*
     * @Author: xjm
     * @Description:
-    * @Date: 2021/4/25 10:39:23
+    * @Date: 2021/4/25 10:36:05
     * @Ver: 1.0
     * @Email: 326308290@qq.com
     */
-    public sealed class TransparentResultMerger:IResultMerger
+    public interface IDataReaderMerger
     {
-        public IMergedDataReader Merge(List<IQueryDataReader> queryEnumerators, ISqlCommandContext<ISqlCommand> sqlCommandContext, SchemaMetaData schemaMetaData)
-        {
-            return new TransparentMergedDataReader(queryEnumerators[0]);
-        }
+        IStreamDataReader Merge(List<IStreamDataReader> streamDataReaders, ISqlCommandContext<ISqlCommand> sqlCommandContext, SchemaMetaData schemaMetaData);
+
     }
 }

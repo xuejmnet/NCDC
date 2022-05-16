@@ -19,12 +19,12 @@ namespace ShardingConnector.Merge.Engine.Merger
     */
     public interface IResultMergerEngine : IResultProcessEngine<IBaseRule>
     {
-        IResultMerger NewInstance(IDatabaseType databaseType, IBaseRule rule, ConfigurationProperties properties, ISqlCommandContext<ISqlCommand> sqlCommandContext);
+        IDataReaderMerger NewInstance(IDatabaseType databaseType, IBaseRule rule, ConfigurationProperties properties, ISqlCommandContext<ISqlCommand> sqlCommandContext);
 
     }
     public interface IResultMergerEngine<in T>:IResultMergerEngine where  T:IBaseRule
     {
-        IResultMerger NewInstance(IDatabaseType databaseType, T rule, ConfigurationProperties properties, ISqlCommandContext<ISqlCommand> sqlCommandContext);
+        IDataReaderMerger NewInstance(IDatabaseType databaseType, T rule, ConfigurationProperties properties, ISqlCommandContext<ISqlCommand> sqlCommandContext);
 
     }
 }

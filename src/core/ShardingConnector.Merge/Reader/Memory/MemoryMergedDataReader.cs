@@ -1,4 +1,5 @@
-﻿using ShardingConnector.CommandParser.Command;
+﻿using System;
+using ShardingConnector.CommandParser.Command;
 using ShardingConnector.Common.Rule;
 using ShardingConnector.Executor;
 using ShardingConnector.ParserBinder.Command;
@@ -30,7 +31,7 @@ namespace ShardingConnector.Merge.Reader.Memory
             ISqlCommandContext<ISqlCommand> sqlCommandContext, List<IStreamDataReader> streamDataReaders)
         {
             // ReSharper disable once VirtualMemberCallInConstructor
-            var memoryQueryResultRowList = Init(rule, schemaMetaData, sqlCommandContext, queryDataReaders);
+            var memoryQueryResultRowList = Init(rule, schemaMetaData, sqlCommandContext, streamDataReaders);
             _memoryResultSetRows = memoryQueryResultRowList.GetEnumerator();
             if (memoryQueryResultRowList.Any())
             {
@@ -39,7 +40,7 @@ namespace ShardingConnector.Merge.Reader.Memory
         }
 
         protected abstract List<MemoryQueryResultRow> Init(T rule, SchemaMetaData schemaMetaData,
-            ISqlCommandContext<ISqlCommand> sqlCommandContext, List<IQueryDataReader> queryEnumerators);
+            ISqlCommandContext<ISqlCommand> sqlCommandContext, List<IStreamDataReader> queryEnumerators);
 
         public bool Read()
         {
@@ -52,26 +53,60 @@ namespace ShardingConnector.Merge.Reader.Memory
             return false;
         }
 
+        public int ColumnCount { get; }
+        public string GetColumnName(int columnIndex)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string GetColumnLabel(int columnIndex)
+        {
+            throw new NotImplementedException();
+        }
+
+        public object this[int columnIndex] => throw new NotImplementedException();
+
+        public object this[string name] => throw new NotImplementedException();
+
+        public string GetName(int columnIndex)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string GetDataTypeName(int columnIndex)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Type GetFieldType(int columnIndex)
+        {
+            throw new NotImplementedException();
+        }
+
         public object GetValue(int columnIndex)
         {
             object result = _currentSetResultRow.GetCell(columnIndex);
             return result;
         }
 
-        public T1 GetValue<T1>(int columnIndex)
+        public int GetValues(object[] values)
         {
-            object result = _currentSetResultRow.GetCell(columnIndex);
-            return (T1)result;
+            throw new NotImplementedException();
         }
 
-        public object GetValue(string columnName)
+        public int GetOrdinal(string name)
         {
-            return _currentSetResultRow.GetCell(columnName);
+            throw new NotImplementedException();
         }
 
-        public T1 GetValue<T1>(string columnName)
+        public bool GetBoolean(int columnIndex)
         {
-            return (T1)_currentSetResultRow.GetCell(columnName);
+            throw new NotImplementedException();
+        }
+
+        public byte GetByte(int columnIndex)
+        {
+            throw new NotImplementedException();
         }
 
         public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length)
@@ -79,9 +114,59 @@ namespace ShardingConnector.Merge.Reader.Memory
             throw new System.NotImplementedException();
         }
 
+        public char GetChar(int columnIndex)
+        {
+            throw new NotImplementedException();
+        }
+
         public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length)
         {
             throw new System.NotImplementedException();
+        }
+
+        public Guid GetGuid(int columnIndex)
+        {
+            throw new NotImplementedException();
+        }
+
+        public short GetInt16(int columnIndex)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int GetInt32(int columnIndex)
+        {
+            throw new NotImplementedException();
+        }
+
+        public long GetInt64(int columnIndex)
+        {
+            throw new NotImplementedException();
+        }
+
+        public float GetFloat(int columnIndex)
+        {
+            throw new NotImplementedException();
+        }
+
+        public double GetDouble(int columnIndex)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string GetString(int columnIndex)
+        {
+            throw new NotImplementedException();
+        }
+
+        public decimal GetDecimal(int columnIndex)
+        {
+            throw new NotImplementedException();
+        }
+
+        public DateTime GetDateTime(int columnIndex)
+        {
+            throw new NotImplementedException();
         }
 
         public bool IsDBNull(int columnIndex)

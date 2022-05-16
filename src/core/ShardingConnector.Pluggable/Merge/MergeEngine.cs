@@ -45,10 +45,10 @@ namespace ShardingConnector.Pluggable.Merge
      * @return merged result
      * @throws SQLException SQL exception
      */
-        public IMergedDataReader Merge(List<IQueryDataReader> queryResults, ISqlCommandContext<ISqlCommand> sqlCommandContext)
+        public IStreamDataReader Merge(List<IStreamDataReader> streamDataReaders, ISqlCommandContext<ISqlCommand> sqlCommandContext)
         {
             RegisterMergeDecorator();
-            return merger.Process(queryResults, sqlCommandContext);
+            return merger.Process(streamDataReaders, sqlCommandContext);
         }
 
         private void RegisterMergeDecorator()

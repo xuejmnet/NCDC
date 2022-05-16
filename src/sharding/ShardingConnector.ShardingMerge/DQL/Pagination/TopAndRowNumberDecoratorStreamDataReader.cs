@@ -8,18 +8,18 @@ namespace ShardingConnector.ShardingMerge.DQL.Pagination
 /*
 * @Author: xjm
 * @Description:
-* @Date: Friday, 07 May 2021 22:07:38
+* @Date: Friday, 07 May 2021 22:14:58
 * @Email: 326308290@qq.com
 */
-    public sealed class LimitDecoratorMergedDataReader : DecoratorMergedDataReader
+    public sealed class TopAndRowNumberDecoratorStreamDataReader : DecoratorStreamDataReader
     {
         private readonly PaginationContext pagination;
 
         private readonly bool skipAll;
 
-        private int rowNumber;
+        private long rowNumber;
 
-        public LimitDecoratorMergedDataReader(IMergedDataReader mergedDataReader, PaginationContext pagination) : base(mergedDataReader)
+        public TopAndRowNumberDecoratorStreamDataReader(IStreamDataReader streamDataReader, PaginationContext pagination) : base(streamDataReader)
         {
             this.pagination = pagination;
             skipAll = SkipOffset();
@@ -27,28 +27,32 @@ namespace ShardingConnector.ShardingMerge.DQL.Pagination
 
         private bool SkipOffset()
         {
-            for (int i = 0; i < pagination.GetActualOffset(); i++)
+            long end = pagination.GetActualOffset();
+            for (int i = 0; i < end; i++)
             {
-                if (!MergedDataReader.Read())
+                if (!StreamDataReader.Read())
                 {
                     return true;
                 }
             }
 
-            rowNumber = 0;
+            rowNumber = end + 1;
             return false;
         }
 
         public override bool Read()
-        { 
-            if (skipAll) {
+        {
+            if (skipAll)
+            {
                 return false;
             }
-            if (pagination.GetActualRowCount()==null) {
-                return MergedDataReader.Read();
-            }
-            return ++rowNumber <= pagination.GetActualRowCount() && MergedDataReader.Read();
 
+            if (pagination.GetActualRowCount() == null)
+            {
+                return StreamDataReader.Read();
+            }
+
+            return rowNumber++ <= pagination.GetActualRowCount() && StreamDataReader.Read();
         }
     }
 }

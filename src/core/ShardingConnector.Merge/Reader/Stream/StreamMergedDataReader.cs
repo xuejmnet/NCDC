@@ -1,4 +1,5 @@
-﻿using ShardingConnector.Exceptions;
+﻿using System;
+using ShardingConnector.Exceptions;
 using ShardingConnector.Executor;
 
 namespace ShardingConnector.Merge.Reader.Stream
@@ -14,30 +15,75 @@ namespace ShardingConnector.Merge.Reader.Stream
     /// <summary>
     /// 
     /// </summary>
-    public abstract class StreamMergedDataReader : IMergedDataReader
+    public abstract class StreamMergedDataReader : IStreamDataReader
     {
-        private IQueryDataReader _current;
+        private IStreamDataReader _current;
 
         public abstract bool Read();
+        public int ColumnCount => CurrentQueryDataReader.ColumnCount;
+        public string GetColumnName(int columnIndex)
+        {
+            return CurrentQueryDataReader.GetColumnName(columnIndex);
+        }
+
+        public string GetColumnLabel(int columnIndex)
+        {
+            return CurrentQueryDataReader.GetColumnLabel(columnIndex);
+        }
+
+        public object this[int columnIndex] => CurrentQueryDataReader[columnIndex];
+
+        public object this[string name] => CurrentQueryDataReader[name];
+
+        public string GetName(int columnIndex)
+        {
+            return CurrentQueryDataReader.GetName(columnIndex);
+        }
+
+        public string GetDataTypeName(int columnIndex)
+        {
+            return CurrentQueryDataReader.GetDataTypeName(columnIndex);
+        }
+
+        public Type GetFieldType(int columnIndex)
+        {
+            return CurrentQueryDataReader.GetFieldType(columnIndex);
+        }
 
         public object GetValue(int columnIndex)
         {
             return CurrentQueryDataReader.GetValue(columnIndex);
         }
 
-        public object GetValue(string columnName)
+        public int GetValues(object[] values)
         {
-            return CurrentQueryDataReader.GetValue(columnName);
+            return CurrentQueryDataReader.GetValues(values);
         }
 
-        public T GetValue<T>(string columnName)
+        public int GetOrdinal(string name)
         {
-            return CurrentQueryDataReader.GetValue<T>(columnName);
+            return CurrentQueryDataReader.GetOrdinal(name);
         }
+
+        public bool GetBoolean(int columnIndex)
+        {
+            return CurrentQueryDataReader.GetBoolean(columnIndex);
+        }
+
+        public byte GetByte(int columnIndex)
+        {
+            return CurrentQueryDataReader.GetByte(columnIndex);
+        }
+
 
         public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length)
         {
             return CurrentQueryDataReader.GetBytes(ordinal, dataOffset, buffer, bufferOffset, length);
+        }
+
+        public char GetChar(int columnIndex)
+        {
+            return CurrentQueryDataReader.GetChar(columnIndex);
         }
 
         public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length)
@@ -45,9 +91,49 @@ namespace ShardingConnector.Merge.Reader.Stream
             return CurrentQueryDataReader.GetChars(ordinal, dataOffset, buffer, bufferOffset, length);
         }
 
-        public T GetValue<T>(int columnIndex)
+        public Guid GetGuid(int columnIndex)
         {
-            return CurrentQueryDataReader.GetValue<T>(columnIndex);
+            return CurrentQueryDataReader.GetGuid(columnIndex);
+        }
+
+        public short GetInt16(int columnIndex)
+        {
+            return CurrentQueryDataReader.GetInt16(columnIndex);
+        }
+
+        public int GetInt32(int columnIndex)
+        {
+            return CurrentQueryDataReader.GetInt32(columnIndex);
+        }
+
+        public long GetInt64(int columnIndex)
+        {
+            return CurrentQueryDataReader.GetInt64(columnIndex);
+        }
+
+        public float GetFloat(int columnIndex)
+        {
+            return CurrentQueryDataReader.GetFloat(columnIndex);
+        }
+
+        public double GetDouble(int columnIndex)
+        {
+            return CurrentQueryDataReader.GetDouble(columnIndex);
+        }
+
+        public string GetString(int columnIndex)
+        {
+            return CurrentQueryDataReader.GetString(columnIndex);
+        }
+
+        public decimal GetDecimal(int columnIndex)
+        {
+            return CurrentQueryDataReader.GetDecimal(columnIndex);
+        }
+
+        public DateTime GetDateTime(int columnIndex)
+        {
+            return CurrentQueryDataReader.GetDateTime(columnIndex);
         }
 
         public bool IsDBNull(int columnIndex)
@@ -60,22 +146,22 @@ namespace ShardingConnector.Merge.Reader.Stream
             return CurrentQueryDataReader.NextResult();
         }
 
-        protected IQueryDataReader GetCurrentQueryDataReader()
+        protected IStreamDataReader GetCurrentStreamDataReader()
         {
             if (null == _current)
             {
-                throw new ShardingException("Current DataReader is null, DataReader perhaps end of read.");
+                throw new ShardingException("Current Stream DataReader is null, DataReader perhaps end of read.");
             }
 
             return _current;
         }
 
-        public void SetCurrentQueryEnumerator(IQueryDataReader queryDataReader)
+        public void SetCurrentStreamDataReader(IStreamDataReader streamDataReader)
         {
-            _current = queryDataReader;
+            _current = streamDataReader;
         }
 
-        protected IQueryDataReader CurrentQueryDataReader => GetCurrentQueryDataReader();
+        protected IStreamDataReader CurrentQueryDataReader => GetCurrentStreamDataReader();
 
     }
 }

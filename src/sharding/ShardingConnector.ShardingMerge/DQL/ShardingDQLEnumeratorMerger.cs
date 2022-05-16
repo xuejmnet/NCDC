@@ -28,29 +28,29 @@ namespace ShardingConnector.ShardingMerge.DQL
     * @Date: Friday, 07 May 2021 22:26:43
     * @Email: 326308290@qq.com
     */
-    public sealed class ShardingDQLEnumeratorMerger : IResultMerger
+    public sealed class ShardingDQLEnumeratorMerger : IDataReaderMerger
     {
-        private readonly IDatabaseType databaseType;
+        private readonly IDatabaseType _databaseType;
 
         public ShardingDQLEnumeratorMerger(IDatabaseType databaseType)
         {
-            this.databaseType = databaseType;
+            _databaseType = databaseType;
         }
 
-        public IMergedDataReader Merge(List<IQueryDataReader> queryEnumerators, ISqlCommandContext<ISqlCommand> sqlCommandContext, SchemaMetaData schemaMetaData)
+        public IStreamDataReader Merge(List<IStreamDataReader> streamDataReaders, ISqlCommandContext<ISqlCommand> sqlCommandContext, SchemaMetaData schemaMetaData)
         {
-            if (1 == queryEnumerators.Count)
+            if (1 == streamDataReaders.Count)
             {
-                return new IteratorStreamMergedDataReader(queryEnumerators);
+                return new IteratorStreamMergedDataReader(streamDataReaders);
             }
-            IDictionary<string, int> columnLabelIndexMap = GetColumnLabelIndexMap(queryEnumerators[0]);
+            IDictionary<string, int> columnLabelIndexMap = GetColumnLabelIndexMap(streamDataReaders[0]);
             var selectCommandContext = (SelectCommandContext)sqlCommandContext;
             selectCommandContext.SetIndexes(columnLabelIndexMap);
-            var mergedEnumerator = Build(queryEnumerators, selectCommandContext, columnLabelIndexMap, schemaMetaData);
-            return Decorate(queryEnumerators, selectCommandContext, mergedEnumerator);
+            var mergedEnumerator = Build(streamDataReaders, selectCommandContext, columnLabelIndexMap, schemaMetaData);
+            return Decorate(streamDataReaders, selectCommandContext, mergedEnumerator);
         }
 
-        private IDictionary<string, int> GetColumnLabelIndexMap(IQueryDataReader queryResult)
+        private IDictionary<string, int> GetColumnLabelIndexMap(IStreamDataReader queryResult)
         {
             IDictionary<string, int> result = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
             for (int i = queryResult.ColumnCount-1; i >= 0; i--)
@@ -60,23 +60,23 @@ namespace ShardingConnector.ShardingMerge.DQL
             return result;
         }
 
-        private IMergedDataReader Build(List<IQueryDataReader> queryEnumerators, SelectCommandContext selectCommandContext,
+        private IStreamDataReader Build(List<IStreamDataReader> streamDataReaders, SelectCommandContext selectCommandContext,
                                     IDictionary<string, int> columnLabelIndexMap, SchemaMetaData schemaMetaData)
         {
             if (IsNeedProcessGroupBy(selectCommandContext))
             {
-                return GetGroupByMergedResult(queryEnumerators, selectCommandContext, columnLabelIndexMap, schemaMetaData);
+                return GetGroupByMergedResult(streamDataReaders, selectCommandContext, columnLabelIndexMap, schemaMetaData);
             }
             if (IsNeedProcessDistinctRow(selectCommandContext))
             {
                 SetGroupByForDistinctRow(selectCommandContext);
-                return GetGroupByMergedResult(queryEnumerators, selectCommandContext, columnLabelIndexMap, schemaMetaData);
+                return GetGroupByMergedResult(streamDataReaders, selectCommandContext, columnLabelIndexMap, schemaMetaData);
             }
             if (IsNeedProcessOrderBy(selectCommandContext))
             {
-                return new OrderByStreamMergedDataReader(queryEnumerators, selectCommandContext, schemaMetaData);
+                return new OrderByStreamMergedDataReader(streamDataReaders, selectCommandContext, schemaMetaData);
             }
-            return new IteratorStreamMergedDataReader(queryEnumerators);
+            return new IteratorStreamMergedDataReader(streamDataReaders);
         }
 
         private bool IsNeedProcessGroupBy(SelectCommandContext selectCommandContext)
@@ -99,15 +99,15 @@ namespace ShardingConnector.ShardingMerge.DQL
             }
         }
 
-        private IMergedDataReader GetGroupByMergedResult(List<IQueryDataReader> queryResults, SelectCommandContext selectCommandContext,
+        private IStreamDataReader GetGroupByMergedResult(List<IStreamDataReader> streamDataReaders, SelectCommandContext selectCommandContext,
                                                      IDictionary<string, int> columnLabelIndexMap, SchemaMetaData schemaMetaData)
         {
             if (selectCommandContext.IsSameGroupByAndOrderByItems())
             {
-                return new GroupByStreamMergedDataReader(columnLabelIndexMap, queryResults, selectCommandContext,
+                return new GroupByStreamMergedDataReader(columnLabelIndexMap, streamDataReaders, selectCommandContext,
                     schemaMetaData);
             }
-            return new GroupByMemoryMergedDataReader(queryResults, selectCommandContext, schemaMetaData);
+            return new GroupByMemoryMergedDataReader(streamDataReaders, selectCommandContext, schemaMetaData);
         }
 
         private bool IsNeedProcessOrderBy(SelectCommandContext selectCommandContext)
@@ -115,27 +115,27 @@ namespace ShardingConnector.ShardingMerge.DQL
             return !selectCommandContext.GetOrderByContext().GetItems().IsEmpty();
         }
 
-        private IMergedDataReader Decorate(List<IQueryDataReader> queryResults, SelectCommandContext selectCommandContext, IMergedDataReader mergedResult)
+        private IStreamDataReader Decorate(List<IStreamDataReader> streamDataReaders, SelectCommandContext selectCommandContext, IStreamDataReader mergedStreamDataReader)
         {
             var paginationContext = selectCommandContext.GetPaginationContext();
-            if (!paginationContext.HasPagination() || 1 == queryResults.Count)
+            if (!paginationContext.HasPagination() || 1 == streamDataReaders.Count)
             {
-                return mergedResult;
+                return mergedStreamDataReader;
             }
-            String trunkDatabaseName = DatabaseTypes.GetTrunkDatabaseType(databaseType.GetName()).GetName();
+            String trunkDatabaseName = DatabaseTypes.GetTrunkDatabaseType(_databaseType.GetName()).GetName();
             if ("MySql".Equals(trunkDatabaseName) || "PostgreSQL".Equals(trunkDatabaseName))
             {
-                return new LimitDecoratorMergedDataReader(mergedResult, paginationContext);
+                return new LimitDecoratorStreamDataReader(mergedStreamDataReader, paginationContext);
             }
             if ("Oracle".Equals(trunkDatabaseName))
             {
-                return new RowNumberDecoratorMergedDataReader(mergedResult, paginationContext);
+                return new RowNumberDecoratorStreamDataReader(mergedStreamDataReader, paginationContext);
             }
             if ("SQLServer".Equals(trunkDatabaseName))
             {
-                return new TopAndRowNumberDecoratorMergedDataReader(mergedResult, paginationContext);
+                return new TopAndRowNumberDecoratorStreamDataReader(mergedStreamDataReader, paginationContext);
             }
-            return mergedResult;
+            return mergedStreamDataReader;
         }
     }
 }

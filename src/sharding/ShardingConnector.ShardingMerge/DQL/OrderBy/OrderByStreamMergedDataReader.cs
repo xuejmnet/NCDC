@@ -25,17 +25,17 @@ namespace ShardingConnector.ShardingMerge.DQL.OrderBy
 
         protected bool IsFirstNext { get; set; }
 
-        public OrderByStreamMergedDataReader(List<IQueryDataReader> queryResults, SelectCommandContext selectCommandContext, SchemaMetaData schemaMetaData)
+        public OrderByStreamMergedDataReader(List<IStreamDataReader> streamDataReaders, SelectCommandContext selectCommandContext, SchemaMetaData schemaMetaData)
         {
             this.OrderByItems = selectCommandContext.GetOrderByContext().GetItems();
-            this.OrderByValuesQueue = new PriorityQueue<OrderByValue>(queryResults.Count);
-            OrderResultSetsToQueue(queryResults, selectCommandContext, schemaMetaData);
+            this.OrderByValuesQueue = new PriorityQueue<OrderByValue>(streamDataReaders.Count);
+            OrderResultSetsToQueue(streamDataReaders, selectCommandContext, schemaMetaData);
             IsFirstNext = true;
         }
 
-        private void OrderResultSetsToQueue(List<IQueryDataReader> queryResults, SelectCommandContext selectCommandContext, SchemaMetaData schemaMetaData)
+        private void OrderResultSetsToQueue(List<IStreamDataReader> streamDataReaders, SelectCommandContext selectCommandContext, SchemaMetaData schemaMetaData)
         {
-            foreach (var queryResult in queryResults)
+            foreach (var queryResult in streamDataReaders)
             {
                 OrderByValue orderByValue = new OrderByValue(queryResult, OrderByItems, selectCommandContext, schemaMetaData);
                 if (orderByValue.MoveNext())
@@ -44,7 +44,7 @@ namespace ShardingConnector.ShardingMerge.DQL.OrderBy
                 }
             }
 
-            SetCurrentQueryEnumerator(OrderByValuesQueue.IsEmpty() ? queryResults[0] : OrderByValuesQueue.Peek().GetQueryEnumerator());
+            SetCurrentStreamDataReader(OrderByValuesQueue.IsEmpty() ? streamDataReaders[0] : OrderByValuesQueue.Peek().GetStreamDataReader());
         }
 
         public override bool Read()
@@ -71,7 +71,7 @@ namespace ShardingConnector.ShardingMerge.DQL.OrderBy
                 return false;
             }
 
-            SetCurrentQueryEnumerator(OrderByValuesQueue.Peek().GetQueryEnumerator());
+            SetCurrentStreamDataReader(OrderByValuesQueue.Peek().GetStreamDataReader());
             return true;
         }
     }

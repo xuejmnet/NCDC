@@ -17,17 +17,17 @@ namespace ShardingConnector.ShardingMerge.DQL.GroupBy
     {
         private readonly List<object> _groupValues;
 
-        public GroupByValue(IQueryDataReader queryResult, ICollection<OrderByItem> groupByItems)
+        public GroupByValue(IStreamDataReader streamDataReader, ICollection<OrderByItem> groupByItems)
         {
-            _groupValues = GetGroupByValues(queryResult, groupByItems);
+            _groupValues = GetGroupByValues(streamDataReader, groupByItems);
         }
 
-        private List<object> GetGroupByValues(IQueryDataReader queryResult, ICollection<OrderByItem> groupByItems)
+        private List<object> GetGroupByValues(IStreamDataReader streamDataReader, ICollection<OrderByItem> groupByItems)
         {
             List<object> result = new List<object>(groupByItems.Count);
             foreach (var groupByItem in groupByItems)
             {
-                result.Add(queryResult.GetValue(groupByItem.GetIndex()));
+                result.Add(streamDataReader.GetValue(groupByItem.GetIndex()));
             }
 
             return result;

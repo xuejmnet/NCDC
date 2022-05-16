@@ -8,10 +8,10 @@ namespace ShardingConnector.ShardingMerge.DQL.Pagination
 /*
 * @Author: xjm
 * @Description:
-* @Date: Friday, 07 May 2021 22:14:58
+* @Date: Friday, 07 May 2021 22:12:36
 * @Email: 326308290@qq.com
 */
-    public sealed class TopAndRowNumberDecoratorMergedDataReader : DecoratorMergedDataReader
+    public sealed class RowNumberDecoratorStreamDataReader : DecoratorStreamDataReader
     {
         private readonly PaginationContext pagination;
 
@@ -19,7 +19,7 @@ namespace ShardingConnector.ShardingMerge.DQL.Pagination
 
         private long rowNumber;
 
-        public TopAndRowNumberDecoratorMergedDataReader(IMergedDataReader mergedDataReader, PaginationContext pagination) : base(mergedDataReader)
+        public RowNumberDecoratorStreamDataReader(IStreamDataReader streamDataReader, PaginationContext pagination) : base(streamDataReader)
         {
             this.pagination = pagination;
             skipAll = SkipOffset();
@@ -30,7 +30,7 @@ namespace ShardingConnector.ShardingMerge.DQL.Pagination
             long end = pagination.GetActualOffset();
             for (int i = 0; i < end; i++)
             {
-                if (!MergedDataReader.Read())
+                if (!StreamDataReader.Read())
                 {
                     return true;
                 }
@@ -42,17 +42,14 @@ namespace ShardingConnector.ShardingMerge.DQL.Pagination
 
         public override bool Read()
         {
-            if (skipAll)
-            {
+            if (skipAll) {
                 return false;
             }
-
-            if (pagination.GetActualRowCount() == null)
-            {
-                return MergedDataReader.Read();
+            if (pagination.GetActualRowCount()==null) {
+                return StreamDataReader.Read();
             }
+            return rowNumber++ < pagination.GetActualRowCount() && StreamDataReader.Read();
 
-            return rowNumber++ <= pagination.GetActualRowCount() && MergedDataReader.Read();
         }
     }
 }

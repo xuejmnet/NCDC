@@ -23,13 +23,13 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.DataReader
     public class ShardingDataReader : AbstractDataReader
     {
 
-        private readonly IMergedDataReader _mergedDataReader;
+        private readonly IStreamDataReader _streamDataReader;
         //private readonly IDictionary<string, int> _columnLabelAndIndexMap;
 
-        public ShardingDataReader(List<DbDataReader> dataReaders, IMergedDataReader mergedDataReader, DbCommand command,
+        public ShardingDataReader(List<DbDataReader> dataReaders, IStreamDataReader streamDataReader, DbCommand command,
             ExecutionContext executionContext) : base(dataReaders, command, executionContext)
         {
-            _mergedDataReader = mergedDataReader;
+            _streamDataReader = streamDataReader;
             //_columnLabelAndIndexMap = CreateColumnLabelAndIndexMap(dataReaders[0]);
         }
 
@@ -47,7 +47,7 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.DataReader
 
         public override bool IsDBNull(int ordinal)
         {
-            return _mergedDataReader.IsDBNull(ordinal);
+            return _streamDataReader.IsDBNull(ordinal);
         }
         /// <summary>
         /// 读取下个结果集比如批处理返回多个结果集
@@ -61,116 +61,113 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.DataReader
 
         public override bool Read()
         {
-            return _mergedDataReader.Read();
+            return _streamDataReader.Read();
         }
 
-        public override object this[int ordinal] => _mergedDataReader.GetValue(ordinal);
+        public override object this[int ordinal] => GetValue(ordinal);
 
-        public override object this[string name] => GetValueByName(name);
+        public override object this[string name] => GetValue(GetOrdinal(name));
 
-        private object GetValueByName(string name)
-        {
-            return _mergedDataReader.GetValue(name);
-        }
 
         public override bool GetBoolean(int ordinal)
         {
-            return _mergedDataReader.GetValue<bool>(ordinal);
+            return _streamDataReader.GetBoolean(ordinal);
         }
 
         public override byte GetByte(int ordinal)
         {
-            return _mergedDataReader.GetValue<byte>(ordinal);
+            return _streamDataReader.GetByte(ordinal);
         }
 
         public override long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length)
         {
-            throw new NotImplementedException();
+            return _streamDataReader.GetBytes(ordinal, dataOffset,buffer,bufferOffset,length);
         }
 
         public override char GetChar(int ordinal)
         {
-            return _mergedDataReader.GetValue<char>(ordinal);
+            return _streamDataReader.GetChar(ordinal);
         }
 
         public override long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length)
         {
-            throw new NotImplementedException();
+            return _streamDataReader.GetChars(ordinal, dataOffset, buffer, bufferOffset, length);
         }
 
         public override string GetDataTypeName(int ordinal)
         {
-            throw new NotImplementedException();
+            return _streamDataReader.GetDataTypeName(ordinal);
         }
 
         public override DateTime GetDateTime(int ordinal)
         {
-            return _mergedDataReader.GetValue<DateTime>(ordinal);
+            return _streamDataReader.GetDateTime(ordinal);
         }
 
         public override decimal GetDecimal(int ordinal)
         {
-            return _mergedDataReader.GetValue<decimal>(ordinal);
+            return _streamDataReader.GetDecimal(ordinal);
         }
 
         public override double GetDouble(int ordinal)
         {
-            return _mergedDataReader.GetValue<double>(ordinal);
+            return _streamDataReader.GetDouble(ordinal);
         }
 
         public override IEnumerator GetEnumerator()
         {
+            //TODO ShardingEnumerator
             throw new NotImplementedException();
         }
 
         public override Type GetFieldType(int ordinal)
         {
-            throw new NotImplementedException();
+            return _streamDataReader.GetFieldType(ordinal);
         }
 
         public override float GetFloat(int ordinal)
         {
-            throw new NotImplementedException();
+            return _streamDataReader.GetFloat(ordinal);
         }
 
         public override Guid GetGuid(int ordinal)
         {
-            throw new NotImplementedException();
+            return _streamDataReader.GetGuid(ordinal);
         }
 
         public override short GetInt16(int ordinal)
         {
-            throw new NotImplementedException();
+            return _streamDataReader.GetInt16(ordinal);
         }
 
         public override int GetInt32(int ordinal)
         {
-            throw new NotImplementedException();
+            return _streamDataReader.GetInt32(ordinal);
         }
 
         public override long GetInt64(int ordinal)
         {
-            throw new NotImplementedException();
+            return _streamDataReader.GetInt64(ordinal);
         }
 
         public override string GetName(int ordinal)
         {
-            throw new NotImplementedException();
+            return _streamDataReader.GetName(ordinal);
         }
 
         public override string GetString(int ordinal)
         {
-            throw new NotImplementedException();
+            return _streamDataReader.GetString(ordinal);
         }
 
         public override object GetValue(int ordinal)
         {
-            throw new NotImplementedException();
+            return _streamDataReader.GetValue(ordinal);
         }
 
         public override int GetValues(object[] values)
         {
-            throw new NotImplementedException();
+            return _streamDataReader.GetValues(values);
         }
     }
 }

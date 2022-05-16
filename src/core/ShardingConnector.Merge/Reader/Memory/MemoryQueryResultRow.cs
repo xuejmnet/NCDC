@@ -17,25 +17,27 @@ namespace ShardingConnector.Merge.Reader.Memory
     /// </summary>
     public sealed class MemoryQueryResultRow
     {
+        private readonly IStreamDataReader _streamDataReader;
         private readonly object[] _data;
-        private readonly Dictionary<string,int> _columns;
+        private readonly Dictionary<string, int> _columns;
 
         public MemoryQueryResultRow(IStreamDataReader streamDataReader)
         {
-            var (data,columns) = Load(streamDataReader);
+            _streamDataReader = streamDataReader;
+            var (data, columns) = Load(streamDataReader);
             _data = data;
             _columns = columns;
         }
 
-        private (object[] data, Dictionary<string, int> columns) Load(IQueryDataReader queryDataReader)
+        private (object[] data, Dictionary<string, int> columns) Load(IStreamDataReader streamDataReader)
         {
-            int columnCount = queryDataReader.ColumnCount;
+            int columnCount = streamDataReader.ColumnCount;
             object[] result = new object[columnCount];
             var columns = new Dictionary<string, int>(columnCount);
             for (int i = 0; i < columnCount; i++)
             {
-                result[i] = queryDataReader.GetValue(i);
-                var columnName = queryDataReader.GetColumnName(i);
+                result[i] = streamDataReader.GetValue(i);
+                var columnName = streamDataReader.GetColumnName(i);
                 columns[columnName] = i;
             }
 
@@ -57,16 +59,6 @@ namespace ShardingConnector.Merge.Reader.Memory
 
             return _data[columnIndex];
         }
-        public object GetCell(string columnName)
-        {
-            if (!_columns.ContainsKey(columnName))
-            {
-                throw new ShardingException($"Get Cell {columnName}");
-            }
-
-            var columnIndex = _columns[columnName];
-            return _data[columnIndex];
-        }
 
         /**
          * Set _data for cell.
@@ -83,17 +75,16 @@ namespace ShardingConnector.Merge.Reader.Memory
 
             _data[columnIndex] = value;
         }
-        public void SetCell(string columnName, object value)
+
+        public int GetOrdinal(string columnName)
         {
             if (!_columns.ContainsKey(columnName))
             {
-                throw new ShardingException($"Set Cell {columnName}");
+                throw new ShardingException($"Get Ordinal {columnName}");
             }
 
-            var columnIndex = _columns[columnName];
-            _data[columnIndex] = value;
+            return _columns[columnName];
         }
-
         public bool IsDBNull(int columnIndex)
         {
             if (columnIndex < 0 || columnIndex >= _data.Length)
@@ -101,7 +92,7 @@ namespace ShardingConnector.Merge.Reader.Memory
                 throw new ShardingException($"Get Cell {columnIndex}");
             }
 
-            return null==_data[columnIndex];
+            return null == _data[columnIndex];
         }
     }
 }

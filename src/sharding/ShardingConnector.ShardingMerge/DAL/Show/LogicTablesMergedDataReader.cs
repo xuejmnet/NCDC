@@ -21,19 +21,19 @@ namespace ShardingConnector.ShardingMerge.DAL.Show
     */
     public class LogicTablesMergedDataReader:MemoryMergedDataReader<ShardingRule>
     {
-        public LogicTablesMergedDataReader(ShardingRule rule, SchemaMetaData schemaMetaData, ISqlCommandContext<ISqlCommand> sqlCommandContext, List<IQueryDataReader> queryDataReaders) : base(rule, schemaMetaData, sqlCommandContext, queryDataReaders)
+        public LogicTablesMergedDataReader(ShardingRule rule, SchemaMetaData schemaMetaData, ISqlCommandContext<ISqlCommand> sqlCommandContext, List<IStreamDataReader> streamDataReaders) : base(rule, schemaMetaData, sqlCommandContext, streamDataReaders)
         {
         }
 
         protected override List<MemoryQueryResultRow> Init(ShardingRule rule, SchemaMetaData schemaMetaData, ISqlCommandContext<ISqlCommand> sqlCommandContext,
-            List<IQueryDataReader> queryEnumerators)
+            List<IStreamDataReader> streamDataReaders)
         {
             ICollection<MemoryQueryResultRow> result = new LinkedList<MemoryQueryResultRow>();
             var tableNames = new HashSet<string>();
-            foreach (var queryEnumerator in queryEnumerators)
+            foreach (var streamDataReader in streamDataReaders)
             {
-                while (queryEnumerator.Read()) {
-                    MemoryQueryResultRow memoryResultSetRow = new MemoryQueryResultRow(queryEnumerator);
+                while (streamDataReader.Read()) {
+                    MemoryQueryResultRow memoryResultSetRow = new MemoryQueryResultRow(streamDataReader);
                     var actualTableName = memoryResultSetRow.GetCell(0).ToString();
                     var tableRule = rule.FindTableRuleByActualTable(actualTableName);
                     if (tableRule==null) {

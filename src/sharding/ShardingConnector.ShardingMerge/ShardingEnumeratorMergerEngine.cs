@@ -5,6 +5,7 @@ using ShardingConnector.CommandParser.Command.DAL.Dialect;
 using ShardingConnector.Common.Config.Properties;
 using ShardingConnector.Common.Rule;
 using ShardingConnector.Merge.Engine.Merger;
+using ShardingConnector.Merge.Engine.Merger.Impl;
 using ShardingConnector.ParserBinder.Command;
 using ShardingConnector.ParserBinder.Command.DML;
 using ShardingConnector.ShardingCommon.Core.Rule;
@@ -22,11 +23,11 @@ namespace ShardingConnector.ShardingMerge
     */
     public class ShardingEnumeratorMergerEngine : IResultMergerEngine<ShardingRule>
     {
-        public IResultMerger NewInstance(IDatabaseType databaseType, IBaseRule rule, ConfigurationProperties properties, ISqlCommandContext<ISqlCommand> sqlCommandContext)
+        public IDataReaderMerger NewInstance(IDatabaseType databaseType, IBaseRule rule, ConfigurationProperties properties, ISqlCommandContext<ISqlCommand> sqlCommandContext)
         {
             return NewInstance(databaseType, (ShardingRule) rule, properties, sqlCommandContext);
         }
-        public IResultMerger NewInstance(IDatabaseType databaseType, ShardingRule rule, ConfigurationProperties properties, ISqlCommandContext<ISqlCommand> sqlCommandContext)
+        public IDataReaderMerger NewInstance(IDatabaseType databaseType, ShardingRule rule, ConfigurationProperties properties, ISqlCommandContext<ISqlCommand> sqlCommandContext)
         {
             if (sqlCommandContext is SelectCommandContext)
             {
@@ -36,7 +37,7 @@ namespace ShardingConnector.ShardingMerge
             {
                 return new ShardingDALEnumeratorMerger(rule);
             }
-            return new TransparentResultMerger();
+            return new TransparentDataReaderMerger();
         }
 
         public int GetOrder()

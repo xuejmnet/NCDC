@@ -16,33 +16,33 @@ namespace ShardingConnector.ShardingMerge.DQL.Iterator
     */
     public sealed class IteratorStreamMergedDataReader:StreamMergedDataReader
     {
-        private readonly IEnumerator<IQueryDataReader> _queryEnumerator;
+        private readonly IEnumerator<IStreamDataReader> _streamDataReaderEnumerator;
 
-        public IteratorStreamMergedDataReader( List<IQueryDataReader> queryResults)
+        public IteratorStreamMergedDataReader( List<IStreamDataReader> streamDataReaders)
         {
-            this._queryEnumerator = queryResults.GetEnumerator();
-            SetCurrentQueryEnumerator(this._queryEnumerator.Next());
+            _streamDataReaderEnumerator = streamDataReaders.GetEnumerator();
+            SetCurrentStreamDataReader(this._streamDataReaderEnumerator.Next());
         }
         public override bool Read()
         {
-            if (GetCurrentQueryDataReader().Read())
+            if (GetCurrentStreamDataReader().Read())
             {
                 return true;
             }
-            if (!_queryEnumerator.MoveNext())
+            if (!_streamDataReaderEnumerator.MoveNext())
             {
                 return false;
             }
-            SetCurrentQueryEnumerator(_queryEnumerator.Current);
-            var hasNext = GetCurrentQueryDataReader().Read();
+            SetCurrentStreamDataReader(_streamDataReaderEnumerator.Current);
+            var hasNext = GetCurrentStreamDataReader().Read();
             if (hasNext)
             {
                 return true;
             }
-            while (!hasNext && _queryEnumerator.MoveNext())
+            while (!hasNext && _streamDataReaderEnumerator.MoveNext())
             {
-                SetCurrentQueryEnumerator(_queryEnumerator.Current);
-                hasNext = GetCurrentQueryDataReader().Read();
+                SetCurrentStreamDataReader(_streamDataReaderEnumerator.Current);
+                hasNext = GetCurrentStreamDataReader().Read();
             }
             return hasNext;
         }

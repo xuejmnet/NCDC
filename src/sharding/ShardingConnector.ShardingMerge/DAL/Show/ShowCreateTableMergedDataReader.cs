@@ -19,7 +19,7 @@ namespace ShardingConnector.ShardingMerge.DAL.Show
 */
     public sealed class ShowCreateTableMergedDataReader:LogicTablesMergedDataReader
     {
-        public ShowCreateTableMergedDataReader(ShardingRule rule, SchemaMetaData schemaMetaData, ISqlCommandContext<ISqlCommand> sqlCommandContext, List<IQueryDataReader> queryDataReaders) : base(rule, schemaMetaData, sqlCommandContext, queryDataReaders)
+        public ShowCreateTableMergedDataReader(ShardingRule rule, SchemaMetaData schemaMetaData, ISqlCommandContext<ISqlCommand> sqlCommandContext, List<IStreamDataReader> streamDataReaders) : base(rule, schemaMetaData, sqlCommandContext, streamDataReaders)
         {
         }
 

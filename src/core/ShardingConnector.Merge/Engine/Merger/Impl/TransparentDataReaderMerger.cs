@@ -18,11 +18,11 @@ namespace ShardingConnector.Merge.Engine.Merger.Impl
     * @Ver: 1.0
     * @Email: 326308290@qq.com
     */
-    public sealed class TransparentResultMerger:IResultMerger
+    public sealed class TransparentDataReaderMerger:IDataReaderMerger
     {
-        public IMergedDataReader Merge(List<IQueryDataReader> queryEnumerators, ISqlCommandContext<ISqlCommand> sqlCommandContext, SchemaMetaData schemaMetaData)
+        public IStreamDataReader Merge(List<IStreamDataReader> streamDataReaders, ISqlCommandContext<ISqlCommand> sqlCommandContext, SchemaMetaData schemaMetaData)
         {
-            return new TransparentMergedDataReader(queryEnumerators[0]);
+            return new TransparentMergedDataReader(streamDataReaders[0]);
         }
     }
 }

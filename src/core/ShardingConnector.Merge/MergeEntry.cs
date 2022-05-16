@@ -23,19 +23,19 @@ namespace ShardingConnector.Merge
     */
     public sealed class MergeEntry
     {
-        private readonly IDatabaseType databaseType;
+        private readonly IDatabaseType _databaseType;
 
-        private readonly SchemaMetaData schemaMetaData;
+        private readonly SchemaMetaData _schemaMetaData;
 
-        private readonly ConfigurationProperties properties;
+        private readonly ConfigurationProperties _properties;
 
-        private readonly IDictionary<IBaseRule, IResultProcessEngine> engines = new Dictionary<IBaseRule, IResultProcessEngine>();
+        private readonly IDictionary<IBaseRule, IResultProcessEngine> _engines = new Dictionary<IBaseRule, IResultProcessEngine>();
 
         public MergeEntry(IDatabaseType databaseType, SchemaMetaData schemaMetaData, ConfigurationProperties properties)
         {
-            this.databaseType = databaseType;
-            this.schemaMetaData = schemaMetaData;
-            this.properties = properties;
+            this._databaseType = databaseType;
+            this._schemaMetaData = schemaMetaData;
+            this._properties = properties;
         }
 
         /**
@@ -46,7 +46,7 @@ namespace ShardingConnector.Merge
          */
         public void RegisterProcessEngine(IBaseRule rule, IResultProcessEngine processEngine)
         {
-            engines.Add(rule, processEngine);
+            _engines.Add(rule, processEngine);
         }
 
         /**
@@ -57,63 +57,49 @@ namespace ShardingConnector.Merge
          * @return merged result
          * @throws SQLException SQL exception
          */
-        public IMergedDataReader Process(List<IQueryDataReader> queryResults, ISqlCommandContext<ISqlCommand> sqlCommandContext)
+        public IStreamDataReader Process(List<IStreamDataReader> streamDataReaders, ISqlCommandContext<ISqlCommand> sqlCommandContext)
         {
-            var mergedResult = Merge(queryResults, sqlCommandContext);
-            IMergedDataReader result = null;
+            var mergedResult = Merge(streamDataReaders, sqlCommandContext);
+            IStreamDataReader result = null;
             if (mergedResult != null)
             {
                  result = Decorate(mergedResult, sqlCommandContext);
             }
             else
             {
-                result = Decorate(queryResults[0], sqlCommandContext);
+                result = Decorate(streamDataReaders[0], sqlCommandContext);
             }
-            return result??new TransparentMergedDataReader(queryResults[0]);
+            return result??new TransparentMergedDataReader(streamDataReaders[0]);
         }
 
-        private IMergedDataReader Merge(List<IQueryDataReader> queryResults, ISqlCommandContext<ISqlCommand> sqlCommandContext)
+        private IStreamDataReader Merge(List<IStreamDataReader> streamDataReaders, ISqlCommandContext<ISqlCommand> sqlCommandContext)
         {
-            foreach (var engineEntry in engines)
+            foreach (var engineEntry in _engines)
             {
                 
                 if (engineEntry.Value is IResultMergerEngine resultMergerEngine)
                 {
-                    var resultMerger = resultMergerEngine.NewInstance(databaseType, engineEntry.Key, properties, sqlCommandContext);
-                    return resultMerger.Merge(queryResults, sqlCommandContext, schemaMetaData);
+                    var resultMerger = resultMergerEngine.NewInstance(_databaseType, engineEntry.Key, _properties, sqlCommandContext);
+                    return resultMerger.Merge(streamDataReaders, sqlCommandContext, _schemaMetaData);
                 }
             }
             return null;
         }
 
-        private IMergedDataReader Decorate(IMergedDataReader mergedResult, ISqlCommandContext<ISqlCommand> sqlCommandContext)
+        private IStreamDataReader Decorate(IStreamDataReader streamDataReader, ISqlCommandContext<ISqlCommand> sqlCommandContext)
         {
-            IMergedDataReader result = null;
-            foreach (var engineEntry in engines)
-            {
-                if (engineEntry.Key is IResultDecoratorEngine<IBaseRule> resultDecoratorEngine)
-                {
-                    var resultDecorator = resultDecoratorEngine.NewInstance(databaseType, schemaMetaData, engineEntry.Key, properties, sqlCommandContext);
-                    result = null == result ? resultDecorator.Decorate(mergedResult, sqlCommandContext, schemaMetaData) : resultDecorator.Decorate(result, sqlCommandContext, schemaMetaData);
-
-                }
-            }
-            return result ?? mergedResult;
-        }
-
-        private IMergedDataReader Decorate(IQueryDataReader queryResult, ISqlCommandContext<ISqlCommand> sqlCommandContext)
-        {
-            IMergedDataReader result = null;
-            foreach (var engineEntry in engines)
+            IStreamDataReader result = null;
+            foreach (var engineEntry in _engines)
             {
                 if (engineEntry.Value is IResultDecoratorEngine<IBaseRule> resultDecoratorEngine)
                 {
-                    var resultDecorator = resultDecoratorEngine.NewInstance(databaseType, schemaMetaData, engineEntry.Key, properties, sqlCommandContext);
-                    result = null == result ? resultDecorator.Decorate(queryResult, sqlCommandContext, schemaMetaData) : resultDecorator.Decorate(result, sqlCommandContext, schemaMetaData);
+                    var resultDecorator = resultDecoratorEngine.NewInstance(_databaseType, _schemaMetaData, engineEntry.Key, _properties, sqlCommandContext);
+                    result = null == result ? resultDecorator.Decorate(streamDataReader, sqlCommandContext, _schemaMetaData) : resultDecorator.Decorate(result, sqlCommandContext, _schemaMetaData);
                 }
             }
-            return result;
+            return result ?? streamDataReader;
         }
+        
 
     }
 }

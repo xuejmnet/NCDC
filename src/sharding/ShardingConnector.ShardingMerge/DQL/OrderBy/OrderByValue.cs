@@ -22,7 +22,7 @@ namespace ShardingConnector.ShardingMerge.DQL.OrderBy
     */
     public sealed class OrderByValue : IComparable, IComparable<OrderByValue>
     {
-        private readonly IQueryDataReader _queryDataReader;
+        private readonly IStreamDataReader _streamDataReader;
 
         private readonly ICollection<OrderByItem> orderByItems;
 
@@ -30,9 +30,9 @@ namespace ShardingConnector.ShardingMerge.DQL.OrderBy
 
         private List<IComparable> orderValues;
 
-        public OrderByValue(IQueryDataReader queryDataReader, ICollection<OrderByItem> orderByItems, SelectCommandContext selectCommandContext, SchemaMetaData schemaMetaData)
+        public OrderByValue(IStreamDataReader streamDataReader, ICollection<OrderByItem> orderByItems, SelectCommandContext selectCommandContext, SchemaMetaData schemaMetaData)
         {
-            this._queryDataReader = queryDataReader;
+            this._streamDataReader = streamDataReader;
             this.orderByItems = orderByItems;
             this.orderValuesCaseSensitive = GetOrderValuesCaseSensitive(selectCommandContext, schemaMetaData);
         }
@@ -67,7 +67,7 @@ namespace ShardingConnector.ShardingMerge.DQL.OrderBy
                 else if (orderByItemSegment is IndexOrderByItemSegment indexOrderByItemSegment)
                 {
                     int columnIndex = indexOrderByItemSegment.GetColumnIndex();
-                    String columnName = _queryDataReader.GetColumnName(columnIndex);
+                    String columnName = _streamDataReader.GetColumnName(columnIndex);
                     if (columns.ContainsKey(columnName))
                     {
                         return columns[columnName].CaseSensitive;
@@ -84,7 +84,7 @@ namespace ShardingConnector.ShardingMerge.DQL.OrderBy
 
         public bool MoveNext()
         {
-            var result = _queryDataReader.Read();
+            var result = _streamDataReader.Read();
             orderValues = result ? GetOrderValues() : new List<IComparable>(0);
             return result;
         }
@@ -94,7 +94,7 @@ namespace ShardingConnector.ShardingMerge.DQL.OrderBy
             var result = new List<IComparable>(orderByItems.Count);
             foreach (var orderByItem in orderByItems)
             {
-                var value = _queryDataReader.GetValue(orderByItem.GetIndex());
+                var value = _streamDataReader.GetValue(orderByItem.GetIndex());
                 ShardingAssert.If(value == null || !(value is IComparable), "Order by value must implements Comparable");
                 result.Add((IComparable) value);
             }
@@ -125,9 +125,9 @@ namespace ShardingConnector.ShardingMerge.DQL.OrderBy
             return 0;
         }
 
-        public IQueryDataReader GetQueryEnumerator()
+        public IStreamDataReader GetStreamDataReader()
         {
-            return _queryDataReader;
+            return _streamDataReader;
         }
     }
 }

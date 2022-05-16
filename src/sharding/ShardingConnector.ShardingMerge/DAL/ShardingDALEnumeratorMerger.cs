@@ -24,7 +24,7 @@ namespace ShardingConnector.ShardingMerge.DAL
     * @Ver: 1.0
     * @Email: 326308290@qq.com
     */
-    public sealed class ShardingDALEnumeratorMerger:IResultMerger
+    public sealed class ShardingDALEnumeratorMerger:IDataReaderMerger
     {
         private readonly ShardingRule shardingRule;
 
@@ -33,19 +33,19 @@ namespace ShardingConnector.ShardingMerge.DAL
             this.shardingRule = shardingRule;
         }
 
-        public IMergedDataReader Merge(List<IQueryDataReader> queryEnumerators, ISqlCommandContext<ISqlCommand> sqlCommandContext, SchemaMetaData schemaMetaData)
+        public IStreamDataReader Merge(List<IStreamDataReader> streamDataReaders, ISqlCommandContext<ISqlCommand> sqlCommandContext, SchemaMetaData schemaMetaData)
         {
             var dalStatement = sqlCommandContext.GetSqlCommand();
             if (dalStatement is ShowDatabasesCommand showDatabasesCommand) {
                 return new SingleLocalDataMergedDataReader(new List<object>(){ DefaultSchema.LOGIC_NAME });
             }
             if (dalStatement is ShowTablesCommand || dalStatement is ShowTableStatusCommand || dalStatement is ShowIndexCommand) {
-                return new LogicTablesMergedDataReader(shardingRule, schemaMetaData,sqlCommandContext, queryEnumerators);
+                return new LogicTablesMergedDataReader(shardingRule, schemaMetaData,sqlCommandContext, streamDataReaders);
             }
             if (dalStatement is ShowCreateTableCommand) {
-                return new ShowCreateTableMergedDataReader(shardingRule,schemaMetaData, sqlCommandContext, queryEnumerators);
+                return new ShowCreateTableMergedDataReader(shardingRule,schemaMetaData, sqlCommandContext, streamDataReaders);
             }
-            return new TransparentMergedDataReader(queryEnumerators[0]);
+            return new TransparentMergedDataReader(streamDataReaders[0]);
         }
     }
 }
