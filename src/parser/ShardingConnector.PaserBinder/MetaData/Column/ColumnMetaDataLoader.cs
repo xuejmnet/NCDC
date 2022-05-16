@@ -108,7 +108,7 @@ namespace ShardingConnector.ParserBinder.MetaData.Column
         {
             if ("MySql".Equals(databaseType) || "MariaDB".Equals(databaseType))
             {
-                return MySQLIsTableExist(connection, table);
+                return MySqlIsTableExist(connection, table);
             }
             else
             {
@@ -119,7 +119,7 @@ namespace ShardingConnector.ParserBinder.MetaData.Column
         private const string MySQL_Tables = "Tables";
         private const string MySQL_TABLE_SCHEMA = "TABLE_SCHEMA";
         private const string MySQL_TABLE_NAME = "TABLE_NAME";
-        private static bool MySQLIsTableExist(DbConnection connection, string table)
+        private static bool MySqlIsTableExist(DbConnection connection, string table)
         {
             var database = connection.Database;
             using (var dataTable = connection.GetSchema(MySQL_Tables))
@@ -134,8 +134,6 @@ namespace ShardingConnector.ParserBinder.MetaData.Column
                             return true;
                         }
                     }
-                    //if (dataTable.Rows[i][TABLE_NAME].Equals(table))
-                    //    return true;
                 }
 
                 return false;

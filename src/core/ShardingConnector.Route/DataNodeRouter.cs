@@ -55,7 +55,7 @@ namespace ShardingConnector.Route
             {
                 // CHECKSTYLE:ON
                 routingHookManager.FinishFailure(ex);
-                throw ex;
+                throw;
             }
 
         }

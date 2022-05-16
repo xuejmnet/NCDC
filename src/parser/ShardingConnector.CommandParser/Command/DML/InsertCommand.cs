@@ -32,7 +32,10 @@ namespace ShardingConnector.CommandParser.Command.DML
         }
 
 
-
+/// <summary>
+/// insert into 没有指定列的情况下返回true
+/// </summary>
+/// <returns></returns>
         public bool UseDefaultColumns()
         {
             return !GetColumns().Any() && null == SetAssignment;

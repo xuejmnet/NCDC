@@ -56,7 +56,7 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.DataReader
         /// <exception cref="NotImplementedException"></exception>
         public override bool NextResult()
         {
-            throw new NotImplementedException();
+            return _streamDataReader.NextResult();
         }
 
         public override bool Read()

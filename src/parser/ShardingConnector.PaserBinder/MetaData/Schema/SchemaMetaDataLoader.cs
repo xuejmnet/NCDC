@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using ShardingConnector.Exceptions;
 using ShardingConnector.Extensions;
 using ShardingConnector.NewConnector.DataSource;
 using ShardingConnector.ParserBinder.MetaData.Column;
@@ -43,7 +44,7 @@ namespace ShardingConnector.ParserBinder.MetaData.Schema
             using (var connection = dataSource.GetDbConnection())
             {
                 await connection.OpenAsync();
-                tableNames = LoadAllTableNames(connection);
+                tableNames = LoadAllTableNames(connection,databaseType);
             }
 
             Console.WriteLine($"Loading {tableNames.Count} tables' meta data.");
@@ -65,10 +66,47 @@ namespace ShardingConnector.ParserBinder.MetaData.Schema
 
 
 
-        private static List<string> LoadAllTableNames(DbConnection connection)
+        private static List<string> LoadAllTableNames(DbConnection connection, string databaseType)
+        {
+            if ("MySql".Equals(databaseType) || "MariaDB".Equals(databaseType))
+            {
+                return LoadMySqlAllTableNames(connection);
+            }
+            if ("SqlServer".Equals(databaseType))
+            {
+                return LoadSqlServerAllTableNames(connection);
+            }
+
+            throw new ShardingException($"not found data base:[{databaseType}]");
+        }
+        private const string Tables = "Tables";
+        private const string MySQL_TABLE_SCHEMA = "TABLE_SCHEMA";
+        private const string MySQL_TABLE_NAME = "TABLE_NAME";
+        private static List<string> LoadMySqlAllTableNames(DbConnection connection)
+        {
+            var database = connection.Database;
+            using (var dataTable = connection.GetSchema(Tables))
+            {
+                var result = new List<string>(dataTable.Rows.Count);
+                for (int i = 0; i < dataTable.Rows.Count; i++)
+                {
+                    var schema = dataTable.Rows[i][MySQL_TABLE_SCHEMA];
+                    if (database.Equals($"{schema}", StringComparison.OrdinalIgnoreCase))
+                    {
+                        var table = dataTable.Rows[i][MySQL_TABLE_NAME].ToString();
+                        if (!IsSystemTable(table))
+                        {
+                            result.Add(table);
+                        }
+                    }
+                }
+                return result;
+            }
+        }
+        private static List<string> LoadSqlServerAllTableNames(DbConnection connection)
         {
             ICollection<string> result = new LinkedList<string>();
-            using (var dataTable = connection.GetSchema("Tables"))
+            using (var dataTable = connection.GetSchema(Tables))
             {
                 for (int i = 0; i < dataTable.Rows.Count; i++)
                 {

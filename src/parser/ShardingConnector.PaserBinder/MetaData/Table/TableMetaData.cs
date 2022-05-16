@@ -2,6 +2,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using ShardingConnector.DataStructure;
 using ShardingConnector.ParserBinder.MetaData.Column;
 using ShardingConnector.ParserBinder.MetaData.Index;
 
@@ -15,9 +16,9 @@ namespace ShardingConnector.ParserBinder.MetaData.Table
 */
     public sealed class TableMetaData
     {
-        private readonly ConcurrentDictionary<string, ColumnMetaData> _columns;
+        private readonly IDictionary<string, ColumnMetaData> _columns;
 
-        private readonly ConcurrentDictionary<string, IndexMetaData> _indexes;
+        private readonly IDictionary<string, IndexMetaData> _indexes;
 
         private readonly List<string> _columnNames = new List<string>();
 
@@ -29,14 +30,14 @@ namespace ShardingConnector.ParserBinder.MetaData.Table
             _indexes = CreateIndexes(indexMetaDataList);
         }
 
-        private ConcurrentDictionary<string, ColumnMetaData> CreateColumns(ICollection<ColumnMetaData> columnMetaDataList)
+        private IDictionary<string, ColumnMetaData> CreateColumns(ICollection<ColumnMetaData> columnMetaDataList)
         {
-            ConcurrentDictionary<string, ColumnMetaData> result = new ConcurrentDictionary<string, ColumnMetaData>();
+            IDictionary<string, ColumnMetaData> result = new LinkedDictionary<string, ColumnMetaData>();
             foreach (var columnMetaData in columnMetaDataList)
             {
                 var lowerColumnName = columnMetaData.Name.ToLower();
                 _columnNames.Add(lowerColumnName);
-                result.TryAdd(lowerColumnName, columnMetaData);
+                result.Add(lowerColumnName, columnMetaData);
                 if (columnMetaData.PrimaryKey)
                 {
                     _primaryKeyColumns.Add(lowerColumnName);
@@ -70,23 +71,23 @@ namespace ShardingConnector.ParserBinder.MetaData.Table
             }
         }
 
-        private ConcurrentDictionary<string, IndexMetaData> CreateIndexes(ICollection<IndexMetaData> indexMetaDataList)
+        private IDictionary<string, IndexMetaData> CreateIndexes(ICollection<IndexMetaData> indexMetaDataList)
         {
-            ConcurrentDictionary<string, IndexMetaData> result = new ConcurrentDictionary<string, IndexMetaData>();
+            IDictionary<string, IndexMetaData> result = new LinkedDictionary<string, IndexMetaData>();
             foreach (var indexMetaData in indexMetaDataList)
             {
-                result.TryAdd(indexMetaData.Name.ToLower(), indexMetaData);
+                result.Add(indexMetaData.Name.ToLower(), indexMetaData);
             }
 
             return result;
         }
 
-        public ConcurrentDictionary<string, ColumnMetaData> GetColumns()
+        public IDictionary<string, ColumnMetaData> GetColumns()
         {
             return _columns;
         }
 
-        public ConcurrentDictionary<string, IndexMetaData> GetIndexes()
+        public IDictionary<string, IndexMetaData> GetIndexes()
         {
             return _indexes;
         }

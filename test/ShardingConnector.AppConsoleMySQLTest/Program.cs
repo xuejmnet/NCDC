@@ -28,7 +28,8 @@ namespace ShardingConnector.AppConsoleMySQLTest
                 {
                     "ds0",
                     new GenericDataSource(MySqlConnectorFactory.Instance,
-                        "server=127.0.0.1;port=3306;database=test;userid=root;password=L6yBtV6qNENrwBy7;"
+                        // "server=127.0.0.1;port=3306;database=test;userid=root;password=L6yBtV6qNENrwBy7;"
+                        "server=127.0.0.1;port=3306;database=test;userid=root;password=root;"
                         )
                 }
             };
