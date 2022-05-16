@@ -43,9 +43,12 @@ namespace ShardingConnector.AppConsoleMySQLTest
             //2.7、配置默认数据源
             shardingRuleConfig.DefaultDataSourceName = "ds0";
             var dataSource = ShardingDataSourceFactory.CreateDataSource(dataSourceMap, shardingRuleConfig, new Dictionary<string, object>());
-            Delete(dataSource);
-            Insert(dataSource);
-            Query(dataSource);
+            for (int i = 0; i < 20; i++)
+            {
+                Delete(dataSource);
+                Insert(dataSource);
+                Query(dataSource);
+            }
         }
 
         static void Delete(IDataSource dataSource)
@@ -84,6 +87,7 @@ namespace ShardingConnector.AppConsoleMySQLTest
             dbCommand.Parameters.Add(dbParameter);
             dbCommand.Parameters.Add(dbParameter2);
             dbCommand.Parameters.Add(dbParameter3);
+            Console.WriteLine("ExecuteNonQuery-before");
             //dbCommand.CommandText = @"select [d].[Id],[d].[Name],[d].[Age] from [dbo].[SysUserMod] as [d] where id='1'  order by [d].[Age] desc";
             var i = dbCommand.ExecuteNonQuery();
             Console.WriteLine($"effect rows:{i}");

@@ -70,6 +70,7 @@ namespace ShardingConnector.ShardingRoute.Engine.RouteType.Standard
             {
                 result.GetRouteUnits().Add(
                         new RouteUnit(new RouteMapper(routedDataNode.GetDataSourceName(), routedDataNode.GetDataSourceName()), new List<RouteMapper>(){ new RouteMapper(LogicTableName, routedDataNode.GetTableName()) }));
+
             }
             return result;
         }

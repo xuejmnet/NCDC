@@ -26,7 +26,7 @@ namespace ShardingConnector.CommandParser.Command.DML
 
         public readonly ICollection<InsertValuesSegment> Values = new LinkedList<InsertValuesSegment>();
 
-        public List<ColumnSegment> GtColumns()
+        public List<ColumnSegment> GetColumns()
         {
             return null == InsertColumns ? new List<ColumnSegment>(0) : InsertColumns.GetColumns();
         }
@@ -35,7 +35,7 @@ namespace ShardingConnector.CommandParser.Command.DML
 
         public bool UseDefaultColumns()
         {
-            return !GtColumns().Any() && null == SetAssignment;
+            return !GetColumns().Any() && null == SetAssignment;
         }
 
         /**
@@ -50,8 +50,8 @@ namespace ShardingConnector.CommandParser.Command.DML
 
         private List<string> GetColumnNamesForInsertColumns()
         {
-            List<string> result = new List<string>(GtColumns().Count);
-            foreach (var column in GtColumns())
+            List<string> result = new List<string>(GetColumns().Count);
+            foreach (var column in GetColumns())
             {
                 result.Add(column.GetIdentifier().GetValue().ToLower());
             }

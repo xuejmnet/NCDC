@@ -27,7 +27,7 @@ namespace ShardingConnector.Route
         private readonly SqlParserEngine _parserEngine;
         private readonly IDictionary<IBaseRule, IRouteDecorator> _decorators =
             new Dictionary<IBaseRule, IRouteDecorator>();
-        
+
 
         public DataNodeRouter(ShardingConnectorMetaData metaData, SqlParserEngine parserEngine, ConfigurationProperties properties)
         {
@@ -40,13 +40,13 @@ namespace ShardingConnector.Route
             _decorators.Add(rule, decorator);
         }
 
-        public RouteContext Route(string sql, List<object> parameters,bool useCache)
+        public RouteContext Route(string sql, List<object> parameters, bool useCache)
         {
             var routingHookManager = RoutingHookManager.GetInstance();
             routingHookManager.Start(sql);
             try
             {
-                RouteContext result = ExecuteRoute(sql, parameters,useCache);
+                RouteContext result = ExecuteRoute(sql, parameters, useCache);
                 routingHookManager.FinishSuccess(result, _metaData.Schema);
                 return result;
                 // CHECKSTYLE:OFF
