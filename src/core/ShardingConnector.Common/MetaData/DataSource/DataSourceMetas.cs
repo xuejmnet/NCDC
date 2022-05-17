@@ -27,7 +27,7 @@ namespace ShardingConnector.Common.MetaData.DataSource
         private IDictionary<string, IDataSourceMetaData> GetDataSourceMetaDataMap(IDatabaseType databaseType, IDictionary<string, DatabaseAccessConfiguration> databaseAccessConfigurationMap)
         {
             return databaseAccessConfigurationMap.ToDictionary(o=>o.Key,
-                o=> databaseType.GetDataSourceMetaData(o.Value.Url,o.Value.UserName));
+                o=> databaseType.GetDataSourceMetaData(o.Value.Url));
         }
 
         /**
@@ -52,7 +52,12 @@ namespace ShardingConnector.Common.MetaData.DataSource
         {
             return existedDataSourceNames.Any(o=> IsInSameDatabaseInstance(_dataSourceMetaDataMap[dataSourceName],_dataSourceMetaDataMap[o]));
         }
-
+        /// <summary>
+        /// 判断是否在自同一个数据库实例里面
+        /// </summary>
+        /// <param name="sample"></param>
+        /// <param name="target"></param>
+        /// <returns></returns>
         private bool IsInSameDatabaseInstance(IDataSourceMetaData sample, IDataSourceMetaData target)
         {
             return sample is IMemorizedDataSourceMetaData

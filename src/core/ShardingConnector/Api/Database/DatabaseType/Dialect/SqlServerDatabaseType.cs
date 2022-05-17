@@ -22,13 +22,7 @@ namespace ShardingConnector.Api.Database.DatabaseType.Dialect
         {
             return "SqlServer";
         }
-
-        public ICollection<string> GetAdoNetUrlPrefixAlias()
-        {
-            return new List<string>() {"adonet:microsoft:sqlserver:"};
-        }
-
-        public IDataSourceMetaData GetDataSourceMetaData(string url, string username)
+        public IDataSourceMetaData GetDataSourceMetaData(string url)
         {
            return new SqlServerDataSourceMetaData(url);
         }

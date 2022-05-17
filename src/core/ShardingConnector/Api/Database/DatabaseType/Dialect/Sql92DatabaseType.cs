@@ -22,12 +22,7 @@ namespace ShardingConnector.Api.Database.DatabaseType.Dialect
             return "Sql92";
         }
 
-        public ICollection<string> GetAdoNetUrlPrefixAlias()
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public IDataSourceMetaData GetDataSourceMetaData(string url, string username)
+        public IDataSourceMetaData GetDataSourceMetaData(string url)
         {
             return new Sql92DataSourceMetaData();
         }

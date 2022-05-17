@@ -92,7 +92,7 @@ namespace ShardingConnector.ShardingExecute.Execute
                 return CACHED_DATASOURCE_METADATA[url];
             }
 
-            IDataSourceMetaData result = databaseType.GetDataSourceMetaData(url, null);
+            IDataSourceMetaData result = databaseType.GetDataSourceMetaData(url);
             CACHED_DATASOURCE_METADATA.TryAdd(url, result);
             return result;
         }

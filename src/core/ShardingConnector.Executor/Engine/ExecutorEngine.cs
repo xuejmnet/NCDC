@@ -16,10 +16,18 @@ namespace ShardingConnector.Executor.Engine
     */
 
     /// <summary>
-    /// 
+    /// 是否需要对executor engine添加独立线程池来实现独立引擎
     /// </summary>
     public sealed class ExecutorEngine
     {
+        private static readonly ExecutorEngine _instance;
+        public static ExecutorEngine Instance => _instance;
+
+        static ExecutorEngine()
+        {
+            _instance = new ExecutorEngine();
+        }
+        private ExecutorEngine(){}
         /**
      * Execute.
      *

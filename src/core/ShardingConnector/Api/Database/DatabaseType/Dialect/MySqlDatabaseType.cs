@@ -23,12 +23,7 @@ namespace ShardingConnector.Api.Database.DatabaseType.Dialect
             return "MySql";
         }
 
-        public ICollection<string> GetAdoNetUrlPrefixAlias()
-        {
-            return new List<string>() { "adonet:mysql:mysql:" };
-        }
-
-        public IDataSourceMetaData GetDataSourceMetaData(string url, string username)
+        public IDataSourceMetaData GetDataSourceMetaData(string url)
         {
             return new MySqlDataSourceMetaData(url);
         }

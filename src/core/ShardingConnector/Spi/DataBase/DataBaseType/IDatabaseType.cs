@@ -15,9 +15,6 @@ namespace ShardingConnector.Spi.DataBase.DataBaseType
     public interface IDatabaseType
     {
         string GetName();
-
-        ICollection<string> GetAdoNetUrlPrefixAlias();
-
         /**
          * Get data source meta data.
          * 
@@ -25,6 +22,6 @@ namespace ShardingConnector.Spi.DataBase.DataBaseType
          * @param username username of data source
          * @return data source meta data
          */
-        IDataSourceMetaData GetDataSourceMetaData(string url, string username);
+        IDataSourceMetaData GetDataSourceMetaData(string url);
     }
 }

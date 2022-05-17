@@ -23,6 +23,9 @@ namespace ShardingConnector.Api.Database.DatabaseType
 
         private static readonly IDictionary<string, IDatabaseType> DATABASE_TYPES = new Dictionary<string, IDatabaseType>();
 
+        /// <summary>
+        /// 默认自动注册
+        /// </summary>
         static DatabaseTypes()
         {
             var databaseTypes = ServiceLoader.Load<IDatabaseType>();
@@ -33,12 +36,13 @@ namespace ShardingConnector.Api.Database.DatabaseType
 
         }
 
-        /**
-         * Get name of trunk database type.
-         * 
-         * @param databaseType database type
-         * @return name of trunk database type
-         */
+        
+        /// <summary>
+        /// 获取数据库类型名称可能存在分支数据库
+        /// 比如MariaDB实际使用mysql解析引擎
+        /// </summary>
+        /// <param name="databaseType"></param>
+        /// <returns></returns>
         public static string GetTrunkDatabaseTypeName(IDatabaseType databaseType)
         {
             return databaseType is IBranchDatabaseType branchDatabaseType ? branchDatabaseType.GetTrunkDatabaseType().GetName() : databaseType.GetName();

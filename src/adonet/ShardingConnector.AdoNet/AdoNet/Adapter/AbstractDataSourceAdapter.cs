@@ -41,8 +41,9 @@ namespace ShardingConnector.AdoNet.AdoNet.Adapter
             foreach (var dataSource in DataSourceMap)
             {
                 IDatabaseType databaseType = CreateDatabaseType(dataSource.Value);
-                var flag = result == null || result == DatabaseType;
-                if (!flag)
+                var flag = result != null && result != DatabaseType;
+                //保证所有的数据源都是相同数据库
+                if (flag)
                 {
                     throw new ShardingException($"Database type inconsistent with '{result}' and '{databaseType}'");
                 }
