@@ -18,6 +18,8 @@ namespace ShardingConnector.AppConsoleMySQLTest
 {
     internal class Program
     {
+        private static readonly string conn ="server=127.0.0.1;port=3306;database=test;userid=root;password=L6yBtV6qNENrwBy7;";
+        //private static readonly string conn = "server=127.0.0.1;port=3306;database=test;userid=root;password=root;";
         static void Main(string[] args)
         {
             // SqlLogger.AddLog((msg) => Console.WriteLine(msg));
@@ -27,9 +29,7 @@ namespace ShardingConnector.AppConsoleMySQLTest
             {
                 {
                     "ds0",
-                    new GenericDataSource(MySqlConnectorFactory.Instance,
-                        // "server=127.0.0.1;port=3306;database=test;userid=root;password=L6yBtV6qNENrwBy7;"
-                        "server=127.0.0.1;port=3306;database=test;userid=root;password=root;"
+                    new GenericDataSource(MySqlConnectorFactory.Instance,conn
                     )
                 }
             };
@@ -44,17 +44,20 @@ namespace ShardingConnector.AppConsoleMySQLTest
             //2.7、配置默认数据源
             shardingRuleConfig.DefaultDataSourceName = "ds0";
             var dataSource = ShardingDataSourceFactory.CreateDataSource(dataSourceMap, shardingRuleConfig, new Dictionary<string, object>());
+            //Query(dataSource);
+            //var mySqlCommand = new MySqlCommand();
+            //mySqlCommand
             Stopwatch stopwatch = Stopwatch.StartNew();
             for (int i = 0; i < 1000; i++)
             {
-                QueryTest2();
+                QueryTest1(dataSource);
             }
             stopwatch.Stop();
             Console.WriteLine($"第1次:{stopwatch.ElapsedMilliseconds}");
             stopwatch.Restart();
             for (int i = 0; i < 1000; i++)
             {
-                QueryTest1(dataSource);
+                QueryTest2();
             }
             stopwatch.Stop();
             Console.WriteLine($"第2次:{stopwatch.ElapsedMilliseconds}");
@@ -76,12 +79,12 @@ namespace ShardingConnector.AppConsoleMySQLTest
             Console.WriteLine($"第4次:{stopwatch.ElapsedMilliseconds}");
 
 
-            for (int i = 0; i < 20; i++)
-            {
-                Delete(dataSource);
-                Insert(dataSource);
-                Query(dataSource);
-            }
+            //for (int i = 0; i < 20; i++)
+            //{
+            //    Delete(dataSource);
+            //    Insert(dataSource);
+            //    Query(dataSource);
+            //}
         }
 
         static void Delete(IDataSource dataSource)
@@ -160,18 +163,18 @@ namespace ShardingConnector.AppConsoleMySQLTest
             using (var dbConnection = dataSource.CreateConnection())
             {
                 var dbCommand = dbConnection.CreateCommand();
-                dbCommand.CommandText = @"select * from SysUserMod where id  in (@p1,@p2)";
+                dbCommand.CommandText = @"select * from SysUserMod where id  in (@p1)";
                 var dbParameter = dbCommand.CreateParameter();
                 dbParameter.ParameterName = "@p1";
                 dbParameter.Value = "21";
 
-                var dbParameter2 = dbCommand.CreateParameter();
-                dbParameter2.ParameterName = "@p2";
-                dbParameter2.Value = "22";
+                //var dbParameter2 = dbCommand.CreateParameter();
+                //dbParameter2.ParameterName = "@p2";
+                //dbParameter2.Value = "22";
                 //dbParameter.ParameterName = "@Id";
                 //dbParameter.Value = 21;
                 dbCommand.Parameters.Add(dbParameter);
-                dbCommand.Parameters.Add(dbParameter2);
+                //dbCommand.Parameters.Add(dbParameter2);
                 //dbCommand.CommandText = @"select [d].[Id],[d].[Name],[d].[Age] from [dbo].[SysUserMod] as [d] where id='1'  order by [d].[Age] desc";
                 var dbDataReader = dbCommand.ExecuteReader();
                 while (dbDataReader.Read())
@@ -180,26 +183,27 @@ namespace ShardingConnector.AppConsoleMySQLTest
             }
         }
 
+
         static void QueryTest2()
         {
             using (var dbConnection = MySqlConnectorFactory.Instance.CreateConnection())
             {
-                dbConnection.ConnectionString = "server=127.0.0.1;port=3306;database=test;userid=root;password=root;";
+                dbConnection.ConnectionString = conn;
                 dbConnection.Open();
 
                 var dbCommand = dbConnection.CreateCommand();
-                dbCommand.CommandText = @"select * from SysUserMod_02 where id  in (@p1,@p2)";
+                dbCommand.CommandText = @"select * from SysUserMod_02 where id  in (@p1)";
                 var dbParameter = dbCommand.CreateParameter();
                 dbParameter.ParameterName = "@p1";
                 dbParameter.Value = "21";
 
-                var dbParameter2 = dbCommand.CreateParameter();
-                dbParameter2.ParameterName = "@p2";
-                dbParameter2.Value = "22";
+                //var dbParameter2 = dbCommand.CreateParameter();
+                //dbParameter2.ParameterName = "@p2";
+                //dbParameter2.Value = "22";
                 //dbParameter.ParameterName = "@Id";
                 //dbParameter.Value = 21;
                 dbCommand.Parameters.Add(dbParameter);
-                dbCommand.Parameters.Add(dbParameter2);
+                //dbCommand.Parameters.Add(dbParameter2);
                 //dbCommand.CommandText = @"select [d].[Id],[d].[Name],[d].[Age] from [dbo].[SysUserMod] as [d] where id='1'  order by [d].[Age] desc";
                 var dbDataReader = dbCommand.ExecuteReader();
                 while (dbDataReader.Read())

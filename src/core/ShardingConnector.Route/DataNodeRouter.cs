@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-
 using ShardingConnector.CommandParser.Command;
 using ShardingConnector.Common.Config.Properties;
 using ShardingConnector.Common.MetaData;
