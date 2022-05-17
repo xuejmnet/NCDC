@@ -22,15 +22,14 @@ namespace ShardingConnector.AppConsoleMySQLTest
         //private static readonly string conn = "server=127.0.0.1;port=3306;database=test;userid=root;password=root;";
         static void Main(string[] args)
         {
-            // SqlLogger.AddLog((msg) => Console.WriteLine(msg));
+            SqlLogger.AddLog((msg) => Console.WriteLine(msg));
             //var dbProviderFactory = ShardingCreateDbProviderFactory.CreateDataSource(dataSourceMap, new ShardingRuleConfiguration(),
             //    new Dictionary<string, object>());
             var dataSourceMap = new Dictionary<string, IDataSource>()
             {
                 {
                     "ds0",
-                    new GenericDataSource(MySqlConnectorFactory.Instance,conn
-                    )
+                    new GenericDataSource(MySqlConnectorFactory.Instance,conn)
                 }
             };
             //2、分库分表配置
@@ -47,43 +46,44 @@ namespace ShardingConnector.AppConsoleMySQLTest
             //Query(dataSource);
             //var mySqlCommand = new MySqlCommand();
             //mySqlCommand
-            Stopwatch stopwatch = Stopwatch.StartNew();
-            for (int i = 0; i < 1000; i++)
-            {
-                QueryTest1(dataSource);
-            }
-            stopwatch.Stop();
-            Console.WriteLine($"第1次:{stopwatch.ElapsedMilliseconds}");
-            stopwatch.Restart();
-            for (int i = 0; i < 1000; i++)
-            {
-                QueryTest2();
-            }
-            stopwatch.Stop();
-            Console.WriteLine($"第2次:{stopwatch.ElapsedMilliseconds}");
+            //Stopwatch stopwatch = Stopwatch.StartNew();
+            //for (int i = 0; i < 1000; i++)
+            //{
+            //    QueryTest1(dataSource);
+            //}
+            //stopwatch.Stop();
+            //Console.WriteLine($"第1次:{stopwatch.ElapsedMilliseconds}");
+            //stopwatch.Restart();
+            //for (int i = 0; i < 1000; i++)
+            //{
+            //    QueryTest2();
+            //}
+            //stopwatch.Stop();
+            //Console.WriteLine($"第2次:{stopwatch.ElapsedMilliseconds}");
 
-            stopwatch.Restart();
-            for (int i = 0; i < 1000; i++)
-            {
-                QueryTest1(dataSource);
-            }
-            stopwatch.Stop();
-            Console.WriteLine($"第3次:{stopwatch.ElapsedMilliseconds}");
+            //stopwatch.Restart();
+            //for (int i = 0; i < 1000; i++)
+            //{
+            //    QueryTest1(dataSource);
+            //}
+            //stopwatch.Stop();
+            //Console.WriteLine($"第3次:{stopwatch.ElapsedMilliseconds}");
 
-            stopwatch.Restart();
-            for (int i = 0; i < 1000; i++)
-            {
-                QueryTest2();
-            }
-            stopwatch.Stop();
-            Console.WriteLine($"第4次:{stopwatch.ElapsedMilliseconds}");
+            //stopwatch.Restart();
+            //for (int i = 0; i < 1000; i++)
+            //{
+            //    QueryTest2();
+            //}
+            //stopwatch.Stop();
+            //Console.WriteLine($"第4次:{stopwatch.ElapsedMilliseconds}");
 
 
             //for (int i = 0; i < 20; i++)
             //{
-            //    Delete(dataSource);
-            //    Insert(dataSource);
-            //    Query(dataSource);
+            Delete(dataSource);
+            Insert(dataSource);
+            Update(dataSource);
+            Query(dataSource);
             //}
         }
 
@@ -157,7 +157,29 @@ namespace ShardingConnector.AppConsoleMySQLTest
 
             Console.WriteLine("Hello World!");
         }
+        static void Update(IDataSource dataSource)
+        {
+            var dbConnection = dataSource.CreateConnection();
 
+            var dbCommand = dbConnection.CreateCommand();
+            dbCommand.CommandText = @"update SysUserMod set age=1 where id  in (@p1,@p2)";
+            var dbParameter = dbCommand.CreateParameter();
+            dbParameter.ParameterName = "@p1";
+            dbParameter.Value = "21";
+
+            var dbParameter2 = dbCommand.CreateParameter();
+            dbParameter2.ParameterName = "@p2";
+            dbParameter2.Value = "22";
+            //dbParameter.ParameterName = "@Id";
+            //dbParameter.Value = 21;
+            dbCommand.Parameters.Add(dbParameter);
+            dbCommand.Parameters.Add(dbParameter2);
+            //dbCommand.CommandText = @"select [d].[Id],[d].[Name],[d].[Age] from [dbo].[SysUserMod] as [d] where id='1'  order by [d].[Age] desc";
+            var i = dbCommand.ExecuteNonQuery();
+    
+
+            Console.WriteLine($"update:{i}");
+        }
         static void QueryTest1(IDataSource dataSource)
         {
             using (var dbConnection = dataSource.CreateConnection())
