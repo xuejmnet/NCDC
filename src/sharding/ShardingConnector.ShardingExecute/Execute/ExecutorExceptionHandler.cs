@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Threading;
+using Microsoft.Extensions.Logging;
 using ShardingConnector.Exceptions;
 using ShardingConnector.Executor.SqlLog;
+using ShardingConnector.Logger;
 
 namespace ShardingConnector.ShardingExecute.Execute
 {
@@ -18,6 +20,8 @@ namespace ShardingConnector.ShardingExecute.Execute
     /// </summary>
     public sealed class ExecutorExceptionHandler
     {
+        private static ILogger<ExecutorExceptionHandler> _logger =
+            InternalLoggerFactory.CreateLogger<ExecutorExceptionHandler>();
         private static readonly AsyncLocal<bool> IGNORE_EXCEPTION = new AsyncLocal<bool>() {Value = true};
 
         /**
@@ -52,8 +56,7 @@ namespace ShardingConnector.ShardingExecute.Execute
             {
                 throw new ShardingException("异常", exception);
             }
-
-            SqlLogger.Error(exception);
+            _logger.LogError("处理异常",exception);
         }
     }
 }

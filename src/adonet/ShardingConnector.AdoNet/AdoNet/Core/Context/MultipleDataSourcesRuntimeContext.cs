@@ -6,6 +6,8 @@ using ShardingConnector.NewConnector.DataSource;
 using ShardingConnector.Spi.DataBase.DataBaseType;
 using System;
 using System.Collections.Generic;
+using Microsoft.Extensions.Logging;
+using ShardingConnector.Logger;
 using ShardingConnector.ParserBinder.MetaData.Schema;
 
 namespace ShardingConnector.AdoNet.AdoNet.Core.Context
@@ -23,6 +25,8 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Context
     /// </summary>
     public abstract class MultipleDataSourcesRuntimeContext<T> : AbstractRuntimeContext<T> where T : IBaseRule
     {
+        private static readonly ILogger<MultipleDataSourcesRuntimeContext<T>> _logger =
+            InternalLoggerFactory.CreateLogger<MultipleDataSourcesRuntimeContext<T>>();
         private readonly ShardingConnectorMetaData _metaData;
 
         protected MultipleDataSourcesRuntimeContext(IDictionary<string, IDataSource> dataSourceMap, T rule,
@@ -30,7 +34,12 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Context
         {
             _metaData = CreateMetaData(dataSourceMap, databaseType);
         }
-
+        /// <summary>
+        /// 创建数据库元数据信息
+        /// </summary>
+        /// <param name="dataSourceMap"></param>
+        /// <param name="databaseType"></param>
+        /// <returns></returns>
         private ShardingConnectorMetaData CreateMetaData(IDictionary<string, IDataSource> dataSourceMap,
             IDatabaseType databaseType)
         {
@@ -39,7 +48,8 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Context
                 new DataSourceMetas(databaseType, GetDatabaseAccessConfigurationMap(dataSourceMap));
             SchemaMetaData schemaMetaData = LoadSchemaMetaData(dataSourceMap);
             ShardingConnectorMetaData result = new ShardingConnectorMetaData(dataSourceMetas, schemaMetaData);
-            // log.info("Meta data load finished, cost {} milliseconds.", System.currentTimeMillis() - start);
+            var costMillis = UtcTime.CurrentTimeMillis() - start;
+            _logger.LogInformation($"Meta data load finished, cost {costMillis} milliseconds.");
             return result;
         }
 
@@ -53,7 +63,6 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Context
                 var dbProviderFactory = dataSource.Value;
                 using (var connection = dbProviderFactory.CreateConnection())
                 {
-                    connection.Open();
                     result.Add(dataSource.Key,
                         new DatabaseAccessConfiguration(connection.ConnectionString, null, null));
                 }

@@ -38,12 +38,11 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Context
             //{
             //    result = SchemaMetaDataDecorator.decorate(result, getRule().getEncryptRule(), new EncryptTableMetaDataDecorator());
             //}
-            int maxConnectionsSizePerQuery = 10;
+            int maxConnectionsLimitSize = 10;
             bool isCheckingMetaData = true;
             var rule = GetRule();
-            SchemaMetaData result = new ShardingMetaDataLoader(dataSourceMap, rule, maxConnectionsSizePerQuery, isCheckingMetaData).Load(GetDatabaseType()).GetAwaiter().GetResult();
+            SchemaMetaData result = new ShardingMetaDataLoader(dataSourceMap, rule, maxConnectionsLimitSize, isCheckingMetaData).Load(GetDatabaseType());
             result = SchemaMetaDataDecorator.Decorate(result, rule, new ShardingTableMetaDataDecorator());
-
             return result;
         }
     }

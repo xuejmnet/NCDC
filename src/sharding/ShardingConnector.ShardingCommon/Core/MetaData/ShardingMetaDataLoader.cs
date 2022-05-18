@@ -32,15 +32,15 @@ namespace ShardingConnector.ShardingCommon.Core.MetaData
 
         private readonly ShardingRule shardingRule;
 
-        private readonly int maxConnectionsSizePerQuery;
+        private readonly int maxConnectionsLimitSize;
 
         private readonly bool isCheckingMetaData;
 
-        public ShardingMetaDataLoader(IDictionary<string, IDataSource> dataSourceMap, ShardingRule shardingRule, int maxConnectionsSizePerQuery, bool isCheckingMetaData)
+        public ShardingMetaDataLoader(IDictionary<string, IDataSource> dataSourceMap, ShardingRule shardingRule, int maxConnectionsLimitSize, bool isCheckingMetaData)
         {
             this.dataSourceMap = dataSourceMap;
             this.shardingRule = shardingRule;
-            this.maxConnectionsSizePerQuery = maxConnectionsSizePerQuery;
+            this.maxConnectionsLimitSize = maxConnectionsLimitSize;
             this.isCheckingMetaData = isCheckingMetaData;
         }
         /**
@@ -51,7 +51,7 @@ namespace ShardingConnector.ShardingCommon.Core.MetaData
          * @return table meta data
          * @throws SQLException SQL exception
          */
-        public async Task<TableMetaData> Load(string logicTableName, IDatabaseType databaseType)
+        public TableMetaData Load(string logicTableName, IDatabaseType databaseType)
         {
             TableRule tableRule = shardingRule.GetTableRule(logicTableName);
             if (!isCheckingMetaData)
@@ -68,8 +68,8 @@ namespace ShardingConnector.ShardingCommon.Core.MetaData
                 {
                     var tableMetaData = Load(dataNode, databaseType);
                     actualTableMetaDataMap.TryAdd(dataNode.GetTableName(), tableMetaData);
-                })));
-            await Task.WhenAll(tasks);
+                }))).ToArray();
+             Task.WaitAll(tasks);
 
 
             CheckUniformed(logicTableName, actualTableMetaDataMap);
@@ -95,30 +95,30 @@ namespace ShardingConnector.ShardingCommon.Core.MetaData
          * @return schema Meta data
          * @throws SQLException SQL exception
          */
-        public async Task<SchemaMetaData> Load(IDatabaseType databaseType)
+        public SchemaMetaData Load(IDatabaseType databaseType)
         {
-            SchemaMetaData result =await LoadShardingSchemaMetaData(databaseType);
-            result.Merge(await LoadDefaultSchemaMetaData(databaseType));
+            SchemaMetaData result = LoadShardingSchemaMetaData(databaseType);
+            result.Merge( LoadDefaultSchemaMetaData(databaseType));
             return result;
         }
 
-        private async Task<SchemaMetaData> LoadShardingSchemaMetaData(IDatabaseType databaseType)
+        private SchemaMetaData LoadShardingSchemaMetaData(IDatabaseType databaseType)
         {
             Console.WriteLine($"Loading {shardingRule.TableRules.Count} logic tables' meta data.");
             IDictionary<string, TableMetaData> tableMetaDataMap = new Dictionary<string, TableMetaData>(shardingRule.TableRules.Count);
             foreach (var tableRule in shardingRule.TableRules)
             {
-                tableMetaDataMap.Add(tableRule.LogicTable, await Load(tableRule.LogicTable, databaseType));
+                tableMetaDataMap.Add(tableRule.LogicTable,  Load(tableRule.LogicTable, databaseType));
             }
             return new SchemaMetaData(tableMetaDataMap);
         }
 
-        private async Task<SchemaMetaData> LoadDefaultSchemaMetaData(IDatabaseType databaseType)
+        private SchemaMetaData LoadDefaultSchemaMetaData(IDatabaseType databaseType)
         {
             var actualDefaultDataSourceName = shardingRule.FindActualDefaultDataSourceName();
             if (actualDefaultDataSourceName != null)
             {
-                return await SchemaMetaDataLoader.Load(dataSourceMap[actualDefaultDataSourceName], maxConnectionsSizePerQuery, databaseType.GetName());
+                return  SchemaMetaDataLoader.Load(dataSourceMap[actualDefaultDataSourceName], maxConnectionsLimitSize, databaseType.GetName());
             }
             return new SchemaMetaData(new Dictionary<string, TableMetaData>(0));
         }

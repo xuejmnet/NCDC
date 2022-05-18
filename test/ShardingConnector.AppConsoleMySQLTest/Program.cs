@@ -1,18 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using Antlr4.Runtime.Tree;
+﻿using Microsoft.Extensions.Logging;
 using MySqlConnector;
-using ShardingConnector.AdoNet.AdoNet.Core;
 using ShardingConnector.AdoNet.AdoNet.Core.DataSource;
 using ShardingConnector.AdoNet.Api;
-using ShardingConnector.CommandParser.Command;
-using ShardingConnector.Executor.SqlLog;
+using ShardingConnector.Logger;
 using ShardingConnector.NewConnector.DataSource;
-using ShardingConnector.ParserEngine.Core.Parser;
 using ShardingConnector.ShardingApi.Api.Config.Sharding;
 using ShardingConnector.ShardingApi.Api.Config.Sharding.Strategy;
 using ShardingConnector.ShardingApi.Api.Sharding.Standard;
+using System;
+using System.Collections.Generic;
 
 namespace ShardingConnector.AppConsoleMySQLTest
 {
@@ -22,7 +18,13 @@ namespace ShardingConnector.AppConsoleMySQLTest
         //private static readonly string conn = "server=127.0.0.1;port=3306;database=test;userid=root;password=root;";
         static void Main(string[] args)
         {
-            SqlLogger.AddLog((msg) => Console.WriteLine(msg));
+            InternalLoggerFactory.DefaultFactory = LoggerFactory.Create(builder =>
+            {
+                builder.AddFilter("Microsoft", LogLevel.Warning)
+                    .AddFilter("System", LogLevel.Warning)
+                    .AddSimpleConsole(c => c.TimestampFormat = "[yyyy-MM-dd HH:mm:ss]");
+            });
+          
             //var dbProviderFactory = ShardingCreateDbProviderFactory.CreateDataSource(dataSourceMap, new ShardingRuleConfiguration(),
             //    new Dictionary<string, object>());
             var dataSourceMap = new Dictionary<string, IDataSource>()

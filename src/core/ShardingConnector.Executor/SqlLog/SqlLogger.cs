@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-
+using Microsoft.Extensions.Logging;
 using ShardingConnector.CommandParser.Command;
 using ShardingConnector.Executor.Context;
+using ShardingConnector.Logger;
 using ShardingConnector.ParserBinder.Command;
 
 namespace ShardingConnector.Executor.SqlLog
@@ -19,24 +20,13 @@ namespace ShardingConnector.Executor.SqlLog
     public delegate void Log(string msg);
     public class SqlLogger
     {
-        public event Log Show;
+        private static readonly ILogger<SqlLogger> _logger = InternalLoggerFactory.CreateLogger<SqlLogger>();
 
         private SqlLogger()
         {
             
         }
 
-        private static SqlLogger _sqlLogger;
-
-        static SqlLogger()
-        {
-            _sqlLogger = new SqlLogger();
-        }
-
-        public static void AddLog(Log log)
-        {
-            _sqlLogger.Show += log;
-        }
         /// <summary>
         /// 记录sql
         /// </summary>
@@ -46,36 +36,16 @@ namespace ShardingConnector.Executor.SqlLog
         /// <param name="executionUnits"></param>
         public static void LogSql(string logicSql, bool showSimple, ISqlCommandContext<ISqlCommand> sqlCommandContext, ICollection<ExecutionUnit> executionUnits)
         {
-            if (_sqlLogger.Show != null)
+            _logger.LogInformation($"Logic SQL: {logicSql}");
+            _logger.LogInformation($"SqlCommand: {sqlCommandContext.GetSqlCommand()}");
+            if (showSimple)
             {
-                _sqlLogger.Show($"Logic SQL: {logicSql}");
-                _sqlLogger.Show($"SqlCommand: {sqlCommandContext.GetSqlCommand()}");
-                if (showSimple)
-                {
-                    LogSimpleMode(executionUnits);
-                }
-                else
-                {
-                    LogNormalMode(executionUnits);
-                }
+                LogSimpleMode(executionUnits);
             }
-        }
-
-        public static void Log(string msg)
-        {
-            _sqlLogger.Show?.Invoke(msg);
-        }
-        public static void Error(string msg)
-        {
-            _sqlLogger.Show?.Invoke(msg);
-        }
-        public static void Error(string msg,Exception ex)
-        {
-            _sqlLogger.Show?.Invoke($@"msg:{msg},exception:{ex}");
-        }
-        public static void Error(Exception ex)
-        {
-            _sqlLogger.Show?.Invoke($@"exception:{ex}");
+            else
+            {
+                LogNormalMode(executionUnits);
+            }
         }
 
         private static void LogSimpleMode(ICollection<ExecutionUnit> executionUnits)
@@ -86,7 +56,7 @@ namespace ShardingConnector.Executor.SqlLog
                 dataSourceNames.Add(executionUnit.GetDataSourceName());
 
             }
-            _sqlLogger.Show($"Actual SQL(simple): {dataSourceNames} ::: {executionUnits.Count}");
+            _logger.LogInformation($"Actual SQL(simple): {dataSourceNames} ::: {executionUnits.Count}");
         }
 
         private static void LogNormalMode(ICollection<ExecutionUnit> executionUnits)
@@ -95,11 +65,11 @@ namespace ShardingConnector.Executor.SqlLog
             {
                 if (!executionUnit.GetSqlUnit().GetParameters().Any())
                 {
-                    _sqlLogger.Show($"Actual SQL: {executionUnit.GetDataSourceName()} ::: {executionUnit.GetSqlUnit().GetSql()}");
+                    _logger.LogInformation($"Actual SQL: {executionUnit.GetDataSourceName()} ::: {executionUnit.GetSqlUnit().GetSql()}");
                 }
                 else
                 {
-                    _sqlLogger.Show($"Actual SQL: {executionUnit.GetDataSourceName()} ::: {executionUnit.GetSqlUnit().GetSql()} ::: {string.Join(",", executionUnit.GetSqlUnit().GetParameters().Select(o=>o.ToString()))}");
+                    _logger.LogInformation($"Actual SQL: {executionUnit.GetDataSourceName()} ::: {executionUnit.GetSqlUnit().GetSql()} ::: {string.Join(",", executionUnit.GetSqlUnit().GetParameters().Select(o=>o.ToString()))}");
                 }
             }
         }

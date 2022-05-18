@@ -38,12 +38,12 @@ namespace ShardingConnector.ParserBinder.MetaData.Schema
          * @return schema meta data
          * @throws SQLException SQL exception
          */
-        public static async Task<SchemaMetaData> Load(IDataSource dataSource, int maxConnectionCount, string databaseType)
+        public static SchemaMetaData Load(IDataSource dataSource, int maxConnectionCount, string databaseType)
         {
             List<string> tableNames;
             using (var connection = dataSource.CreateConnection())
             {
-                await connection.OpenAsync();
+                 connection.Open();
                 tableNames = LoadAllTableNames(connection,databaseType);
             }
 
@@ -59,7 +59,7 @@ namespace ShardingConnector.ParserBinder.MetaData.Schema
             }).GroupBy(o => o.Index).Select(o => o.Select(g=>g.TableName).ToList()).ToList();
 
             IDictionary<string, TableMetaData> tableMetaDataMap = 1 == tableGroups.Count
-                    ? Load(dataSource.CreateConnection(), tableGroups[0], databaseType) :await AsyncLoad(dataSource, maxConnectionCount, tableNames, tableGroups, databaseType);
+                    ? Load(dataSource.CreateConnection(), tableGroups[0], databaseType) : AsyncLoad(dataSource, maxConnectionCount, tableNames, tableGroups, databaseType);
             return new SchemaMetaData(tableMetaDataMap);
         }
 
@@ -144,7 +144,7 @@ namespace ShardingConnector.ParserBinder.MetaData.Schema
             }
         }
 
-        private static async Task<IDictionary<string, TableMetaData>> AsyncLoad(IDataSource dataSource, int maxConnectionCount, List<string> tableNames,
+        private static IDictionary<string, TableMetaData> AsyncLoad(IDataSource dataSource, int maxConnectionCount, List<string> tableNames,
                                                 List<List<string>> tableGroups, string databaseType)
         {
             ConcurrentDictionary<string, TableMetaData> result = new ConcurrentDictionary<string, TableMetaData>();
@@ -155,8 +155,8 @@ namespace ShardingConnector.ParserBinder.MetaData.Schema
                 {
                     result.TryAdd(entry.Key, entry.Value);
                 }
-            }));
-            await Task.WhenAll(tasks);
+            })).ToArray();
+             Task.WaitAll(tasks);
             return result;
         }
     }

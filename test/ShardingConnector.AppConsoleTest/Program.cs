@@ -7,8 +7,10 @@ using ShardingConnector.ShardingApi.Api.Config.Sharding.Strategy;
 using ShardingConnector.ShardingApi.Api.Sharding.Standard;
 using System;
 using System.Collections.Generic;
+using Microsoft.Extensions.Logging;
 using ShardingConnector.AdoNet.AdoNet.Core.Command;
 using ShardingConnector.Executor.SqlLog;
+using ShardingConnector.Logger;
 
 namespace ShardingConnector.AppConsoleTest
 {
@@ -16,7 +18,13 @@ namespace ShardingConnector.AppConsoleTest
     {
         static void Main(string[] args)
         {
-            SqlLogger.AddLog((msg)=>Console.WriteLine(msg));
+            InternalLoggerFactory.DefaultFactory = LoggerFactory.Create(builder =>
+            {
+                builder.AddFilter("Microsoft", LogLevel.Warning)
+                    .AddFilter("System", LogLevel.Warning)
+                    .AddSimpleConsole(c => c.TimestampFormat = "[yyyy-MM-dd HH:mm:ss]");
+            });
+
             //var dbProviderFactory = ShardingCreateDbProviderFactory.CreateDataSource(dataSourceMap, new ShardingRuleConfiguration(),
             //    new Dictionary<string, object>());
             var dataSourceMap = new Dictionary<string, IDataSource>()
