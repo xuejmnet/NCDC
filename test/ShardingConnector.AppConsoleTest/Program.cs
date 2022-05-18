@@ -8,8 +8,6 @@ using ShardingConnector.ShardingApi.Api.Sharding.Standard;
 using System;
 using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
-using ShardingConnector.AdoNet.AdoNet.Core.Command;
-using ShardingConnector.Executor.SqlLog;
 using ShardingConnector.Logger;
 
 namespace ShardingConnector.AppConsoleTest

@@ -390,14 +390,10 @@ namespace ShardingConnector.ShardingCommon.Core.Rule
             string defaultDataSourceName = ShardingDataSourceNames.GetDefaultDataSourceName();
             return !string.IsNullOrEmpty(defaultDataSourceName);
         }
-
-        /**
-         * Find actual default data source name.
-         *
-         * <p>If use master-slave rule, return master data source name.</p>
-         *
-         * @return actual default data source name
-         */
+        /// <summary>
+        /// 找到实际的默认数据源名称如果是读写分离那么将使用master数据源名称
+        /// </summary>
+        /// <returns></returns>
         public string FindActualDefaultDataSourceName()
         {
             string defaultDataSourceName = ShardingDataSourceNames.GetDefaultDataSourceName();

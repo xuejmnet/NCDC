@@ -4,9 +4,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using ShardingConnector.Common.Rule;
 using ShardingConnector.Exceptions;
 using ShardingConnector.Extensions;
+using ShardingConnector.Logger;
 using ShardingConnector.NewConnector.DataSource;
 using ShardingConnector.ParserBinder.MetaData.Schema;
 using ShardingConnector.ParserBinder.MetaData.Table;
@@ -24,6 +26,8 @@ namespace ShardingConnector.ShardingCommon.Core.MetaData
     */
     public sealed class ShardingMetaDataLoader
     {
+        private static readonly ILogger<ShardingMetaDataLoader> _logger =
+            InternalLoggerFactory.CreateLogger<ShardingMetaDataLoader>();
         private static readonly int CORES = Environment.ProcessorCount;
 
         private static readonly int FUTURE_GET_TIME_OUT_SEC = 5;
@@ -62,7 +66,6 @@ namespace ShardingConnector.ShardingCommon.Core.MetaData
             }
             var dataNodeGroups = tableRule.GetDataNodeGroups();
             ConcurrentDictionary<string, TableMetaData> actualTableMetaDataMap = new ConcurrentDictionary<string, TableMetaData>();
-            IDictionary<string, Task<TableMetaData>> tableFutureMap = new Dictionary<string, Task<TableMetaData>>(dataNodeGroups.Count);
 
             var tasks = dataNodeGroups.SelectMany(o => o.Value.Select(dataNode => Task.Run(() =>
                 {
@@ -84,7 +87,7 @@ namespace ShardingConnector.ShardingCommon.Core.MetaData
             }
             catch (Exception e)
             {
-                throw new ShardingException($"SQLException for DataNode={dataNode} and databaseType={databaseType.GetName()}", e);
+                throw new ShardingException($"SqlException for DataNode={dataNode} and databaseType={databaseType.GetName()}", e);
             }
         }
 
@@ -104,7 +107,7 @@ namespace ShardingConnector.ShardingCommon.Core.MetaData
 
         private SchemaMetaData LoadShardingSchemaMetaData(IDatabaseType databaseType)
         {
-            Console.WriteLine($"Loading {shardingRule.TableRules.Count} logic tables' meta data.");
+            _logger.LogInformation($"Loading {shardingRule.TableRules.Count} logic tables' meta data.");
             IDictionary<string, TableMetaData> tableMetaDataMap = new Dictionary<string, TableMetaData>(shardingRule.TableRules.Count);
             foreach (var tableRule in shardingRule.TableRules)
             {
