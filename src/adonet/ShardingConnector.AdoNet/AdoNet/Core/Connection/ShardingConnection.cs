@@ -40,7 +40,7 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Connection
         {
             _isOpenTransaction = true;
             var transaction= _defaultDbConnection.BeginTransaction(isolationLevel);
-            RecordConnectionMethodInvoke(connection => connection.BeginTransaction(isolationLevel));
+            RecordTargetMethodInvoke(connection => connection.BeginTransaction(isolationLevel));
             if (_runtimeContext.IsMultiDataSource())
             {
                 //RecordConnectionMethodInvoke(connection=>connection.BeginTransaction(isolationLevel));
@@ -54,7 +54,7 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Connection
         public override void ChangeDatabase(string databaseName)
         {
             _defaultDbConnection.ChangeDatabase(databaseName);
-            RecordConnectionMethodInvoke(connection => connection.ChangeDatabase(databaseName));
+            RecordTargetMethodInvoke(connection => connection.ChangeDatabase(databaseName));
             if (_runtimeContext.IsMultiDataSource())
             {
                 //RecordConnectionMethodInvoke(connection => connection.ChangeDatabase(databaseName));
@@ -78,7 +78,7 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Connection
         public override void Open()
         {
             _defaultDbConnection.Open();
-            RecordConnectionMethodInvoke(connection => connection.Open());
+            RecordTargetMethodInvoke(connection => connection.Open());
             if (_runtimeContext.IsMultiDataSource())
             {
                 //RecordConnectionMethodInvoke(connection => connection.Open());

@@ -21,13 +21,14 @@ namespace ShardingConnector.AdoNet.AdoNet.Abstraction
     * @Ver: 1.0
     * @Email: 326308290@qq.com
     */
-    public abstract class AbstractDbConnection : DbConnection
+    public abstract class AbstractDbConnection : DbConnection, IAdoMethodRecorder<DbConnection>
     {
-        public event Action<DbConnection> OnConnectionRepeater;
+        public event Action<DbConnection> OnConnectionRecorder;
         public readonly MultiValueDictionary<string, DbConnection> CachedConnections = new MultiValueDictionary<string, DbConnection>();
         public abstract IDictionary<string, IDataSource> GetDataSourceMap();
         public abstract DbConnection CreateConnection(string dataSourceName, IDataSource dataSource);
         private List<DbConnection> _connections;
+
         public List<DbConnection> GetConnections(ConnectionModeEnum connectionMode, string dataSourceName, int connectionSize)
         {
             var dataSourceMap = GetDataSourceMap();
@@ -62,8 +63,8 @@ namespace ShardingConnector.AdoNet.AdoNet.Abstraction
             //        cachedConnections.AddRange(dataSourceName, result);
             //    }
             //}
-            _connections= new List<DbConnection>(CreateConnections(dataSourceName, connectionMode, dataSource, connectionSize));
-            
+            _connections = new List<DbConnection>(CreateConnections(dataSourceName, connectionMode, dataSource, connectionSize));
+
             return _connections;
         }
 
@@ -73,9 +74,10 @@ namespace ShardingConnector.AdoNet.AdoNet.Abstraction
             if (1 == connectionSize)
             {
                 var connection = CreateConnection(dataSourceName, dataSource);
-                ReplyConnectionMethodInvoke(connection);
+                ReplyTargetMethodInvoke(connection);
                 return new List<DbConnection>() { connection };
             }
+
             if (ConnectionModeEnum.CONNECTION_STRICTLY == connectionMode)
             {
                 return CreateConnections(dataSourceName, dataSource, connectionSize);
@@ -85,9 +87,8 @@ namespace ShardingConnector.AdoNet.AdoNet.Abstraction
             {
                 return CreateConnections(dataSourceName, dataSource, connectionSize);
             }
-
-
         }
+
         private List<DbConnection> CreateConnections(string dataSourceName, IDataSource dataSource, int connectionSize)
         {
             List<DbConnection> result = new List<DbConnection>(connectionSize);
@@ -96,7 +97,7 @@ namespace ShardingConnector.AdoNet.AdoNet.Abstraction
                 try
                 {
                     var connection = CreateConnection(dataSourceName, dataSource);
-                    ReplyConnectionMethodInvoke(connection);
+                    ReplyTargetMethodInvoke(connection);
                     result.Add(connection);
                 }
                 catch (Exception ex)
@@ -105,9 +106,11 @@ namespace ShardingConnector.AdoNet.AdoNet.Abstraction
                     {
                         conn.Dispose();
                     }
+
                     throw new ShardingException($"Could't get {connectionSize} connections one time, partition succeed connection({result.Count}) have released!", ex);
                 }
             }
+
             return result;
         }
 
@@ -122,23 +125,25 @@ namespace ShardingConnector.AdoNet.AdoNet.Abstraction
 
         protected void AssertSingleDataSource()
         {
-            ShardingAssert.ShouldBeTrue(GetDataSourceMap().Count==1,"multi data source not support");
+            ShardingAssert.ShouldBeTrue(GetDataSourceMap().Count == 1, "multi data source not support");
         }
+
         /// <summary>
-        /// 从新播放dbconnection的创建后的动作
+        /// 从新播放target的创建后的动作
         /// </summary>
-        /// <param name="connection"></param>
-        public void ReplyConnectionMethodInvoke(DbConnection connection)
+        /// <param name="target"></param>
+        public void ReplyTargetMethodInvoke(DbConnection target)
         {
-            OnConnectionRepeater?.Invoke(connection);
+            OnConnectionRecorder?.Invoke(target);
         }
+
         /// <summary>
-        /// 记录dbconnection的动作
+        /// 记录target的动作
         /// </summary>
-        /// <param name="action"></param>
-        public void RecordConnectionMethodInvoke(Action<DbConnection> action)
+        /// <param name="target"></param>
+        public void RecordTargetMethodInvoke(Action<DbConnection> target)
         {
-            OnConnectionRepeater += action;
+            OnConnectionRecorder += target;
         }
     }
 }
