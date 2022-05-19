@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Common;
+using System.Linq;
 using System.Text;
 using ShardingConnector.AdoNet.AdoNet.Core.Context;
 using ShardingConnector.Api.Database.DatabaseType;
@@ -67,5 +68,7 @@ namespace ShardingConnector.AdoNet.AdoNet.Adapter
             }
         }
         public abstract DbConnection CreateConnection();
+
+        public abstract bool IsDefault();
     }
 }

@@ -5,6 +5,7 @@ using System.Data.Common;
 using System.Linq;
 using System.Text;
 using Antlr4.Runtime.Misc;
+using ShardingConnector.AdoNet.AdoNet.Core;
 using ShardingConnector.Base;
 using ShardingConnector.Exceptions;
 using ShardingConnector.Executor.Constant;
@@ -22,7 +23,8 @@ namespace ShardingConnector.AdoNet.AdoNet.Abstraction
     */
     public abstract class AbstractDbConnection : DbConnection
     {
-        public readonly MultiValueDictionary<string, DbConnection> cachedConnections = new MultiValueDictionary<string, DbConnection>();
+        public event Action<DbConnection> OnConnectionRepeater;
+        public readonly MultiValueDictionary<string, DbConnection> CachedConnections = new MultiValueDictionary<string, DbConnection>();
         public abstract IDictionary<string, IDataSource> GetDataSourceMap();
         public abstract DbConnection CreateConnection(string dataSourceName, IDataSource dataSource);
         private List<DbConnection> _connections;
@@ -61,6 +63,7 @@ namespace ShardingConnector.AdoNet.AdoNet.Abstraction
             //    }
             //}
             _connections= new List<DbConnection>(CreateConnections(dataSourceName, connectionMode, dataSource, connectionSize));
+            
             return _connections;
         }
 
@@ -70,7 +73,7 @@ namespace ShardingConnector.AdoNet.AdoNet.Abstraction
             if (1 == connectionSize)
             {
                 var connection = CreateConnection(dataSourceName, dataSource);
-                //replayMethodsInvocation(connection);
+                ReplyConnectionMethodInvoke(connection);
                 return new List<DbConnection>() { connection };
             }
             if (ConnectionModeEnum.CONNECTION_STRICTLY == connectionMode)
@@ -93,14 +96,14 @@ namespace ShardingConnector.AdoNet.AdoNet.Abstraction
                 try
                 {
                     var connection = CreateConnection(dataSourceName, dataSource);
-                    //replayMethodsInvocation(connection);
+                    ReplyConnectionMethodInvoke(connection);
                     result.Add(connection);
                 }
                 catch (Exception ex)
                 {
                     foreach (var conn in result)
                     {
-                        conn.Close();
+                        conn.Dispose();
                     }
                     throw new ShardingException($"Could't get {connectionSize} connections one time, partition succeed connection({result.Count}) have released!", ex);
                 }
@@ -115,6 +118,27 @@ namespace ShardingConnector.AdoNet.AdoNet.Abstraction
             {
                 dbConnection.Dispose();
             }
+        }
+
+        protected void AssertSingleDataSource()
+        {
+            ShardingAssert.ShouldBeTrue(GetDataSourceMap().Count==1,"multi data source not support");
+        }
+        /// <summary>
+        /// 从新播放dbconnection的创建后的动作
+        /// </summary>
+        /// <param name="connection"></param>
+        public void ReplyConnectionMethodInvoke(DbConnection connection)
+        {
+            OnConnectionRepeater?.Invoke(connection);
+        }
+        /// <summary>
+        /// 记录dbconnection的动作
+        /// </summary>
+        /// <param name="action"></param>
+        public void RecordConnectionMethodInvoke(Action<DbConnection> action)
+        {
+            OnConnectionRepeater += action;
         }
     }
 }

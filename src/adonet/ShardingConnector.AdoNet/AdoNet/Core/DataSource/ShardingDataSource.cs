@@ -38,6 +38,12 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.DataSource
             return new ShardingConnection(DataSourceMap, _runtimeContext,
                 TransactionTypeHolder.Get() ?? TransactionTypeEnum.LOCAL);
         }
+
+        public override bool IsDefault()
+        {
+            throw new NotImplementedException();
+        }
+
         public ShardingDataSource(IDictionary<string, IDataSource> dataSourceMap,ShardingRule shardingRule, IDictionary<string,object> props) : base(dataSourceMap)
         {
             _runtimeContext = new ShardingRuntimeContext(dataSourceMap, shardingRule, props, DatabaseType);

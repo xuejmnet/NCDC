@@ -54,5 +54,7 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Context
      * @return SQL parser engine
      */
         SqlParserEngine GetSqlParserEngine();
+
+        bool IsMultiDataSource();
     }
 }

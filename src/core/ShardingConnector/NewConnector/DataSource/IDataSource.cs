@@ -12,5 +12,6 @@ namespace ShardingConnector.NewConnector.DataSource
     public interface IDataSource
     {
         DbConnection CreateConnection();
+        bool IsDefault();
     }
 }

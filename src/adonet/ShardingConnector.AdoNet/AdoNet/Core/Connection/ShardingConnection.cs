@@ -2,8 +2,12 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using ShardingConnector.AdoNet.AdoNet.Abstraction;
 using ShardingConnector.AdoNet.AdoNet.Core.Command;
+using ShardingConnector.Exceptions;
 using ShardingConnector.NewConnector.DataSource;
 using ShardingConnector.Transaction;
 using ShardingRuntimeContext = ShardingConnector.AdoNet.AdoNet.Core.Context.ShardingRuntimeContext;
@@ -17,45 +21,88 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Connection
     * @Ver: 1.0
     * @Email: 326308290@qq.com
     */
-    public class ShardingConnection: AbstractDbConnection
+    public class ShardingConnection : AbstractDbConnection
     {
         private readonly IDictionary<string, IDataSource> _dataSourceMap;
         private readonly ShardingRuntimeContext _runtimeContext;
         private readonly TransactionTypeEnum _transactionType;
-        private bool isOpenTransaction = false;
+        private bool _isOpenTransaction = false;
+        private readonly DbConnection _defaultDbConnection;
 
-        public ShardingConnection(IDictionary<string, IDataSource> dataSourceMap,ShardingRuntimeContext runtimeContext, TransactionTypeEnum transactionType)
+        public ShardingConnection(IDictionary<string, IDataSource> dataSourceMap, ShardingRuntimeContext runtimeContext, TransactionTypeEnum transactionType)
         {
             _dataSourceMap = dataSourceMap;
             _runtimeContext = runtimeContext;
             _transactionType = transactionType;
+            _defaultDbConnection = dataSourceMap.Values.FirstOrDefault(o => o.IsDefault())?.CreateConnection()??throw new ShardingException("not found default data source");
         }
         protected override DbTransaction BeginDbTransaction(IsolationLevel isolationLevel)
         {
-            isOpenTransaction = true;
-            throw new NotImplementedException();
+            _isOpenTransaction = true;
+            var transaction= _defaultDbConnection.BeginTransaction(isolationLevel);
+            RecordConnectionMethodInvoke(connection => connection.BeginTransaction(isolationLevel));
+            if (_runtimeContext.IsMultiDataSource())
+            {
+                //RecordConnectionMethodInvoke(connection=>connection.BeginTransaction(isolationLevel));
+                var multiTasks = CachedConnections.Values.SelectMany(o => o)
+                    .Select(connection => Task.Run(() => connection.BeginTransaction(isolationLevel))).ToArray();
+                Task.WaitAll(multiTasks);
+            }
+            return transaction;
         }
 
         public override void ChangeDatabase(string databaseName)
         {
-            throw new NotImplementedException();
+            _defaultDbConnection.ChangeDatabase(databaseName);
+            RecordConnectionMethodInvoke(connection => connection.ChangeDatabase(databaseName));
+            if (_runtimeContext.IsMultiDataSource())
+            {
+                //RecordConnectionMethodInvoke(connection => connection.ChangeDatabase(databaseName));
+                var multiTasks = CachedConnections.Values.SelectMany(o => o)
+                    .Select(connection => Task.Run(() => connection.ChangeDatabase(databaseName))).ToArray();
+                Task.WaitAll(multiTasks);
+            }
         }
 
         public override void Close()
         {
-            throw new NotImplementedException();
+            _defaultDbConnection.Close();
+            if (_runtimeContext.IsMultiDataSource())
+            {
+                var multiTasks = CachedConnections.Values.SelectMany(o => o)
+                    .Select(connection => Task.Run(() => connection.Close())).ToArray();
+                Task.WaitAll(multiTasks);
+            }
         }
 
         public override void Open()
         {
-            throw new NotImplementedException();
+            _defaultDbConnection.Open();
+            RecordConnectionMethodInvoke(connection => connection.Open());
+            if (_runtimeContext.IsMultiDataSource())
+            {
+                //RecordConnectionMethodInvoke(connection => connection.Open());
+                var multiTasks = CachedConnections.Values.SelectMany(o => o).Select(connection => Task.Run(() => connection.Open())).ToArray();
+                Task.WaitAll(multiTasks);
+            }
         }
 
-        public override string ConnectionString { get; set; }
-        public override string Database { get; }
-        public override ConnectionState State { get; }
-        public override string DataSource { get; }
-        public override string ServerVersion { get; }
+        public override string ConnectionString
+        {
+            get
+            {
+                return _defaultDbConnection.ConnectionString;
+            }
+            set
+            {
+                _defaultDbConnection.ConnectionString = value;
+            }
+        }
+
+        public override string Database =>_defaultDbConnection.Database;
+        public override ConnectionState State => _defaultDbConnection.State;
+        public override string DataSource => _defaultDbConnection.DataSource;
+        public override string ServerVersion => _defaultDbConnection.ServerVersion;
 
         protected override DbCommand CreateDbCommand()
         {
@@ -67,7 +114,7 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Connection
         }
         public bool IsHoldTransaction()
         {
-            return (TransactionTypeEnum.LOCAL == _transactionType && isOpenTransaction) || (TransactionTypeEnum.XA == _transactionType && IsInShardingTransaction());
+            return (TransactionTypeEnum.LOCAL == _transactionType && _isOpenTransaction) || (TransactionTypeEnum.XA == _transactionType && IsInShardingTransaction());
         }
         private bool IsInShardingTransaction()
         {

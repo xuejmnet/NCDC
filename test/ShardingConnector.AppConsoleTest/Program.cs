@@ -30,7 +30,7 @@ namespace ShardingConnector.AppConsoleTest
                 {
                     "ds0",
                     new GenericDataSource(SqlClientFactory.Instance,
-                        "Data Source=localhost;Initial Catalog=ShardingCoreDB;Integrated Security=True;"
+                        "Data Source=localhost;Initial Catalog=ShardingCoreDB;Integrated Security=True;",true
                         )
                 }
             };
@@ -46,7 +46,7 @@ namespace ShardingConnector.AppConsoleTest
             shardingRuleConfig.DefaultDataSourceName= "ds0";
             var dataSource = ShardingDataSourceFactory.CreateDataSource(dataSourceMap, shardingRuleConfig, new Dictionary<string, object>());
             var dbConnection = dataSource.CreateConnection();
-
+            dbConnection.Open();
             var dbCommand = dbConnection.CreateCommand();                     
             dbCommand.CommandText = @"select [d].[Id],[d].[Name],[d].[Age] from [dbo].[SysUserMod] as [d] where [d].[Id]  in (@p1,@p2)";
             var dbParameter = dbCommand.CreateParameter();

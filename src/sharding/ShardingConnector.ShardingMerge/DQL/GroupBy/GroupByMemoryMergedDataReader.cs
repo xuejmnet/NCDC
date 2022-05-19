@@ -121,7 +121,7 @@ namespace ShardingConnector.ShardingMerge.DQL.GroupBy
             {
                 false
             };
-            for (int columnIndex = 1; columnIndex <= streamDataReader.ColumnCount; columnIndex++)
+            for (int columnIndex = 0; columnIndex <= streamDataReader.ColumnCount; columnIndex++)
             {
                 result.Add(GetValueCaseSensitiveFromTables(streamDataReader, selectCommandContext, schemaMetaData, columnIndex));
             }

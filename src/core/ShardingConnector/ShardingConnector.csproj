@@ -22,7 +22,6 @@
 
     <ItemGroup>
       <Folder Include="Abstractions\" />
-      <Folder Include="Kernels\Merge\" />
       <Folder Include="NewConnector\ShardingClient\" />
       <Folder Include="Parser\" />
     </ItemGroup>

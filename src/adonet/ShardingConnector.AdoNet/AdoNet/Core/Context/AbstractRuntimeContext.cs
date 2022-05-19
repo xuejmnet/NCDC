@@ -76,6 +76,8 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Context
             return sqlParserEngine;
         }
 
+        public abstract bool IsMultiDataSource();
+
         public void Dispose()
         {
         }

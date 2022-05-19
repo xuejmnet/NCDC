@@ -29,7 +29,7 @@ namespace ShardingConnector.AdoNet.Executor
         public List<DbConnection> GetConnections(ConnectionModeEnum connectionMode, string dataSourceName, int connectionSize)
         {
             var dbConnections = _commandExecutor.Connection.GetConnections(connectionMode, dataSourceName, connectionSize);
-            dbConnections.ForEach(o=>o.Open());
+            //dbConnections.ForEach(o=>o.Open());
             return dbConnections;
         }
 

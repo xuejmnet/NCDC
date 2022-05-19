@@ -31,7 +31,7 @@ namespace ShardingConnector.AppConsoleMySQLTest
             {
                 {
                     "ds0",
-                    new GenericDataSource(MySqlConnectorFactory.Instance,conn)
+                    new GenericDataSource(MySqlConnectorFactory.Instance,conn,true)
                 }
             };
             //2、分库分表配置
@@ -92,7 +92,7 @@ namespace ShardingConnector.AppConsoleMySQLTest
         static void Delete(IDataSource dataSource)
         {
             var dbConnection = dataSource.CreateConnection();
-
+            dbConnection.Open();
             var dbCommand = dbConnection.CreateCommand();
             dbCommand.CommandText = @"delete from  SysUserMod where id = @id";
             var dbParameter = dbCommand.CreateParameter();
@@ -109,6 +109,7 @@ namespace ShardingConnector.AppConsoleMySQLTest
         {
             var dbConnection = dataSource.CreateConnection();
 
+            dbConnection.Open();
             var dbCommand = dbConnection.CreateCommand();
             dbCommand.CommandText = @"insert into SysUserMod values(@id,@name,@age)";
             var dbParameter = dbCommand.CreateParameter();
@@ -136,6 +137,7 @@ namespace ShardingConnector.AppConsoleMySQLTest
         static void Query(IDataSource dataSource)
         {
             var dbConnection = dataSource.CreateConnection();
+            dbConnection.Open();
 
             var dbCommand = dbConnection.CreateCommand();
             dbCommand.CommandText = @"select * from SysUserMod where id  in (@p1,@p2)";
@@ -162,7 +164,7 @@ namespace ShardingConnector.AppConsoleMySQLTest
         static void Update(IDataSource dataSource)
         {
             var dbConnection = dataSource.CreateConnection();
-
+            dbConnection.Open();
             var dbCommand = dbConnection.CreateCommand();
             dbCommand.CommandText = @"update SysUserMod set age=1 where id  in (@p1,@p2)";
             var dbParameter = dbCommand.CreateParameter();
@@ -186,6 +188,7 @@ namespace ShardingConnector.AppConsoleMySQLTest
         {
             using (var dbConnection = dataSource.CreateConnection())
             {
+                dbConnection.Open();
                 var dbCommand = dbConnection.CreateCommand();
                 dbCommand.CommandText = @"select * from SysUserMod where id  in (@p1)";
                 var dbParameter = dbCommand.CreateParameter();
