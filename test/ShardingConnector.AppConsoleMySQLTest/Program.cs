@@ -82,6 +82,7 @@ namespace ShardingConnector.AppConsoleMySQLTest
 
             //for (int i = 0; i < 20; i++)
             //{
+            QueryMax(dataSource);
             Delete(dataSource);
             Insert(dataSource);
             Update(dataSource);
@@ -89,6 +90,22 @@ namespace ShardingConnector.AppConsoleMySQLTest
             //}
         }
 
+        static void QueryMax(IDataSource dataSource)
+        {
+            var dbConnection = dataSource.CreateConnection();
+            dbConnection.Open();
+
+            var dbCommand = dbConnection.CreateCommand();
+            dbCommand.CommandText = @"select max(age) from SysUserMod where id  in ('21','22','23')";
+            //dbCommand.CommandText = @"select [d].[Id],[d].[Name],[d].[Age] from [dbo].[SysUserMod] as [d] where id='1'  order by [d].[Age] desc";
+            var dbDataReader = dbCommand.ExecuteReader();
+            while (dbDataReader.Read())
+            {
+                Console.WriteLine($"{dbDataReader[0]}");
+            }
+
+            Console.WriteLine("Hello World!");
+        }
         static void Delete(IDataSource dataSource)
         {
             var dbConnection = dataSource.CreateConnection();

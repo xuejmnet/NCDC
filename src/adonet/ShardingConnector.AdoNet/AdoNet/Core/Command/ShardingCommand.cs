@@ -144,7 +144,7 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Command
         {
             _commandExecutor.Clear();
             ShardingRuntimeContext runtimeContext = ((ShardingConnection)DbConnection).GetRuntimeContext();
-            BasePrepareEngine prepareEngine = _parameters.GetParams().Any()? (BasePrepareEngine)new PreparedQueryPrepareEngine(
+            BasePrepareEngine prepareEngine = HasAnyParams() ? (BasePrepareEngine)new PreparedQueryPrepareEngine(
                 runtimeContext.GetRule().ToRules(), runtimeContext.GetProperties(), runtimeContext.GetMetaData(), runtimeContext.GetSqlParserEngine())
                     : (BasePrepareEngine)new SimpleQueryPrepareEngine(
                         runtimeContext.GetRule().ToRules(), runtimeContext.GetProperties(), runtimeContext.GetMetaData(), runtimeContext.GetSqlParserEngine());
@@ -158,11 +158,16 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Command
             //sp.Stop();
             //Console.WriteLine(sp.ElapsedMilliseconds);
 
-            ExecutionContext result = prepareEngine.Prepare(sql, _parameters.GetParams().Select(o=>(object)o).ToList());
+            ExecutionContext result = prepareEngine.Prepare(sql, _parameters?.GetParams().Select(o=>(object)o).ToList()??new List<object>(0));
             _commandExecutor.Init(result);
             //_commandExecutor.Commands.for
             // statementExecutor.getStatements().forEach(this::replayMethodsInvocation);
             return result;
+        }
+
+        private bool HasAnyParams()
+        {
+            return _parameters != null && _parameters.GetParams().Any();
         }
     }
 }
