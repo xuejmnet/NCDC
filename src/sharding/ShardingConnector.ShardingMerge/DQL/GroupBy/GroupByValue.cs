@@ -48,7 +48,7 @@ namespace ShardingConnector.ShardingMerge.DQL.GroupBy
 
         public override int GetHashCode()
         {
-            return (_groupValues != null ? _groupValues.GetHashCode() : 0);
+            return (_groupValues != null ? _groupValues.Sum(o=>o.GetHashCode()).GetHashCode() : 0);
         }
 
         public List<object> GetGroupValues()

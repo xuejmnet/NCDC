@@ -64,9 +64,9 @@ namespace ShardingConnector.Merge.Reader.Memory
             throw new NotImplementedException();
         }
 
-        public object this[int columnIndex] => throw new NotImplementedException();
+        public object this[int columnIndex] => _currentSetResultRow.GetCell(columnIndex);
 
-        public object this[string name] => throw new NotImplementedException();
+        public object this[string name] => _currentSetResultRow.GetCell(_currentSetResultRow.GetOrdinal(name));
 
         public string GetName(int columnIndex)
         {
