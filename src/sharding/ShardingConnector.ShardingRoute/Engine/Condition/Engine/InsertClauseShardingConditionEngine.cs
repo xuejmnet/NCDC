@@ -41,7 +41,7 @@ namespace ShardingConnector.ShardingRoute.Engine.Condition.Engine
          * @return sharding conditions
          */
         public List<ShardingCondition> CreateShardingConditions(InsertCommandContext insertCommandContext,
-            IDictionary<string, DbParameter> parameters)
+            ParameterContext parameterContext)
         {
             ICollection<ShardingCondition> result = new LinkedList<ShardingCondition>();
             string tableName = insertCommandContext.GetSqlCommand().Table.GetTableName().GetIdentifier().GetValue();
@@ -80,7 +80,7 @@ namespace ShardingConnector.ShardingRoute.Engine.Condition.Engine
         }
 
         private ShardingCondition CreateShardingCondition(string tableName, IEnumerator<string> columnNames,
-            InsertValueContext insertValueContext, IDictionary<string, DbParameter> parameters)
+            InsertValueContext insertValueContext, ParameterContext parameterContext)
         {
             ShardingCondition result = new ShardingCondition();
             SPITimeService timeService = SPITimeService.GetInstance();
@@ -111,7 +111,7 @@ namespace ShardingConnector.ShardingRoute.Engine.Condition.Engine
             return result;
         }
 
-        private IComparable GetRouteValue(ISimpleExpressionSegment expressionSegment, IDictionary<string, DbParameter> parameters)
+        private IComparable GetRouteValue(ISimpleExpressionSegment expressionSegment, ParameterContext parameterContext)
         {
             object result;
             if (expressionSegment is ParameterMarkerExpressionSegment parameterMarkerExpressionSegment)

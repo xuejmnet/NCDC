@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.Common;
 using ShardingConnector.CommandParser.Segment.DML.Pagination.limit;
+using ShardingConnector.ShardingAdoNet;
 
 namespace ShardingConnector.ParserBinder.Segment.Select.Pagination.Engine
 {
@@ -21,9 +22,9 @@ namespace ShardingConnector.ParserBinder.Segment.Select.Pagination.Engine
          * @param parameters SQL parameters
          * @return pagination context
          */
-        public PaginationContext CreatePaginationContext(LimitSegment limitSegment, IDictionary<string, DbParameter> parameters)
+        public PaginationContext CreatePaginationContext(LimitSegment limitSegment, ParameterContext parameterContext)
         {
-            return new PaginationContext(limitSegment.GetOffset(), limitSegment.GetRowCount(), parameters);
+            return new PaginationContext(limitSegment.GetOffset(), limitSegment.GetRowCount(), parameterContext);
         }
     }
 }

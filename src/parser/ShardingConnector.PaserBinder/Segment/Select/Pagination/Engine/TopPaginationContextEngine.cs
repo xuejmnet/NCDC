@@ -29,7 +29,7 @@ namespace ShardingConnector.ParserBinder.Segment.Select.Pagination.Engine
          * @param parameters SQL parameters
          * @return pagination context
          */
-        public PaginationContext CreatePaginationContext(TopProjectionSegment topProjectionSegment, ICollection<AndPredicateSegment> andPredicates, IDictionary<string, DbParameter> parameters)
+        public PaginationContext CreatePaginationContext(TopProjectionSegment topProjectionSegment, ICollection<AndPredicateSegment> andPredicates, ParameterContext parameterContext)
         {
             var rowNumberPredicate = GetRowNumberPredicate(andPredicates, topProjectionSegment.GetAlias());
             var offset = rowNumberPredicate!=null ? CreateOffsetWithRowNumber(rowNumberPredicate) : null;

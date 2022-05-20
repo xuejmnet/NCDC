@@ -30,7 +30,7 @@ namespace ShardingConnector.ShardingRewrite.Parameter.Impl
                    && selectCommandContext.GetPaginationContext().HasPagination() && !routeContext.GetRouteResult().IsSingleRouting();
         }
 
-        public void Rewrite(IParameterBuilder parameterBuilder, ISqlCommandContext<ISqlCommand> sqlCommandContext, IDictionary<string, DbParameter> parameters)
+        public void Rewrite(IParameterBuilder parameterBuilder, ISqlCommandContext<ISqlCommand> sqlCommandContext, ParameterContext parameterContext)
         {
             var selectCommandContext = ((SelectCommandContext) sqlCommandContext);
             var pagination = selectCommandContext.GetPaginationContext();

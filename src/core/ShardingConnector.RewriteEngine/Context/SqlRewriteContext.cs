@@ -9,6 +9,7 @@ using ShardingConnector.RewriteEngine.Parameter.Builder.Impl;
 using ShardingConnector.RewriteEngine.Sql.Token.Generator;
 using ShardingConnector.RewriteEngine.Sql.Token.Generator.Builder;
 using ShardingConnector.RewriteEngine.Sql.Token.SimpleObject;
+using ShardingConnector.ShardingAdoNet;
 
 namespace ShardingConnector.RewriteEngine.Context
 {
@@ -27,7 +28,7 @@ namespace ShardingConnector.RewriteEngine.Context
     
         private readonly string _sql;
     
-        private readonly IDictionary<string, DbParameter> _parameters;
+        private readonly ParameterContext _parameterContext;
 
         private readonly IParameterBuilder _parameterBuilder;
     
@@ -35,12 +36,12 @@ namespace ShardingConnector.RewriteEngine.Context
 
         private readonly SqlTokenGenerators _sqlTokenGenerators = new SqlTokenGenerators();
 
-        public SqlRewriteContext(SchemaMetaData schemaMetaData, ISqlCommandContext<ISqlCommand> sqlCommandContext, string sql, IDictionary<string, DbParameter> parameters)
+        public SqlRewriteContext(SchemaMetaData schemaMetaData, ISqlCommandContext<ISqlCommand> sqlCommandContext, string sql, ParameterContext parameterContext)
         {
             this._schemaMetaData = schemaMetaData;
             this._sqlCommandContext = sqlCommandContext;
             this._sql = sql;
-            this._parameters = parameters;
+            this._parameterContext = parameterContext;
             AddSqlTokenGenerators(new DefaultTokenGeneratorBuilder().GetSqlTokenGenerators());
             if (sqlCommandContext is InsertCommandContext insertCommandContext)
             {
@@ -48,7 +49,7 @@ namespace ShardingConnector.RewriteEngine.Context
             }
             else
             {
-                _parameterBuilder=new StandardParameterBuilder(parameters);
+                _parameterBuilder=new StandardParameterBuilder(parameterContext);
             }
         }
 
@@ -68,7 +69,7 @@ namespace ShardingConnector.RewriteEngine.Context
          */
         public void GenerateSqlTokens()
         {
-            _sqlTokens.AddRange(_sqlTokenGenerators.GenerateSqlTokens(_sqlCommandContext, _parameters, _schemaMetaData));
+            _sqlTokens.AddRange(_sqlTokenGenerators.GenerateSqlTokens(_sqlCommandContext, _parameterContext, _schemaMetaData));
         }
 
         public List<SqlToken> GetSqlTokens()
@@ -91,9 +92,9 @@ namespace ShardingConnector.RewriteEngine.Context
             return _schemaMetaData;
         }
 
-        public IDictionary<string, DbParameter> GetParameters()
+        public ParameterContext GetParameterContext()
         {
-            return _parameters;
+            return _parameterContext;
         }
 
         public ISqlCommandContext<ISqlCommand> GetSqlCommandContext()

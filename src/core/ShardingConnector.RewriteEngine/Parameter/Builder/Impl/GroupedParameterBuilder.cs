@@ -37,7 +37,7 @@ namespace ShardingConnector.RewriteEngine.Parameter.Builder.Impl
          */
         public IDictionary<string,DbParameter> GetParameters(int count)
         {
-            return _parameterBuilders[count].GetParameters();
+            return _parameterBuilders[count].GetParameterContext();
         }
 
         /**

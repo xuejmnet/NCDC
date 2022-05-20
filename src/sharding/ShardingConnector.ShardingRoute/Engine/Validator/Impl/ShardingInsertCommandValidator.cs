@@ -21,7 +21,7 @@ namespace ShardingConnector.ShardingRoute.Engine.Validator.Impl
     */
     public sealed class ShardingInsertCommandValidator: IShardingCommandValidator<InsertCommand>
     {
-        public void Validate(ShardingRule shardingRule, InsertCommand sqlCommand, IDictionary<string, DbParameter> parameters)
+        public void Validate(ShardingRule shardingRule, InsertCommand sqlCommand, ParameterContext parameterContext)
         {
             var onDuplicateKeyColumnsSegment = sqlCommand.OnDuplicateKeyColumns;
             if (onDuplicateKeyColumnsSegment!=null && IsUpdateShardingKey(shardingRule, onDuplicateKeyColumnsSegment, sqlCommand.Table.GetTableName().GetIdentifier().GetValue()))
@@ -42,7 +42,7 @@ namespace ShardingConnector.ShardingRoute.Engine.Validator.Impl
             return false;
         }
 
-        public void Validate(ShardingRule shardingRule, ISqlCommand sqlCommand, IDictionary<string, DbParameter> parameters)
+        public void Validate(ShardingRule shardingRule, ISqlCommand sqlCommand, ParameterContext parameterContext)
         {
             Validate(shardingRule, (InsertCommand) sqlCommand, parameters);
         }

@@ -1,11 +1,13 @@
 using System.Collections.Generic;
 using System.Data.Common;
+using System.Linq;
 using ShardingConnector.Common.Config.Properties;
 using ShardingConnector.Common.MetaData;
 using ShardingConnector.Common.Rule;
 using ShardingConnector.ParserEngine;
 using ShardingConnector.Route;
 using ShardingConnector.Route.Context;
+using ShardingConnector.ShardingAdoNet;
 
 namespace ShardingConnector.Pluggable.Prepare
 {
@@ -21,14 +23,14 @@ namespace ShardingConnector.Pluggable.Prepare
         {
         }
 
-        protected override IDictionary<string, DbParameter> CloneParameters(IDictionary<string, DbParameter> parameters)
+        protected override ParameterContext CloneParameters(ParameterContext parameterContext)
         {
-            return new Dictionary<string, DbParameter>(parameters);
+            return parameterContext.CloneParameterContext();
         }
 
-        protected override RouteContext Route(DataNodeRouter router, string sql, IDictionary<string, DbParameter> parameters)
+        protected override RouteContext Route(DataNodeRouter router, string sql, ParameterContext parameterContext)
         {
-            return router.Route(sql, parameters,true);
+            return router.Route(sql, parameterContext,true);
         }
     }
 }

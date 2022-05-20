@@ -16,11 +16,11 @@ namespace ShardingConnector.ShardingRoute.Engine.Condition.Generator
     */
     public interface IConditionValueGenerator
     {
-        IRouteValue Generate(IPredicateRightValue predicateRightValue, Column column, IDictionary<string, DbParameter> parameters);
+        IRouteValue Generate(IPredicateRightValue predicateRightValue, Column column, ParameterContext parameterContext);
     }
     public interface IConditionValueGenerator<in T>: IConditionValueGenerator where T : IPredicateRightValue
     {
-        IRouteValue Generate(T predicateRightValue, Column column, IDictionary<string, DbParameter> parameters);
+        IRouteValue Generate(T predicateRightValue, Column column, ParameterContext parameterContext);
 
     }
 }

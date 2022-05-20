@@ -38,7 +38,7 @@ namespace ShardingConnector.ParserBinder.Segment.Select.Pagination.Engine
          * @param parameters SQL parameters
          * @return pagination context
          */
-        public PaginationContext CreatePaginationContext(ICollection<AndPredicateSegment> andPredicates, ProjectionsContext projectionsContext, IDictionary<string, DbParameter> parameters)
+        public PaginationContext CreatePaginationContext(ICollection<AndPredicateSegment> andPredicates, ProjectionsContext projectionsContext, ParameterContext parameterContext)
         {
             var rowNumberAlias = IsRowNumberAlias(projectionsContext);
             if (rowNumberAlias == null)
@@ -94,7 +94,7 @@ namespace ShardingConnector.ParserBinder.Segment.Select.Pagination.Engine
             return false;
         }
 
-        private PaginationContext CreatePaginationWithRowNumber(ICollection<PredicateSegment> rowNumberPredicates, IDictionary<string, DbParameter> parameters)
+        private PaginationContext CreatePaginationWithRowNumber(ICollection<PredicateSegment> rowNumberPredicates, ParameterContext parameterContext)
         {
             RowNumberValueSegment offset = null;
             RowNumberValueSegment rowCount = null;

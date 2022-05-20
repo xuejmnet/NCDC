@@ -21,7 +21,7 @@ namespace ShardingConnector.ShardingRoute.Engine.Condition.Generator
         {
             
         }
-        public static IRouteValue Generate(IPredicateRightValue predicateRightValue, Column column, IDictionary<string, DbParameter> parameters)
+        public static IRouteValue Generate(IPredicateRightValue predicateRightValue, Column column, ParameterContext parameterContext)
         {
             if (predicateRightValue is PredicateCompareRightValue predicateCompareRightValue) {
                 return new ConditionValueCompareOperatorGenerator().Generate(predicateCompareRightValue, column, parameters);

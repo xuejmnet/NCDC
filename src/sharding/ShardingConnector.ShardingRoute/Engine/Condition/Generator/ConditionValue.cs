@@ -21,12 +21,12 @@ namespace ShardingConnector.ShardingRoute.Engine.Condition.Generator
     {
         private readonly IComparable _value;
 
-        public ConditionValue(IExpressionSegment expressionSegment, IDictionary<string, DbParameter> parameters)
+        public ConditionValue(IExpressionSegment expressionSegment, ParameterContext parameterContext)
         {
             _value = GetValue(expressionSegment, parameters);
         }
 
-        private IComparable GetValue(IExpressionSegment expressionSegment, IDictionary<string, DbParameter> parameters)
+        private IComparable GetValue(IExpressionSegment expressionSegment, ParameterContext parameterContext)
         {
             if (expressionSegment is ParameterMarkerExpressionSegment parameterMarkerExpressionSegment)
             {
@@ -39,7 +39,7 @@ namespace ShardingConnector.ShardingRoute.Engine.Condition.Generator
             return null;
         }
 
-        private IComparable GetValue(ParameterMarkerExpressionSegment expressionSegment, IDictionary<string, DbParameter> parameters)
+        private IComparable GetValue(ParameterMarkerExpressionSegment expressionSegment, ParameterContext parameterContext)
         {
 
             object result = parameters[expressionSegment.GetParameterName()].Value;

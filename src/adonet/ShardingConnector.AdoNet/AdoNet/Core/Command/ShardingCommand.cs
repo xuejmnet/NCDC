@@ -13,6 +13,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using ShardingConnector.ShardingAdoNet;
 using ExecutionContext = ShardingConnector.Executor.Context.ExecutionContext;
 using ShardingDataReader = ShardingConnector.AdoNet.AdoNet.Core.DataReader.ShardingDataReader;
 using ShardingRuntimeContext = ShardingConnector.AdoNet.AdoNet.Core.Context.ShardingRuntimeContext;
@@ -162,8 +163,8 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Command
             //}
             //sp.Stop();
             //Console.WriteLine(sp.ElapsedMilliseconds);
-
-            ExecutionContext result = prepareEngine.Prepare(sql, _parameters?.GetParams().Select(o=>(DbParameter)o).ToDictionary(o=>o.ParameterName,o=>o)??new Dictionary<string, DbParameter>(0));
+            var parameterContext = new ParameterContext(_parameters?.GetParams().Select(o=>(DbParameter)o).ToArray()??Array.Empty<DbParameter>());
+            ExecutionContext result = prepareEngine.Prepare(sql, parameterContext);
             _commandExecutor.Init(result);
             //_commandExecutor.Commands.for
             // statementExecutor.getStatements().forEach(this::replayMethodsInvocation);

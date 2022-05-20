@@ -15,6 +15,7 @@ using ShardingConnector.RewriteEngine.Context;
 using ShardingConnector.RewriteEngine.Engine;
 using ShardingConnector.Route;
 using ShardingConnector.Route.Context;
+using ShardingConnector.ShardingAdoNet;
 using ShardingConnector.Spi.Order;
 
 namespace ShardingConnector.Pluggable.Prepare
@@ -44,12 +45,12 @@ namespace ShardingConnector.Pluggable.Prepare
             _rewriter = new SqlRewriteEntry(metaData.Schema, properties);
         }
 
-        protected abstract IDictionary<string, DbParameter> CloneParameters(IDictionary<string, DbParameter> parameters);
-        protected abstract RouteContext Route(DataNodeRouter router,string sql, IDictionary<string, DbParameter> parameters);
+        protected abstract ParameterContext CloneParameters(ParameterContext parameterContext);
+        protected abstract RouteContext Route(DataNodeRouter router,string sql, ParameterContext parameterContext);
 
-        public ExecutionContext Prepare(string sql, IDictionary<string, DbParameter> parameters)
+        public ExecutionContext Prepare(string sql, ParameterContext parameterContext)
         {
-            var cloneParameters = CloneParameters(parameters);
+            var cloneParameters = CloneParameters(parameterContext);
             var routeContext = ExecuteRoute(sql, cloneParameters);
             ExecutionContext result = new ExecutionContext(routeContext.GetSqlCommandContext());
             result.GetExecutionUnits().AddAll(ExecuteRewrite(sql, cloneParameters, routeContext));
@@ -61,7 +62,7 @@ namespace ShardingConnector.Pluggable.Prepare
         }
 
 
-        private ICollection<ExecutionUnit> ExecuteRewrite(string sql, IDictionary<string, DbParameter> parameters, RouteContext routeContext)
+        private ICollection<ExecutionUnit> ExecuteRewrite(string sql, ParameterContext parameterContext, RouteContext routeContext)
         {
             RegisterRewriteDecorator();
             SqlRewriteContext sqlRewriteContext = _rewriter.CreateSqlRewriteContext(sql, parameters, routeContext.GetSqlCommandContext(), routeContext);

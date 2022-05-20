@@ -52,7 +52,7 @@ namespace ShardingConnector.RewriteEngine
          * @param routeContext route context
          * @return SQL rewrite context
          */
-        public SqlRewriteContext CreateSqlRewriteContext(string sql, IDictionary<string, DbParameter> parameters,  ISqlCommandContext<ISqlCommand> sqlCommandContext, RouteContext routeContext)
+        public SqlRewriteContext CreateSqlRewriteContext(string sql, ParameterContext parameterContext,  ISqlCommandContext<ISqlCommand> sqlCommandContext, RouteContext routeContext)
         {
             var result = new SqlRewriteContext(_schemaMetaData, sqlCommandContext, sql, parameters);
             Decorate(_decorators, result, routeContext);

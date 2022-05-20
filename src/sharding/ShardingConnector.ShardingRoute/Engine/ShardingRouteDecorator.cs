@@ -60,7 +60,7 @@ namespace ShardingConnector.ShardingRoute.Engine
             return new RouteContext(sqlStatementContext, parameters, routeResult);
         }
 
-        private ShardingConditions GetShardingConditions(IDictionary<string, DbParameter> parameters,
+        private ShardingConditions GetShardingConditions(ParameterContext parameterContext,
                                                          ISqlCommandContext<ISqlCommand> sqlStatementContext, SchemaMetaData schemaMetaData, ShardingRule shardingRule)
         {
             if (sqlStatementContext.GetSqlCommand() is DMLCommand) {

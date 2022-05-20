@@ -39,7 +39,7 @@ namespace ShardingConnector.ShardingRewrite.Token.Generator.Impl.KeyGen
             return insertCommand.SetAssignment!=null;
         }
 
-        public void SetParameters(IDictionary<string, DbParameter> parameters)
+        public void SetParameters(ParameterContext parameterContext)
         {
             this._parameters = parameters;
         }

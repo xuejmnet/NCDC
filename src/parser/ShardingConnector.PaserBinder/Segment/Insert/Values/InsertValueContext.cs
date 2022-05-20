@@ -30,7 +30,7 @@ namespace ShardingConnector.ParserBinder.Segment.Insert.Values
         /// </summary>
         /// <param name="assignments"></param>
         /// <param name="parameters"></param>
-        public InsertValueContext(ICollection<IExpressionSegment> assignments, IDictionary<string, DbParameter> parameters)
+        public InsertValueContext(ICollection<IExpressionSegment> assignments, ParameterContext parameterContext)
         {
             //获取本次执行sql的参数个数
             var parameterNames = GetParameterNames(assignments);
@@ -59,7 +59,7 @@ namespace ShardingConnector.ParserBinder.Segment.Insert.Values
             return result;
         }
 
-        private IDictionary<string, DbParameter> GetParameters(IDictionary<string, DbParameter> parameters, List<string> parameterNames)
+        private IDictionary<string, DbParameter> GetParameters(ParameterContext parameterContext, List<string> parameterNames)
         {
             if (0 == _parametersCount)
             {

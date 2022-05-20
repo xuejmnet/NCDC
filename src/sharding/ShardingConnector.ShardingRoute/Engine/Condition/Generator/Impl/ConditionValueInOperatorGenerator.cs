@@ -18,7 +18,7 @@ namespace ShardingConnector.ShardingRoute.Engine.Condition.Generator.Impl
     */
     public sealed class ConditionValueInOperatorGenerator: IConditionValueGenerator<PredicateInRightValue>
     {
-        public IRouteValue Generate(PredicateInRightValue predicateRightValue, Column column, IDictionary<string, DbParameter> parameters)
+        public IRouteValue Generate(PredicateInRightValue predicateRightValue, Column column, ParameterContext parameterContext)
         {
             ICollection<IComparable> routeValues = new LinkedList<IComparable>();
             SPITimeService timeService = SPITimeService.GetInstance();
@@ -39,7 +39,7 @@ namespace ShardingConnector.ShardingRoute.Engine.Condition.Generator.Impl
 
         }
 
-        public IRouteValue Generate(IPredicateRightValue predicateRightValue, Column column, IDictionary<string, DbParameter> parameters)
+        public IRouteValue Generate(IPredicateRightValue predicateRightValue, Column column, ParameterContext parameterContext)
         {
             return Generate((PredicateInRightValue) predicateRightValue, column, parameters);
         }

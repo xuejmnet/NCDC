@@ -7,6 +7,7 @@ using ShardingConnector.CommandParser.Segment.DML.Pagination;
 using ShardingConnector.CommandParser.Segment.DML.Pagination.limit;
 using ShardingConnector.Exceptions;
 using ShardingConnector.ParserBinder.Command.DML;
+using ShardingConnector.ShardingAdoNet;
 
 namespace ShardingConnector.ParserBinder.Segment.Select.Pagination
 {
@@ -29,22 +30,22 @@ namespace ShardingConnector.ParserBinder.Segment.Select.Pagination
 
         private readonly long? _actualRowCount;
 
-        public PaginationContext(IPaginationValueSegment offsetSegment, IPaginationValueSegment rowCountSegment, IDictionary<string, DbParameter> parameters)
+        public PaginationContext(IPaginationValueSegment offsetSegment, IPaginationValueSegment rowCountSegment, ParameterContext parameterContext)
         {
             _hasPagination = null != offsetSegment || null != rowCountSegment;
             this._offsetSegment = offsetSegment;
             this._rowCountSegment = rowCountSegment;
-            _actualOffset = null == offsetSegment ? 0 : GetValue(offsetSegment, parameters);
-            _actualRowCount = null == rowCountSegment ? (long?)null : GetValue(rowCountSegment, parameters);
+            _actualOffset = null == offsetSegment ? 0 : GetValue(offsetSegment, parameterContext);
+            _actualRowCount = null == rowCountSegment ? (long?)null : GetValue(rowCountSegment, parameterContext);
         }
 
-        private long GetValue(IPaginationValueSegment paginationValueSegment, IDictionary<string, DbParameter> parameters)
+        private long GetValue(IPaginationValueSegment paginationValueSegment, ParameterContext parameterContext)
         {
             if (paginationValueSegment is IParameterMarkerPaginationValueSegment parameterMarkerPaginationValueSegment)
             {
-                if (parameters.TryGetValue(parameterMarkerPaginationValueSegment.GetParameterName(), out var parameter))
+                if (parameterContext.TryGetParameterValue(parameterMarkerPaginationValueSegment.GetParameterName(),out var parameterValue))
                 {
-                    return parameter.Value is long l ? l : (int)parameter.Value;
+                    return parameterValue is long l ? l : (int)parameterValue;
                 }
                 else
                 {

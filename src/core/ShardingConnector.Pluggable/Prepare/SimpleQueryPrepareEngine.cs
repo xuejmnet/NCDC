@@ -35,12 +35,12 @@ namespace ShardingConnector.Pluggable.Prepare
         {
         }
 
-        protected override IDictionary<string, DbParameter> CloneParameters(IDictionary<string, DbParameter> parameters)
+        protected override IDictionary<string, DbParameter> CloneParameters(ParameterContext parameterContext)
         {
             return parameters.ToDictionary(o=>o.Key,o=>o.Value);
         }
 
-        protected override RouteContext Route(DataNodeRouter router, string sql, IDictionary<string, DbParameter> parameters)
+        protected override RouteContext Route(DataNodeRouter router, string sql, ParameterContext parameterContext)
         {
             return  router.Route(sql, parameters,false);
         }

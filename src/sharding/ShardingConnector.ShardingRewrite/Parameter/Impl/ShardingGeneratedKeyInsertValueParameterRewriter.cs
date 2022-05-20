@@ -31,7 +31,7 @@ namespace ShardingConnector.ShardingRewrite.Parameter.Impl
 
         }
 
-        public void Rewrite(IParameterBuilder parameterBuilder, ISqlCommandContext<ISqlCommand> sqlCommandContext, IDictionary<string, DbParameter> parameters)
+        public void Rewrite(IParameterBuilder parameterBuilder, ISqlCommandContext<ISqlCommand> sqlCommandContext, ParameterContext parameterContext)
         {
             var insertCommandContext = (InsertCommandContext)sqlCommandContext;
             ShardingAssert.CantBeNull(insertCommandContext.GetGeneratedKeyContext(), "insertCommandContext.GetGeneratedKeyContext is required");

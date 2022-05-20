@@ -27,7 +27,7 @@ namespace ShardingConnector.ParserBinder.Command.DML
 
         private readonly GeneratedKeyContext _generatedKeyContext;
 
-        public InsertCommandContext(SchemaMetaData schemaMetaData, IDictionary<string, DbParameter> parameters, InsertCommand insertCommand) : base(insertCommand)
+        public InsertCommandContext(SchemaMetaData schemaMetaData, ParameterContext parameterContext, InsertCommand insertCommand) : base(insertCommand)
         {
             _tablesContext = new TablesContext(insertCommand.Table);
             _columnNames = insertCommand.UseDefaultColumns() ? schemaMetaData.GetAllColumnNames(insertCommand.Table.GetTableName().GetIdentifier().GetValue()) : insertCommand.GetColumnNames();
@@ -35,7 +35,7 @@ namespace ShardingConnector.ParserBinder.Command.DML
             _generatedKeyContext = new GeneratedKeyContextEngine(schemaMetaData).CreateGenerateKeyContext(parameters, insertCommand);
         }
 
-        private List<InsertValueContext> GetInsertValueContexts(IDictionary<string, DbParameter> parameters)
+        private List<InsertValueContext> GetInsertValueContexts(ParameterContext parameterContext)
         {
             List<InsertValueContext> result = new List<InsertValueContext>(GetSqlCommand().GetAllValueExpressions().Count);
             foreach (var valueExpression in GetSqlCommand().GetAllValueExpressions())

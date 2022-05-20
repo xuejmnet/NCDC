@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
 using ShardingConnector.Extensions;
+using ShardingConnector.ParserBinder.Segment.Select.Pagination;
+using ShardingConnector.ShardingAdoNet;
 
 namespace ShardingConnector.RewriteEngine.Parameter.Builder.Impl
 {
@@ -15,7 +17,7 @@ namespace ShardingConnector.RewriteEngine.Parameter.Builder.Impl
     */
     public sealed class StandardParameterBuilder:IParameterBuilder
     {
-        private readonly IDictionary<string, DbParameter> _originalParameters;
+        private readonly ParameterContext _originalParameterContext;
 
         private readonly IDictionary<int, ICollection<object>> _addedIndexAndParameters = new SortedDictionary<int, ICollection<object>>();
 
@@ -23,9 +25,9 @@ namespace ShardingConnector.RewriteEngine.Parameter.Builder.Impl
 
         private readonly ISet<string> _removeParameterNames = new HashSet<string>();
 
-        public StandardParameterBuilder(IDictionary<string, DbParameter> originalParameters)
+        public StandardParameterBuilder(ParameterContext originalParameterContext)
         {
-            this._originalParameters = originalParameters;
+            this._originalParameterContext = originalParameterContext;
         }
         /**
          * Add added parameters.
@@ -60,24 +62,24 @@ namespace ShardingConnector.RewriteEngine.Parameter.Builder.Impl
             _removeParameterNames.Add(parameterName);
         }
 
-        public IDictionary<string,DbParameter> GetParameters()
+        public ParameterContext GetParameterContext()
         {
-            var result = new Dictionary<string,DbParameter>(_originalParameters);
+            var result = _originalParameterContext.CloneParameterContext();
             foreach (var replaced in _replacedIndexAndParameters)
             {
                 result[replaced.Key].Value = replaced.Value;
             }
-            // foreach (var added in _addedIndexAndParameters.Reverse())
-            // {
-            //     if (added.Key > result.Count)
-            //     {
-            //         result.AddAll(added.Value);
-            //     }
-            //     else
-            //     {
-            //         result.InsertRange(added.Key, added.Value);
-            //     }
-            // }
+            foreach (var added in _addedIndexAndParameters.Reverse())
+            {
+                if (added.Key > result.Count)
+                {
+                    result.AddAll(added.Value);
+                }
+                else
+                {
+                    result.InsertRange(added.Key, added.Value);
+                }
+            }
             foreach (var removeParameterName in _removeParameterNames)
             {
                 result.Remove(removeParameterName);

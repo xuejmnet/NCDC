@@ -22,6 +22,7 @@ using ShardingConnector.ParserBinder.Segment.Select.Pagination.Engine;
 using ShardingConnector.ParserBinder.Segment.Select.Projection;
 using ShardingConnector.ParserBinder.Segment.Select.Projection.Engine;
 using ShardingConnector.ParserBinder.Segment.Table;
+using ShardingConnector.ShardingAdoNet;
 
 namespace ShardingConnector.ParserBinder.Command.DML
 {
@@ -58,13 +59,13 @@ namespace ShardingConnector.ParserBinder.Command.DML
             _containsSubQuery = ContainsSubQuery();
         }
 
-        public SelectCommandContext(SchemaMetaData schemaMetaData, string sql, IDictionary<string, DbParameter> parameters, SelectCommand sqlCommand) : base(sqlCommand)
+        public SelectCommandContext(SchemaMetaData schemaMetaData, string sql, ParameterContext parameterContext, SelectCommand sqlCommand) : base(sqlCommand)
         {
             _tablesContext = new TablesContext(sqlCommand.GetSimpleTableSegments());
             _groupByContext = new GroupByContextEngine().CreateGroupByContext(sqlCommand);
             _orderByContext = new OrderByContextEngine().CreateOrderBy(sqlCommand, _groupByContext);
             _projectionsContext = new ProjectionsContextEngine(schemaMetaData).CreateProjectionsContext(sql, sqlCommand, _groupByContext, _orderByContext);
-            _paginationContext = new PaginationContextEngine().CreatePaginationContext(sqlCommand, _projectionsContext, parameters);
+            _paginationContext = new PaginationContextEngine().CreatePaginationContext(sqlCommand, _projectionsContext, parameterContext);
             _containsSubQuery = ContainsSubQuery();
         }
         private bool ContainsSubQuery()

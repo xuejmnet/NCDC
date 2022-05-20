@@ -12,6 +12,6 @@ namespace ShardingConnector.RewriteEngine.Sql.Token.Generator.Aware
     */
     public interface IParametersAware
     {
-        void SetParameters(IDictionary<string, DbParameter> parameters);
+        void SetParameters(ParameterContext parameterContext);
     }
 }

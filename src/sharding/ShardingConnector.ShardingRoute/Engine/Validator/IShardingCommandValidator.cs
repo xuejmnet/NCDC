@@ -17,10 +17,10 @@ namespace ShardingConnector.ShardingRoute.Engine.Validator
     */
     public interface IShardingCommandValidator
     {
-        void Validate(ShardingRule shardingRule, ISqlCommand sqlCommand, IDictionary<string, DbParameter> parameters);
+        void Validate(ShardingRule shardingRule, ISqlCommand sqlCommand, ParameterContext parameterContext);
     }
     public interface IShardingCommandValidator<in T>: IShardingCommandValidator where T:ISqlCommand
     {
-        void Validate(ShardingRule shardingRule, T sqlCommand, IDictionary<string, DbParameter> parameters);
+        void Validate(ShardingRule shardingRule, T sqlCommand, ParameterContext parameterContext);
     }
 }

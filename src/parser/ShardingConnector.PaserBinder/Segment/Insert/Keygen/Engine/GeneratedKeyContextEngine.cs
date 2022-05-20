@@ -34,7 +34,7 @@ namespace ShardingConnector.ParserBinder.Segment.Insert.Keygen.Engine
      * @param insertStatement insert statement
      * @return generate key context
      */
-        public ParserBinder.Segment.Insert.Keygen.GeneratedKeyContext CreateGenerateKeyContext(IDictionary<string, DbParameter> parameters, InsertCommand insertCommand)
+        public ParserBinder.Segment.Insert.Keygen.GeneratedKeyContext CreateGenerateKeyContext(ParameterContext parameterContext, InsertCommand insertCommand)
         {
             string tableName = insertCommand.Table.GetTableName().GetIdentifier().GetValue();
             var generateKeyColumnName = FindGenerateKeyColumn(tableName);
@@ -84,7 +84,7 @@ namespace ShardingConnector.ParserBinder.Segment.Insert.Keygen.Engine
         /// <param name="generateKeyColumnName"></param>
         /// <returns></returns>
         /// <exception cref="ShardingException"></exception>
-        private ParserBinder.Segment.Insert.Keygen.GeneratedKeyContext FindGeneratedKey(IDictionary<string, DbParameter> parameters, InsertCommand insertCommand, string generateKeyColumnName)
+        private ParserBinder.Segment.Insert.Keygen.GeneratedKeyContext FindGeneratedKey(ParameterContext parameterContext, InsertCommand insertCommand, string generateKeyColumnName)
         {
             ParserBinder.Segment.Insert.Keygen.GeneratedKeyContext result = new ParserBinder.Segment.Insert.Keygen.GeneratedKeyContext(generateKeyColumnName, false);
             foreach (var expression in FindGenerateKeyExpressions(insertCommand, generateKeyColumnName))

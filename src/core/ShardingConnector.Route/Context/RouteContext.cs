@@ -18,7 +18,7 @@ namespace ShardingConnector.Route.Context
         private readonly IDictionary<string, DbParameter> _parameters;
         private readonly RouteResult _routeResult;
 
-        public RouteContext(ISqlCommandContext<ISqlCommand> sqlCommandContext, IDictionary<string, DbParameter> parameters, RouteResult routeResult)
+        public RouteContext(ISqlCommandContext<ISqlCommand> sqlCommandContext, ParameterContext parameterContext, RouteResult routeResult)
         {
             _sqlCommandContext = sqlCommandContext;
             _parameters = parameters;

@@ -5,6 +5,7 @@ using ShardingConnector.CommandParser.Command;
 using ShardingConnector.CommandParser.Command.DML;
 using ShardingConnector.ParserBinder.Command.DML;
 using ShardingConnector.ParserBinder.MetaData.Schema;
+using ShardingConnector.ShardingAdoNet;
 
 namespace ShardingConnector.ParserBinder
 {
@@ -16,10 +17,10 @@ namespace ShardingConnector.ParserBinder
 */
     public static class SqlCommandContextFactory
     {
-        public static ParserBinder.Command.ISqlCommandContext<ISqlCommand> NewInstance(SchemaMetaData schemaMetaData, string sql, IDictionary<string, DbParameter> parameters, ISqlCommand sqlCommand) {
+        public static ParserBinder.Command.ISqlCommandContext<ISqlCommand> NewInstance(SchemaMetaData schemaMetaData, string sql, ParameterContext parameterContext, ISqlCommand sqlCommand) {
             if(sqlCommand is DMLCommand dmlCommand)
             {
-                return GetDMLCommandContext(schemaMetaData, sql, parameters, dmlCommand);
+                return GetDMLCommandContext(schemaMetaData, sql, parameterContext, dmlCommand);
             }
            
             //if (sqlCommand is DMLStatement) {
@@ -37,11 +38,11 @@ namespace ShardingConnector.ParserBinder
             return new ParserBinder.Command.GenericSqlCommandContext<ISqlCommand>(sqlCommand);
         }
 
-        private static ParserBinder.Command.ISqlCommandContext<ISqlCommand> GetDMLCommandContext(SchemaMetaData schemaMetaData, string sql, IDictionary<string, DbParameter> parameters, DMLCommand sqlCommand)
+        private static ParserBinder.Command.ISqlCommandContext<ISqlCommand> GetDMLCommandContext(SchemaMetaData schemaMetaData, string sql, ParameterContext parameterContext, DMLCommand sqlCommand)
         {
             if (sqlCommand is SelectCommand selectCommand)
             {
-                return new SelectCommandContext(schemaMetaData, sql, parameters, selectCommand);
+                return new SelectCommandContext(schemaMetaData, sql, parameterContext, selectCommand);
             }
             //if (sqlStatement instanceof SelectStatement) {
             //    return new SelectStatementContext(schemaMetaData, sql, parameters, selectCommand);
@@ -55,7 +56,7 @@ namespace ShardingConnector.ParserBinder
                 return new DeleteCommandContext(deleteCommand);
             }
             if (sqlCommand is InsertCommand insertCommand) {
-                return new InsertCommandContext(schemaMetaData, parameters, insertCommand);
+                return new InsertCommandContext(schemaMetaData, parameterContext, insertCommand);
             }
             throw new NotSupportedException($"Unsupported SQL statement `{sqlCommand.GetType().Name}`");
         }

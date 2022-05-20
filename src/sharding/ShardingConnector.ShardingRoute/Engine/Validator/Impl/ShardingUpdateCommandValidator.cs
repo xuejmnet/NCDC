@@ -27,7 +27,7 @@ namespace ShardingConnector.ShardingRoute.Engine.Validator.Impl
     */
     public sealed class ShardingUpdateCommandValidator : IShardingCommandValidator<UpdateCommand>
     {
-        public void Validate(ShardingRule shardingRule, UpdateCommand sqlCommand, IDictionary<string, DbParameter> parameters)
+        public void Validate(ShardingRule shardingRule, UpdateCommand sqlCommand, ParameterContext parameterContext)
         {
             String tableName = sqlCommand.Tables.First().GetTableName().GetIdentifier().GetValue();
             foreach (var assignmentSegment in sqlCommand.SetAssignment.GetAssignments())
@@ -53,7 +53,7 @@ namespace ShardingConnector.ShardingRoute.Engine.Validator.Impl
             }
         }
 
-        private object GetShardingColumnSetAssignmentValue(AssignmentSegment assignmentSegment, IDictionary<string, DbParameter> parameters)
+        private object GetShardingColumnSetAssignmentValue(AssignmentSegment assignmentSegment, ParameterContext parameterContext)
         {
             var segment = assignmentSegment.GetValue();
             if (segment is ParameterMarkerExpressionSegment parameterMarkerExpressionSegment)
@@ -71,7 +71,7 @@ namespace ShardingConnector.ShardingRoute.Engine.Validator.Impl
             return null;
         }
 
-        private object GetShardingValue(WhereSegment whereSegment, IDictionary<string, DbParameter> parameters, String shardingColumn)
+        private object GetShardingValue(WhereSegment whereSegment, ParameterContext parameterContext, String shardingColumn)
         {
             foreach (var andPredicate in whereSegment.GetAndPredicates())
             {
@@ -80,7 +80,7 @@ namespace ShardingConnector.ShardingRoute.Engine.Validator.Impl
             return null;
         }
 
-        private object GetShardingValue(AndPredicateSegment andPredicate, IDictionary<string, DbParameter> parameters, String shardingColumn)
+        private object GetShardingValue(AndPredicateSegment andPredicate, ParameterContext parameterContext, String shardingColumn)
         {
             foreach (var predicate in andPredicate.GetPredicates())
             {
@@ -103,7 +103,7 @@ namespace ShardingConnector.ShardingRoute.Engine.Validator.Impl
             return null;
         }
 
-        private object GetPredicateCompareShardingValue(IExpressionSegment segment, IDictionary<string, DbParameter> parameters)
+        private object GetPredicateCompareShardingValue(IExpressionSegment segment, ParameterContext parameterContext)
         {
             // int shardingValueParameterMarkerIndex;
             if (segment is ParameterMarkerExpressionSegment parameterMarkerExpressionSegment)
@@ -122,7 +122,7 @@ namespace ShardingConnector.ShardingRoute.Engine.Validator.Impl
             return null;
         }
 
-        private object GetPredicateInShardingValue(ICollection<IExpressionSegment> segments, IDictionary<string, DbParameter> parameters)
+        private object GetPredicateInShardingValue(ICollection<IExpressionSegment> segments, ParameterContext parameterContext)
         {
             // int shardingColumnWhereIndex;
             foreach (var segment in segments)
@@ -146,7 +146,7 @@ namespace ShardingConnector.ShardingRoute.Engine.Validator.Impl
             return null;
         }
 
-        public void Validate(ShardingRule shardingRule, ISqlCommand sqlCommand,IDictionary<string, DbParameter> parameters)
+        public void Validate(ShardingRule shardingRule, ISqlCommand sqlCommand,ParameterContext parameterContext)
         {
             Validate(shardingRule, (UpdateCommand)sqlCommand, parameters);
         }

@@ -33,6 +33,6 @@ namespace ShardingConnector.RewriteEngine.Parameter.Rewrite
          * @param sqlStatementContext SQL statement context
          * @param parameters SQL parameters
          */
-        void Rewrite(IParameterBuilder parameterBuilder, ISqlCommandContext<ISqlCommand> sqlCommandContext, IDictionary<string, DbParameter> parameters);
+        void Rewrite(IParameterBuilder parameterBuilder, ISqlCommandContext<ISqlCommand> sqlCommandContext, ParameterContext parameterContext);
     }
 }

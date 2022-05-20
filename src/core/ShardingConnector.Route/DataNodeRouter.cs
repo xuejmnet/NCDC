@@ -10,6 +10,7 @@ using ShardingConnector.ParserBinder.Command;
 using ShardingConnector.ParserEngine;
 using ShardingConnector.Route.Context;
 using ShardingConnector.Route.Hook;
+using ShardingConnector.ShardingAdoNet;
 
 namespace ShardingConnector.Route
 {
@@ -40,13 +41,13 @@ namespace ShardingConnector.Route
             _decorators.Add(rule, decorator);
         }
 
-        public RouteContext Route(string sql, IDictionary<string, DbParameter> parameters, bool useCache)
+        public RouteContext Route(string sql, ParameterContext parameterContext, bool useCache)
         {
             var routingHookManager = RoutingHookManager.GetInstance();
             routingHookManager.Start(sql);
             try
             {
-                RouteContext result = ExecuteRoute(sql, parameters, useCache);
+                RouteContext result = ExecuteRoute(sql, parameterContext, useCache);
                 routingHookManager.FinishSuccess(result, _metaData.Schema);
                 return result;
                 // CHECKSTYLE:OFF
@@ -60,9 +61,9 @@ namespace ShardingConnector.Route
 
         }
 
-        private RouteContext ExecuteRoute(string sql, IDictionary<string, DbParameter> parameters, bool useCache)
+        private RouteContext ExecuteRoute(string sql, ParameterContext parameterContext, bool useCache)
         {
-            var result = CreateRouteContext(sql, parameters, useCache);
+            var result = CreateRouteContext(sql, parameterContext, useCache);
             foreach (var decorator in _decorators)
             {
                 result = decorator.Value.Decorate(result, _metaData, decorator.Key, _properties);
@@ -70,7 +71,7 @@ namespace ShardingConnector.Route
             return result;
         }
 
-        private RouteContext CreateRouteContext(string sql, IDictionary<string, DbParameter> parameters, bool useCache)
+        private RouteContext CreateRouteContext(string sql, ParameterContext parameterContext, bool useCache)
         {
             var sqlCommand = _parserEngine.Parse(sql, useCache);
             try
