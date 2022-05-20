@@ -130,7 +130,9 @@ namespace ShardingConnector.ParserBinder.Segment.Select.Pagination.Engine
                 return new NumberLiteralRowNumberValueSegment(startIndex, stopIndex,
                     (int)((LiteralExpressionSegment)expression).GetLiterals(), boundOpened);
             }
-            return new ParameterMarkerRowNumberValueSegment(startIndex, stopIndex, ((ParameterMarkerExpressionSegment)expression).GetParameterMarkerIndex(), boundOpened);
+
+            var parameterMarkerExpression = ((ParameterMarkerExpressionSegment)expression);
+            return new ParameterMarkerRowNumberValueSegment(startIndex, stopIndex, parameterMarkerExpression.GetParameterMarkerIndex(), parameterMarkerExpression.GetParameterName(), boundOpened);
         }
     }
 }

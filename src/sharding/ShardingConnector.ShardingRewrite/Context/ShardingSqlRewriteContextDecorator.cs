@@ -28,7 +28,7 @@ namespace ShardingConnector.ShardingRewrite.Context
             var parameterRewriters = new ShardingParameterRewriterBuilder(rule, routeContext).GetParameterRewriters(sqlRewriteContext.GetSchemaMetaData());
             foreach (var parameterRewriter in parameterRewriters)
             {
-                if (!sqlRewriteContext.GetParameters().IsEmpty() && parameterRewriter.IsNeedRewrite(sqlRewriteContext.GetSqlCommandContext()))
+                if (sqlRewriteContext.GetParameters().IsNotEmpty() && parameterRewriter.IsNeedRewrite(sqlRewriteContext.GetSqlCommandContext()))
                 {
                     parameterRewriter.Rewrite(sqlRewriteContext.GetParameterBuilder(), sqlRewriteContext.GetSqlCommandContext(), sqlRewriteContext.GetParameters());
                 }

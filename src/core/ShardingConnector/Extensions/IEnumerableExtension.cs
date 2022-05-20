@@ -20,7 +20,11 @@ namespace ShardingConnector.Extensions
         }
         public static bool IsEmpty<T>(this IEnumerable<T> source)
         {
-            return !source.Any();
+            return source==null||!source.Any();
+        }
+        public static bool IsNotEmpty<T>(this IEnumerable<T> source)
+        {
+            return !source.IsEmpty();
         }
 
         public static TValue Get<TKey, TValue>(this IDictionary<TKey, TValue> dic, TKey key)

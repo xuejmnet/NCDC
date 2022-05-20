@@ -27,5 +27,10 @@ namespace ShardingConnector.ShardingRewrite.Token.SimpleObject
         {
             return stopIndex;
         }
+
+        public override string ToString()
+        {
+            return $"{revisedRowCount}";
+        }
     }
 }

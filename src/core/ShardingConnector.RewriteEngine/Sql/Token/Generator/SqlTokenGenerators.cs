@@ -67,7 +67,7 @@ namespace ShardingConnector.RewriteEngine.Sql.Token.Generator
                     continue;
                 }
 
-                if (sqlTokenGenerator is IOptionalSqlTokenGenerator<ISqlCommandContext<ISqlCommand>> optionalSqlTokenGenerator)
+                if (sqlTokenGenerator is IOptionalSqlTokenGenerator optionalSqlTokenGenerator)
                 {
                     SqlToken sqlToken = optionalSqlTokenGenerator.GenerateSqlToken(sqlCommandContext);
                     if (!result.Contains(sqlToken))
@@ -75,7 +75,7 @@ namespace ShardingConnector.RewriteEngine.Sql.Token.Generator
                         result.Add(sqlToken);
                     }
                 }
-                else if (sqlTokenGenerator is ICollectionSqlTokenGenerator<ISqlCommandContext<ISqlCommand>> collectionSqlTokenGenerator)
+                else if (sqlTokenGenerator is ICollectionSqlTokenGenerator collectionSqlTokenGenerator)
                 {
                     result.AddAll(collectionSqlTokenGenerator.GenerateSqlTokens(sqlCommandContext));
                 }

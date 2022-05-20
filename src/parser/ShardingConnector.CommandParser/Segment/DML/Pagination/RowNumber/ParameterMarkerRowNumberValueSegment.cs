@@ -10,14 +10,22 @@
     public sealed class ParameterMarkerRowNumberValueSegment:RowNumberValueSegment,IParameterMarkerPaginationValueSegment
     {
         private readonly int _parameterIndex;
-        public ParameterMarkerRowNumberValueSegment(int startIndex, int stopIndex,int parameterIndex, bool boundOpened) : base(startIndex, stopIndex, boundOpened)
+        private readonly string _parameterName;
+
+        public ParameterMarkerRowNumberValueSegment(int startIndex, int stopIndex,int parameterIndex, string parameterName, bool boundOpened) : base(startIndex, stopIndex, boundOpened)
         {
             this._parameterIndex = parameterIndex;
+            _parameterName = parameterName;
         }
 
         public int GetParameterIndex()
         {
             return _parameterIndex;
+        }
+
+        public string GetParameterName()
+        {
+            return _parameterName;
         }
     }
 }

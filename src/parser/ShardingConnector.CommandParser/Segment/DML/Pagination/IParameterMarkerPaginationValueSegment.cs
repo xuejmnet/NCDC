@@ -9,5 +9,6 @@ namespace ShardingConnector.CommandParser.Segment.DML.Pagination
     public interface IParameterMarkerPaginationValueSegment:IPaginationValueSegment
     {
         int GetParameterIndex();
+        string GetParameterName();
     }
 }

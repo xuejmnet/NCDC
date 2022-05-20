@@ -9,14 +9,21 @@ namespace ShardingConnector.CommandParser.Segment.DML.Pagination.limit
     public sealed class ParameterMarkerLimitValueSegment:LimitValueSegment,IParameterMarkerPaginationValueSegment
     {
         private readonly int _parameterIndex;
-        public ParameterMarkerLimitValueSegment(int startIndex, int stopIndex,int parameterIndex) : base(startIndex, stopIndex)
+        private readonly string _paramName;
+
+        public ParameterMarkerLimitValueSegment(int startIndex, int stopIndex,int parameterIndex,string paramName) : base(startIndex, stopIndex)
         {
             _parameterIndex = parameterIndex;
+            _paramName = paramName;
         }
 
         public int GetParameterIndex()
         {
             return _parameterIndex;
+        }
+        public string GetParameterName()
+        {
+            return _paramName;
         }
     }
 }

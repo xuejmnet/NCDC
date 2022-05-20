@@ -82,6 +82,7 @@ namespace ShardingConnector.AppConsoleMySQLTest
 
             //for (int i = 0; i < 20; i++)
             //{
+            QueryPage(dataSource);
             QueryMax(dataSource);
             Delete(dataSource);
             Insert(dataSource);
@@ -170,6 +171,32 @@ namespace ShardingConnector.AppConsoleMySQLTest
             dbCommand.Parameters.Add(dbParameter);
             dbCommand.Parameters.Add(dbParameter2);
             //dbCommand.CommandText = @"select [d].[Id],[d].[Name],[d].[Age] from [dbo].[SysUserMod] as [d] where id='1'  order by [d].[Age] desc";
+            var dbDataReader = dbCommand.ExecuteReader();
+            while (dbDataReader.Read())
+            {
+                Console.WriteLine($"{dbDataReader[0]}-{dbDataReader[1]}-{dbDataReader[2]}");
+            }
+
+            Console.WriteLine("Hello World!");
+        }
+        static void QueryPage(IDataSource dataSource)
+        {
+            var dbConnection = dataSource.CreateConnection();
+            dbConnection.Open();
+
+            var dbCommand = dbConnection.CreateCommand();
+            dbCommand.CommandText = @"select * from SysUserMod order by age limit 3,10";
+            //var dbParameter = dbCommand.CreateParameter();
+            //dbParameter.ParameterName = "@p0";
+            //dbParameter.Value = 2;
+
+            //var dbParameter2 = dbCommand.CreateParameter();
+            //dbParameter2.ParameterName = "@p1";
+            //dbParameter2.Value = 10;
+            ////dbParameter.ParameterName = "@Id";
+            ////dbParameter.Value = 21;
+            //dbCommand.Parameters.Add(dbParameter2);
+            //dbCommand.Parameters.Add(dbParameter);
             var dbDataReader = dbCommand.ExecuteReader();
             while (dbDataReader.Read())
             {

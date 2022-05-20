@@ -88,8 +88,9 @@ namespace ShardingConnector.ParserBinder.Segment.Select.Pagination.Engine
                     (int)literalExpressionSegment.GetLiterals(), boundOpened);
             }
 
+            var parameterMarkerExpression = ((ParameterMarkerExpressionSegment)expression);
             return new ParameterMarkerRowNumberValueSegment(startIndex, stopIndex,
-                ((ParameterMarkerExpressionSegment) expression).GetParameterMarkerIndex(), boundOpened);
+                parameterMarkerExpression.GetParameterMarkerIndex(), parameterMarkerExpression.GetParameterName(), boundOpened);
         }
     }
 }

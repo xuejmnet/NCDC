@@ -101,7 +101,7 @@ namespace ShardingConnector.Pluggable.Prepare
             }
         }
         private void RegisterRewriteDecorator()
-        {
+         {
             var registeredOrderedAware = OrderedRegistry.GetRegisteredOrderedAware(typeof(ISqlRewriteContextDecorator));
 
             foreach (var orderAware in registeredOrderedAware)

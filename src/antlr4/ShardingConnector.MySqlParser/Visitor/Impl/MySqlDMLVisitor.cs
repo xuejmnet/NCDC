@@ -641,7 +641,8 @@ namespace ShardingConnector.MySqlParser.Visitor.Impl
             {
                 return new NumberLiteralLimitValueSegment(ctx.Start.StartIndex, ctx.Stop.StopIndex, (long)((NumberLiteralValue)Visit(ctx.numberLiterals())).GetValue());
             }
-            return new ParameterMarkerLimitValueSegment(ctx.Start.StartIndex, ctx.Stop.StopIndex, ((ParameterMarkerValue)Visit(ctx.parameterMarker())).GetValue());
+
+            return new ParameterMarkerLimitValueSegment(ctx.Start.StartIndex, ctx.Stop.StopIndex, ((ParameterMarkerValue)Visit(ctx.parameterMarker())).GetValue(), ctx.GetText());
         }
 
 
@@ -651,7 +652,7 @@ namespace ShardingConnector.MySqlParser.Visitor.Impl
             {
                 return new NumberLiteralLimitValueSegment(ctx.Start.StartIndex, ctx.Stop.StopIndex, (long)((NumberLiteralValue)Visit(ctx.numberLiterals())).GetValue());
             }
-            return new ParameterMarkerLimitValueSegment(ctx.Start.StartIndex, ctx.Stop.StopIndex, ((ParameterMarkerValue)Visit(ctx.parameterMarker())).GetValue());
+            return new ParameterMarkerLimitValueSegment(ctx.Start.StartIndex, ctx.Stop.StopIndex, ((ParameterMarkerValue)Visit(ctx.parameterMarker())).GetValue(), ctx.GetText());
         }
 
 
