@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-
+using System.Data.Common;
 using ShardingConnector.CommandParser.Command;
 using ShardingConnector.ParserBinder.Command;
 
@@ -15,10 +15,10 @@ namespace ShardingConnector.Route.Context
     public sealed class RouteContext
     {
         private readonly ISqlCommandContext<ISqlCommand> _sqlCommandContext;
-        private readonly List<object> _parameters;
+        private readonly IDictionary<string, DbParameter> _parameters;
         private readonly RouteResult _routeResult;
 
-        public RouteContext(ISqlCommandContext<ISqlCommand> sqlCommandContext, List<object> parameters, RouteResult routeResult)
+        public RouteContext(ISqlCommandContext<ISqlCommand> sqlCommandContext, IDictionary<string, DbParameter> parameters, RouteResult routeResult)
         {
             _sqlCommandContext = sqlCommandContext;
             _parameters = parameters;
@@ -30,7 +30,7 @@ namespace ShardingConnector.Route.Context
             return _sqlCommandContext;
         }
 
-        public List<object> GetParameters()
+        public IDictionary<string, DbParameter> GetParameters()
         {
             return _parameters;
         }

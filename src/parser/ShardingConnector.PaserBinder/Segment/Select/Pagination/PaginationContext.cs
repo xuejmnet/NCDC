@@ -29,17 +29,16 @@ namespace ShardingConnector.ParserBinder.Segment.Select.Pagination
 
         private readonly long? _actualRowCount;
 
-        public PaginationContext(IPaginationValueSegment offsetSegment, IPaginationValueSegment rowCountSegment, List<Object> parameters)
+        public PaginationContext(IPaginationValueSegment offsetSegment, IPaginationValueSegment rowCountSegment, IDictionary<string, DbParameter> parameters)
         {
-            var @params = parameters.Select(o => (DbParameter)o).ToDictionary(o => o.ParameterName, o => o);
             _hasPagination = null != offsetSegment || null != rowCountSegment;
             this._offsetSegment = offsetSegment;
             this._rowCountSegment = rowCountSegment;
-            _actualOffset = null == offsetSegment ? 0 : GetValue(offsetSegment, @params);
-            _actualRowCount = null == rowCountSegment ? (long?)null : GetValue(rowCountSegment, @params);
+            _actualOffset = null == offsetSegment ? 0 : GetValue(offsetSegment, parameters);
+            _actualRowCount = null == rowCountSegment ? (long?)null : GetValue(rowCountSegment, parameters);
         }
 
-        private long GetValue(IPaginationValueSegment paginationValueSegment, Dictionary<string, DbParameter> parameters)
+        private long GetValue(IPaginationValueSegment paginationValueSegment, IDictionary<string, DbParameter> parameters)
         {
             if (paginationValueSegment is IParameterMarkerPaginationValueSegment parameterMarkerPaginationValueSegment)
             {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Text;
 using ShardingConnector.CommandParser.Segment.DML.Predicate.Value;
 using ShardingConnector.DataStructure.RangeStructure;
@@ -18,7 +19,7 @@ namespace ShardingConnector.ShardingRoute.Engine.Condition.Generator.Impl
     */
     public sealed class ConditionValueBetweenOperatorGenerator: IConditionValueGenerator<PredicateBetweenRightValue>
     {
-        public IRouteValue Generate(PredicateBetweenRightValue predicateRightValue, Column column, List<object> parameters)
+        public IRouteValue Generate(PredicateBetweenRightValue predicateRightValue, Column column, IDictionary<string, DbParameter> parameters)
         {
             IComparable betweenRouteValue = new ConditionValue(predicateRightValue.BetweenExpression, parameters).GetValue();
             IComparable andRouteValue = new ConditionValue(predicateRightValue.AndExpression, parameters).GetValue();
@@ -43,7 +44,7 @@ namespace ShardingConnector.ShardingRoute.Engine.Condition.Generator.Impl
             return null;
         }
 
-        public IRouteValue Generate(IPredicateRightValue predicateRightValue, Column column, List<object> parameters)
+        public IRouteValue Generate(IPredicateRightValue predicateRightValue, Column column, IDictionary<string, DbParameter> parameters)
         {
             return Generate((PredicateBetweenRightValue) predicateRightValue, column, parameters);
         }

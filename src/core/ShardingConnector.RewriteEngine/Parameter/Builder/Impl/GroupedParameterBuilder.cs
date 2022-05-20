@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq;
 using ShardingConnector.Extensions;
 
@@ -15,11 +16,11 @@ namespace ShardingConnector.RewriteEngine.Parameter.Builder.Impl
     {
         private readonly List<StandardParameterBuilder> _parameterBuilders;
 
-        private readonly List<object> _onDuplicateKeyUpdateAddedParameters = new List<object>();
+        private readonly IDictionary<string, DbParameter> _onDuplicateKeyUpdateAddedParameters = new Dictionary<string, DbParameter>();
 
         private string derivedColumnName;
 
-        public GroupedParameterBuilder(List<List<object>> groupedParameters)
+        public GroupedParameterBuilder(List<IDictionary<string, DbParameter>> groupedParameters)
         {
             _parameterBuilders = new List<StandardParameterBuilder>(groupedParameters.Count);
             foreach (var groupedParameter in groupedParameters)
@@ -62,7 +63,7 @@ namespace ShardingConnector.RewriteEngine.Parameter.Builder.Impl
             }
             if (_onDuplicateKeyUpdateAddedParameters.Any())
             {
-                result.AddAll(_onDuplicateKeyUpdateAddedParameters);
+                result.AddAll(_onDuplicateKeyUpdateAddedParameters.Values.Select(o=>o.Value).ToList());
             }
             return result;
         }

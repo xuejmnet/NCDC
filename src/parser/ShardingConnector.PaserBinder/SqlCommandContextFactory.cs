@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-
+using System.Data.Common;
 using ShardingConnector.CommandParser.Command;
 using ShardingConnector.CommandParser.Command.DML;
 using ShardingConnector.ParserBinder.Command.DML;
@@ -16,7 +16,7 @@ namespace ShardingConnector.ParserBinder
 */
     public static class SqlCommandContextFactory
     {
-        public static ParserBinder.Command.ISqlCommandContext<ISqlCommand> NewInstance(SchemaMetaData schemaMetaData, string sql, List<object> parameters, ISqlCommand sqlCommand) {
+        public static ParserBinder.Command.ISqlCommandContext<ISqlCommand> NewInstance(SchemaMetaData schemaMetaData, string sql, IDictionary<string, DbParameter> parameters, ISqlCommand sqlCommand) {
             if(sqlCommand is DMLCommand dmlCommand)
             {
                 return GetDMLCommandContext(schemaMetaData, sql, parameters, dmlCommand);
@@ -37,7 +37,7 @@ namespace ShardingConnector.ParserBinder
             return new ParserBinder.Command.GenericSqlCommandContext<ISqlCommand>(sqlCommand);
         }
 
-        private static ParserBinder.Command.ISqlCommandContext<ISqlCommand> GetDMLCommandContext(SchemaMetaData schemaMetaData, string sql, List<object> parameters, DMLCommand sqlCommand)
+        private static ParserBinder.Command.ISqlCommandContext<ISqlCommand> GetDMLCommandContext(SchemaMetaData schemaMetaData, string sql, IDictionary<string, DbParameter> parameters, DMLCommand sqlCommand)
         {
             if (sqlCommand is SelectCommand selectCommand)
             {

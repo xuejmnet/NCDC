@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Text;
 
 using ShardingConnector.CommandParser.Command;
@@ -32,6 +33,6 @@ namespace ShardingConnector.RewriteEngine.Parameter.Rewrite
          * @param sqlStatementContext SQL statement context
          * @param parameters SQL parameters
          */
-        void Rewrite(IParameterBuilder parameterBuilder, ISqlCommandContext<ISqlCommand> sqlCommandContext, List<object> parameters);
+        void Rewrite(IParameterBuilder parameterBuilder, ISqlCommandContext<ISqlCommand> sqlCommandContext, IDictionary<string, DbParameter> parameters);
     }
 }

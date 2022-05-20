@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using ShardingConnector.CommandParser.Command;
 using ShardingConnector.Common.Config.Properties;
 using ShardingConnector.Common.MetaData;
@@ -39,7 +40,7 @@ namespace ShardingConnector.Route
             _decorators.Add(rule, decorator);
         }
 
-        public RouteContext Route(string sql, List<object> parameters, bool useCache)
+        public RouteContext Route(string sql, IDictionary<string, DbParameter> parameters, bool useCache)
         {
             var routingHookManager = RoutingHookManager.GetInstance();
             routingHookManager.Start(sql);
@@ -59,7 +60,7 @@ namespace ShardingConnector.Route
 
         }
 
-        private RouteContext ExecuteRoute(string sql, List<object> parameters, bool useCache)
+        private RouteContext ExecuteRoute(string sql, IDictionary<string, DbParameter> parameters, bool useCache)
         {
             var result = CreateRouteContext(sql, parameters, useCache);
             foreach (var decorator in _decorators)
@@ -69,7 +70,7 @@ namespace ShardingConnector.Route
             return result;
         }
 
-        private RouteContext CreateRouteContext(string sql, List<object> parameters, bool useCache)
+        private RouteContext CreateRouteContext(string sql, IDictionary<string, DbParameter> parameters, bool useCache)
         {
             var sqlCommand = _parserEngine.Parse(sql, useCache);
             try

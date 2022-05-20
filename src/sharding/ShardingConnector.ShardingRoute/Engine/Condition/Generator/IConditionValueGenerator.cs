@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Text;
 using ShardingConnector.CommandParser.Segment.DML.Predicate.Value;
 using ShardingConnector.ShardingCommon.Core.Strategy.Route.Value;
@@ -15,11 +16,11 @@ namespace ShardingConnector.ShardingRoute.Engine.Condition.Generator
     */
     public interface IConditionValueGenerator
     {
-        IRouteValue Generate(IPredicateRightValue predicateRightValue, Column column, List<object> parameters);
+        IRouteValue Generate(IPredicateRightValue predicateRightValue, Column column, IDictionary<string, DbParameter> parameters);
     }
     public interface IConditionValueGenerator<in T>: IConditionValueGenerator where T : IPredicateRightValue
     {
-        IRouteValue Generate(T predicateRightValue, Column column, List<object> parameters);
+        IRouteValue Generate(T predicateRightValue, Column column, IDictionary<string, DbParameter> parameters);
 
     }
 }

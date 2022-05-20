@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq;
 using ShardingConnector.Extensions;
 
@@ -14,7 +15,7 @@ namespace ShardingConnector.RewriteEngine.Parameter.Builder.Impl
     */
     public sealed class StandardParameterBuilder:IParameterBuilder
     {
-        private readonly List<Object> _originalParameters;
+        private readonly IDictionary<string, DbParameter> _originalParameters;
 
         private readonly IDictionary<int, ICollection<object>> _addedIndexAndParameters = new SortedDictionary<int, ICollection<object>>();
 
@@ -22,7 +23,7 @@ namespace ShardingConnector.RewriteEngine.Parameter.Builder.Impl
 
         private readonly List<int> _removeIndexAndParameters = new List<int>();
 
-        public StandardParameterBuilder(List<object> originalParameters)
+        public StandardParameterBuilder(IDictionary<string, DbParameter> originalParameters)
         {
             this._originalParameters = originalParameters;
         }
@@ -60,7 +61,7 @@ namespace ShardingConnector.RewriteEngine.Parameter.Builder.Impl
 
         public List<object> GetParameters()
         {
-            List<object> result = new List<object>(_originalParameters);
+            List<object> result = new List<object>(_originalParameters.Values.Select(o=>o.Value));
             foreach (var replaced in _replacedIndexAndParameters)
             {
                 result[replaced.Key] = replaced.Value;
@@ -88,7 +89,7 @@ namespace ShardingConnector.RewriteEngine.Parameter.Builder.Impl
             return _addedIndexAndParameters;
         }
 
-        public List<object> GetOriginalParameters()
+        public IDictionary<string, DbParameter> GetOriginalParameters()
         {
             return _originalParameters;
         }

@@ -131,5 +131,10 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Connection
         {
             return dataSource.CreateConnection();
         }
+
+        public DbConnection GetDefaultDbConnection()
+        {
+            return _defaultDbConnection;
+        }
     }
 }

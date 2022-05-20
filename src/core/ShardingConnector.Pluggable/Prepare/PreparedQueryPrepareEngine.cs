@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Data.Common;
 using ShardingConnector.Common.Config.Properties;
 using ShardingConnector.Common.MetaData;
 using ShardingConnector.Common.Rule;
@@ -20,12 +21,12 @@ namespace ShardingConnector.Pluggable.Prepare
         {
         }
 
-        protected override List<object> CloneParameters(List<object> parameters)
+        protected override IDictionary<string, DbParameter> CloneParameters(IDictionary<string, DbParameter> parameters)
         {
-            return new List<object>(parameters);
+            return new Dictionary<string, DbParameter>(parameters);
         }
 
-        protected override RouteContext Route(DataNodeRouter router, string sql, List<object> parameters)
+        protected override RouteContext Route(DataNodeRouter router, string sql, IDictionary<string, DbParameter> parameters)
         {
             return router.Route(sql, parameters,true);
         }

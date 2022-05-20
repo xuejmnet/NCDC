@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq;
 using ShardingConnector.Base;
 using ShardingConnector.CommandParser.Command;
@@ -21,7 +22,7 @@ namespace ShardingConnector.ShardingRewrite.Token.Generator.Impl.KeyGen
 */
     public sealed class GeneratedKeyAssignmentTokenGenerator:BaseGeneratedKeyTokenGenerator,IParametersAware
     {
-        private List<object> _parameters;
+        private IDictionary<string, DbParameter> _parameters;
         public override SqlToken GenerateSqlToken(InsertCommandContext sqlCommandContext)
         {
             var generatedKey = sqlCommandContext.GetGeneratedKeyContext();
@@ -38,9 +39,9 @@ namespace ShardingConnector.ShardingRewrite.Token.Generator.Impl.KeyGen
             return insertCommand.SetAssignment!=null;
         }
 
-        public void SetParameters(ICollection<object> parameters)
+        public void SetParameters(IDictionary<string, DbParameter> parameters)
         {
-            this._parameters = parameters.ToList();
+            this._parameters = parameters;
         }
     }
 }

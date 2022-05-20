@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq;
 using System.Text;
 using Antlr4.Runtime.Misc;
@@ -43,7 +44,7 @@ namespace ShardingConnector.ShardingRoute.Engine.Condition.Engine
          * @param parameters SQL parameters
          * @return sharding conditions
          */
-        public List<ShardingCondition> CreateShardingConditions(ISqlCommandContext<ISqlCommand> sqlCommandContext, List<object> parameters)
+        public List<ShardingCondition> CreateShardingConditions(ISqlCommandContext<ISqlCommand> sqlCommandContext, IDictionary<string, DbParameter> parameters)
         {
             if (sqlCommandContext is IWhereAvailable whereAvailable)
             {
@@ -70,7 +71,7 @@ namespace ShardingConnector.ShardingRoute.Engine.Condition.Engine
             //        }
         }
 
-        private ICollection<ShardingCondition> CreateShardingConditions(ISqlCommandContext<ISqlCommand> sqlCommandContext, ICollection<AndPredicateSegment> andPredicates, List<object> parameters)
+        private ICollection<ShardingCondition> CreateShardingConditions(ISqlCommandContext<ISqlCommand> sqlCommandContext, ICollection<AndPredicateSegment> andPredicates, IDictionary<string, DbParameter> parameters)
         {
             ICollection<ShardingCondition> result = new LinkedList<ShardingCondition>();
             foreach (var andPredicate in andPredicates)
@@ -85,7 +86,7 @@ namespace ShardingConnector.ShardingRoute.Engine.Condition.Engine
             return result;
         }
 
-        private IDictionary<Column, ICollection<IRouteValue>> CreateRouteValueMap(ISqlCommandContext<ISqlCommand> sqlCommandContext, AndPredicateSegment andPredicate, List<object> parameters)
+        private IDictionary<Column, ICollection<IRouteValue>> CreateRouteValueMap(ISqlCommandContext<ISqlCommand> sqlCommandContext, AndPredicateSegment andPredicate, IDictionary<string, DbParameter> parameters)
         {
             IDictionary<Column, ICollection<IRouteValue>> result = new Dictionary<Column, ICollection<IRouteValue>>();
             foreach (var predicate in andPredicate.GetPredicates())

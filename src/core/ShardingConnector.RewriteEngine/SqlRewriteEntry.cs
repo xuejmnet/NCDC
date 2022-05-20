@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-
+using System.Data.Common;
 using ShardingConnector.CommandParser.Command;
 using ShardingConnector.Common.Config.Properties;
 using ShardingConnector.Common.Rule;
@@ -52,7 +52,7 @@ namespace ShardingConnector.RewriteEngine
          * @param routeContext route context
          * @return SQL rewrite context
          */
-        public SqlRewriteContext CreateSqlRewriteContext(string sql, List<object> parameters,  ISqlCommandContext<ISqlCommand> sqlCommandContext, RouteContext routeContext)
+        public SqlRewriteContext CreateSqlRewriteContext(string sql, IDictionary<string, DbParameter> parameters,  ISqlCommandContext<ISqlCommand> sqlCommandContext, RouteContext routeContext)
         {
             var result = new SqlRewriteContext(_schemaMetaData, sqlCommandContext, sql, parameters);
             Decorate(_decorators, result, routeContext);

@@ -35,11 +35,15 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Command
         private ExecutionContext executionContext;
 
         private DbDataReader currentResultSet;
+        private readonly DbConnection _defaultDbConnection;
+        private readonly DbCommand _defaultDbCommand;
 
         public ShardingCommand(string commandText, ShardingConnection connection)
         {
             this.CommandText = commandText;
             this.DbConnection = connection;
+            _defaultDbConnection = connection.GetDefaultDbConnection();
+            _defaultDbCommand = _defaultDbConnection.CreateCommand();
             _commandExecutor = new CommandExecutor(connection);
         }
         public override void Cancel()
@@ -107,7 +111,8 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Command
 
         protected override DbParameter CreateDbParameter()
         {
-            return new ShardingParameter();
+            var dbParameter = _defaultDbCommand.CreateParameter();
+            return new ShardingParameter(dbParameter);
         }
         public new DbParameter CreateParameter() => this.CreateDbParameter();
         private ShardingParameterCollection _parameters;
@@ -158,7 +163,7 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Command
             //sp.Stop();
             //Console.WriteLine(sp.ElapsedMilliseconds);
 
-            ExecutionContext result = prepareEngine.Prepare(sql, _parameters?.GetParams().Select(o=>(object)o).ToList()??new List<object>(0));
+            ExecutionContext result = prepareEngine.Prepare(sql, _parameters?.GetParams().Select(o=>(DbParameter)o).ToDictionary(o=>o.ParameterName,o=>o)??new Dictionary<string, DbParameter>(0));
             _commandExecutor.Init(result);
             //_commandExecutor.Commands.for
             // statementExecutor.getStatements().forEach(this::replayMethodsInvocation);

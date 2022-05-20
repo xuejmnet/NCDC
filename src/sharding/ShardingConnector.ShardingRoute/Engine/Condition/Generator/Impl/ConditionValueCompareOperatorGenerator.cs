@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Text;
 using ShardingConnector.CommandParser.Segment.DML.Predicate.Value;
 using ShardingConnector.DataStructure.RangeStructure;
@@ -28,7 +29,7 @@ namespace ShardingConnector.ShardingRoute.Engine.Condition.Generator.Impl
         private const string AT_LEAST = ">=";
 
         private static readonly List<string> OPERATORS = new List<string>() { EQUAL, GREATER_THAN, LESS_THAN, AT_LEAST, AT_MOST };
-        public IRouteValue Generate(PredicateCompareRightValue predicateRightValue, Column column, List<object> parameters)
+        public IRouteValue Generate(PredicateCompareRightValue predicateRightValue, Column column, IDictionary<string, DbParameter> parameters)
         {
             string @operator = predicateRightValue.GetOperator();
             if (!IsSupportedOperator(@operator))
@@ -73,7 +74,7 @@ namespace ShardingConnector.ShardingRoute.Engine.Condition.Generator.Impl
             return OPERATORS.Contains(@operator);
         }
 
-        public IRouteValue Generate(IPredicateRightValue predicateRightValue, Column column, List<object> parameters)
+        public IRouteValue Generate(IPredicateRightValue predicateRightValue, Column column, IDictionary<string, DbParameter> parameters)
         {
             return Generate((PredicateCompareRightValue)predicateRightValue, column, parameters);
         }

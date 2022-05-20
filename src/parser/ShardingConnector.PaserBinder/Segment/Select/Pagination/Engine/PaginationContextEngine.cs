@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq;
 using ShardingConnector.CommandParser.Command.DML;
 using ShardingConnector.CommandParser.Segment.DML.Pagination.Top;
@@ -17,7 +18,7 @@ namespace ShardingConnector.ParserBinder.Segment.Select.Pagination.Engine
     */
     public sealed class PaginationContextEngine
     {
-        public PaginationContext CreatePaginationContext(SelectCommand selectCommand, ProjectionsContext projectionsContext, List<Object> parameters)
+        public PaginationContext CreatePaginationContext(SelectCommand selectCommand, ProjectionsContext projectionsContext, IDictionary<string, DbParameter> parameters)
         {
             var limitSegment = selectCommand.Limit;
             if (limitSegment != null)

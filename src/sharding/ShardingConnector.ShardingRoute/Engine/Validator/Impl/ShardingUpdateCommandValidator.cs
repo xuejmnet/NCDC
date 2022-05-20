@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Data.Common;
 using System.Linq;
 using System.Text;
 
@@ -26,7 +27,7 @@ namespace ShardingConnector.ShardingRoute.Engine.Validator.Impl
     */
     public sealed class ShardingUpdateCommandValidator : IShardingCommandValidator<UpdateCommand>
     {
-        public void Validate(ShardingRule shardingRule, UpdateCommand sqlCommand, List<object> parameters)
+        public void Validate(ShardingRule shardingRule, UpdateCommand sqlCommand, IDictionary<string, DbParameter> parameters)
         {
             String tableName = sqlCommand.Tables.First().GetTableName().GetIdentifier().GetValue();
             foreach (var assignmentSegment in sqlCommand.SetAssignment.GetAssignments())
@@ -52,7 +53,7 @@ namespace ShardingConnector.ShardingRoute.Engine.Validator.Impl
             }
         }
 
-        private object GetShardingColumnSetAssignmentValue(AssignmentSegment assignmentSegment, List<object> parameters)
+        private object GetShardingColumnSetAssignmentValue(AssignmentSegment assignmentSegment, IDictionary<string, DbParameter> parameters)
         {
             var segment = assignmentSegment.GetValue();
             int shardingSetAssignIndex = -1;
@@ -71,7 +72,7 @@ namespace ShardingConnector.ShardingRoute.Engine.Validator.Impl
             return parameters[shardingSetAssignIndex];
         }
 
-        private object GetShardingValue(WhereSegment whereSegment, List<object> parameters, String shardingColumn)
+        private object GetShardingValue(WhereSegment whereSegment, IDictionary<string, DbParameter> parameters, String shardingColumn)
         {
             foreach (var andPredicate in whereSegment.GetAndPredicates())
             {
@@ -80,7 +81,7 @@ namespace ShardingConnector.ShardingRoute.Engine.Validator.Impl
             return null;
         }
 
-        private object GetShardingValue(AndPredicateSegment andPredicate, List<object> parameters, String shardingColumn)
+        private object GetShardingValue(AndPredicateSegment andPredicate, IDictionary<string, DbParameter> parameters, String shardingColumn)
         {
             foreach (var predicate in andPredicate.GetPredicates())
             {

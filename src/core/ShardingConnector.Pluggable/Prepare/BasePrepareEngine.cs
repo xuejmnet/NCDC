@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq;
 using ShardingConnector.Common.Config.Properties;
 using ShardingConnector.Common.MetaData;
@@ -43,10 +44,10 @@ namespace ShardingConnector.Pluggable.Prepare
             _rewriter = new SqlRewriteEntry(metaData.Schema, properties);
         }
 
-        protected abstract List<object> CloneParameters(List<object> parameters);
-        protected abstract RouteContext Route(DataNodeRouter router,string sql, List<object> parameters);
+        protected abstract IDictionary<string, DbParameter> CloneParameters(IDictionary<string, DbParameter> parameters);
+        protected abstract RouteContext Route(DataNodeRouter router,string sql, IDictionary<string, DbParameter> parameters);
 
-        public ExecutionContext Prepare(string sql, List<object> parameters)
+        public ExecutionContext Prepare(string sql, IDictionary<string, DbParameter> parameters)
         {
             var cloneParameters = CloneParameters(parameters);
             var routeContext = ExecuteRoute(sql, cloneParameters);
@@ -60,13 +61,13 @@ namespace ShardingConnector.Pluggable.Prepare
         }
 
 
-        private ICollection<ExecutionUnit> ExecuteRewrite(string sql, List<object> parameters, RouteContext routeContext)
+        private ICollection<ExecutionUnit> ExecuteRewrite(string sql, IDictionary<string, DbParameter> parameters, RouteContext routeContext)
         {
             RegisterRewriteDecorator();
             SqlRewriteContext sqlRewriteContext = _rewriter.CreateSqlRewriteContext(sql, parameters, routeContext.GetSqlCommandContext(), routeContext);
             return !routeContext.GetRouteResult().GetRouteUnits().Any() ? Rewrite(sqlRewriteContext) : Rewrite(routeContext, sqlRewriteContext);
         }
-        private RouteContext ExecuteRoute(string sql, List<object> clonedParameters)
+        private RouteContext ExecuteRoute(string sql, IDictionary<string, DbParameter> clonedParameters)
         {
             RegisterRouteDecorator();
             return Route(_router, sql, clonedParameters);

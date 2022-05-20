@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-
+using System.Data.Common;
 using ShardingConnector.CommandParser.Command;
 using ShardingConnector.ParserBinder.Command;
 using ShardingConnector.ParserBinder.Command.DML;
@@ -27,7 +27,7 @@ namespace ShardingConnector.RewriteEngine.Context
     
         private readonly string _sql;
     
-        private readonly List<object> _parameters;
+        private readonly IDictionary<string, DbParameter> _parameters;
 
         private readonly IParameterBuilder _parameterBuilder;
     
@@ -35,7 +35,7 @@ namespace ShardingConnector.RewriteEngine.Context
 
         private readonly SqlTokenGenerators _sqlTokenGenerators = new SqlTokenGenerators();
 
-        public SqlRewriteContext(SchemaMetaData schemaMetaData, ISqlCommandContext<ISqlCommand> sqlCommandContext, string sql, List<object> parameters)
+        public SqlRewriteContext(SchemaMetaData schemaMetaData, ISqlCommandContext<ISqlCommand> sqlCommandContext, string sql, IDictionary<string, DbParameter> parameters)
         {
             this._schemaMetaData = schemaMetaData;
             this._sqlCommandContext = sqlCommandContext;
@@ -91,7 +91,7 @@ namespace ShardingConnector.RewriteEngine.Context
             return _schemaMetaData;
         }
 
-        public List<object> GetParameters()
+        public IDictionary<string, DbParameter> GetParameters()
         {
             return _parameters;
         }

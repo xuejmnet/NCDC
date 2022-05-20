@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Text;
 using ShardingConnector.CommandParser.Segment.DML.Predicate.Value;
 using ShardingConnector.Extensions;
@@ -17,7 +18,7 @@ namespace ShardingConnector.ShardingRoute.Engine.Condition.Generator.Impl
     */
     public sealed class ConditionValueInOperatorGenerator: IConditionValueGenerator<PredicateInRightValue>
     {
-        public IRouteValue Generate(PredicateInRightValue predicateRightValue, Column column, List<object> parameters)
+        public IRouteValue Generate(PredicateInRightValue predicateRightValue, Column column, IDictionary<string, DbParameter> parameters)
         {
             ICollection<IComparable> routeValues = new LinkedList<IComparable>();
             SPITimeService timeService = SPITimeService.GetInstance();
@@ -38,7 +39,7 @@ namespace ShardingConnector.ShardingRoute.Engine.Condition.Generator.Impl
 
         }
 
-        public IRouteValue Generate(IPredicateRightValue predicateRightValue, Column column, List<object> parameters)
+        public IRouteValue Generate(IPredicateRightValue predicateRightValue, Column column, IDictionary<string, DbParameter> parameters)
         {
             return Generate((PredicateInRightValue) predicateRightValue, column, parameters);
         }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq;
 using System.Text;
 
@@ -39,7 +40,7 @@ namespace ShardingConnector.ShardingRoute.Engine
             ConfigurationProperties properties)
         {
             var sqlStatementContext = routeContext.GetSqlCommandContext();
-            List<object> parameters = routeContext.GetParameters();
+            var parameters = routeContext.GetParameters();
             ShardingCommandValidatorFactory.NewInstance(
                 sqlStatementContext.GetSqlCommand())
                 .IfPresent(validator=> validator.Validate(shardingRule, sqlStatementContext.GetSqlCommand(), parameters));
@@ -59,7 +60,7 @@ namespace ShardingConnector.ShardingRoute.Engine
             return new RouteContext(sqlStatementContext, parameters, routeResult);
         }
 
-        private ShardingConditions GetShardingConditions(List<object> parameters,
+        private ShardingConditions GetShardingConditions(IDictionary<string, DbParameter> parameters,
                                                          ISqlCommandContext<ISqlCommand> sqlStatementContext, SchemaMetaData schemaMetaData, ShardingRule shardingRule)
         {
             if (sqlStatementContext.GetSqlCommand() is DMLCommand) {

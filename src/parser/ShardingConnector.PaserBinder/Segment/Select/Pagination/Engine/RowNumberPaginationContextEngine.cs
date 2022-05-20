@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq;
 using ShardingConnector.CommandParser.Segment.DML.Expr;
 using ShardingConnector.CommandParser.Segment.DML.Expr.Simple;
@@ -37,7 +38,7 @@ namespace ShardingConnector.ParserBinder.Segment.Select.Pagination.Engine
          * @param parameters SQL parameters
          * @return pagination context
          */
-        public PaginationContext CreatePaginationContext(ICollection<AndPredicateSegment> andPredicates, ProjectionsContext projectionsContext, List<Object> parameters)
+        public PaginationContext CreatePaginationContext(ICollection<AndPredicateSegment> andPredicates, ProjectionsContext projectionsContext, IDictionary<string, DbParameter> parameters)
         {
             var rowNumberAlias = IsRowNumberAlias(projectionsContext);
             if (rowNumberAlias == null)
@@ -93,7 +94,7 @@ namespace ShardingConnector.ParserBinder.Segment.Select.Pagination.Engine
             return false;
         }
 
-        private PaginationContext CreatePaginationWithRowNumber(ICollection<PredicateSegment> rowNumberPredicates, List<object> parameters)
+        private PaginationContext CreatePaginationWithRowNumber(ICollection<PredicateSegment> rowNumberPredicates, IDictionary<string, DbParameter> parameters)
         {
             RowNumberValueSegment offset = null;
             RowNumberValueSegment rowCount = null;

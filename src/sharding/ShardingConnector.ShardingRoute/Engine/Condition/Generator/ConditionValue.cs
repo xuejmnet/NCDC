@@ -21,12 +21,12 @@ namespace ShardingConnector.ShardingRoute.Engine.Condition.Generator
     {
         private readonly IComparable _value;
 
-        public ConditionValue(IExpressionSegment expressionSegment, List<object> parameters)
+        public ConditionValue(IExpressionSegment expressionSegment, IDictionary<string, DbParameter> parameters)
         {
             _value = GetValue(expressionSegment, parameters);
         }
 
-        private IComparable GetValue(IExpressionSegment expressionSegment, List<object> parameters)
+        private IComparable GetValue(IExpressionSegment expressionSegment, IDictionary<string, DbParameter> parameters)
         {
             if (expressionSegment is ParameterMarkerExpressionSegment parameterMarkerExpressionSegment)
             {
@@ -39,10 +39,10 @@ namespace ShardingConnector.ShardingRoute.Engine.Condition.Generator
             return null;
         }
 
-        private IComparable GetValue(ParameterMarkerExpressionSegment expressionSegment, List<object> parameters)
+        private IComparable GetValue(ParameterMarkerExpressionSegment expressionSegment, IDictionary<string, DbParameter> parameters)
         {
 
-            object result = parameters.GetParameterValue(expressionSegment);
+            object result = parameters[expressionSegment.GetParameterName()];
             ShardingAssert.Else(result is IComparable, "Sharding value must implements IComparable.");
             return (IComparable)result;
         }

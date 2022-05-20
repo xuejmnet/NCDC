@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Text;
 
 using ShardingConnector.CommandParser.Command;
@@ -16,10 +17,10 @@ namespace ShardingConnector.ShardingRoute.Engine.Validator
     */
     public interface IShardingCommandValidator
     {
-        void Validate(ShardingRule shardingRule, ISqlCommand sqlCommand, List<object> parameters);
+        void Validate(ShardingRule shardingRule, ISqlCommand sqlCommand, IDictionary<string, DbParameter> parameters);
     }
     public interface IShardingCommandValidator<in T>: IShardingCommandValidator where T:ISqlCommand
     {
-        void Validate(ShardingRule shardingRule, T sqlCommand, List<object> parameters);
+        void Validate(ShardingRule shardingRule, T sqlCommand, IDictionary<string, DbParameter> parameters);
     }
 }

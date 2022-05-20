@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using ShardingConnector.CommandParser.Command;
 using ShardingConnector.Extensions;
 using ShardingConnector.ParserBinder.Command;
@@ -29,7 +30,7 @@ namespace ShardingConnector.ShardingRewrite.Parameter.Impl
                    && selectCommandContext.GetPaginationContext().HasPagination() && !routeContext.GetRouteResult().IsSingleRouting();
         }
 
-        public void Rewrite(IParameterBuilder parameterBuilder, ISqlCommandContext<ISqlCommand> sqlCommandContext, List<object> parameters)
+        public void Rewrite(IParameterBuilder parameterBuilder, ISqlCommandContext<ISqlCommand> sqlCommandContext, IDictionary<string, DbParameter> parameters)
         {
             var selectCommandContext = ((SelectCommandContext) sqlCommandContext);
             var pagination = selectCommandContext.GetPaginationContext();

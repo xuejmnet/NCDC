@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq;
 using ShardingConnector.CommandParser.Command.DML;
 using ShardingConnector.CommandParser.Predicate;
@@ -57,7 +58,7 @@ namespace ShardingConnector.ParserBinder.Command.DML
             _containsSubQuery = ContainsSubQuery();
         }
 
-        public SelectCommandContext(SchemaMetaData schemaMetaData, string sql, List<Object> parameters, SelectCommand sqlCommand) : base(sqlCommand)
+        public SelectCommandContext(SchemaMetaData schemaMetaData, string sql, IDictionary<string, DbParameter> parameters, SelectCommand sqlCommand) : base(sqlCommand)
         {
             _tablesContext = new TablesContext(sqlCommand.GetSimpleTableSegments());
             _groupByContext = new GroupByContextEngine().CreateGroupByContext(sqlCommand);
