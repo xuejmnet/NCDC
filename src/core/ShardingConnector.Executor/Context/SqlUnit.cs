@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Data.Common;
 
 namespace ShardingConnector.Executor.Context
 {
@@ -11,9 +12,9 @@ namespace ShardingConnector.Executor.Context
     public sealed class SqlUnit
     {
         private readonly string _sql;
-        private readonly List<object> _parameters;
+        private readonly IDictionary<string,DbParameter> _parameters;
 
-        public SqlUnit(string sql,List<object> parameters)
+        public SqlUnit(string sql,IDictionary<string,DbParameter> parameters)
         {
             _sql = sql;
             _parameters = parameters;
@@ -24,7 +25,7 @@ namespace ShardingConnector.Executor.Context
             return _sql;
         }
 
-        public List<object> GetParameters()
+        public IDictionary<string,DbParameter> GetParameters()
         {
             return _parameters;
         }

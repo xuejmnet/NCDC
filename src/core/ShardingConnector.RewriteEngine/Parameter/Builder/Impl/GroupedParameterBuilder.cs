@@ -35,7 +35,7 @@ namespace ShardingConnector.RewriteEngine.Parameter.Builder.Impl
          * @param count parameters group count
          * @return parameters
          */
-        public List<object> GetParameters(int count)
+        public IDictionary<string,DbParameter> GetParameters(int count)
         {
             return _parameterBuilders[count].GetParameters();
         }
@@ -54,16 +54,16 @@ namespace ShardingConnector.RewriteEngine.Parameter.Builder.Impl
         {
             this.derivedColumnName = derivedColumnName;
         }
-        public List<object> GetParameters()
+        public IDictionary<string,DbParameter> GetParameters()
         {
-            List<object> result = new List<object>();
+            var result = new Dictionary<string,DbParameter>();
             for (int i = 0; i < _parameterBuilders.Count; i++)
             {
                 result.AddAll(GetParameters(i));
             }
             if (_onDuplicateKeyUpdateAddedParameters.Any())
             {
-                result.AddAll(_onDuplicateKeyUpdateAddedParameters.Values.Select(o=>o.Value).ToList());
+                result.AddAll(_onDuplicateKeyUpdateAddedParameters);
             }
             return result;
         }

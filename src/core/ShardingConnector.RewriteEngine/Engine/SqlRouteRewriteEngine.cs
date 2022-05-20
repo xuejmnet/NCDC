@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Data.Common;
 using ShardingConnector.Common.Rule;
 using ShardingConnector.Extensions;
 using ShardingConnector.RewriteEngine.Context;
@@ -35,12 +36,12 @@ namespace ShardingConnector.RewriteEngine.Engine
             return result;
         }
 
-        private List<object> GetParameters(IParameterBuilder parameterBuilder,RouteResult routeResult, RouteUnit routeUnit)
+        private IDictionary<string,DbParameter> GetParameters(IParameterBuilder parameterBuilder,RouteResult routeResult, RouteUnit routeUnit)
         {
             if (parameterBuilder is StandardParameterBuilder || routeResult.GetOriginalDataNodes().IsEmpty() || parameterBuilder.GetParameters().IsEmpty()) {
                 return parameterBuilder.GetParameters();
             }
-            List<object> result = new List<object>();
+            var result = new Dictionary<string,DbParameter>();
             int count = 0;
             foreach (var originalDataNode in routeResult.GetOriginalDataNodes())
             {

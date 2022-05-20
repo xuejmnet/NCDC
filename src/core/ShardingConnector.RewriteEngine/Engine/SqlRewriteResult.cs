@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Data.Common;
 
 namespace ShardingConnector.RewriteEngine.Engine
 {
@@ -11,7 +12,7 @@ namespace ShardingConnector.RewriteEngine.Engine
     */
     public sealed class SqlRewriteResult
     {
-        public SqlRewriteResult(string sql, List<object> parameters)
+        public SqlRewriteResult(string sql, IDictionary<string,DbParameter> parameters)
         {
             Sql = sql;
             Parameters = parameters;
@@ -19,6 +20,6 @@ namespace ShardingConnector.RewriteEngine.Engine
 
         public string Sql { get; }
     
-        public  List<object> Parameters { get; }
+        public  IDictionary<string,DbParameter> Parameters { get; }
     }
 }

@@ -42,7 +42,7 @@ namespace ShardingConnector.ShardingRoute.Engine.Condition.Generator
         private IComparable GetValue(ParameterMarkerExpressionSegment expressionSegment, IDictionary<string, DbParameter> parameters)
         {
 
-            object result = parameters[expressionSegment.GetParameterName()];
+            object result = parameters[expressionSegment.GetParameterName()].Value;
             ShardingAssert.Else(result is IComparable, "Sharding value must implements IComparable.");
             return (IComparable)result;
         }

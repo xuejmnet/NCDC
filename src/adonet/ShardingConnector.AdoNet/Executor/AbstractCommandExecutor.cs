@@ -37,7 +37,7 @@ namespace ShardingConnector.AdoNet.Executor
 
         public readonly ICollection<DbConnection> Connections = new LinkedList<DbConnection>();
 
-        public readonly List<List<object>> ParameterSets = new List<List<object>>();
+        public readonly List<IDictionary<string,DbParameter>> ParameterSets = new List<IDictionary<string,DbParameter>>();
 
         public readonly List<DbCommand> Commands = new List<DbCommand>();
 

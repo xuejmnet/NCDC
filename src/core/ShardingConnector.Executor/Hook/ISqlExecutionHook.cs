@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using ShardingConnector.Spi.DataBase.MetaData;
 
 namespace ShardingConnector.Executor.Hook
@@ -23,7 +24,7 @@ namespace ShardingConnector.Executor.Hook
      * @param isTrunkThread is execution in trunk thread
      * @param shardingExecuteDataMap sharding execute data map
      */
-        void Start(string dataSourceName, string sql, List<object> parameters, IDataSourceMetaData dataSourceMetaData, bool isTrunkThread, IDictionary<string, object> shardingExecuteDataMap);
+        void Start(string dataSourceName, string sql, IDictionary<string,DbParameter> parameters, IDataSourceMetaData dataSourceMetaData, bool isTrunkThread, IDictionary<string, object> shardingExecuteDataMap);
     
         /**
      * Handle when SQL execution finished success.

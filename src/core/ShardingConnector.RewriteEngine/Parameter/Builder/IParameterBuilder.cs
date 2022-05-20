@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Data.Common;
 
 namespace ShardingConnector.RewriteEngine.Parameter.Builder
 {
@@ -11,6 +12,6 @@ namespace ShardingConnector.RewriteEngine.Parameter.Builder
     */
     public interface IParameterBuilder
     {
-        List<object> GetParameters();
+        IDictionary<string,DbParameter> GetParameters();
     }
 }

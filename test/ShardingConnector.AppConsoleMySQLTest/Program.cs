@@ -14,8 +14,8 @@ namespace ShardingConnector.AppConsoleMySQLTest
 {
     internal class Program
     {
-        private static readonly string conn = "server=127.0.0.1;port=3306;database=test;userid=root;password=L6yBtV6qNENrwBy7;";
-        //private static readonly string conn = "server=127.0.0.1;port=3306;database=test;userid=root;password=root;";
+        // private static readonly string conn = "server=127.0.0.1;port=3306;database=test;userid=root;password=L6yBtV6qNENrwBy7;";
+        private static readonly string conn = "server=127.0.0.1;port=3306;database=test;userid=root;password=root;";
         static void Main(string[] args)
         {
             InternalLoggerFactory.DefaultFactory = LoggerFactory.Create(builder =>

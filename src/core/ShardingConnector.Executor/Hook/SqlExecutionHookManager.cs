@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Text;
 using ShardingConnector.Spi.DataBase.MetaData;
 
@@ -31,7 +32,7 @@ namespace ShardingConnector.Executor.Hook
         {
             return Instance;
         }
-        public void Start(string dataSourceName, string sql, List<object> parameters, IDataSourceMetaData dataSourceMetaData, bool isTrunkThread, IDictionary<string, object> shardingExecuteDataMap)
+        public void Start(string dataSourceName, string sql, IDictionary<string,DbParameter> parameters, IDataSourceMetaData dataSourceMetaData, bool isTrunkThread, IDictionary<string, object> shardingExecuteDataMap)
         {
             foreach (var sqlExecutionHook in _sqlExecutionHooks)
             {
