@@ -63,7 +63,7 @@ namespace ShardingConnector.RewriteEngine.Parameter.Builder.Impl
             List<object> result = new List<object>(_originalParameters);
             foreach (var replaced in _replacedIndexAndParameters)
             {
-                result.Insert(replaced.Key,replaced.Value);
+                result[replaced.Key] = replaced.Value;
             }
             foreach (var added in _addedIndexAndParameters.Reverse())
             {

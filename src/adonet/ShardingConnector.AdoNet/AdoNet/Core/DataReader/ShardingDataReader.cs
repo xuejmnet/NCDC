@@ -61,12 +61,9 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.DataReader
 
         public override bool Read()
         {
+            Console.WriteLine("read");
             return _streamDataReader.Read();
         }
-
-        public override object this[int ordinal] => GetValue(ordinal);
-
-        public override object this[string name] => GetValue(GetOrdinal(name));
 
 
         public override bool GetBoolean(int ordinal)

@@ -93,9 +93,9 @@ namespace ShardingConnector.AdoNet.AdoNet.Abstraction
 
         public  override int FieldCount => _dataReaders[0].FieldCount;
 
-        public abstract override object this[int ordinal]{ get; }
+        public override object this[int ordinal] => GetValue(ordinal);
 
-        public abstract override object this[string name] { get; }
+        public override object this[string name] => GetValue(GetOrdinal(name));
 
         public override int RecordsAffected => _dataReaders.Sum(o=>o.RecordsAffected);
 

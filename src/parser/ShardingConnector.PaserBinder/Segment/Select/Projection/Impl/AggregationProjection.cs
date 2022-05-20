@@ -20,7 +20,7 @@ namespace ShardingConnector.ParserBinder.Segment.Select.Projection.Impl
     
         private readonly List<AggregationProjection> _derivedAggregationProjections = new List<AggregationProjection>(2);
     
-        private int index = -1;
+        private int _index = -1;
 
         public AggregationProjection(AggregationTypeEnum type, string innerExpression, string @alias)
         {
@@ -49,7 +49,7 @@ namespace ShardingConnector.ParserBinder.Segment.Select.Projection.Impl
 
         public void SetIndex(int index)
         {
-            this.index = index;
+            this._index = index;
         }
 
         public List<AggregationProjection> GetDerivedAggregationProjections()
@@ -69,7 +69,7 @@ namespace ShardingConnector.ParserBinder.Segment.Select.Projection.Impl
 
         public int GetIndex()
         {
-            return index;
+            return _index;
         }
     }
 }

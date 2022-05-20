@@ -14,8 +14,8 @@ namespace ShardingConnector.AppConsoleMySQLTest
 {
     internal class Program
     {
-        // private static readonly string conn ="server=127.0.0.1;port=3306;database=test;userid=root;password=L6yBtV6qNENrwBy7;";
-        private static readonly string conn = "server=127.0.0.1;port=3306;database=test;userid=root;password=root;";
+        private static readonly string conn = "server=127.0.0.1;port=3306;database=test;userid=root;password=L6yBtV6qNENrwBy7;";
+        //private static readonly string conn = "server=127.0.0.1;port=3306;database=test;userid=root;password=root;";
         static void Main(string[] args)
         {
             InternalLoggerFactory.DefaultFactory = LoggerFactory.Create(builder =>
@@ -96,12 +96,12 @@ namespace ShardingConnector.AppConsoleMySQLTest
             dbConnection.Open();
 
             var dbCommand = dbConnection.CreateCommand();
-            dbCommand.CommandText = @"select max(age) from SysUserMod where id  in ('21','22','23')";
+            dbCommand.CommandText = @"select max(age) maxAge,id from SysUserMod where id  in ('21','22','23') group by id";
             //dbCommand.CommandText = @"select [d].[Id],[d].[Name],[d].[Age] from [dbo].[SysUserMod] as [d] where id='1'  order by [d].[Age] desc";
             var dbDataReader = dbCommand.ExecuteReader();
             while (dbDataReader.Read())
             {
-                Console.WriteLine($"{dbDataReader[0]}");
+                Console.WriteLine($"{dbDataReader[0]}-{dbDataReader[1]}");
             }
 
             Console.WriteLine("Hello World!");

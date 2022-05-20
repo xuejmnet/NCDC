@@ -59,7 +59,7 @@ namespace ShardingConnector.ShardingMerge.DQL.GroupBy
             IDictionary<AggregationProjection, IAggregationUnit> aggregationUnitMap =
                 _selectCommandContext.GetProjectionsContext().GetAggregationProjections().ToDictionary(o => o,
                     o => AggregationUnitFactory.Create(o.GetAggregationType(), o is AggregationDistinctProjection));
-            while (_currentGroupByValues.Equals(new GroupByValue(GetCurrentStreamDataReader(), _selectCommandContext.GetGroupByContext().GetItems()).GetGroupValues()))
+            while (_currentGroupByValues.SequenceEqual(new GroupByValue(GetCurrentStreamDataReader(), _selectCommandContext.GetGroupByContext().GetItems()).GetGroupValues()))
             {
                 Aggregate(aggregationUnitMap);
                 CacheCurrentRow();
@@ -112,8 +112,18 @@ namespace ShardingConnector.ShardingMerge.DQL.GroupBy
         {
             foreach (var aggregationUnitKv in aggregationUnitMap)
             {
-                _currentRow.Insert(aggregationUnitKv.Key.GetIndex() - 1, aggregationUnitKv.Value.GetResult());
+                _currentRow[aggregationUnitKv.Key.GetIndex()] = aggregationUnitKv.Value.GetResult();
             }
+        }
+
+        public override object GetValue(int columnIndex)
+        {
+            return _currentRow[columnIndex];
+        }
+
+        public override bool IsDBNull(int columnIndex)
+        {
+            return _currentRow[columnIndex] == null;
         }
     }
 }

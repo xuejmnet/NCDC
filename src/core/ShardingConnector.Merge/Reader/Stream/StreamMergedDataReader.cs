@@ -31,9 +31,9 @@ namespace ShardingConnector.Merge.Reader.Stream
             return CurrentQueryDataReader.GetColumnLabel(columnIndex);
         }
 
-        public object this[int columnIndex] => CurrentQueryDataReader[columnIndex];
+        public object this[int columnIndex] => GetValue(columnIndex);
 
-        public object this[string name] => CurrentQueryDataReader[name];
+        public object this[string name] => GetValue(GetOrdinal(name));
 
         public string GetName(int columnIndex)
         {
@@ -50,7 +50,7 @@ namespace ShardingConnector.Merge.Reader.Stream
             return CurrentQueryDataReader.GetFieldType(columnIndex);
         }
 
-        public object GetValue(int columnIndex)
+        public virtual object GetValue(int columnIndex)
         {
             return CurrentQueryDataReader.GetValue(columnIndex);
         }
@@ -136,7 +136,7 @@ namespace ShardingConnector.Merge.Reader.Stream
             return CurrentQueryDataReader.GetDateTime(columnIndex);
         }
 
-        public bool IsDBNull(int columnIndex)
+        public virtual bool IsDBNull(int columnIndex)
         {
             return CurrentQueryDataReader.IsDBNull(columnIndex);
         }
