@@ -14,6 +14,7 @@ using ShardingConnector.CommandParser.Segment.DML.Predicate.Value;
 using ShardingConnector.CommandParser.Segment.Predicate;
 using ShardingConnector.Exceptions;
 using ShardingConnector.Extensions;
+using ShardingConnector.ShardingAdoNet;
 using ShardingConnector.ShardingCommon.Core.Rule;
 
 namespace ShardingConnector.ShardingRoute.Engine.Validator.Impl
@@ -35,12 +36,12 @@ namespace ShardingConnector.ShardingRoute.Engine.Validator.Impl
                 String shardingColumn = assignmentSegment.GetColumn().GetIdentifier().GetValue();
                 if (shardingRule.IsShardingColumn(shardingColumn, tableName))
                 {
-                    var shardingColumnSetAssignmentValue = GetShardingColumnSetAssignmentValue(assignmentSegment, parameters);
+                    var shardingColumnSetAssignmentValue = GetShardingColumnSetAssignmentValue(assignmentSegment, parameterContext);
                     object shardingValue = null;
                     var whereSegmentOptional = sqlCommand.Where;
                     if (whereSegmentOptional != null)
                     {
-                        shardingValue = GetShardingValue(whereSegmentOptional, parameters, shardingColumn);
+                        shardingValue = GetShardingValue(whereSegmentOptional, parameterContext, shardingColumn);
                     }
                     if (shardingColumnSetAssignmentValue != null && shardingValue != null && shardingColumnSetAssignmentValue.Equals(shardingValue))
                     {
@@ -58,7 +59,7 @@ namespace ShardingConnector.ShardingRoute.Engine.Validator.Impl
             var segment = assignmentSegment.GetValue();
             if (segment is ParameterMarkerExpressionSegment parameterMarkerExpressionSegment)
             {
-                return parameters[parameterMarkerExpressionSegment.GetParameterName()].Value;
+                return parameterContext.GetParameterValue(parameterMarkerExpressionSegment.GetParameterName());
             }
             if (segment is LiteralExpressionSegment literalExpressionSegment)
             {
@@ -75,7 +76,7 @@ namespace ShardingConnector.ShardingRoute.Engine.Validator.Impl
         {
             foreach (var andPredicate in whereSegment.GetAndPredicates())
             {
-                return GetShardingValue(andPredicate, parameters, shardingColumn);
+                return GetShardingValue(andPredicate, parameterContext, shardingColumn);
             }
             return null;
         }
@@ -92,12 +93,12 @@ namespace ShardingConnector.ShardingRoute.Engine.Validator.Impl
                 if (rightValue is PredicateCompareRightValue predicateCompareRightValue)
                 {
                     var segment = predicateCompareRightValue.GetExpression();
-                    return GetPredicateCompareShardingValue(segment, parameters);
+                    return GetPredicateCompareShardingValue(segment, parameterContext);
                 }
                 if (rightValue is PredicateInRightValue predicateInRightValue)
                 {
                     ICollection<IExpressionSegment> segments = predicateInRightValue.SqlExpressions;
-                    return GetPredicateInShardingValue(segments, parameters);
+                    return GetPredicateInShardingValue(segments, parameterContext);
                 }
             }
             return null;
@@ -113,7 +114,7 @@ namespace ShardingConnector.ShardingRoute.Engine.Validator.Impl
                 // {
                 //     return null;
                 // }
-                return parameters[parameterMarkerExpressionSegment.GetParameterName()].Value;
+                return parameterContext.GetParameterValue(parameterMarkerExpressionSegment.GetParameterName());
             }
             if (segment is LiteralExpressionSegment literalExpressionSegment)
             {
@@ -135,8 +136,7 @@ namespace ShardingConnector.ShardingRoute.Engine.Validator.Impl
                     // {
                     //     continue;
                     // }
-
-                    return parameters[parameterMarkerExpressionSegment.GetParameterName()].Value;
+                    return parameterContext.GetParameterValue(parameterMarkerExpressionSegment.GetParameterName());
                 }
                 if (segment is LiteralExpressionSegment literalExpressionSegment)
                 {
@@ -148,7 +148,7 @@ namespace ShardingConnector.ShardingRoute.Engine.Validator.Impl
 
         public void Validate(ShardingRule shardingRule, ISqlCommand sqlCommand,ParameterContext parameterContext)
         {
-            Validate(shardingRule, (UpdateCommand)sqlCommand, parameters);
+            Validate(shardingRule, (UpdateCommand)sqlCommand, parameterContext);
         }
     }
 }

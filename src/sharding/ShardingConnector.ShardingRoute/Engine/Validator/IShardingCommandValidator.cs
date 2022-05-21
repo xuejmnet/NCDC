@@ -4,6 +4,7 @@ using System.Data.Common;
 using System.Text;
 
 using ShardingConnector.CommandParser.Command;
+using ShardingConnector.ShardingAdoNet;
 using ShardingConnector.ShardingCommon.Core.Rule;
 
 namespace ShardingConnector.ShardingRoute.Engine.Validator

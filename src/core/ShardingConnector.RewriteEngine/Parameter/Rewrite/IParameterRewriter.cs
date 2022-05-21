@@ -6,6 +6,7 @@ using System.Text;
 using ShardingConnector.CommandParser.Command;
 using ShardingConnector.ParserBinder.Command;
 using ShardingConnector.RewriteEngine.Parameter.Builder;
+using ShardingConnector.ShardingAdoNet;
 
 namespace ShardingConnector.RewriteEngine.Parameter.Rewrite
 {

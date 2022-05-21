@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.Common;
 using System.Text;
 using ShardingConnector.CommandParser.Segment.DML.Predicate.Value;
+using ShardingConnector.ShardingAdoNet;
 using ShardingConnector.ShardingCommon.Core.Strategy.Route.Value;
 
 namespace ShardingConnector.ShardingRoute.Engine.Condition.Generator

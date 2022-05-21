@@ -71,7 +71,7 @@ namespace ShardingConnector.ShardingExecute.Execute
             try
             {
                 ExecutionUnit executionUnit = commandExecuteUnit.ExecutionUnit;
-                hookManager.Start(executionUnit.GetDataSourceName(), executionUnit.GetSqlUnit().GetSql(), executionUnit.GetSqlUnit().GetParameters(), dataSourceMetaData, isTrunkThread, dataMap);
+                hookManager.Start(executionUnit.GetDataSourceName(), executionUnit.GetSqlUnit().GetSql(), executionUnit.GetSqlUnit().GetParameterContext(), dataSourceMetaData, isTrunkThread, dataMap);
                 T result = OnSqlExecute(executionUnit.GetSqlUnit().GetSql(), commandExecuteUnit.Command, commandExecuteUnit.ConnectionMode);
                 hookManager.FinishSuccess();
                 return result;

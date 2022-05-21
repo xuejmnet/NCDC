@@ -14,8 +14,8 @@ namespace ShardingConnector.AppConsoleMySQLTest
 {
     internal class Program
     {
-        // private static readonly string conn = "server=127.0.0.1;port=3306;database=test;userid=root;password=L6yBtV6qNENrwBy7;";
-        private static readonly string conn = "server=127.0.0.1;port=3306;database=test;userid=root;password=root;";
+        private static readonly string conn = "server=127.0.0.1;port=3306;database=test;userid=root;password=L6yBtV6qNENrwBy7;";
+        //private static readonly string conn = "server=127.0.0.1;port=3306;database=test;userid=root;password=root;";
         static void Main(string[] args)
         {
             InternalLoggerFactory.DefaultFactory = LoggerFactory.Create(builder =>
@@ -136,15 +136,15 @@ namespace ShardingConnector.AppConsoleMySQLTest
 
             var dbParameter2 = dbCommand.CreateParameter();
             dbParameter2.ParameterName = "@name";
-            dbParameter2.Value = "2000";
+            dbParameter2.Value = "20002";
             var dbParameter3 = dbCommand.CreateParameter();
             dbParameter3.ParameterName = "@age";
             dbParameter3.Value = 2000;
             //dbParameter.ParameterName = "@Id";
             //dbParameter.Value = 21;
-            dbCommand.Parameters.Add(dbParameter);
             dbCommand.Parameters.Add(dbParameter2);
             dbCommand.Parameters.Add(dbParameter3);
+            dbCommand.Parameters.Add(dbParameter);
             Console.WriteLine("ExecuteNonQuery-before");
             //dbCommand.CommandText = @"select [d].[Id],[d].[Name],[d].[Age] from [dbo].[SysUserMod] as [d] where id='1'  order by [d].[Age] desc";
             var i = dbCommand.ExecuteNonQuery();
@@ -195,8 +195,8 @@ namespace ShardingConnector.AppConsoleMySQLTest
             //dbParameter2.Value = 10;
             ////dbParameter.ParameterName = "@Id";
             ////dbParameter.Value = 21;
-            //dbCommand.Parameters.Add(dbParameter2);
-            //dbCommand.Parameters.Add(dbParameter);
+            //dbCommand.ParameterContext.Add(dbParameter2);
+            //dbCommand.ParameterContext.Add(dbParameter);
             var dbDataReader = dbCommand.ExecuteReader();
             while (dbDataReader.Read())
             {
@@ -245,7 +245,7 @@ namespace ShardingConnector.AppConsoleMySQLTest
                 //dbParameter.ParameterName = "@Id";
                 //dbParameter.Value = 21;
                 dbCommand.Parameters.Add(dbParameter);
-                //dbCommand.Parameters.Add(dbParameter2);
+                //dbCommand.ParameterContext.Add(dbParameter2);
                 //dbCommand.CommandText = @"select [d].[Id],[d].[Name],[d].[Age] from [dbo].[SysUserMod] as [d] where id='1'  order by [d].[Age] desc";
                 var dbDataReader = dbCommand.ExecuteReader();
                 while (dbDataReader.Read())
@@ -274,7 +274,7 @@ namespace ShardingConnector.AppConsoleMySQLTest
                 //dbParameter.ParameterName = "@Id";
                 //dbParameter.Value = 21;
                 dbCommand.Parameters.Add(dbParameter);
-                //dbCommand.Parameters.Add(dbParameter2);
+                //dbCommand.ParameterContext.Add(dbParameter2);
                 //dbCommand.CommandText = @"select [d].[Id],[d].[Name],[d].[Age] from [dbo].[SysUserMod] as [d] where id='1'  order by [d].[Age] desc";
                 var dbDataReader = dbCommand.ExecuteReader();
                 while (dbDataReader.Read())

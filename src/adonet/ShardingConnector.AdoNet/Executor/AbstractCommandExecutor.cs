@@ -10,6 +10,7 @@ using ShardingConnector.Spi.DataBase.DataBaseType;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
+using ShardingConnector.ShardingAdoNet;
 
 
 namespace ShardingConnector.AdoNet.Executor
@@ -37,7 +38,7 @@ namespace ShardingConnector.AdoNet.Executor
 
         public readonly ICollection<DbConnection> Connections = new LinkedList<DbConnection>();
 
-        public readonly List<IDictionary<string,DbParameter>> ParameterSets = new List<IDictionary<string,DbParameter>>();
+        public readonly List<ParameterContext> ParameterSets = new List<ParameterContext>();
 
         public readonly List<DbCommand> Commands = new List<DbCommand>();
 
@@ -88,7 +89,7 @@ namespace ShardingConnector.AdoNet.Executor
             foreach (var inputGroup in InputGroups)
             {
                 Commands.AddAll(inputGroup.Inputs.Select(o => o.Command).ToList());
-                ParameterSets.AddAll(inputGroup.Inputs.Select(o => o.ExecutionUnit.GetSqlUnit().GetParameters()).ToList());
+                ParameterSets.AddAll(inputGroup.Inputs.Select(o => o.ExecutionUnit.GetSqlUnit().GetParameterContext()).ToList());
             }
         }
 

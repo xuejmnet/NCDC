@@ -36,7 +36,7 @@ namespace ShardingConnector.AdoNet.Executor
         public CommandExecuteUnit CreateStatementExecuteUnit(DbConnection connection, ExecutionUnit executionUnit,
             ConnectionModeEnum connectionMode)
         {
-            var shardingParameters = executionUnit.GetSqlUnit().GetParameters().Select(o=>(ShardingParameter)o.Value).ToList();
+            var shardingParameters = executionUnit.GetSqlUnit().GetParameterContext().GetDbParameters().Select(o=>(ShardingParameter)o).ToList();
             var dbCommand = connection.CreateCommand();
             dbCommand.CommandText = executionUnit.GetSqlUnit().GetSql();
             foreach (var shardingParameter in shardingParameters)

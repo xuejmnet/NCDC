@@ -76,13 +76,13 @@ namespace ShardingConnector.Route
             var sqlCommand = _parserEngine.Parse(sql, useCache);
             try
             {
-                ISqlCommandContext<ISqlCommand> sqlCommandContext = SqlCommandContextFactory.NewInstance(_metaData.Schema, sql, parameters, sqlCommand);
-                return new RouteContext(sqlCommandContext, parameters, new RouteResult());
+                ISqlCommandContext<ISqlCommand> sqlCommandContext = SqlCommandContextFactory.NewInstance(_metaData.Schema, sql, parameterContext, sqlCommand);
+                return new RouteContext(sqlCommandContext, parameterContext, new RouteResult());
                 // TODO should pass parameters for master-slave
             }
             catch (IndexOutOfRangeException ex)
             {
-                return new RouteContext(new GenericSqlCommandContext<ISqlCommand>(sqlCommand), parameters, new RouteResult());
+                return new RouteContext(new GenericSqlCommandContext<ISqlCommand>(sqlCommand), parameterContext, new RouteResult());
             }
         }
     }

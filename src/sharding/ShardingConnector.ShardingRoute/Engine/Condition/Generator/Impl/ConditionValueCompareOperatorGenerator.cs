@@ -4,6 +4,7 @@ using System.Data.Common;
 using System.Text;
 using ShardingConnector.CommandParser.Segment.DML.Predicate.Value;
 using ShardingConnector.DataStructure.RangeStructure;
+using ShardingConnector.ShardingAdoNet;
 using ShardingConnector.ShardingCommon.Core.Strategy.Route.Value;
 using ShardingConnector.ShardingRoute.SPI;
 
@@ -36,7 +37,7 @@ namespace ShardingConnector.ShardingRoute.Engine.Condition.Generator.Impl
             {
                 return null;
             }
-            IComparable routeValue = new ConditionValue(predicateRightValue.GetExpression(), parameters).GetValue();
+            IComparable routeValue = new ConditionValue(predicateRightValue.GetExpression(), parameterContext).GetValue();
             if (routeValue != null)
             {
                 return Generate(routeValue, column, @operator);
@@ -76,7 +77,7 @@ namespace ShardingConnector.ShardingRoute.Engine.Condition.Generator.Impl
 
         public IRouteValue Generate(IPredicateRightValue predicateRightValue, Column column, ParameterContext parameterContext)
         {
-            return Generate((PredicateCompareRightValue)predicateRightValue, column, parameters);
+            return Generate((PredicateCompareRightValue)predicateRightValue, column, parameterContext);
         }
     }
 }

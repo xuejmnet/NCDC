@@ -50,10 +50,10 @@ namespace ShardingConnector.Pluggable.Prepare
 
         public ExecutionContext Prepare(string sql, ParameterContext parameterContext)
         {
-            var cloneParameters = CloneParameters(parameterContext);
-            var routeContext = ExecuteRoute(sql, cloneParameters);
+            var cloneParameterContext = CloneParameters(parameterContext);
+            var routeContext = ExecuteRoute(sql, cloneParameterContext);
             ExecutionContext result = new ExecutionContext(routeContext.GetSqlCommandContext());
-            result.GetExecutionUnits().AddAll(ExecuteRewrite(sql, cloneParameters, routeContext));
+            result.GetExecutionUnits().AddAll(ExecuteRewrite(sql, cloneParameterContext, routeContext));
             if (true)
             {
                 SqlLogger.LogSql(sql,false,result.GetSqlCommandContext(),result.GetExecutionUnits());
@@ -65,13 +65,13 @@ namespace ShardingConnector.Pluggable.Prepare
         private ICollection<ExecutionUnit> ExecuteRewrite(string sql, ParameterContext parameterContext, RouteContext routeContext)
         {
             RegisterRewriteDecorator();
-            SqlRewriteContext sqlRewriteContext = _rewriter.CreateSqlRewriteContext(sql, parameters, routeContext.GetSqlCommandContext(), routeContext);
+            SqlRewriteContext sqlRewriteContext = _rewriter.CreateSqlRewriteContext(sql, parameterContext, routeContext.GetSqlCommandContext(), routeContext);
             return !routeContext.GetRouteResult().GetRouteUnits().Any() ? Rewrite(sqlRewriteContext) : Rewrite(routeContext, sqlRewriteContext);
         }
-        private RouteContext ExecuteRoute(string sql, IDictionary<string, DbParameter> clonedParameters)
+        private RouteContext ExecuteRoute(string sql, ParameterContext cloneParameterContext)
         {
             RegisterRouteDecorator();
-            return Route(_router, sql, clonedParameters);
+            return Route(_router, sql, cloneParameterContext);
         }
         /// <summary>
         /// 注册路由装饰器
@@ -131,7 +131,7 @@ namespace ShardingConnector.Pluggable.Prepare
         {
             var sqlRewriteResult = new SqlRewriteEngine().Rewrite(sqlRewriteContext);
             String dataSourceName = _metaData.DataSources.GetAllInstanceDataSourceNames().First();
-            return new List<ExecutionUnit>(){new ExecutionUnit(dataSourceName, new SqlUnit(sqlRewriteResult.Sql, sqlRewriteResult.Parameters))};
+            return new List<ExecutionUnit>(){new ExecutionUnit(dataSourceName, new SqlUnit(sqlRewriteResult.Sql, sqlRewriteResult.ParameterContext))};
         }
 
         private ICollection<ExecutionUnit> Rewrite(RouteContext routeContext, SqlRewriteContext sqlRewriteContext)
@@ -140,7 +140,7 @@ namespace ShardingConnector.Pluggable.Prepare
             var sqlRewriteResults = new SqlRouteRewriteEngine().Rewrite(sqlRewriteContext, routeContext.GetRouteResult());
             foreach (var sqlRewriteResult in sqlRewriteResults)
             {
-                result.Add(new ExecutionUnit(sqlRewriteResult.Key.DataSourceMapper.ActualName, new SqlUnit(sqlRewriteResult.Value.Sql, sqlRewriteResult.Value.Parameters)));
+                result.Add(new ExecutionUnit(sqlRewriteResult.Key.DataSourceMapper.ActualName, new SqlUnit(sqlRewriteResult.Value.Sql, sqlRewriteResult.Value.ParameterContext)));
             }
             return result;
         }

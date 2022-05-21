@@ -2,6 +2,7 @@
 using System.Data.Common;
 using ShardingConnector.CommandParser.Command;
 using ShardingConnector.ParserBinder.Command;
+using ShardingConnector.ShardingAdoNet;
 
 namespace ShardingConnector.Route.Context
 {
@@ -15,13 +16,13 @@ namespace ShardingConnector.Route.Context
     public sealed class RouteContext
     {
         private readonly ISqlCommandContext<ISqlCommand> _sqlCommandContext;
-        private readonly IDictionary<string, DbParameter> _parameters;
+        private readonly ParameterContext _parameterContext;
         private readonly RouteResult _routeResult;
 
         public RouteContext(ISqlCommandContext<ISqlCommand> sqlCommandContext, ParameterContext parameterContext, RouteResult routeResult)
         {
             _sqlCommandContext = sqlCommandContext;
-            _parameters = parameters;
+            _parameterContext = parameterContext;
             _routeResult = routeResult;
         }
 
@@ -30,9 +31,9 @@ namespace ShardingConnector.Route.Context
             return _sqlCommandContext;
         }
 
-        public IDictionary<string, DbParameter> GetParameters()
+        public ParameterContext GetParameterContext()
         {
-            return _parameters;
+            return _parameterContext;
         }
 
         public RouteResult GetRouteResult()

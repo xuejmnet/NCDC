@@ -20,7 +20,7 @@ namespace ShardingConnector.RewriteEngine.Engine
          */
         public SqlRewriteResult Rewrite(SqlRewriteContext sqlRewriteContext)
         {
-            return new SqlRewriteResult(new DefaultSqlBuilder(sqlRewriteContext).ToSql(), sqlRewriteContext.GetParameterBuilder().GetParameters());
+            return new SqlRewriteResult(new DefaultSqlBuilder(sqlRewriteContext).ToSql(), sqlRewriteContext.GetParameterBuilder().GetParameterContext());
         }
     }
 }

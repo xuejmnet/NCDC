@@ -10,6 +10,7 @@ using ShardingConnector.ParserBinder.Command;
 using ShardingConnector.ParserBinder.Command.DML;
 using ShardingConnector.RewriteEngine.Sql.Token.Generator.Aware;
 using ShardingConnector.RewriteEngine.Sql.Token.SimpleObject;
+using ShardingConnector.ShardingAdoNet;
 using ShardingConnector.ShardingRewrite.Token.SimpleObject;
 
 namespace ShardingConnector.ShardingRewrite.Token.Generator.Impl.KeyGen
@@ -22,14 +23,14 @@ namespace ShardingConnector.ShardingRewrite.Token.Generator.Impl.KeyGen
 */
     public sealed class GeneratedKeyAssignmentTokenGenerator:BaseGeneratedKeyTokenGenerator,IParametersAware
     {
-        private IDictionary<string, DbParameter> _parameters;
+        private ParameterContext _parameterContext;
         public override SqlToken GenerateSqlToken(InsertCommandContext sqlCommandContext)
         {
             var generatedKey = sqlCommandContext.GetGeneratedKeyContext();
             ShardingAssert.CantBeNull(generatedKey,"generatedKey is required");
             ShardingAssert.CantBeNull(sqlCommandContext.GetSqlCommand().SetAssignment,"setAssignment is required");
             int startIndex = sqlCommandContext.GetSqlCommand().SetAssignment.GetStopIndex() + 1;
-            if (_parameters.IsEmpty())
+            if (_parameterContext.IsEmpty())
                 return new LiteralGeneratedKeyAssignmentToken(startIndex, generatedKey.GetColumnName(), generatedKey.GetGeneratedValues().LastOrDefault());
             return  new ParameterMarkerGeneratedKeyAssignmentToken(startIndex, generatedKey.GetColumnName());
         }
@@ -39,9 +40,9 @@ namespace ShardingConnector.ShardingRewrite.Token.Generator.Impl.KeyGen
             return insertCommand.SetAssignment!=null;
         }
 
-        public void SetParameters(ParameterContext parameterContext)
+        public void SetParameterContext(ParameterContext parameterContext)
         {
-            this._parameters = parameters;
+            this._parameterContext = parameterContext;
         }
     }
 }

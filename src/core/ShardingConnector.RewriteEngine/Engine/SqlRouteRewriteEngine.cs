@@ -7,6 +7,7 @@ using ShardingConnector.RewriteEngine.Parameter.Builder;
 using ShardingConnector.RewriteEngine.Parameter.Builder.Impl;
 using ShardingConnector.RewriteEngine.Sql.Impl;
 using ShardingConnector.Route.Context;
+using ShardingConnector.ShardingAdoNet;
 
 namespace ShardingConnector.RewriteEngine.Engine
 {
@@ -31,23 +32,23 @@ namespace ShardingConnector.RewriteEngine.Engine
             IDictionary<RouteUnit, SqlRewriteResult> result = new Dictionary<RouteUnit, SqlRewriteResult>();
             foreach (var routeUnit in routeResult.GetRouteUnits())
             {
-                result.Add(routeUnit,new SqlRewriteResult(new RouteSqlBuilder(sqlRewriteContext,routeUnit).ToSql(),GetParameters(sqlRewriteContext.GetParameterBuilder(), routeResult, routeUnit)));
+                result.Add(routeUnit,new SqlRewriteResult(new RouteSqlBuilder(sqlRewriteContext,routeUnit).ToSql(),GetParameterContext(sqlRewriteContext.GetParameterBuilder(), routeResult, routeUnit)));
             }
             return result;
         }
 
-        private IDictionary<string,DbParameter> GetParameters(IParameterBuilder parameterBuilder,RouteResult routeResult, RouteUnit routeUnit)
+        private ParameterContext GetParameterContext(IParameterBuilder parameterBuilder,RouteResult routeResult, RouteUnit routeUnit)
         {
-            if (parameterBuilder is StandardParameterBuilder || routeResult.GetOriginalDataNodes().IsEmpty() || parameterBuilder.GetParameters().IsEmpty()) {
-                return parameterBuilder.GetParameters();
+            if (parameterBuilder is StandardParameterBuilder || routeResult.GetOriginalDataNodes().IsEmpty() || parameterBuilder.GetParameterContext().IsEmpty()) {
+                return parameterBuilder.GetParameterContext();
             }
-            var result = new Dictionary<string,DbParameter>();
+            var result = new ParameterContext();
             int count = 0;
             foreach (var originalDataNode in routeResult.GetOriginalDataNodes())
             {
                 if (IsInSameDataNode(originalDataNode, routeUnit))
                 {
-                    result.AddAll(((GroupedParameterBuilder)parameterBuilder).GetParameters(count));
+                    result.AddParameters(((GroupedParameterBuilder)parameterBuilder).GetParameterContext(count).GetDbParameters());
                 }
                 count++;
             }

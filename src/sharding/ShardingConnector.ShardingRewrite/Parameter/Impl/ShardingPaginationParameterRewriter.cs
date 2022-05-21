@@ -11,6 +11,7 @@ using ShardingConnector.RewriteEngine.Parameter.Builder.Impl;
 using ShardingConnector.RewriteEngine.Parameter.Rewrite;
 using ShardingConnector.RewriteEngine.Sql.Token.Generator.Aware;
 using ShardingConnector.Route.Context;
+using ShardingConnector.ShardingAdoNet;
 
 namespace ShardingConnector.ShardingRewrite.Parameter.Impl
 {

@@ -67,22 +67,23 @@ namespace ShardingConnector.RewriteEngine.Parameter.Builder.Impl
             var result = _originalParameterContext.CloneParameterContext();
             foreach (var replaced in _replacedIndexAndParameters)
             {
-                result[replaced.Key].Value = replaced.Value;
+                result.ReplaceParameterValue(replaced.Key, replaced.Value);
             }
             foreach (var added in _addedIndexAndParameters.Reverse())
             {
-                if (added.Key > result.Count)
-                {
-                    result.AddAll(added.Value);
-                }
-                else
-                {
-                    result.InsertRange(added.Key, added.Value);
-                }
+                throw new NotImplementedException();
+                //if (added.Key > result.Count)
+                //{
+                //    result.AddAll(added.Value);
+                //}
+                //else
+                //{
+                //    result.InsertRange(added.Key, added.Value);
+                //}
             }
             foreach (var removeParameterName in _removeParameterNames)
             {
-                result.Remove(removeParameterName);
+                result.RemoveDbParameter(removeParameterName);
             }
             return result;
         }
@@ -92,9 +93,9 @@ namespace ShardingConnector.RewriteEngine.Parameter.Builder.Impl
             return _addedIndexAndParameters;
         }
 
-        public IDictionary<string, DbParameter> GetOriginalParameters()
+        public ParameterContext GetOriginalParameterContext()
         {
-            return _originalParameters;
+            return _originalParameterContext;
         }
     }
 }

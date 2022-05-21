@@ -7,6 +7,7 @@ using ShardingConnector.Common.Rule;
 using ShardingConnector.ParserEngine;
 using ShardingConnector.Route;
 using ShardingConnector.Route.Context;
+using ShardingConnector.ShardingAdoNet;
 
 namespace ShardingConnector.Pluggable.Prepare
 {
@@ -35,14 +36,14 @@ namespace ShardingConnector.Pluggable.Prepare
         {
         }
 
-        protected override IDictionary<string, DbParameter> CloneParameters(ParameterContext parameterContext)
+        protected override ParameterContext CloneParameters(ParameterContext parameterContext)
         {
-            return parameters.ToDictionary(o=>o.Key,o=>o.Value);
+            return parameterContext.CloneParameterContext();
         }
 
         protected override RouteContext Route(DataNodeRouter router, string sql, ParameterContext parameterContext)
         {
-            return  router.Route(sql, parameters,false);
+            return  router.Route(sql, parameterContext, false);
         }
     }
 }

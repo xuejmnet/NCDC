@@ -7,6 +7,7 @@ using ShardingConnector.Base;
 using ShardingConnector.CommandParser.Extensions;
 using ShardingConnector.CommandParser.Segment.DML.Expr;
 using ShardingConnector.CommandParser.Segment.DML.Expr.Simple;
+using ShardingConnector.ShardingAdoNet;
 
 namespace ShardingConnector.ShardingRoute.Engine.Condition.Generator
 {
@@ -23,14 +24,14 @@ namespace ShardingConnector.ShardingRoute.Engine.Condition.Generator
 
         public ConditionValue(IExpressionSegment expressionSegment, ParameterContext parameterContext)
         {
-            _value = GetValue(expressionSegment, parameters);
+            _value = GetValue(expressionSegment, parameterContext);
         }
 
         private IComparable GetValue(IExpressionSegment expressionSegment, ParameterContext parameterContext)
         {
             if (expressionSegment is ParameterMarkerExpressionSegment parameterMarkerExpressionSegment)
             {
-                return GetValue(parameterMarkerExpressionSegment, parameters);
+                return GetValue(parameterMarkerExpressionSegment, parameterContext);
             }
             if (expressionSegment is LiteralExpressionSegment literalExpressionSegment)
             {
@@ -42,7 +43,7 @@ namespace ShardingConnector.ShardingRoute.Engine.Condition.Generator
         private IComparable GetValue(ParameterMarkerExpressionSegment expressionSegment, ParameterContext parameterContext)
         {
 
-            object result = parameters[expressionSegment.GetParameterName()].Value;
+            object result = parameterContext.GetParameterValue(expressionSegment.GetParameterName());
             ShardingAssert.Else(result is IComparable, "Sharding value must implements IComparable.");
             return (IComparable)result;
         }

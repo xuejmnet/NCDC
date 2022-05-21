@@ -9,6 +9,7 @@ using ShardingConnector.CommandParser.Segment.DML.Pagination.Top;
 using ShardingConnector.CommandParser.Segment.DML.Predicate.Value;
 using ShardingConnector.CommandParser.Segment.Predicate;
 using ShardingConnector.Extensions;
+using ShardingConnector.ShardingAdoNet;
 
 namespace ShardingConnector.ParserBinder.Segment.Select.Pagination.Engine
 {
@@ -34,7 +35,7 @@ namespace ShardingConnector.ParserBinder.Segment.Select.Pagination.Engine
             var rowNumberPredicate = GetRowNumberPredicate(andPredicates, topProjectionSegment.GetAlias());
             var offset = rowNumberPredicate!=null ? CreateOffsetWithRowNumber(rowNumberPredicate) : null;
             var rowCount = topProjectionSegment.GetTop();
-            return new PaginationContext(offset, rowCount, parameters);
+            return new PaginationContext(offset, rowCount, parameterContext);
         }
 
         private PredicateSegment GetRowNumberPredicate(ICollection<AndPredicateSegment> andPredicates, string rowNumberAlias)

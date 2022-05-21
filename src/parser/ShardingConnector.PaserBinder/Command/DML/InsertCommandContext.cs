@@ -7,6 +7,7 @@ using ShardingConnector.ParserBinder.Segment.Insert.Keygen;
 using ShardingConnector.ParserBinder.Segment.Insert.Keygen.Engine;
 using ShardingConnector.ParserBinder.Segment.Insert.Values;
 using ShardingConnector.ParserBinder.Segment.Table;
+using ShardingConnector.ShardingAdoNet;
 
 namespace ShardingConnector.ParserBinder.Command.DML
 {
@@ -31,8 +32,8 @@ namespace ShardingConnector.ParserBinder.Command.DML
         {
             _tablesContext = new TablesContext(insertCommand.Table);
             _columnNames = insertCommand.UseDefaultColumns() ? schemaMetaData.GetAllColumnNames(insertCommand.Table.GetTableName().GetIdentifier().GetValue()) : insertCommand.GetColumnNames();
-            _insertValueContexts = GetInsertValueContexts(parameters);
-            _generatedKeyContext = new GeneratedKeyContextEngine(schemaMetaData).CreateGenerateKeyContext(parameters, insertCommand);
+            _insertValueContexts = GetInsertValueContexts(parameterContext);
+            _generatedKeyContext = new GeneratedKeyContextEngine(schemaMetaData).CreateGenerateKeyContext(parameterContext, insertCommand);
         }
 
         private List<InsertValueContext> GetInsertValueContexts(ParameterContext parameterContext)
@@ -40,7 +41,7 @@ namespace ShardingConnector.ParserBinder.Command.DML
             List<InsertValueContext> result = new List<InsertValueContext>(GetSqlCommand().GetAllValueExpressions().Count);
             foreach (var valueExpression in GetSqlCommand().GetAllValueExpressions())
             {
-                InsertValueContext insertValueContext = new InsertValueContext(valueExpression, parameters);
+                InsertValueContext insertValueContext = new InsertValueContext(valueExpression, parameterContext);
                 result.Add(insertValueContext);
             }
             return result;
@@ -63,12 +64,12 @@ namespace ShardingConnector.ParserBinder.Command.DML
          * 
          * @return grouped parameters
          */
-        public List<IDictionary<string, DbParameter>> GetGroupedParameters()
+        public List<ParameterContext> GetGroupedParameters()
         {
-            List<IDictionary<string, DbParameter>> result = new List<IDictionary<string, DbParameter>>();
+            List<ParameterContext> result = new List<ParameterContext>();
             foreach (var insertValueContext in _insertValueContexts)
             {
-                result.Add(insertValueContext.GetParameters());
+                result.Add(insertValueContext.GetParameterContext());
             }
             return result;
         }

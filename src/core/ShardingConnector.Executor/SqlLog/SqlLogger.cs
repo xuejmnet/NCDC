@@ -63,13 +63,13 @@ namespace ShardingConnector.Executor.SqlLog
         {
             foreach (var executionUnit in executionUnits)
             {
-                if (!executionUnit.GetSqlUnit().GetParameters().Any())
+                if (executionUnit.GetSqlUnit().GetParameterContext().IsEmpty())
                 {
                     _logger.LogInformation($"Actual SQL: {executionUnit.GetDataSourceName()} ::: {executionUnit.GetSqlUnit().GetSql()}");
                 }
                 else
                 {
-                    _logger.LogInformation($"Actual SQL: {executionUnit.GetDataSourceName()} ::: {executionUnit.GetSqlUnit().GetSql()} ::: {string.Join(",", executionUnit.GetSqlUnit().GetParameters().Select(o=>o.ToString()))}");
+                    _logger.LogInformation($"Actual SQL: {executionUnit.GetDataSourceName()} ::: {executionUnit.GetSqlUnit().GetSql()} ::: {string.Join(",", executionUnit.GetSqlUnit().GetParameterContext().GetDbParameters().Select(o=>o.ToString()))}");
                 }
             }
         }

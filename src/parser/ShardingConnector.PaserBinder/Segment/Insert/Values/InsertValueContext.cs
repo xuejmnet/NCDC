@@ -6,6 +6,7 @@ using ShardingConnector.CommandParser.Segment.DML.Expr;
 using ShardingConnector.CommandParser.Segment.DML.Expr.Simple;
 using ShardingConnector.Exceptions;
 using ShardingConnector.Extensions;
+using ShardingConnector.ShardingAdoNet;
 
 namespace ShardingConnector.ParserBinder.Segment.Insert.Values
 {
@@ -22,7 +23,7 @@ namespace ShardingConnector.ParserBinder.Segment.Insert.Values
 
         private readonly List<IExpressionSegment> _valueExpressions;
 
-        private readonly IDictionary<string, DbParameter> _parameters;
+        private readonly ParameterContext _parameterContext;
         /// <summary>
         /// 插入值的上下文,可能存在一次插入有常量也有非常量
         /// 所以先获取参数的表达式片段并且获取其参数名称
@@ -36,7 +37,7 @@ namespace ShardingConnector.ParserBinder.Segment.Insert.Values
             var parameterNames = GetParameterNames(assignments);
             _parametersCount = parameterNames.Count;
             _valueExpressions = GetValueExpressions(assignments);
-            this._parameters = GetParameters(parameters, parameterNames);
+            this._parameterContext = GetParameterContext(parameterContext, parameterNames);
         }
 
         private List<string> GetParameterNames(ICollection<IExpressionSegment> assignments)
@@ -59,20 +60,21 @@ namespace ShardingConnector.ParserBinder.Segment.Insert.Values
             return result;
         }
 
-        private IDictionary<string, DbParameter> GetParameters(ParameterContext parameterContext, List<string> parameterNames)
+        private ParameterContext GetParameterContext(ParameterContext parameterContext, List<string> parameterNames)
         {
             if (0 == _parametersCount)
             {
-                return new Dictionary<string, DbParameter>(0);
+                return new ParameterContext(0);
             }
-            IDictionary<string, DbParameter> result = new Dictionary<string, DbParameter>(_parametersCount);
+            var result = new ParameterContext(_parametersCount);
             foreach (var parameterName in parameterNames)
             {
-                if (!parameters.ContainsKey(parameterName))
+                if (!parameterContext.TryGetDbParameter(parameterName,out var dbParameter))
                 {
                     throw new ShardingException($"parameter name:[{parameterName}] not found in parameters");
                 }
-                result.Add(parameterName, parameters[parameterName]);
+
+                result.AddParameter(dbParameter);
             }
             return result;
         }
@@ -86,7 +88,7 @@ namespace ShardingConnector.ParserBinder.Segment.Insert.Values
         public object GetValue(int index)
         {
             IExpressionSegment valueExpression = _valueExpressions[index];
-            return valueExpression is ParameterMarkerExpressionSegment parameterMarkerExpression ? _parameters[parameterMarkerExpression.GetParameterName()] : ((LiteralExpressionSegment)valueExpression).GetLiterals();
+            return valueExpression is ParameterMarkerExpressionSegment parameterMarkerExpression ? _parameterContext.GetParameterValue(parameterMarkerExpression.GetParameterName()) : ((LiteralExpressionSegment)valueExpression).GetLiterals();
         }
 
         //private int GetParameterIndex(IExpressionSegment valueExpression)
@@ -112,9 +114,9 @@ namespace ShardingConnector.ParserBinder.Segment.Insert.Values
             return _parametersCount;
         }
 
-        public IDictionary<string, DbParameter> GetParameters()
+        public ParameterContext GetParameterContext()
         {
-            return _parameters;
+            return _parameterContext;
         }
 
         public List<IExpressionSegment> GetValueExpressions()

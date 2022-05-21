@@ -9,6 +9,7 @@ using ShardingConnector.CommandParser.Segment.DML.Predicate.Value;
 using ShardingConnector.CommandParser.Segment.Predicate;
 using ShardingConnector.Extensions;
 using ShardingConnector.ParserBinder.Segment.Select.Projection;
+using ShardingConnector.ShardingAdoNet;
 
 namespace ShardingConnector.ParserBinder.Segment.Select.Pagination.Engine
 {
@@ -43,10 +44,10 @@ namespace ShardingConnector.ParserBinder.Segment.Select.Pagination.Engine
             var rowNumberAlias = IsRowNumberAlias(projectionsContext);
             if (rowNumberAlias == null)
             {
-                return new PaginationContext(null, null, parameters);
+                return new PaginationContext(null, null, parameterContext);
             }
             ICollection<PredicateSegment> rowNumberPredicates = GetRowNumberPredicates(andPredicates, rowNumberAlias);
-            return !rowNumberPredicates.Any() ? new PaginationContext(null, null, parameters) : CreatePaginationWithRowNumber(rowNumberPredicates, parameters);
+            return !rowNumberPredicates.Any() ? new PaginationContext(null, null, parameterContext) : CreatePaginationWithRowNumber(rowNumberPredicates, parameterContext);
         }
 
         private ICollection<PredicateSegment> GetRowNumberPredicates(ICollection<AndPredicateSegment> andPredicates, string rowNumberAlias)
@@ -119,7 +120,7 @@ namespace ShardingConnector.ParserBinder.Segment.Select.Pagination.Engine
                         break;
                 }
             }
-            return new PaginationContext(offset, rowCount, parameters);
+            return new PaginationContext(offset, rowCount, parameterContext);
         }
 
         private RowNumberValueSegment CreateRowNumberValueSegment(IExpressionSegment expression, bool boundOpened)

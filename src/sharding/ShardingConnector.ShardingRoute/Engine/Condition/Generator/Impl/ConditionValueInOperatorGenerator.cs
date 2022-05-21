@@ -4,6 +4,7 @@ using System.Data.Common;
 using System.Text;
 using ShardingConnector.CommandParser.Segment.DML.Predicate.Value;
 using ShardingConnector.Extensions;
+using ShardingConnector.ShardingAdoNet;
 using ShardingConnector.ShardingCommon.Core.Strategy.Route.Value;
 using ShardingConnector.ShardingRoute.SPI;
 
@@ -24,7 +25,7 @@ namespace ShardingConnector.ShardingRoute.Engine.Condition.Generator.Impl
             SPITimeService timeService = SPITimeService.GetInstance();
             foreach (var sqlExpression in predicateRightValue.SqlExpressions)
             {
-                var routeValue = new ConditionValue(sqlExpression, parameters).GetValue();
+                var routeValue = new ConditionValue(sqlExpression, parameterContext).GetValue();
                 if (routeValue!=null)
                 {
                     routeValues.Add(routeValue);
@@ -41,7 +42,7 @@ namespace ShardingConnector.ShardingRoute.Engine.Condition.Generator.Impl
 
         public IRouteValue Generate(IPredicateRightValue predicateRightValue, Column column, ParameterContext parameterContext)
         {
-            return Generate((PredicateInRightValue) predicateRightValue, column, parameters);
+            return Generate((PredicateInRightValue) predicateRightValue, column, parameterContext);
         }
     }
 }

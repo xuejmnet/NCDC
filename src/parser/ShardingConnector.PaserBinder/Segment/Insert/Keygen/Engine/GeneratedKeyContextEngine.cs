@@ -8,6 +8,7 @@ using ShardingConnector.CommandParser.Segment.DML.Expr;
 using ShardingConnector.CommandParser.Segment.DML.Expr.Simple;
 using ShardingConnector.Exceptions;
 using ShardingConnector.ParserBinder.MetaData.Schema;
+using ShardingConnector.ShardingAdoNet;
 
 namespace ShardingConnector.ParserBinder.Segment.Insert.Keygen.Engine
 {
@@ -42,7 +43,7 @@ namespace ShardingConnector.ParserBinder.Segment.Insert.Keygen.Engine
             {
                 if (ContainsGenerateKey(insertCommand, generateKeyColumnName))
                 {
-                    return FindGeneratedKey(parameters, insertCommand, generateKeyColumnName);
+                    return FindGeneratedKey(parameterContext, insertCommand, generateKeyColumnName);
                 }
 
                 return new ParserBinder.Segment.Insert.Keygen.GeneratedKeyContext(generateKeyColumnName, true);
@@ -57,11 +58,11 @@ namespace ShardingConnector.ParserBinder.Segment.Insert.Keygen.Engine
             {
                 return null;
             }
-            foreach (var columnKV in _schemaMetaData.Get(tableName).GetColumns())
+            foreach (var columnKv in _schemaMetaData.Get(tableName).GetColumns())
             {
-                if (columnKV.Value.Generated)
+                if (columnKv.Value.Generated)
                 {
-                    return columnKV.Key;
+                    return columnKv.Key;
                 }
             }
             return null;
@@ -79,7 +80,7 @@ namespace ShardingConnector.ParserBinder.Segment.Insert.Keygen.Engine
         /// <summary>
         /// 找到自动生成的键比如自增id
         /// </summary>
-        /// <param name="parameters"></param>
+        /// <param name="parameterContext"></param>
         /// <param name="insertCommand"></param>
         /// <param name="generateKeyColumnName"></param>
         /// <returns></returns>
@@ -92,11 +93,14 @@ namespace ShardingConnector.ParserBinder.Segment.Insert.Keygen.Engine
                 if (expression is ParameterMarkerExpressionSegment parameterMarkerExpressionSegment)
                 {
                     var parameterName = parameterMarkerExpressionSegment.GetParameterName();
-                    if (!parameters.ContainsKey(parameterName))
+
+
+                    if (!parameterContext.TryGetParameterValue(parameterName,out var value))
                     {
                         throw new ShardingException($"not found parameter name:[{parameterName}] in parameters");
                     }
-                    result.GetGeneratedValues().Add((IComparable)parameters[parameterName].Value);
+                   
+                    result.GetGeneratedValues().Add((IComparable)value);
                 }
                 else if (expression is LiteralExpressionSegment literalExpressionSegment)
                 {

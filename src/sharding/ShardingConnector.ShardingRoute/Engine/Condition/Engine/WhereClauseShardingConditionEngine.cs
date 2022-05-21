@@ -12,6 +12,7 @@ using ShardingConnector.Exceptions;
 using ShardingConnector.Extensions;
 using ShardingConnector.ParserBinder.Command;
 using ShardingConnector.ParserBinder.MetaData.Schema;
+using ShardingConnector.ShardingAdoNet;
 using ShardingConnector.ShardingCommon.Core.Rule;
 using ShardingConnector.ShardingCommon.Core.Strategy.Route.Value;
 using ShardingConnector.ShardingRoute.Engine.Condition.Generator;
@@ -52,7 +53,7 @@ namespace ShardingConnector.ShardingRoute.Engine.Condition.Engine
                 var whereSegment = whereAvailable.GetWhere();
                 if (whereSegment!=null)
                 {
-                    result.AddAll(CreateShardingConditions(sqlCommandContext, whereSegment.GetAndPredicates(), parameters));
+                    result.AddAll(CreateShardingConditions(sqlCommandContext, whereSegment.GetAndPredicates(), parameterContext));
                 }
                 return result;
             }
@@ -76,7 +77,7 @@ namespace ShardingConnector.ShardingRoute.Engine.Condition.Engine
             ICollection<ShardingCondition> result = new LinkedList<ShardingCondition>();
             foreach (var andPredicate in andPredicates)
             {
-                var routeValueMap = CreateRouteValueMap(sqlCommandContext, andPredicate, parameters);
+                var routeValueMap = CreateRouteValueMap(sqlCommandContext, andPredicate, parameterContext);
                 if (routeValueMap.IsEmpty())
                 {
                     return new List<ShardingCondition>(0);
@@ -97,7 +98,7 @@ namespace ShardingConnector.ShardingRoute.Engine.Condition.Engine
                     continue;
                 }
                 Column column = new Column(predicate.GetColumn().GetIdentifier().GetValue(), tableName);
-                var routeValue = ConditionValueGeneratorFactory.Generate(predicate.GetPredicateRightValue(), column, parameters);
+                var routeValue = ConditionValueGeneratorFactory.Generate(predicate.GetPredicateRightValue(), column, parameterContext);
                 if (routeValue==null)
                 {
                     continue;

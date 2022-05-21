@@ -12,6 +12,7 @@ using ShardingConnector.ParserBinder.Command.DML;
 using ShardingConnector.RewriteEngine.Parameter.Builder;
 using ShardingConnector.RewriteEngine.Parameter.Builder.Impl;
 using ShardingConnector.RewriteEngine.Parameter.Rewrite;
+using ShardingConnector.ShardingAdoNet;
 
 namespace ShardingConnector.ShardingRewrite.Parameter.Impl
 {
@@ -43,7 +44,7 @@ namespace ShardingConnector.ShardingRewrite.Parameter.Impl
             {
                 parametersCount += insertCommandContext.GetInsertValueContexts()[count].GetParametersCount();
                 var generatedValue = generatedValues.Next();
-                if (groupedParameter.Any())
+                if (!groupedParameter.IsEmpty())
                 {
                     ((GroupedParameterBuilder)parameterBuilder).GetParameterBuilders()[count].AddAddedParameters(parametersCount, new List<object>(){generatedValue});
                 }

@@ -101,7 +101,7 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Command
                 if (null == _parameters)
                 {
                     // delay the creation of the SqlParameterCollection
-                    // until user actually uses the Parameters property
+                    // until user actually uses the ParameterContext property
                     _parameters = new ShardingParameterCollection();
                 }
                 return _parameters;

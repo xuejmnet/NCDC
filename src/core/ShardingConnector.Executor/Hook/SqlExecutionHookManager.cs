@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Text;
+using ShardingConnector.ShardingAdoNet;
 using ShardingConnector.Spi.DataBase.MetaData;
 
 namespace ShardingConnector.Executor.Hook
@@ -32,11 +33,11 @@ namespace ShardingConnector.Executor.Hook
         {
             return Instance;
         }
-        public void Start(string dataSourceName, string sql, IDictionary<string,DbParameter> parameters, IDataSourceMetaData dataSourceMetaData, bool isTrunkThread, IDictionary<string, object> shardingExecuteDataMap)
+        public void Start(string dataSourceName, string sql, ParameterContext parameterContext, IDataSourceMetaData dataSourceMetaData, bool isTrunkThread, IDictionary<string, object> shardingExecuteDataMap)
         {
             foreach (var sqlExecutionHook in _sqlExecutionHooks)
             {
-                sqlExecutionHook.Start(dataSourceName, sql, parameters, dataSourceMetaData, isTrunkThread, shardingExecuteDataMap);
+                sqlExecutionHook.Start(dataSourceName, sql, parameterContext, dataSourceMetaData, isTrunkThread, shardingExecuteDataMap);
             }
         }
 

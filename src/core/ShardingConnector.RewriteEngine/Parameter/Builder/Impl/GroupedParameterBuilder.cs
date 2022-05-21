@@ -2,6 +2,7 @@
 using System.Data.Common;
 using System.Linq;
 using ShardingConnector.Extensions;
+using ShardingConnector.ShardingAdoNet;
 
 namespace ShardingConnector.RewriteEngine.Parameter.Builder.Impl
 {
@@ -16,11 +17,11 @@ namespace ShardingConnector.RewriteEngine.Parameter.Builder.Impl
     {
         private readonly List<StandardParameterBuilder> _parameterBuilders;
 
-        private readonly IDictionary<string, DbParameter> _onDuplicateKeyUpdateAddedParameters = new Dictionary<string, DbParameter>();
+        private readonly ParameterContext _onDuplicateKeyUpdateAddedParameters = new ParameterContext();
 
         private string derivedColumnName;
 
-        public GroupedParameterBuilder(List<IDictionary<string, DbParameter>> groupedParameters)
+        public GroupedParameterBuilder(List<ParameterContext> groupedParameters)
         {
             _parameterBuilders = new List<StandardParameterBuilder>(groupedParameters.Count);
             foreach (var groupedParameter in groupedParameters)
@@ -35,7 +36,7 @@ namespace ShardingConnector.RewriteEngine.Parameter.Builder.Impl
          * @param count parameters group count
          * @return parameters
          */
-        public IDictionary<string,DbParameter> GetParameters(int count)
+        public ParameterContext GetParameterContext(int count)
         {
             return _parameterBuilders[count].GetParameterContext();
         }
@@ -54,16 +55,18 @@ namespace ShardingConnector.RewriteEngine.Parameter.Builder.Impl
         {
             this.derivedColumnName = derivedColumnName;
         }
-        public IDictionary<string,DbParameter> GetParameters()
+        public ParameterContext GetParameterContext()
         {
-            var result = new Dictionary<string,DbParameter>();
+            var result = new ParameterContext();
             for (int i = 0; i < _parameterBuilders.Count; i++)
             {
-                result.AddAll(GetParameters(i));
+                var dbParameters = GetParameterContext(i).GetDbParameters();
+                result.AddParameters(dbParameters);
             }
-            if (_onDuplicateKeyUpdateAddedParameters.Any())
+            if (_onDuplicateKeyUpdateAddedParameters.GetParameterCount()>0)
             {
-                result.AddAll(_onDuplicateKeyUpdateAddedParameters);
+                var dbParameters = _onDuplicateKeyUpdateAddedParameters.GetDbParameters();
+                result.AddParameters(dbParameters);
             }
             return result;
         }

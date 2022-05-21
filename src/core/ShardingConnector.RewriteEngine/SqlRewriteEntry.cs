@@ -8,6 +8,7 @@ using ShardingConnector.ParserBinder.MetaData.Schema;
 using ShardingConnector.RewriteEngine.Context;
 using ShardingConnector.RewriteEngine.Sql.Token.Generator.Aware;
 using ShardingConnector.Route.Context;
+using ShardingConnector.ShardingAdoNet;
 
 namespace ShardingConnector.RewriteEngine
 {
@@ -54,7 +55,7 @@ namespace ShardingConnector.RewriteEngine
          */
         public SqlRewriteContext CreateSqlRewriteContext(string sql, ParameterContext parameterContext,  ISqlCommandContext<ISqlCommand> sqlCommandContext, RouteContext routeContext)
         {
-            var result = new SqlRewriteContext(_schemaMetaData, sqlCommandContext, sql, parameters);
+            var result = new SqlRewriteContext(_schemaMetaData, sqlCommandContext, sql, parameterContext);
             Decorate(_decorators, result, routeContext);
             result.GenerateSqlTokens();
             return result;

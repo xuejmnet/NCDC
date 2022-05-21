@@ -16,6 +16,7 @@ using ShardingConnector.ParserBinder.Command.DML;
 using ShardingConnector.ParserBinder.MetaData.Schema;
 using ShardingConnector.Route;
 using ShardingConnector.Route.Context;
+using ShardingConnector.ShardingAdoNet;
 using ShardingConnector.ShardingApi.Api.Hint;
 using ShardingConnector.ShardingCommon.Core.Rule;
 using ShardingConnector.ShardingCommon.Core.Strategy.Route.Hint;
@@ -40,7 +41,7 @@ namespace ShardingConnector.ShardingRoute.Engine
             ConfigurationProperties properties)
         {
             var sqlStatementContext = routeContext.GetSqlCommandContext();
-            var parameters = routeContext.GetParameters();
+            var parameters = routeContext.GetParameterContext();
             ShardingCommandValidatorFactory.NewInstance(
                 sqlStatementContext.GetSqlCommand())
                 .IfPresent(validator=> validator.Validate(shardingRule, sqlStatementContext.GetSqlCommand(), parameters));
@@ -65,9 +66,9 @@ namespace ShardingConnector.ShardingRoute.Engine
         {
             if (sqlStatementContext.GetSqlCommand() is DMLCommand) {
                 if (sqlStatementContext is InsertCommandContext insertCommandContext) {
-                    return new ShardingConditions(new InsertClauseShardingConditionEngine(shardingRule).CreateShardingConditions(insertCommandContext, parameters));
+                    return new ShardingConditions(new InsertClauseShardingConditionEngine(shardingRule).CreateShardingConditions(insertCommandContext, parameterContext));
                 }
-                return new ShardingConditions(new WhereClauseShardingConditionEngine(shardingRule, schemaMetaData).CreateShardingConditions(sqlStatementContext, parameters));
+                return new ShardingConditions(new WhereClauseShardingConditionEngine(shardingRule, schemaMetaData).CreateShardingConditions(sqlStatementContext, parameterContext));
             }
             return new ShardingConditions(new List<ShardingCondition>(0));
         }

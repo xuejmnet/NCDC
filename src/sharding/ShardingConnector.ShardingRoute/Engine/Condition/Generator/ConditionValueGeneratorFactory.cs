@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.Common;
 using System.Text;
 using ShardingConnector.CommandParser.Segment.DML.Predicate.Value;
+using ShardingConnector.ShardingAdoNet;
 using ShardingConnector.ShardingCommon.Core.Strategy.Route.Value;
 using ShardingConnector.ShardingRoute.Engine.Condition.Generator.Impl;
 
@@ -24,13 +25,13 @@ namespace ShardingConnector.ShardingRoute.Engine.Condition.Generator
         public static IRouteValue Generate(IPredicateRightValue predicateRightValue, Column column, ParameterContext parameterContext)
         {
             if (predicateRightValue is PredicateCompareRightValue predicateCompareRightValue) {
-                return new ConditionValueCompareOperatorGenerator().Generate(predicateCompareRightValue, column, parameters);
+                return new ConditionValueCompareOperatorGenerator().Generate(predicateCompareRightValue, column, parameterContext);
             }
             if (predicateRightValue is PredicateInRightValue predicateInRightValue) {
-                return new ConditionValueInOperatorGenerator().Generate(predicateInRightValue, column, parameters);
+                return new ConditionValueInOperatorGenerator().Generate(predicateInRightValue, column, parameterContext);
             }
             if (predicateRightValue is PredicateBetweenRightValue predicateBetweenRightValue) {
-                return new ConditionValueBetweenOperatorGenerator().Generate(predicateBetweenRightValue, column, parameters);
+                return new ConditionValueBetweenOperatorGenerator().Generate(predicateBetweenRightValue, column, parameterContext);
             }
             return null;
         }

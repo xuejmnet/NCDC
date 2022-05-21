@@ -8,6 +8,7 @@ using ShardingConnector.CommandParser.Command.DML;
 using ShardingConnector.CommandParser.Segment.DML.Assignment;
 using ShardingConnector.CommandParser.Segment.DML.Column;
 using ShardingConnector.Exceptions;
+using ShardingConnector.ShardingAdoNet;
 using ShardingConnector.ShardingCommon.Core.Rule;
 
 namespace ShardingConnector.ShardingRoute.Engine.Validator.Impl
@@ -44,7 +45,7 @@ namespace ShardingConnector.ShardingRoute.Engine.Validator.Impl
 
         public void Validate(ShardingRule shardingRule, ISqlCommand sqlCommand, ParameterContext parameterContext)
         {
-            Validate(shardingRule, (InsertCommand) sqlCommand, parameters);
+            Validate(shardingRule, (InsertCommand) sqlCommand, parameterContext);
         }
     }
 }

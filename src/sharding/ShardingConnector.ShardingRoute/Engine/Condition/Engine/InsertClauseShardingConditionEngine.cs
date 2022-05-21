@@ -11,6 +11,7 @@ using ShardingConnector.Extensions;
 using ShardingConnector.ParserBinder.Command.DML;
 using ShardingConnector.ParserBinder.Segment.Insert.Keygen;
 using ShardingConnector.ParserBinder.Segment.Insert.Values;
+using ShardingConnector.ShardingAdoNet;
 using ShardingConnector.ShardingCommon.Core.Rule;
 using ShardingConnector.ShardingCommon.Core.Strategy.Route.Value;
 using ShardingConnector.ShardingRoute.SPI;
@@ -49,7 +50,7 @@ namespace ShardingConnector.ShardingRoute.Engine.Condition.Engine
             foreach (var insertValueContext in insertCommandContext.GetInsertValueContexts())
             {
                 result.Add(CreateShardingCondition(tableName, columnNames.GetEnumerator(), insertValueContext,
-                    parameters));
+                    parameterContext));
             }
 
             var generatedKey = insertCommandContext.GetGeneratedKeyContext();
@@ -94,7 +95,7 @@ namespace ShardingConnector.ShardingRoute.Engine.Condition.Engine
                     if (valueExpression is ISimpleExpressionSegment simpleExpressionSegment)
                     {
                         result.RouteValues.Add(new ListRouteValue(columnName, tableName,
-                            new List<IComparable>() { GetRouteValue(simpleExpressionSegment, parameters) }));
+                            new List<IComparable>() { GetRouteValue(simpleExpressionSegment, parameterContext) }));
                     }
                     else if (ExpressionConditionUtils.IsNowExpression(valueExpression))
                     {
@@ -116,7 +117,7 @@ namespace ShardingConnector.ShardingRoute.Engine.Condition.Engine
             object result;
             if (expressionSegment is ParameterMarkerExpressionSegment parameterMarkerExpressionSegment)
             {
-                result = parameters[parameterMarkerExpressionSegment.GetParameterName()].Value;
+                result = parameterContext.GetParameterValue(parameterMarkerExpressionSegment.GetParameterName());
             }
             else
             {

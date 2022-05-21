@@ -6,6 +6,7 @@ using ShardingConnector.ParserBinder.Command;
 using ShardingConnector.ParserBinder.MetaData.Schema;
 using ShardingConnector.RewriteEngine.Sql.Token.Generator.Aware;
 using ShardingConnector.RewriteEngine.Sql.Token.SimpleObject;
+using ShardingConnector.ShardingAdoNet;
 
 namespace ShardingConnector.RewriteEngine.Sql.Token.Generator
 {
@@ -61,7 +62,7 @@ namespace ShardingConnector.RewriteEngine.Sql.Token.Generator
 
             foreach (var sqlTokenGenerator in _sqlTokenGenerators)
             {
-                SetUpSqlTokenGenerator(sqlTokenGenerator, parameters, schemaMetaData, result);
+                SetUpSqlTokenGenerator(sqlTokenGenerator, parameterContext, schemaMetaData, result);
                 if (!sqlTokenGenerator.IsGenerateSqlToken(sqlCommandContext))
                 {
                     continue;
@@ -88,7 +89,7 @@ namespace ShardingConnector.RewriteEngine.Sql.Token.Generator
         {
             if (sqlTokenGenerator is IParametersAware parametersAware)
             {
-                parametersAware.SetParameters(parameters);
+                parametersAware.SetParameterContext(parameterContext);
             }
 
             if (sqlTokenGenerator is ISchemaMetaDataAware schemaMetaDataAware)

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Data.Common;
+using ShardingConnector.ShardingAdoNet;
 
 namespace ShardingConnector.RewriteEngine.Sql.Token.Generator.Aware
 {
@@ -12,6 +13,6 @@ namespace ShardingConnector.RewriteEngine.Sql.Token.Generator.Aware
     */
     public interface IParametersAware
     {
-        void SetParameters(ParameterContext parameterContext);
+        void SetParameterContext(ParameterContext parameterContext);
     }
 }
