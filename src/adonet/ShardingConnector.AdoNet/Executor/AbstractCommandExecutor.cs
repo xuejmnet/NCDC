@@ -62,14 +62,12 @@ namespace ShardingConnector.AdoNet.Executor
             SqlExecuteTemplate = new SqlExecuteTemplate(executorEngine, Connection.IsHoldTransaction());
         }
 
-        /**
-             * Clear data.
-             *
-             * @throws SQLException SQL exception
-             */
+        /// <summary>
+        /// 清理数据
+        /// </summary>
         public void Clear()
         {
-            ClearStatements();
+            ClearCommands();
             Commands.Clear();
             ParameterSets.Clear();
             Connections.Clear();
@@ -77,7 +75,7 @@ namespace ShardingConnector.AdoNet.Executor
             InputGroups.Clear();
         }
 
-        private void ClearStatements()
+        private void ClearCommands()
         {
             foreach (var dbCommand in Commands)
             {

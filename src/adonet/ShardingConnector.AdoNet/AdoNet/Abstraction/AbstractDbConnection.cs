@@ -23,7 +23,7 @@ namespace ShardingConnector.AdoNet.AdoNet.Abstraction
     */
     public abstract class AbstractDbConnection : DbConnection, IAdoMethodRecorder<DbConnection>
     {
-        public event Action<DbConnection> OnConnectionRecorder;
+        public event Action<DbConnection> OnRecorder;
         public readonly MultiValueDictionary<string, DbConnection> CachedConnections = new MultiValueDictionary<string, DbConnection>();
         public abstract IDictionary<string, IDataSource> GetDataSourceMap();
         public abstract DbConnection CreateConnection(string dataSourceName, IDataSource dataSource);
@@ -134,7 +134,7 @@ namespace ShardingConnector.AdoNet.AdoNet.Abstraction
         /// <param name="target"></param>
         public void ReplyTargetMethodInvoke(DbConnection target)
         {
-            OnConnectionRecorder?.Invoke(target);
+            OnRecorder?.Invoke(target);
         }
 
         /// <summary>
@@ -143,7 +143,7 @@ namespace ShardingConnector.AdoNet.AdoNet.Abstraction
         /// <param name="target"></param>
         public void RecordTargetMethodInvoke(Action<DbConnection> target)
         {
-            OnConnectionRecorder += target;
+            OnRecorder += target;
         }
     }
 }

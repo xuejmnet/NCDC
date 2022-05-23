@@ -38,7 +38,7 @@ namespace ShardingConnector.ShardingExecute.Prepare
      * @return SQL execute unit
      * @throws SQLException SQL exception
      */
-        CommandExecuteUnit CreateStatementExecuteUnit(DbConnection connection, ExecutionUnit executionUnit, ConnectionModeEnum connectionMode);
+        CommandExecuteUnit CreateCommandExecuteUnit(DbConnection connection, ExecutionUnit executionUnit, ConnectionModeEnum connectionMode);
 
     }
 }

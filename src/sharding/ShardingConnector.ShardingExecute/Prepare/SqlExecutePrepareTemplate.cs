@@ -113,7 +113,7 @@ namespace ShardingConnector.ShardingExecute.Prepare
             List<CommandExecuteUnit> result = new List<CommandExecuteUnit>();
             foreach (var sqlUnit in sqlUnitGroup)
             {
-                result.Add(callback.CreateStatementExecuteUnit(connection, new ExecutionUnit(dataSourceName, sqlUnit),
+                result.Add(callback.CreateCommandExecuteUnit(connection, new ExecutionUnit(dataSourceName, sqlUnit),
                     connectionMode));
             }
 

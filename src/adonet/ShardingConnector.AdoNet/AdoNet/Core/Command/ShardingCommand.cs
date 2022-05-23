@@ -65,20 +65,6 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Command
             }
         }
 
-        public override  Task<int> ExecuteNonQueryAsync(CancellationToken cancellationToken)
-        {
-            try
-            {
-                executionContext = Prepare(CommandText);
-                var executeNonQuery = _commandExecutor.ExecuteNonQuery();
-                return Task.FromResult(executeNonQuery);
-            }
-            finally
-            {
-                currentResultSet = null;
-            }
-        }
-
         public override object ExecuteScalar()
         {
             throw new NotImplementedException();
@@ -93,6 +79,9 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Command
         public override int CommandTimeout { get; set; }
         public override CommandType CommandType { get; set; }
         public override UpdateRowSource UpdatedRowSource { get; set; }
+        /// <summary>
+        /// 当前命令的链接
+        /// </summary>
         protected override DbConnection DbConnection { get; set; }
         protected override DbParameterCollection DbParameterCollection
         {

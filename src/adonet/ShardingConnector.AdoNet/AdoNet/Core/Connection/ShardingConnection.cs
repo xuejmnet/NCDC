@@ -29,17 +29,20 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Connection
         private bool _isOpenTransaction = false;
         private readonly DbConnection _defaultDbConnection;
 
-        public ShardingConnection(IDictionary<string, IDataSource> dataSourceMap, ShardingRuntimeContext runtimeContext, TransactionTypeEnum transactionType)
+        public ShardingConnection(IDictionary<string, IDataSource> dataSourceMap, ShardingRuntimeContext runtimeContext,
+            TransactionTypeEnum transactionType)
         {
             _dataSourceMap = dataSourceMap;
             _runtimeContext = runtimeContext;
             _transactionType = transactionType;
-            _defaultDbConnection = dataSourceMap.Values.FirstOrDefault(o => o.IsDefault())?.CreateConnection()??throw new ShardingException("not found default data source");
+            _defaultDbConnection = dataSourceMap.Values.FirstOrDefault(o => o.IsDefault())?.CreateConnection() ??
+                                   throw new ShardingException("not found default data source");
         }
+
         protected override DbTransaction BeginDbTransaction(IsolationLevel isolationLevel)
         {
             _isOpenTransaction = true;
-            var transaction= _defaultDbConnection.BeginTransaction(isolationLevel);
+            var transaction = _defaultDbConnection.BeginTransaction(isolationLevel);
             RecordTargetMethodInvoke(connection => connection.BeginTransaction(isolationLevel));
             if (_runtimeContext.IsMultiDataSource())
             {
@@ -48,6 +51,7 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Connection
                     .Select(connection => Task.Run(() => connection.BeginTransaction(isolationLevel))).ToArray();
                 Task.WaitAll(multiTasks);
             }
+
             return transaction;
         }
 
@@ -82,24 +86,19 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Connection
             if (_runtimeContext.IsMultiDataSource())
             {
                 //RecordConnectionMethodInvoke(connection => connection.Open());
-                var multiTasks = CachedConnections.Values.SelectMany(o => o).Select(connection => Task.Run(() => connection.Open())).ToArray();
+                var multiTasks = CachedConnections.Values.SelectMany(o => o)
+                    .Select(connection => Task.Run(() => connection.Open())).ToArray();
                 Task.WaitAll(multiTasks);
             }
         }
 
         public override string ConnectionString
         {
-            get
-            {
-                return _defaultDbConnection.ConnectionString;
-            }
-            set
-            {
-                _defaultDbConnection.ConnectionString = value;
-            }
+            get { return _defaultDbConnection.ConnectionString; }
+            set { _defaultDbConnection.ConnectionString = value; }
         }
 
-        public override string Database =>_defaultDbConnection.Database;
+        public override string Database => _defaultDbConnection.Database;
         public override ConnectionState State => _defaultDbConnection.State;
         public override string DataSource => _defaultDbConnection.DataSource;
         public override string ServerVersion => _defaultDbConnection.ServerVersion;
@@ -108,14 +107,18 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Connection
         {
             return new ShardingCommand(null, this);
         }
+
         public ShardingRuntimeContext GetRuntimeContext()
         {
             return _runtimeContext;
         }
+
         public bool IsHoldTransaction()
         {
-            return (TransactionTypeEnum.LOCAL == _transactionType && _isOpenTransaction) || (TransactionTypeEnum.XA == _transactionType && IsInShardingTransaction());
+            return (TransactionTypeEnum.LOCAL == _transactionType && _isOpenTransaction) ||
+                   (TransactionTypeEnum.XA == _transactionType && IsInShardingTransaction());
         }
+
         private bool IsInShardingTransaction()
         {
             //return null != shardingTransactionManager && shardingTransactionManager.isInTransaction();
@@ -132,6 +135,10 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Connection
             return dataSource.CreateConnection();
         }
 
+        /// <summary>
+        /// 获取当前connection的默认链接
+        /// </summary>
+        /// <returns></returns>
         public DbConnection GetDefaultDbConnection()
         {
             return _defaultDbConnection;
