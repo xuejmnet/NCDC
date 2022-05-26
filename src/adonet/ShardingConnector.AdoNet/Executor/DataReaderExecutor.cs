@@ -47,47 +47,49 @@ namespace ShardingConnector.AdoNet.Executor
         // {
         //     return cancelStatus == cancelled;
         // }
-        public Task<List<IStreamDataReader>> ExecuteAsync(DataSourceSqlExecutorUnit dataSourceSqlExecutorUnit,
-            CancellationToken cancellationToken = new CancellationToken())
+        public List<IStreamDataReader> Execute(DataSourceSqlExecutorUnit dataSourceSqlExecutorUnit)
         {
-            return ExecuteAsync0(dataSourceSqlExecutorUnit, cancellationToken);
+            return Execute0(dataSourceSqlExecutorUnit);
         }
 
-        private async Task<List<IStreamDataReader>> ExecuteAsync0(DataSourceSqlExecutorUnit dataSourceSqlExecutorUnit,
-            CancellationToken cancellationToken = new CancellationToken())
+        private List<IStreamDataReader> Execute0(DataSourceSqlExecutorUnit dataSourceSqlExecutorUnit)
         {
             var executorGroups = dataSourceSqlExecutorUnit.SqlExecutorGroups;
             var result = new List<IStreamDataReader>(executorGroups.Sum(o=>o.Groups.Count()));
             foreach (var executorGroup in executorGroups)
             {
-                var routeQueryResults = await GroupExecuteAsync(executorGroup.Groups,cancellationToken);
+                var routeQueryResults =  GroupExecute(executorGroup.Groups);
                 result.AddAll(routeQueryResults);
             }
 
             return result;
         }
 
-        private  Task<IStreamDataReader[]> GroupExecuteAsync(List<CommandExecuteUnit> commandExecuteUnits,
-            CancellationToken cancellationToken = new CancellationToken())
+        private  IStreamDataReader[] GroupExecute(List<CommandExecuteUnit> commandExecuteUnits)
         {
             if (commandExecuteUnits.Count <= 0)
             {
-                return Task.FromResult(Array.Empty<IStreamDataReader>());
+                return Array.Empty<IStreamDataReader>();
             }
 
-            var tasks = commandExecuteUnits.Select(o=>ExecuteCommandUnitAsync(o,cancellationToken)).ToArray();
-            return TaskHelper.WhenAllFastFail(tasks);
+            CancellationToken cancellationToken = new CancellationToken();
+            var dataReaders = new List<IStreamDataReader>(commandExecuteUnits.Count());
+            var otherTasks = commandExecuteUnits.Skip(1)
+                .Select(o => Task.Run(() => ExecuteCommandUnit(o), cancellationToken)).ToArray();
+            var streamDataReader = ExecuteCommandUnit(commandExecuteUnits[0]);
+            var streamDataReaders = Task.WhenAll(otherTasks).GetAwaiter().GetResult();
+            dataReaders.Add(streamDataReader);
+            dataReaders.AddAll(streamDataReaders);
+            return dataReaders.ToArray();
         }
 
-        private  Task<IStreamDataReader> ExecuteCommandUnitAsync(CommandExecuteUnit commandExecuteUnit,
-            CancellationToken cancellationToken = new CancellationToken())
+        private  IStreamDataReader ExecuteCommandUnit(CommandExecuteUnit commandExecuteUnit)
         {
-            cancellationToken.ThrowIfCancellationRequested();
             if (OnCommandSqlExecute == null)
             {
                 throw new ShardingException("command sql execute not implement");
             }
-            return Task.Run(()=>OnCommandSqlExecute?.Invoke(commandExecuteUnit.Command, commandExecuteUnit.ConnectionMode), cancellationToken);
+            return OnCommandSqlExecute?.Invoke(commandExecuteUnit.Command, commandExecuteUnit.ConnectionMode);
         }
     }
 }

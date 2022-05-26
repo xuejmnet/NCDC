@@ -48,14 +48,14 @@ namespace ShardingConnector.AppConsoleMySQLTest
             var dataSource = ShardingDataSourceFactory.CreateDataSource(dataSourceMap, shardingRuleConfig, new Dictionary<string, object>());
             Query(dataSource);
             Stopwatch stopwatch = Stopwatch.StartNew();
-            for (int i = 0; i < 100; i++)
+            for (int i = 0; i < 1000; i++)
             {
                 QueryTest1(dataSource);
             }
             stopwatch.Stop();
             Console.WriteLine($"第1次:{stopwatch.ElapsedMilliseconds}");
             stopwatch.Restart();
-            for (int i = 0; i < 100; i++)
+            for (int i = 0; i < 1000; i++)
             {
                 QueryTest2();
             }
@@ -63,7 +63,7 @@ namespace ShardingConnector.AppConsoleMySQLTest
             Console.WriteLine($"第2次:{stopwatch.ElapsedMilliseconds}");
 
             stopwatch.Restart();
-            for (int i = 0; i < 100; i++)
+            for (int i = 0; i < 1000; i++)
             {
                 QueryTest1(dataSource);
             }
@@ -71,7 +71,7 @@ namespace ShardingConnector.AppConsoleMySQLTest
             Console.WriteLine($"第3次:{stopwatch.ElapsedMilliseconds}");
 
             stopwatch.Restart();
-            for (int i = 0; i < 100; i++)
+            for (int i = 0; i < 1000; i++)
             {
                 QueryTest2();
             }

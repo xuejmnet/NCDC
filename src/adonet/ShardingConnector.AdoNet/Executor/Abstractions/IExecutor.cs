@@ -7,7 +7,6 @@ namespace ShardingConnector.AdoNet.Executor.Abstractions
 {
     public interface IExecutor<TResult>
     {
-        Task<List<TResult>> ExecuteAsync(DataSourceSqlExecutorUnit dataSourceSqlExecutorUnit,
-            CancellationToken cancellationToken = new CancellationToken());
+        List<TResult> Execute(DataSourceSqlExecutorUnit dataSourceSqlExecutorUnit);
     }
 }

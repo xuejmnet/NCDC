@@ -38,9 +38,9 @@ namespace ShardingConnector.AdoNet.Executor
                 .Select(o=>GetSqlExecutorGroups(serial,o))
                 .Select(dataSourceSqlExecutorUnit =>
                 {
-                    return Task.Run( () =>  dataReaderExecutor.ExecuteAsync(dataSourceSqlExecutorUnit, cancellationToken), cancellationToken);
+                    return dataReaderExecutor.Execute(dataSourceSqlExecutorUnit);
                 }).ToArray();
-            var r = TaskHelper.WhenAllFastFail(waitSqlExecuteResults).WaitAndUnwrapException().SelectMany(o=>o).ToList();
+            var r = waitSqlExecuteResults.SelectMany(o=>o).ToList();
 
             return r;
         }
