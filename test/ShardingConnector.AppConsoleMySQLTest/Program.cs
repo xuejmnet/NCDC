@@ -19,12 +19,12 @@ namespace ShardingConnector.AppConsoleMySQLTest
         private static readonly string conn = "server=127.0.0.1;port=3306;database=test;userid=root;password=root;";
         static void Main(string[] args)
         {
-            // InternalLoggerFactory.DefaultFactory = LoggerFactory.Create(builder =>
-            // {
-            //     builder.AddFilter("Microsoft", LogLevel.Warning)
-            //         .AddFilter("System", LogLevel.Warning)
-            //         .AddSimpleConsole(c => c.TimestampFormat = "[yyyy-MM-dd HH:mm:ss]");
-            // });
+            InternalLoggerFactory.DefaultFactory = LoggerFactory.Create(builder =>
+            {
+                builder.AddFilter("Microsoft", LogLevel.Warning)
+                    .AddFilter("System", LogLevel.Warning)
+                    .AddSimpleConsole(c => c.TimestampFormat = "[yyyy-MM-dd HH:mm:ss]");
+            });
           
             //var dbProviderFactory = ShardingCreateDbProviderFactory.CreateDataSource(dataSourceMap, new ShardingRuleConfiguration(),
             //    new Dictionary<string, object>());
@@ -81,12 +81,12 @@ namespace ShardingConnector.AppConsoleMySQLTest
 
             //for (int i = 0; i < 20; i++)
             //{
-            // QueryPage(dataSource);
-            // QueryMax(dataSource);
-            // Delete(dataSource);
-            // Insert(dataSource);
-            // Update(dataSource);
-            // Query(dataSource);
+            QueryPage(dataSource);
+            QueryMax(dataSource);
+            Delete(dataSource);
+            Insert(dataSource);
+            Update(dataSource);
+            Query(dataSource);
             //}
         }
 

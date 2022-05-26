@@ -72,15 +72,22 @@ namespace ShardingConnector.AdoNet.Executor
                 return Array.Empty<IStreamDataReader>();
             }
 
-            CancellationToken cancellationToken = new CancellationToken();
-            var dataReaders = new List<IStreamDataReader>(commandExecuteUnits.Count());
-            var otherTasks = commandExecuteUnits.Skip(1)
-                .Select(o => Task.Run(() => ExecuteCommandUnit(o), cancellationToken)).ToArray();
-            var streamDataReader = ExecuteCommandUnit(commandExecuteUnits[0]);
-            var streamDataReaders = Task.WhenAll(otherTasks).GetAwaiter().GetResult();
-            dataReaders.Add(streamDataReader);
-            dataReaders.AddAll(streamDataReaders);
-            return dataReaders.ToArray();
+            if (commandExecuteUnits.Count == 1)
+            {
+                return new IStreamDataReader[1] { ExecuteCommandUnit(commandExecuteUnits[0]) };
+            }
+            else
+            {
+                CancellationToken cancellationToken = new CancellationToken();
+                var dataReaders = new List<IStreamDataReader>(commandExecuteUnits.Count());
+                var otherTasks = commandExecuteUnits.Skip(1)
+                    .Select(o => Task.Run(() => ExecuteCommandUnit(o), cancellationToken)).ToArray();
+                var streamDataReader = ExecuteCommandUnit(commandExecuteUnits[0]);
+                var streamDataReaders = Task.WhenAll(otherTasks).GetAwaiter().GetResult();
+                dataReaders.Add(streamDataReader);
+                dataReaders.AddAll(streamDataReaders);
+                return dataReaders.ToArray();
+            }
         }
 
         private  IStreamDataReader ExecuteCommandUnit(CommandExecuteUnit commandExecuteUnit)

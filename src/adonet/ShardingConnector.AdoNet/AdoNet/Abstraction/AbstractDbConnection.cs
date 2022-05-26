@@ -117,10 +117,7 @@ namespace ShardingConnector.AdoNet.AdoNet.Abstraction
         protected override void Dispose(bool disposing)
         {
             base.Dispose(disposing);
-            foreach (var dbConnection in _connections)
-            {
-                dbConnection.Dispose();
-            }
+            _connections?.ForEach(dbConnection=>dbConnection.Dispose());
         }
 
         protected void AssertSingleDataSource()
