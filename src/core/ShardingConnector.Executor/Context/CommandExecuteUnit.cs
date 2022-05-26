@@ -1,8 +1,7 @@
 ﻿using System.Data.Common;
 using ShardingConnector.Executor.Constant;
-using ShardingConnector.Executor.Context;
 
-namespace ShardingConnector.ShardingExecute.Execute
+namespace ShardingConnector.Executor.Context
 {
     /*
     * @Author: xjm

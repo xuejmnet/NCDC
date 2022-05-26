@@ -140,10 +140,10 @@ namespace ShardingConnector.AdoNet.AdoNet.Abstraction
         /// <summary>
         /// 记录target的动作
         /// </summary>
-        /// <param name="target"></param>
-        public void RecordTargetMethodInvoke(Action<DbConnection> target)
+        /// <param name="targetMethod"></param>
+        public void RecordTargetMethodInvoke(Action<DbConnection> targetMethod)
         {
-            OnRecorder += target;
+            OnRecorder += targetMethod;
         }
     }
 }

@@ -143,5 +143,11 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Connection
         {
             return _defaultDbConnection;
         }
+
+        protected override void Dispose(bool disposing)
+        {
+            base.Dispose(disposing);
+            _defaultDbConnection.Dispose();
+        }
     }
 }

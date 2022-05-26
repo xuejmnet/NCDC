@@ -57,5 +57,17 @@ namespace ShardingConnector.Extensions
                     select accseq.Concat(new[] {item})
             );
         }
+        /// <summary>
+        /// 按size分区,每个区size个数目
+        /// </summary>
+        /// <typeparam name="TSource"></typeparam>
+        /// <param name="elements"></param>
+        /// <param name="size"></param>
+        /// <returns></returns>
+        public static IEnumerable<List<TSource>> Partition<TSource>(this IEnumerable<TSource> elements,int size)
+        {
+            return elements.Select((o, i) => new { Element = o, Index = i / size })
+                .GroupBy(o => o.Index).Select(o => o.Select(g => g.Element).ToList());
+        }
     }
 }

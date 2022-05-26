@@ -10,6 +10,8 @@ using ShardingConnector.Spi.DataBase.DataBaseType;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
+using System.Threading.Tasks;
+using ShardingConnector.Executor.Context;
 using ShardingConnector.ShardingAdoNet;
 
 
@@ -108,6 +110,11 @@ namespace ShardingConnector.AdoNet.Executor
             refreshMetaDataIfNeeded(Connection.GetRuntimeContext(), SqlCommandContext);
             return result;
         }
+
+        // protected Task<List<T>>[] ExecuteGroupAsync<T>()
+        // {
+        //     
+        // }
 
         /**
          * is accumulate.

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using ShardingConnector.Executor.Context;
 using ShardingConnector.Executor.Engine;
 
 namespace ShardingConnector.ShardingExecute.Execute

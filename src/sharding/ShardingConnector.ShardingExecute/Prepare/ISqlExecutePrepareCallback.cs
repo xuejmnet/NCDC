@@ -18,26 +18,8 @@ namespace ShardingConnector.ShardingExecute.Prepare
     /// </summary>
     public interface ISqlExecutePrepareCallback
     {
-        /**
-     * Get connection.
-     * 
-     * @param connectionMode connection mode
-     * @param dataSourceName data source name
-     * @param connectionSize connection size
-     * @return connection
-     * @throws SQLException SQL exception
-     */
         List<DbConnection> GetConnections(ConnectionModeEnum connectionMode, string dataSourceName, int connectionSize);
     
-        /**
-     * Create SQL execute unit.
-     * 
-     * @param connection connection
-     * @param executionUnit execution unit
-     * @param connectionMode connection mode
-     * @return SQL execute unit
-     * @throws SQLException SQL exception
-     */
         CommandExecuteUnit CreateCommandExecuteUnit(DbConnection connection, ExecutionUnit executionUnit, ConnectionModeEnum connectionMode);
 
     }

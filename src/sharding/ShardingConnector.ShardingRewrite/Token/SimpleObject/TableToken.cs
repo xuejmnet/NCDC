@@ -7,6 +7,7 @@ using ShardingConnector.CommandParser.Constant;
 using ShardingConnector.CommandParser.Value.Identifier;
 using ShardingConnector.Extensions;
 using ShardingConnector.ParserBinder.Command;
+using ShardingConnector.RewriteEngine.Sql.Token;
 using ShardingConnector.RewriteEngine.Sql.Token.SimpleObject;
 using ShardingConnector.Route.Context;
 using ShardingConnector.ShardingCommon.Core.Rule;

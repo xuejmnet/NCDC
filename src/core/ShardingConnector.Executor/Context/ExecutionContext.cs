@@ -32,5 +32,10 @@ namespace ShardingConnector.Executor.Context
         {
             return _executionUnits;
         }
+
+        public bool IsSequenceQuery()
+        {
+            return false;
+        }
     }
 }

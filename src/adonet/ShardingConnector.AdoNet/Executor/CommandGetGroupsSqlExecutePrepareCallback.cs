@@ -38,6 +38,7 @@ namespace ShardingConnector.AdoNet.Executor
         {
             var shardingParameters = executionUnit.GetSqlUnit().GetParameterContext().GetDbParameters().Select(o=>(ShardingParameter)o).ToList();
             var dbCommand = connection.CreateCommand();
+            //TODO取消手动执行改成replay
             dbCommand.CommandText = executionUnit.GetSqlUnit().GetSql();
             foreach (var shardingParameter in shardingParameters)
             {

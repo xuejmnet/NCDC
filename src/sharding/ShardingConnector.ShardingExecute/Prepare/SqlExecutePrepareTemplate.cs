@@ -25,6 +25,11 @@ namespace ShardingConnector.ShardingExecute.Prepare
     {
         private readonly int _maxConnectionsSizePerQuery;
 
+        //
+        // List<DbConnection> GetConnections(ConnectionModeEnum connectionMode, string dataSourceName, int connectionSize);
+        //
+        // CommandExecuteUnit CreateCommandExecuteUnit(DbConnection connection, ExecutionUnit executionUnit, ConnectionModeEnum connectionMode);
+
         public SqlExecutePrepareTemplate(int maxConnectionsSizePerQuery)
         {
             _maxConnectionsSizePerQuery = maxConnectionsSizePerQuery;

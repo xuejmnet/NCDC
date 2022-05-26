@@ -54,7 +54,6 @@ namespace ShardingConnector.AdoNet.Executor
             executeCallback.OnSqlExecute += GetQueryEnumerator;
             return ExecuteCallback(executeCallback);
         }
-
         private IStreamDataReader GetQueryEnumerator(string sql, DbCommand command, ConnectionModeEnum connectionMode)
         {
             // DbDataReader resultSet = command.ExecuteReader(sql);

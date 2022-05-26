@@ -9,6 +9,7 @@ using ShardingConnector.ShardingApi.Api.Config.Sharding.Strategy;
 using ShardingConnector.ShardingApi.Api.Sharding.Standard;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace ShardingConnector.AppConsoleMySQLTest
 {
@@ -18,12 +19,12 @@ namespace ShardingConnector.AppConsoleMySQLTest
         private static readonly string conn = "server=127.0.0.1;port=3306;database=test;userid=root;password=root;";
         static void Main(string[] args)
         {
-            InternalLoggerFactory.DefaultFactory = LoggerFactory.Create(builder =>
-            {
-                builder.AddFilter("Microsoft", LogLevel.Warning)
-                    .AddFilter("System", LogLevel.Warning)
-                    .AddSimpleConsole(c => c.TimestampFormat = "[yyyy-MM-dd HH:mm:ss]");
-            });
+            // InternalLoggerFactory.DefaultFactory = LoggerFactory.Create(builder =>
+            // {
+            //     builder.AddFilter("Microsoft", LogLevel.Warning)
+            //         .AddFilter("System", LogLevel.Warning)
+            //         .AddSimpleConsole(c => c.TimestampFormat = "[yyyy-MM-dd HH:mm:ss]");
+            // });
           
             //var dbProviderFactory = ShardingCreateDbProviderFactory.CreateDataSource(dataSourceMap, new ShardingRuleConfiguration(),
             //    new Dictionary<string, object>());
@@ -45,49 +46,47 @@ namespace ShardingConnector.AppConsoleMySQLTest
             //2.7、配置默认数据源
             shardingRuleConfig.DefaultDataSourceName = "ds0";
             var dataSource = ShardingDataSourceFactory.CreateDataSource(dataSourceMap, shardingRuleConfig, new Dictionary<string, object>());
-            //Query(dataSource);
-            //var mySqlCommand = new MySqlCommand();
-            //mySqlCommand
-            //Stopwatch stopwatch = Stopwatch.StartNew();
-            //for (int i = 0; i < 1000; i++)
-            //{
-            //    QueryTest1(dataSource);
-            //}
-            //stopwatch.Stop();
-            //Console.WriteLine($"第1次:{stopwatch.ElapsedMilliseconds}");
-            //stopwatch.Restart();
-            //for (int i = 0; i < 1000; i++)
-            //{
-            //    QueryTest2();
-            //}
-            //stopwatch.Stop();
-            //Console.WriteLine($"第2次:{stopwatch.ElapsedMilliseconds}");
+            Query(dataSource);
+            Stopwatch stopwatch = Stopwatch.StartNew();
+            for (int i = 0; i < 100; i++)
+            {
+                QueryTest1(dataSource);
+            }
+            stopwatch.Stop();
+            Console.WriteLine($"第1次:{stopwatch.ElapsedMilliseconds}");
+            stopwatch.Restart();
+            for (int i = 0; i < 100; i++)
+            {
+                QueryTest2();
+            }
+            stopwatch.Stop();
+            Console.WriteLine($"第2次:{stopwatch.ElapsedMilliseconds}");
 
-            //stopwatch.Restart();
-            //for (int i = 0; i < 1000; i++)
-            //{
-            //    QueryTest1(dataSource);
-            //}
-            //stopwatch.Stop();
-            //Console.WriteLine($"第3次:{stopwatch.ElapsedMilliseconds}");
+            stopwatch.Restart();
+            for (int i = 0; i < 100; i++)
+            {
+                QueryTest1(dataSource);
+            }
+            stopwatch.Stop();
+            Console.WriteLine($"第3次:{stopwatch.ElapsedMilliseconds}");
 
-            //stopwatch.Restart();
-            //for (int i = 0; i < 1000; i++)
-            //{
-            //    QueryTest2();
-            //}
-            //stopwatch.Stop();
-            //Console.WriteLine($"第4次:{stopwatch.ElapsedMilliseconds}");
+            stopwatch.Restart();
+            for (int i = 0; i < 100; i++)
+            {
+                QueryTest2();
+            }
+            stopwatch.Stop();
+            Console.WriteLine($"第4次:{stopwatch.ElapsedMilliseconds}");
 
 
             //for (int i = 0; i < 20; i++)
             //{
-            QueryPage(dataSource);
-            QueryMax(dataSource);
-            Delete(dataSource);
-            Insert(dataSource);
-            Update(dataSource);
-            Query(dataSource);
+            // QueryPage(dataSource);
+            // QueryMax(dataSource);
+            // Delete(dataSource);
+            // Insert(dataSource);
+            // Update(dataSource);
+            // Query(dataSource);
             //}
         }
 
@@ -154,30 +153,32 @@ namespace ShardingConnector.AppConsoleMySQLTest
 
         static void Query(IDataSource dataSource)
         {
-            var dbConnection = dataSource.CreateConnection();
-            dbConnection.Open();
-
-            var dbCommand = dbConnection.CreateCommand();
-            dbCommand.CommandText = @"select * from SysUserMod where id  in (@p1,@p2)";
-            var dbParameter = dbCommand.CreateParameter();
-            dbParameter.ParameterName = "@p1";
-            dbParameter.Value = "21";
-
-            var dbParameter2 = dbCommand.CreateParameter();
-            dbParameter2.ParameterName = "@p2";
-            dbParameter2.Value = "22";
-            //dbParameter.ParameterName = "@Id";
-            //dbParameter.Value = 21;
-            dbCommand.Parameters.Add(dbParameter);
-            dbCommand.Parameters.Add(dbParameter2);
-            //dbCommand.CommandText = @"select [d].[Id],[d].[Name],[d].[Age] from [dbo].[SysUserMod] as [d] where id='1'  order by [d].[Age] desc";
-            var dbDataReader = dbCommand.ExecuteReader();
-            while (dbDataReader.Read())
+            using (var dbConnection = dataSource.CreateConnection())
             {
-                Console.WriteLine($"{dbDataReader[0]}-{dbDataReader[1]}-{dbDataReader[2]}");
-            }
+                dbConnection.Open();
 
-            Console.WriteLine("Hello World!");
+                var dbCommand = dbConnection.CreateCommand();
+                dbCommand.CommandText = @"select * from SysUserMod where id  in (@p1,@p2)";
+                var dbParameter = dbCommand.CreateParameter();
+                dbParameter.ParameterName = "@p1";
+                dbParameter.Value = "21";
+
+                var dbParameter2 = dbCommand.CreateParameter();
+                dbParameter2.ParameterName = "@p2";
+                dbParameter2.Value = "22";
+                //dbParameter.ParameterName = "@Id";
+                //dbParameter.Value = 21;
+                dbCommand.Parameters.Add(dbParameter);
+                dbCommand.Parameters.Add(dbParameter2);
+                //dbCommand.CommandText = @"select [d].[Id],[d].[Name],[d].[Age] from [dbo].[SysUserMod] as [d] where id='1'  order by [d].[Age] desc";
+                var dbDataReader = dbCommand.ExecuteReader();
+                while (dbDataReader.Read())
+                {
+                    Console.WriteLine($"{dbDataReader[0]}-{dbDataReader[1]}-{dbDataReader[2]}");
+                }
+
+                Console.WriteLine("Hello World!");
+            }
         }
         static void QueryPage(IDataSource dataSource)
         {

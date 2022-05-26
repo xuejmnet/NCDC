@@ -182,9 +182,14 @@ namespace ShardingConnector.ParserBinder.Command.DML
             return ((ExpressionOrderByItemSegment)orderByItemSegment).GetExpression();
         }
 
+        /// <summary>
+        /// order by是否和group by一致
+        /// 一致就说明可以stream merge
+        /// </summary>
+        /// <returns></returns>
         public bool IsSameGroupByAndOrderByItems()
         {
-            return _groupByContext.GetItems().Any() && _groupByContext.GetItems().Equals(_orderByContext.GetItems());
+            return _groupByContext.GetItems().Any() && _groupByContext.GetItems().SequenceEqual(_orderByContext.GetItems());
         }
 
         public ICollection<SimpleTableSegment> GetAllTables()

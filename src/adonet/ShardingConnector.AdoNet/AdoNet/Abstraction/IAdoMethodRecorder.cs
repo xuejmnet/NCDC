@@ -22,7 +22,7 @@ namespace ShardingConnector.AdoNet.AdoNet.Abstraction
         /// <summary>
         /// 记录target的动作
         /// </summary>
-        /// <param name="target"></param>
-        void RecordTargetMethodInvoke(Action<T> target);
+        /// <param name="targetMethod"></param>
+        void RecordTargetMethodInvoke(Action<T> targetMethod);
     }
 }

@@ -53,7 +53,8 @@ namespace ShardingConnector.Pluggable.Prepare
             var cloneParameterContext = CloneParameters(parameterContext);
             var routeContext = ExecuteRoute(sql, cloneParameterContext);
             ExecutionContext result = new ExecutionContext(routeContext.GetSqlCommandContext());
-            result.GetExecutionUnits().AddAll(ExecuteRewrite(sql, cloneParameterContext, routeContext));
+            var executionUnits = ExecuteRewrite(sql, cloneParameterContext, routeContext);
+            result.GetExecutionUnits().AddAll(executionUnits);
             if (true)
             {
                 SqlLogger.LogSql(sql,false,result.GetSqlCommandContext(),result.GetExecutionUnits());
