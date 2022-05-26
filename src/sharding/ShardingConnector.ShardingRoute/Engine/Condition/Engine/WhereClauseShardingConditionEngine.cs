@@ -4,7 +4,6 @@ using System.Data.Common;
 using System.Linq;
 using System.Text;
 using Antlr4.Runtime.Misc;
-
 using ShardingConnector.CommandParser.Command;
 using ShardingConnector.CommandParser.Segment.Predicate;
 using ShardingConnector.DataStructure.RangeStructure;
@@ -45,22 +44,21 @@ namespace ShardingConnector.ShardingRoute.Engine.Condition.Engine
          * @param parameters SQL parameters
          * @return sharding conditions
          */
-        public List<ShardingCondition> CreateShardingConditions(ISqlCommandContext<ISqlCommand> sqlCommandContext, ParameterContext parameterContext)
+        public List<ShardingCondition> CreateShardingConditions(ISqlCommandContext<ISqlCommand> sqlCommandContext,
+            ParameterContext parameterContext)
         {
             if (sqlCommandContext is IWhereAvailable whereAvailable)
             {
-                List<ShardingCondition> result = new List<ShardingCondition>();
                 var whereSegment = whereAvailable.GetWhere();
-                if (whereSegment!=null)
+                if (whereSegment != null)
                 {
-                    result.AddAll(CreateShardingConditions(sqlCommandContext, whereSegment.GetAndPredicates(), parameterContext));
+                    var shardingConditions = CreateShardingConditions(sqlCommandContext,
+                        whereSegment.GetAndPredicates(), parameterContext);
+                    return new List<ShardingCondition>(shardingConditions);
                 }
-                return result;
             }
-            else
-            {
-                return new List<ShardingCondition>(0);
-            }
+
+            return new List<ShardingCondition>(0);
 
             // FIXME process subquery
             //        ICollection<SubqueryPredicateSegment> subqueryPredicateSegments = sqlStatementContext.findSQLSegments(SubqueryPredicateSegment.class);
@@ -72,7 +70,9 @@ namespace ShardingConnector.ShardingRoute.Engine.Condition.Engine
             //        }
         }
 
-        private ICollection<ShardingCondition> CreateShardingConditions(ISqlCommandContext<ISqlCommand> sqlCommandContext, ICollection<AndPredicateSegment> andPredicates, ParameterContext parameterContext)
+        private ICollection<ShardingCondition> CreateShardingConditions(
+            ISqlCommandContext<ISqlCommand> sqlCommandContext, ICollection<AndPredicateSegment> andPredicates,
+            ParameterContext parameterContext)
         {
             ICollection<ShardingCondition> result = new LinkedList<ShardingCondition>();
             foreach (var andPredicate in andPredicates)
@@ -82,34 +82,45 @@ namespace ShardingConnector.ShardingRoute.Engine.Condition.Engine
                 {
                     return new List<ShardingCondition>(0);
                 }
+
                 result.Add(CreateShardingCondition(routeValueMap));
             }
+
             return result;
         }
 
-        private IDictionary<Column, ICollection<IRouteValue>> CreateRouteValueMap(ISqlCommandContext<ISqlCommand> sqlCommandContext, AndPredicateSegment andPredicate, ParameterContext parameterContext)
+        private IDictionary<Column, ICollection<IRouteValue>> CreateRouteValueMap(
+            ISqlCommandContext<ISqlCommand> sqlCommandContext, AndPredicateSegment andPredicate,
+            ParameterContext parameterContext)
         {
             IDictionary<Column, ICollection<IRouteValue>> result = new Dictionary<Column, ICollection<IRouteValue>>();
             foreach (var predicate in andPredicate.GetPredicates())
             {
-                var tableName = sqlCommandContext.GetTablesContext().FindTableName(predicate.GetColumn(), schemaMetaData);
-                if (tableName==null || !shardingRule.IsShardingColumn(predicate.GetColumn().GetIdentifier().GetValue(), tableName))
+                var tableName = sqlCommandContext.GetTablesContext()
+                    .FindTableName(predicate.GetColumn(), schemaMetaData);
+                if (tableName == null ||
+                    !shardingRule.IsShardingColumn(predicate.GetColumn().GetIdentifier().GetValue(), tableName))
                 {
                     continue;
                 }
+
                 Column column = new Column(predicate.GetColumn().GetIdentifier().GetValue(), tableName);
-                var routeValue = ConditionValueGeneratorFactory.Generate(predicate.GetPredicateRightValue(), column, parameterContext);
-                if (routeValue==null)
+                var routeValue =
+                    ConditionValueGeneratorFactory.Generate(predicate.GetPredicateRightValue(), column,
+                        parameterContext);
+                if (routeValue == null)
                 {
                     continue;
                 }
+
                 if (!result.ContainsKey(column))
                 {
                     result.Add(column, new LinkedList<IRouteValue>());
                 }
-                result[column].Add(routeValue);
 
+                result[column].Add(routeValue);
             }
+
             return result;
         }
 
@@ -125,14 +136,15 @@ namespace ShardingConnector.ShardingRoute.Engine.Condition.Engine
                     {
                         return new AlwaysFalseShardingCondition();
                     }
+
                     result.RouteValues.Add(routeValue);
                 }
                 catch (InvalidCastException ex)
                 {
                     throw new ShardingException("Found different types for sharding value `{entry.Key}`.");
                 }
-
             }
+
             return result;
         }
 
@@ -162,21 +174,25 @@ namespace ShardingConnector.ShardingRoute.Engine.Condition.Engine
                     }
                 }
             }
+
             if (null == listValue)
             {
                 return new RangeRouteValue(column.Name, column.TableName, rangeValue);
             }
+
             if (null == rangeValue)
             {
                 return new ListRouteValue(column.Name, column.TableName, listValue);
             }
+
             listValue = MergeListAndRangeRouteValues(listValue, rangeValue);
             if (listValue.IsEmpty())
                 return new AlwaysFalseRouteValue();
             return new ListRouteValue(column.Name, column.TableName, listValue);
         }
 
-        private ICollection<IComparable> MergeListRouteValues(ICollection<IComparable> value1, ICollection<IComparable> value2)
+        private ICollection<IComparable> MergeListRouteValues(ICollection<IComparable> value1,
+            ICollection<IComparable> value2)
         {
             if (null == value2)
             {
@@ -192,7 +208,8 @@ namespace ShardingConnector.ShardingRoute.Engine.Condition.Engine
             return null == value2 ? value1 : value1.Intersection(value2);
         }
 
-        private ICollection<IComparable> MergeListAndRangeRouteValues(ICollection<IComparable> listValue, Range<IComparable> rangeValue)
+        private ICollection<IComparable> MergeListAndRangeRouteValues(ICollection<IComparable> listValue,
+            Range<IComparable> rangeValue)
         {
             ICollection<IComparable> result = new LinkedList<IComparable>();
             foreach (var value in listValue)
@@ -202,6 +219,7 @@ namespace ShardingConnector.ShardingRoute.Engine.Condition.Engine
                     result.Add(value);
                 }
             }
+
             return result;
         }
     }

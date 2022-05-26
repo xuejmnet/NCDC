@@ -25,12 +25,12 @@ namespace ShardingConnector.ParserBinder.Segment.Select.Projection.Engine
     {
         private readonly SchemaMetaData _schemaMetaData;
 
-        private readonly ParserBinder.Segment.Select.Projection.Engine.ProjectionEngine _projectionEngine;
+        private readonly ProjectionEngine _projectionEngine;
 
         public ProjectionsContextEngine(SchemaMetaData schemaMetaData)
         {
             this._schemaMetaData = schemaMetaData;
-            _projectionEngine = new ParserBinder.Segment.Select.Projection.Engine.ProjectionEngine(schemaMetaData);
+            _projectionEngine = new ProjectionEngine(schemaMetaData);
         }
         /// <summary>
         /// Create projections context.
@@ -52,7 +52,7 @@ namespace ShardingConnector.ParserBinder.Segment.Select.Projection.Engine
 
         private ICollection<IProjection> GetProjections(string sql, ICollection<SimpleTableSegment> tableSegments, ProjectionsSegment projectionsSegment)
         {
-            ICollection<IProjection> result = new LinkedList<IProjection>();
+            List<IProjection> result = new List<IProjection>(projectionsSegment.GetProjections().Count());
             foreach (var projection in projectionsSegment.GetProjections())
             {
                 var p = _projectionEngine.CreateProjection(sql, tableSegments, projection);
@@ -76,6 +76,10 @@ namespace ShardingConnector.ParserBinder.Segment.Select.Projection.Engine
 
         private ICollection<IProjection> GetDerivedOrderColumns(ICollection<IProjection> projections, ICollection<OrderByItem> orderItems, DerivedColumn derivedColumn, SelectCommand selectCommand)
         {
+            if (orderItems.IsEmpty())
+            {
+                return new LinkedList<IProjection>();
+            }
             ICollection<IProjection> result = new LinkedList<IProjection>();
             int derivedColumnOffset = 0;
             foreach (var orderItem in orderItems)
@@ -96,7 +100,7 @@ namespace ShardingConnector.ParserBinder.Segment.Select.Projection.Engine
 
         private bool ContainsProjection(ICollection<IProjection> projections, OrderByItemSegment orderItem)
         {
-            if (projections.Any() && orderItem is IndexOrderByItemSegment)
+            if (projections.IsNotEmpty() && orderItem is IndexOrderByItemSegment)
                 return true;
 
             foreach (var projection in projections)

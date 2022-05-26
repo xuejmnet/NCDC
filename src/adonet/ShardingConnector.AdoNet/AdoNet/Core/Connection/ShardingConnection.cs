@@ -139,7 +139,7 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Connection
         /// 获取当前connection的默认链接
         /// </summary>
         /// <returns></returns>
-        public DbConnection GetDefaultDbConnection()
+        public override DbConnection GetDefaultDbConnection()
         {
             return _defaultDbConnection;
         }

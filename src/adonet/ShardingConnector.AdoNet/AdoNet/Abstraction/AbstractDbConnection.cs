@@ -73,6 +73,10 @@ namespace ShardingConnector.AdoNet.AdoNet.Abstraction
         {
             if (1 == connectionSize)
             {
+                if (dataSource.IsDefault())
+                {
+                    return new List<DbConnection>(){GetDefaultDbConnection()};
+                }
                 var connection = CreateConnection(dataSourceName, dataSource);
                 ReplyTargetMethodInvoke(connection);
                 return new List<DbConnection>() { connection };
@@ -91,8 +95,8 @@ namespace ShardingConnector.AdoNet.AdoNet.Abstraction
 
         private List<DbConnection> CreateConnections(string dataSourceName, IDataSource dataSource, int connectionSize)
         {
-            List<DbConnection> result = new List<DbConnection>(connectionSize);
-            for (int i = 0; i < connectionSize; i++)
+            List<DbConnection> result = new List<DbConnection>(connectionSize){GetDefaultDbConnection()};
+            for (int i = 0; i < connectionSize-1; i++)
             {
                 try
                 {
@@ -142,5 +146,7 @@ namespace ShardingConnector.AdoNet.AdoNet.Abstraction
         {
             OnRecorder += targetMethod;
         }
+
+        public abstract DbConnection GetDefaultDbConnection();
     }
 }

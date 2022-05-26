@@ -19,12 +19,12 @@ namespace ShardingConnector.AppConsoleMySQLTest
         private static readonly string conn = "server=127.0.0.1;port=3306;database=test;userid=root;password=root;";
         static void Main(string[] args)
         {
-            InternalLoggerFactory.DefaultFactory = LoggerFactory.Create(builder =>
-            {
-                builder.AddFilter("Microsoft", LogLevel.Warning)
-                    .AddFilter("System", LogLevel.Warning)
-                    .AddSimpleConsole(c => c.TimestampFormat = "[yyyy-MM-dd HH:mm:ss]");
-            });
+            // InternalLoggerFactory.DefaultFactory = LoggerFactory.Create(builder =>
+            // {
+            //     builder.AddFilter("Microsoft", LogLevel.Warning)
+            //         .AddFilter("System", LogLevel.Warning)
+            //         .AddSimpleConsole(c => c.TimestampFormat = "[yyyy-MM-dd HH:mm:ss]");
+            // });
           
             //var dbProviderFactory = ShardingCreateDbProviderFactory.CreateDataSource(dataSourceMap, new ShardingRuleConfiguration(),
             //    new Dictionary<string, object>());
@@ -46,7 +46,7 @@ namespace ShardingConnector.AppConsoleMySQLTest
             //2.7、配置默认数据源
             shardingRuleConfig.DefaultDataSourceName = "ds0";
             var dataSource = ShardingDataSourceFactory.CreateDataSource(dataSourceMap, shardingRuleConfig, new Dictionary<string, object>());
-            Query(dataSource);
+            // Query(dataSource);
             Stopwatch stopwatch = Stopwatch.StartNew();
             for (int i = 0; i < 1000; i++)
             {

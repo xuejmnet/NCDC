@@ -42,7 +42,7 @@ namespace ShardingConnector.ParserBinder.Segment.Select.Projection.Engine
         {
             if (projectionSegment is ShorthandProjectionSegment shorthandProjectionSegment)
             {
-                return CreateProjection(tableSegments, (ShorthandProjectionSegment)projectionSegment);
+                return CreateProjection(tableSegments, shorthandProjectionSegment);
             }
             if (projectionSegment is ColumnProjectionSegment columnProjectionSegment)
             {

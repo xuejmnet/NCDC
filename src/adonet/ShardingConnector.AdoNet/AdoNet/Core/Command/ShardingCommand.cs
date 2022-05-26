@@ -160,13 +160,15 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Command
 
             DbDataReader result;
             try
-            {
+            {      
+
                 executionContext = Prepare(CommandText);
                 // List<IStreamDataReader> dataReaders = _commandExecutor.ExecuteQuery();
                 // IStreamDataReader mergedResult = MergeQuery(dataReaders);
                 // result = new ShardingDataReader(_commandExecutor.DbDataReaders, mergedResult, this, executionContext);
-                
+              
                 var dataReaders = _commandExecutor1.ExecuteDbDataReader(false,executionContext);
+                
                 var mergedResult = MergeQuery(dataReaders);
                 result = new ShardingDataReader(_commandExecutor1.GetDataReaders(), mergedResult, this, executionContext);
             }
@@ -197,6 +199,7 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Command
             _commandExecutor1.GetDataReaders().Clear();
             
             ShardingRuntimeContext runtimeContext = ((ShardingConnection)DbConnection).GetRuntimeContext();
+            
             BasePrepareEngine prepareEngine = HasAnyParams()
                 ? (BasePrepareEngine)new PreparedQueryPrepareEngine(
                     runtimeContext.GetRule().ToRules(), runtimeContext.GetProperties(), runtimeContext.GetMetaData(),
@@ -204,19 +207,12 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Command
                 : (BasePrepareEngine)new SimpleQueryPrepareEngine(
                     runtimeContext.GetRule().ToRules(), runtimeContext.GetProperties(), runtimeContext.GetMetaData(),
                     runtimeContext.GetSqlParserEngine());
-            //Stopwatch sp=Stopwatch.StartNew();
-            //for (int i = 0; i < 1000; i++)
-            //{
-            //    BasePrepareEngine prepareEngine1 = new PreparedQueryPrepareEngine(
-            //        runtimeContext.GetRule().ToRules(), runtimeContext.GetProperties(), runtimeContext.GetMetaData(), runtimeContext.GetSqlParserEngine());
-            //    ExecutionContext result1 = prepareEngine1.Prepare(sql, _parameters.GetParams().Select(o => (object)o).ToList());
-            //}
-            //sp.Stop();
-            //Console.WriteLine(sp.ElapsedMilliseconds);
             var parameterContext =
                 new ParameterContext(_parameters?.GetParams().Select(o => (DbParameter)o).ToArray() ??
                                      Array.Empty<DbParameter>());
+            
             ExecutionContext result = prepareEngine.Prepare(sql, parameterContext);
+            //TODO
             // _commandExecutor.Init(result);
             // //_commandExecutor.Commands.for
             // _commandExecutor.Commands.ForEach(ReplyTargetMethodInvoke);

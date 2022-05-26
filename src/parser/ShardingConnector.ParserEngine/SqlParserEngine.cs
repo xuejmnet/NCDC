@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using Antlr4.Runtime.Tree;
 
 using ShardingConnector.CommandParser.Command;
@@ -19,7 +20,7 @@ namespace ShardingConnector.ParserEngine
     public class SqlParserEngine
     {
         private readonly string _dataSourceName;
-        private readonly SqlParseResultCache _cache = new SqlParseResultCache();
+        private static readonly SqlParseResultCache _cache = new SqlParseResultCache();
         public SqlParserEngine(string dataSourceName)
         {
             _dataSourceName = dataSourceName;

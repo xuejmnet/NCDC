@@ -18,6 +18,20 @@ namespace ShardingConnector.ParserEngine.Core.Visitor
     */
     public sealed class ParseTreeVisitorFactory
     {
+        private static readonly IDictionary<string, ISqlParserConfiguration> SQL_PARSER_CONFIGURATIONS = new Dictionary<string, ISqlParserConfiguration>();
+
+        /// <summary>
+        /// 默认自动注册
+        /// </summary>
+        static ParseTreeVisitorFactory()
+        {
+            var sqlParserConfigurations = ServiceLoader.Load<ISqlParserConfiguration>();
+            foreach (var sqlParserConfiguration in sqlParserConfigurations)
+            {
+                SQL_PARSER_CONFIGURATIONS.Add(sqlParserConfiguration.GetDataSourceName(),sqlParserConfiguration);
+            }
+
+        }
         private ParseTreeVisitorFactory()
         {
             
@@ -32,15 +46,11 @@ namespace ShardingConnector.ParserEngine.Core.Visitor
          */
         public static IParseTreeVisitor<IASTNode> NewInstance(string dataSourceName, VisitorRuleEnum visitorRule)
         {
-            var sqlParserConfigurations = NewInstanceServiceLoader.NewServiceInstances<ISqlParserConfiguration>();
-            foreach (var configuration in sqlParserConfigurations)
+            if (!SQL_PARSER_CONFIGURATIONS.TryGetValue(dataSourceName,out var sqlParserConfiguration))
             {
-                if (configuration.GetDataSourceName().Equals(dataSourceName))
-                    return CreateParseTreeVisitor(configuration, VisitorRule.Get(visitorRule).SqlCommandType);
+                throw new NotSupportedException($"Cannot support database type '{dataSourceName}'");
             }
-
-
-            throw new NotSupportedException($"Cannot support database type '{dataSourceName}'");
+            return CreateParseTreeVisitor(sqlParserConfiguration, VisitorRule.Get(visitorRule).SqlCommandType);
         }
     
         private static IParseTreeVisitor<IASTNode> CreateParseTreeVisitor(ISqlParserConfiguration configuration, SqlCommandTypeEnum type)

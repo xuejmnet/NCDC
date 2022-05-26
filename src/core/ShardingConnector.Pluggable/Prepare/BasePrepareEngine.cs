@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data.Common;
+using System.Diagnostics;
 using System.Linq;
 using ShardingConnector.Common.Config.Properties;
 using ShardingConnector.Common.MetaData;
@@ -53,6 +54,7 @@ namespace ShardingConnector.Pluggable.Prepare
             var cloneParameterContext = CloneParameters(parameterContext);
             var routeContext = ExecuteRoute(sql, cloneParameterContext);
             ExecutionContext result = new ExecutionContext(routeContext.GetSqlCommandContext());
+  
             var executionUnits = ExecuteRewrite(sql, cloneParameterContext, routeContext);
             result.GetExecutionUnits().AddAll(executionUnits);
             if (true)

@@ -22,6 +22,10 @@ namespace ShardingConnector.Extensions
         {
             return source==null||!source.Any();
         }
+        public static bool IsEmpty<T>(this ICollection<T> source)
+        {
+            return source==null||source.Count==0;
+        }
         public static bool IsNotEmpty<T>(this IEnumerable<T> source)
         {
             return !source.IsEmpty();

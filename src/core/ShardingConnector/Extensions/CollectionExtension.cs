@@ -15,6 +15,10 @@ namespace ShardingConnector.Extensions
     {
         public static void AddAll<T>(this ICollection<T> source,ICollection<T> target)
         {
+            if (target.Count == 0)
+            {
+                return;
+            }
             foreach (var t in target)
             {
                 source.Add(t);
@@ -22,6 +26,10 @@ namespace ShardingConnector.Extensions
         }
         public static void RemoveAll<T>(this ICollection<T> source,ICollection<T> target)
         {
+            if (target.Count == 0)
+            {
+                return;
+            }
             foreach (var t in target)
             {
                 source.Remove(t);
