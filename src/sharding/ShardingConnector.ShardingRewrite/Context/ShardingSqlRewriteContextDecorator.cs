@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using ShardingConnector.Common.Config.Properties;
 using ShardingConnector.Common.Rule;
@@ -25,6 +26,12 @@ namespace ShardingConnector.ShardingRewrite.Context
         private RouteContext routeContext;
         public void Decorate(ShardingRule rule, ConfigurationProperties properties, SqlRewriteContext sqlRewriteContext)
         {
+            //
+            // var tableNames = sqlRewriteContext.GetSqlCommandContext().GetTablesContext().GetTableNames();
+            // if (!rule.TableRules.Any(o => tableNames.Any(t => o.LogicTable.EqualsIgnoreCase(t))))
+            // {
+            //     return;
+            // }
             var parameterRewriters = new ShardingParameterRewriterBuilder(rule, routeContext).GetParameterRewriters(sqlRewriteContext.GetSchemaMetaData());
             foreach (var parameterRewriter in parameterRewriters)
             {

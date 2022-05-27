@@ -15,8 +15,8 @@ namespace ShardingConnector.AppConsoleMySQLTest
 {
     internal class Program
     {
-        private static readonly string conn = "server=127.0.0.1;port=3306;database=test;userid=root;password=L6yBtV6qNENrwBy7;";
-        //private static readonly string conn = "server=127.0.0.1;port=3306;database=test;userid=root;password=root;";
+        // private static readonly string conn = "server=127.0.0.1;port=3306;database=test;userid=root;password=L6yBtV6qNENrwBy7;";
+        private static readonly string conn = "server=127.0.0.1;port=3306;database=test;userid=root;password=root;";
         static void Main(string[] args)
         {
             // InternalLoggerFactory.DefaultFactory = LoggerFactory.Create(builder =>
@@ -46,7 +46,6 @@ namespace ShardingConnector.AppConsoleMySQLTest
             //2.7、配置默认数据源
             shardingRuleConfig.DefaultDataSourceName = "ds0";
             var dataSource = ShardingDataSourceFactory.CreateDataSource(dataSourceMap, shardingRuleConfig, new Dictionary<string, object>());
-            new MySqlCommand().Prepare();
             Query(dataSource);
             Stopwatch stopwatch = Stopwatch.StartNew();
             for (int i = 0; i < 1000; i++)

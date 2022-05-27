@@ -26,6 +26,7 @@ using ShardingConnector.ShardingRoute.Engine.Condition;
 using ShardingConnector.ShardingRoute.Engine.Condition.Engine;
 using ShardingConnector.ShardingRoute.Engine.RouteType;
 using ShardingConnector.ShardingRoute.Engine.Validator;
+using ShardingConnector.Spi;
 
 namespace ShardingConnector.ShardingRoute.Engine
 {
@@ -42,6 +43,11 @@ namespace ShardingConnector.ShardingRoute.Engine
             ConfigurationProperties properties)
         {
             var sqlStatementContext = routeContext.GetSqlCommandContext();
+            // var tableNames = sqlStatementContext.GetTablesContext().GetTableNames();
+            // if (!shardingRule.TableRules.Any(o => tableNames.Any(t => o.LogicTable.EqualsIgnoreCase(t))))
+            // {
+            //     return routeContext;
+            // }
             var parameters = routeContext.GetParameterContext();
             ShardingCommandValidatorFactory.NewInstance(
                 sqlStatementContext.GetSqlCommand())

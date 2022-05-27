@@ -35,17 +35,17 @@ namespace ShardingConnector.ShardingRewrite.Token.SimpleObject
         public ICollection<ISqlTokenGenerator> GetSqlTokenGenerators()
         {
             ICollection<ISqlTokenGenerator> result = BuildSqlTokenGenerators();
-            foreach (var sqlTokenGenerator in result)
-            {
-                if (sqlTokenGenerator is IShardingRuleAware shardingRuleAware)
-                {
-                    shardingRuleAware.SetShardingRule(_shardingRule);
-                }
-                if (sqlTokenGenerator is IRouteContextAware routeContextAware)
-                {
-                    routeContextAware.SetRouteContext(_routeContext);
-                }
-            }
+            // foreach (var sqlTokenGenerator in result)
+            // {
+            //     if (sqlTokenGenerator is IShardingRuleAware shardingRuleAware)
+            //     {
+            //         shardingRuleAware.SetShardingRule(_shardingRule);
+            //     }
+            //     if (sqlTokenGenerator is IRouteContextAware routeContextAware)
+            //     {
+            //         routeContextAware.SetRouteContext(_routeContext);
+            //     }
+            // }
             return result;
         }
 
@@ -72,6 +72,15 @@ namespace ShardingConnector.ShardingRewrite.Token.SimpleObject
         {
             if (toBeAddedSqlTokenGenerator is IIgnoreForSingleRoute ignoreForSingleRoute && _routeContext.GetRouteResult().IsSingleRouting()) {
                 return;
+            }
+            
+            if (toBeAddedSqlTokenGenerator is IShardingRuleAware shardingRuleAware)
+            {
+                shardingRuleAware.SetShardingRule(_shardingRule);
+            }
+            if (toBeAddedSqlTokenGenerator is IRouteContextAware routeContextAware)
+            {
+                routeContextAware.SetRouteContext(_routeContext);
             }
             sqlTokenGenerators.Add(toBeAddedSqlTokenGenerator);
         }

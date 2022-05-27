@@ -18,6 +18,12 @@ namespace ShardingConnector.ShardingRoute.Engine.Condition.Generator
     */
     public class ConditionValueGeneratorFactory
     {
+        private static readonly ConditionValueCompareOperatorGenerator _conditionValueCompareOperatorGenerator =
+            new ConditionValueCompareOperatorGenerator();
+        private static readonly ConditionValueInOperatorGenerator _conditionValueInOperatorGenerator =
+            new ConditionValueInOperatorGenerator();
+        private static readonly ConditionValueBetweenOperatorGenerator _conditionValueBetweenOperatorGenerator =
+            new ConditionValueBetweenOperatorGenerator();
         private ConditionValueGeneratorFactory()
         {
             
@@ -25,13 +31,13 @@ namespace ShardingConnector.ShardingRoute.Engine.Condition.Generator
         public static IRouteValue Generate(IPredicateRightValue predicateRightValue, Column column, ParameterContext parameterContext)
         {
             if (predicateRightValue is PredicateCompareRightValue predicateCompareRightValue) {
-                return new ConditionValueCompareOperatorGenerator().Generate(predicateCompareRightValue, column, parameterContext);
+                return _conditionValueCompareOperatorGenerator.Generate(predicateCompareRightValue, column, parameterContext);
             }
             if (predicateRightValue is PredicateInRightValue predicateInRightValue) {
-                return new ConditionValueInOperatorGenerator().Generate(predicateInRightValue, column, parameterContext);
+                return _conditionValueInOperatorGenerator.Generate(predicateInRightValue, column, parameterContext);
             }
             if (predicateRightValue is PredicateBetweenRightValue predicateBetweenRightValue) {
-                return new ConditionValueBetweenOperatorGenerator().Generate(predicateBetweenRightValue, column, parameterContext);
+                return _conditionValueBetweenOperatorGenerator.Generate(predicateBetweenRightValue, column, parameterContext);
             }
             return null;
         }

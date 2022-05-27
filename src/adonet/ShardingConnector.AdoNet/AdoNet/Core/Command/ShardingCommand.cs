@@ -78,7 +78,7 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Command
         public override void Prepare()
         {
             _defaultDbCommand.Prepare();
-
+            RecordTargetMethodInvoke(command=>command.Prepare());
         }
 
         public override string CommandText { get; set; }

@@ -29,7 +29,7 @@ namespace ShardingConnector.ShardingRoute.Engine.Condition.Generator.Impl
 
         private const string AT_LEAST = ">=";
 
-        private static readonly List<string> OPERATORS = new List<string>() { EQUAL, GREATER_THAN, LESS_THAN, AT_LEAST, AT_MOST };
+        private static readonly ISet<string> OPERATORS = new HashSet<string>() { EQUAL, GREATER_THAN, LESS_THAN, AT_LEAST, AT_MOST };
         public IRouteValue Generate(PredicateCompareRightValue predicateRightValue, Column column, ParameterContext parameterContext)
         {
             string @operator = predicateRightValue.GetOperator();

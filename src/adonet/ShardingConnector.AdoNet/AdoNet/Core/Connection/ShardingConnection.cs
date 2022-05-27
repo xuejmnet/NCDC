@@ -44,7 +44,7 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Connection
             _isOpenTransaction = true;
             var transaction = _defaultDbConnection.BeginTransaction(isolationLevel);
             RecordTargetMethodInvoke(connection => connection.BeginTransaction(isolationLevel));
-            if (_runtimeContext.IsMultiDataSource())
+            if (CachedConnectionsNotEmpty())
             {
                 //RecordConnectionMethodInvoke(connection=>connection.BeginTransaction(isolationLevel));
                 var multiTasks = CachedConnections.Values.SelectMany(o => o)
@@ -59,7 +59,7 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Connection
         {
             _defaultDbConnection.ChangeDatabase(databaseName);
             RecordTargetMethodInvoke(connection => connection.ChangeDatabase(databaseName));
-            if (_runtimeContext.IsMultiDataSource())
+            if (CachedConnectionsNotEmpty())
             {
                 //RecordConnectionMethodInvoke(connection => connection.ChangeDatabase(databaseName));
                 var multiTasks = CachedConnections.Values.SelectMany(o => o)
@@ -71,7 +71,7 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Connection
         public override void Close()
         {
             _defaultDbConnection.Close();
-            if (_runtimeContext.IsMultiDataSource())
+            if (CachedConnectionsNotEmpty())
             {
                 var multiTasks = CachedConnections.Values.SelectMany(o => o)
                     .Select(connection => Task.Run(() => connection.Close())).ToArray();
@@ -83,7 +83,7 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Connection
         {
             _defaultDbConnection.Open();
             RecordTargetMethodInvoke(connection => connection.Open());
-            if (_runtimeContext.IsMultiDataSource())
+            if (CachedConnectionsNotEmpty())
             {
                 //RecordConnectionMethodInvoke(connection => connection.Open());
                 var multiTasks = CachedConnections.Values.SelectMany(o => o)

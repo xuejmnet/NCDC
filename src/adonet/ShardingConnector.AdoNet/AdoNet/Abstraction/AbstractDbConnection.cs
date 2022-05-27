@@ -30,9 +30,13 @@ namespace ShardingConnector.AdoNet.AdoNet.Abstraction
         public abstract DbConnection CreateConnection(string dataSourceName, IDataSource dataSource);
         private List<DbConnection> _connections;
 
-        private bool CachedConnectionsNotEmpty()
+        /// <summary>
+        /// 是否有缓存链接
+        /// </summary>
+        /// <returns></returns>
+        protected bool CachedConnectionsNotEmpty()
         {
-            return CacheExtensions
+            return CachedConnections.Keys.IsNotEmpty();
         }
         public List<DbConnection> GetConnections(ConnectionModeEnum connectionMode, string dataSourceName, int connectionSize)
         {

@@ -84,52 +84,52 @@ namespace ShardingConnector.Pluggable.Prepare
             var registeredOrderedAware = OrderedRegistry.GetRegisteredOrderedAware<IRouteDecorator>();
             foreach (var routeDecorator in registeredOrderedAware)
             {
-                var decorator = CreateRouteDecorator(routeDecorator.GetType());
-                var ruleType = decorator.GetGenericType();
+                // var decorator = CreateRouteDecorator(routeDecorator.GetType());
+                var ruleType = routeDecorator.GetGenericType();
                 foreach (var rule in _rules.Where(rule=>!rule.GetType().IsAbstract&& ruleType.IsInstanceOfType(rule)))
                 {
-                    _router.RegisterDecorator(rule,decorator);
+                    _router.RegisterDecorator(rule,routeDecorator);
                 }
 
             }
         }
-        //创建路由装饰器
-        private IRouteDecorator CreateRouteDecorator(Type routeDecoratorType)
-        {
-            try
-            {
-                return (IRouteDecorator)Activator.CreateInstance(routeDecoratorType);
-            }
-            catch (Exception e)
-            {
-                throw new ShardingException($"Can not find public default constructor for route decorator {routeDecoratorType}", e);
-            }
-        }
+        // //创建路由装饰器
+        //  private IRouteDecorator CreateRouteDecorator(Type routeDecoratorType)
+        //  {
+        //      try
+        //      {
+        //          return (IRouteDecorator)Activator.CreateInstance(routeDecoratorType);
+        //      }
+        //      catch (Exception e)
+        //      {
+        //          throw new ShardingException($"Can not find public default constructor for route decorator {routeDecoratorType}", e);
+        //      }
+        //  }
         private void RegisterRewriteDecorator()
          {
-            var registeredOrderedAware = OrderedRegistry.GetRegisteredOrderedAware(typeof(ISqlRewriteContextDecorator));
+            var rewriteContextDecorators = OrderedRegistry.GetRegisteredOrderedAware<ISqlRewriteContextDecorator>();
 
-            foreach (var orderAware in registeredOrderedAware)
+            foreach (var rewriteContextDecorator in rewriteContextDecorators)
             {
-                var decorator = CreateRewriteDecorator(orderAware.GetType());
-                var ruleType = decorator.GetGenericType();
+                // var decorator = CreateRewriteDecorator(orderAware.GetType());
+                var ruleType = rewriteContextDecorator.GetGenericType();
                 foreach (var rule in _rules.Where(rule => !rule.GetType().IsAbstract && ruleType.IsInstanceOfType(rule)))
                 {
-                    _rewriter.RegisterDecorator(rule, decorator);
+                    _rewriter.RegisterDecorator(rule, rewriteContextDecorator);
                 }
             }
         }
 
-        private ISqlRewriteContextDecorator CreateRewriteDecorator(Type rewriteDecorator)
-        {
-            try
-            {
-                return (ISqlRewriteContextDecorator)Activator.CreateInstance(rewriteDecorator); ;
-            }
-            catch (Exception ex) {
-                throw new ShardingException($"Can not find public default constructor for rewrite decorator `{rewriteDecorator}`", ex);
-            }
-        }
+        // private ISqlRewriteContextDecorator CreateRewriteDecorator(Type rewriteDecorator)
+        // {
+        //     try
+        //     {
+        //         return (ISqlRewriteContextDecorator)Activator.CreateInstance(rewriteDecorator); ;
+        //     }
+        //     catch (Exception ex) {
+        //         throw new ShardingException($"Can not find public default constructor for rewrite decorator `{rewriteDecorator}`", ex);
+        //     }
+        // }
         private ICollection<ExecutionUnit> Rewrite(SqlRewriteContext sqlRewriteContext)
         {
             var sqlRewriteResult = new SqlRewriteEngine().Rewrite(sqlRewriteContext);
