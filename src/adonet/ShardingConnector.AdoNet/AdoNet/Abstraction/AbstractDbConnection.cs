@@ -5,6 +5,7 @@ using System.Data.Common;
 using System.Linq;
 using System.Text;
 using Antlr4.Runtime.Misc;
+using Microsoft.Extensions.Caching.Memory;
 using ShardingConnector.AdoNet.AdoNet.Core;
 using ShardingConnector.Base;
 using ShardingConnector.Exceptions;
@@ -29,6 +30,10 @@ namespace ShardingConnector.AdoNet.AdoNet.Abstraction
         public abstract DbConnection CreateConnection(string dataSourceName, IDataSource dataSource);
         private List<DbConnection> _connections;
 
+        private bool CachedConnectionsNotEmpty()
+        {
+            return CacheExtensions
+        }
         public List<DbConnection> GetConnections(ConnectionModeEnum connectionMode, string dataSourceName, int connectionSize)
         {
             var dataSourceMap = GetDataSourceMap();

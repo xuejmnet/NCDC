@@ -28,12 +28,10 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Context
         private static readonly ILogger<MultipleDataSourcesRuntimeContext<T>> _logger =
             InternalLoggerFactory.CreateLogger<MultipleDataSourcesRuntimeContext<T>>();
         private readonly ShardingConnectorMetaData _metaData;
-        private readonly bool isMultiDataSource;
 
         protected MultipleDataSourcesRuntimeContext(IDictionary<string, IDataSource> dataSourceMap, T rule,
             IDictionary<string, object> props, IDatabaseType databaseType) : base(rule, props, databaseType)
         {
-            isMultiDataSource = dataSourceMap.Count > 1;
             _metaData = CreateMetaData(dataSourceMap, databaseType);
         }
         /// <summary>
@@ -78,11 +76,6 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Context
         public override ShardingConnectorMetaData GetMetaData()
         {
             return _metaData;
-        }
-
-        public override bool IsMultiDataSource()
-        {
-            return isMultiDataSource;
         }
     }
 }

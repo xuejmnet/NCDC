@@ -77,7 +77,8 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Command
 
         public override void Prepare()
         {
-            throw new NotImplementedException();
+            _defaultDbCommand.Prepare();
+
         }
 
         public override string CommandText { get; set; }
