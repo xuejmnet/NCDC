@@ -30,18 +30,30 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Connection
         private readonly DbConnection _defaultDbConnection;
 
         public ShardingConnection(IDictionary<string, IDataSource> dataSourceMap, ShardingRuntimeContext runtimeContext,
-            TransactionTypeEnum transactionType)
+            TransactionTypeEnum transactionType):this(
+            dataSourceMap,
+            runtimeContext,
+            transactionType,
+            dataSourceMap.Values.FirstOrDefault(o => o.IsDefault())?.CreateConnection() ??throw new ShardingException("not found default data source"))
+        {
+        }
+        public ShardingConnection(IDictionary<string, IDataSource> dataSourceMap, ShardingRuntimeContext runtimeContext,
+            TransactionTypeEnum transactionType,DbConnection defaultDbConnection)
         {
             _dataSourceMap = dataSourceMap;
             _runtimeContext = runtimeContext;
             _transactionType = transactionType;
-            _defaultDbConnection = dataSourceMap.Values.FirstOrDefault(o => o.IsDefault())?.CreateConnection() ??
-                                   throw new ShardingException("not found default data source");
+            _defaultDbConnection =defaultDbConnection;
+        }
+
+        public override string ConnectionString
+        {
+            get => _defaultDbConnection.ConnectionString;
+            set=>_defaultDbConnection.ConnectionString = value;
         }
 
         protected override DbTransaction BeginDbTransaction(IsolationLevel isolationLevel)
         {
-            _isOpenTransaction = true;
             var transaction = _defaultDbConnection.BeginTransaction(isolationLevel);
             RecordTargetMethodInvoke(connection => connection.BeginTransaction(isolationLevel));
             if (CachedConnectionsNotEmpty())
@@ -92,12 +104,6 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Connection
             }
         }
 
-        public override string ConnectionString
-        {
-            get { return _defaultDbConnection.ConnectionString; }
-            set { _defaultDbConnection.ConnectionString = value; }
-        }
-
         public override string Database => _defaultDbConnection.Database;
         public override ConnectionState State => _defaultDbConnection.State;
         public override string DataSource => _defaultDbConnection.DataSource;
@@ -135,19 +141,17 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Connection
             return dataSource.CreateConnection();
         }
 
-        /// <summary>
-        /// 获取当前connection的默认链接
-        /// </summary>
-        /// <returns></returns>
-        public override DbConnection GetDefaultDbConnection()
-        {
-            return _defaultDbConnection;
-        }
+       
 
         protected override void Dispose(bool disposing)
         {
-            base.Dispose(disposing);
             _defaultDbConnection.Dispose();
+            base.Dispose(disposing);
+        }
+
+        public override DbConnection GetDefaultDbConnection()
+        {
+            return _defaultDbConnection;
         }
     }
 }

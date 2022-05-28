@@ -31,25 +31,42 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Command
     */
     public class ShardingCommand : DbCommand, IAdoMethodRecorder<DbCommand>
     {
-        private readonly CommandExecutor _commandExecutor;
 
         private bool returnGeneratedKeys;
 
         private ExecutionContext executionContext;
 
         private DbDataReader currentResultSet;
-        private readonly DbConnection _defaultDbConnection;
-        private readonly DbCommand _defaultDbCommand;
-        private readonly ICommandExecutor _commandExecutor1;
+        private  DbCommand _defaultDbCommand;
+        private readonly ICommandExecutor _commandExecutor;
+        private ShardingConnection _shardingConnection;
 
+        public ShardingCommand(string commandText,DbCommand defaultDbCommand)
+        {
+            _defaultDbCommand = defaultDbCommand;
+            _commandExecutor = CreateCommandExecutor(10);
+        }
         public ShardingCommand(string commandText, ShardingConnection connection)
         {
-            this.CommandText = commandText;
-            this.DbConnection = connection;
-            _defaultDbConnection = connection.GetDefaultDbConnection();
-            _defaultDbCommand = _defaultDbConnection.CreateCommand();
-            _commandExecutor = new CommandExecutor(connection);
-            _commandExecutor1 = new DefaultCommandExecutor(connection,10);
+            _shardingConnection = connection;
+            _defaultDbCommand = connection.GetDefaultDbConnection().CreateCommand();
+            _commandExecutor = CreateCommandExecutor(10);
+        }
+
+        private ICommandExecutor CreateCommandExecutor(int maxQueryConnectionsLimit)
+        {
+            var commandExecutor = new DefaultCommandExecutor(maxQueryConnectionsLimit);
+            commandExecutor.OnGetConnections += (c, s, i) =>
+            {
+                if (_shardingConnection != null)
+                {
+                    return _shardingConnection.GetConnections(c, s, i);
+                }
+
+                throw new ShardingException(
+                    $"{nameof(ShardingCommand)} {nameof(_shardingConnection)} is null");
+            };
+            return commandExecutor;
         }
 
         public override void Cancel()
@@ -59,15 +76,16 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Command
 
         public override int ExecuteNonQuery()
         {
-            try
-            {
-                executionContext = Prepare(CommandText);
-                return _commandExecutor.ExecuteNonQuery();
-            }
-            finally
-            {
-                currentResultSet = null;
-            }
+            // try
+            // {
+            //     executionContext = Prepare(CommandText);
+            //     return _commandExecutor.ExecuteNonQuery();
+            // }
+            // finally
+            // {
+            //     currentResultSet = null;
+            // }
+            return 0;
         }
 
         public override object ExecuteScalar()
@@ -81,7 +99,11 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Command
             RecordTargetMethodInvoke(command=>command.Prepare());
         }
 
-        public override string CommandText { get; set; }
+        public override string CommandText
+        {
+            get=>_defaultDbCommand.CommandText;
+            set => _defaultDbCommand.CommandText = value;
+        }
 
         public override int CommandTimeout
         {
@@ -116,7 +138,24 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Command
         /// <summary>
         /// 当前命令的链接
         /// </summary>
-        protected override DbConnection DbConnection { get; set; }
+        protected override DbConnection DbConnection
+        {
+            get=>_defaultDbCommand.Connection;
+            set
+            {
+                if (value is ShardingConnection shardingConnection)
+                {
+                    _shardingConnection = shardingConnection;
+                    _defaultDbCommand.Connection = _shardingConnection.GetDefaultDbConnection();
+                }
+                else
+                {
+
+                    throw new ShardingInvalidOperationException(
+                        $"value is not {nameof(ShardingConnection)} cant set  {nameof(DbConnection)}");
+                }
+            }
+        }
 
         protected override DbParameterCollection DbParameterCollection
         {
@@ -151,7 +190,6 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Command
             return new ShardingParameter(dbParameter);
         }
 
-        public new DbParameter CreateParameter() => this.CreateDbParameter();
         private ShardingParameterCollection _parameters;
 
         protected override DbDataReader ExecuteDbDataReader(CommandBehavior behavior)
@@ -168,10 +206,10 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Command
                 // IStreamDataReader mergedResult = MergeQuery(dataReaders);
                 // result = new ShardingDataReader(_commandExecutor.DbDataReaders, mergedResult, this, executionContext);
               
-                var dataReaders = _commandExecutor1.ExecuteDbDataReader(false,executionContext);
+                var dataReaders = _commandExecutor.ExecuteDbDataReader(false,executionContext);
                 
                 var mergedResult = MergeQuery(dataReaders);
-                result = new ShardingDataReader(_commandExecutor1.GetDataReaders(), mergedResult, this, executionContext);
+                result = new ShardingDataReader(_commandExecutor.GetDataReaders(), mergedResult, this, executionContext);
             }
             finally
             {
@@ -184,7 +222,7 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Command
 
         private IStreamDataReader MergeQuery(List<IStreamDataReader> streamDataReaders)
         {
-            ShardingRuntimeContext runtimeContext = ((ShardingConnection)DbConnection).GetRuntimeContext();
+            ShardingRuntimeContext runtimeContext = _shardingConnection.GetRuntimeContext();
             MergeEngine mergeEngine = new MergeEngine(runtimeContext.GetRule().ToRules(),
                 runtimeContext.GetProperties(), runtimeContext.GetDatabaseType(), runtimeContext.GetMetaData().Schema);
             return mergeEngine.Merge(streamDataReaders, executionContext.GetSqlCommandContext());
@@ -193,13 +231,13 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Command
         private ExecutionContext Prepare(string sql)
         {
             // _commandExecutor.Clear();
-            foreach (var dbDataReader in _commandExecutor1.GetDataReaders())
+            foreach (var dbDataReader in _commandExecutor.GetDataReaders())
             {
                 dbDataReader.Dispose();
             }
-            _commandExecutor1.GetDataReaders().Clear();
+            _commandExecutor.GetDataReaders().Clear();
             
-            ShardingRuntimeContext runtimeContext = ((ShardingConnection)DbConnection).GetRuntimeContext();
+            ShardingRuntimeContext runtimeContext = _shardingConnection.GetRuntimeContext();
             
             BasePrepareEngine prepareEngine = HasAnyParams()
                 ? (BasePrepareEngine)new PreparedQueryPrepareEngine(

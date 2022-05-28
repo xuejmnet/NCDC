@@ -11,7 +11,6 @@ namespace ShardingConnector.AdoNet.AdoNet.Abstraction
 {
     public interface IAdoMethodRecorder<T>
     {
-         event Action<T> OnRecorder;
 
          /// <summary>
          /// 从新播放target的创建后的动作

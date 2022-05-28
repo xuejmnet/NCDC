@@ -11,7 +11,12 @@ using ShardingConnector.Transaction.Core;
 using System;
 using System.Collections.Generic;
 using System.Data.Common;
-using AbstractDbProviderFactory = ShardingConnector.AdoNet.AdoNet.Abstraction.AbstractDbProviderFactory;
+using System.Linq;
+using ShardingConnector.AdoNet.AdoNet.Core.Command;
+using ShardingConnector.Api.Database.DatabaseType;
+using ShardingConnector.Exceptions;
+using ShardingConnector.ShardingApi.Api.Config.Sharding;
+using ShardingConnector.Spi.DataBase.DataBaseType;
 
 namespace ShardingConnector.AdoNet.AdoNet.Core
 {
@@ -26,53 +31,72 @@ namespace ShardingConnector.AdoNet.AdoNet.Core
     /// <summary>
     /// 
     /// </summary>
-    public class ShardingDbProviderFactory : AbstractDbProviderFactory
+    public class ShardingDbProviderFactory : DbProviderFactory
     {
-        private readonly ShardingRuntimeContext _runtimeContext;
 
         static ShardingDbProviderFactory()
         {
-            //NewInstanceServiceLoader.Register<IRouteDecorator>();
-            //NewInstanceServiceLoader.Register<ISqlRewriteContextDecorator>();
-            //NewInstanceServiceLoader.Register<IResultProcessEngine>();
+            NewInstanceServiceLoader.Register<IRouteDecorator>();
+            NewInstanceServiceLoader.Register<ISqlRewriteContextDecorator>();
+            NewInstanceServiceLoader.Register<IResultProcessEngine>();
         }
 
-
-        public override DbConnection CreateConnection()
+        private readonly IDictionary<string, IDataSource> _dataSourceMap;
+        private readonly IDataSource _defaultDataSource;
+        private readonly ShardingRuntimeContext _shardingRuntimeContext;
+        public  IDatabaseType DatabaseType{ get; }
+        // public static readonly ShardingDbProviderFactory Instance = new ShardingDbProviderFactory();
+        // private  IDataSource _dataSource;
+        //
+        // public static void Init(IDictionary<string, DbProviderFactory> dataSourceMap, ShardingRuleConfiguration shardingRuleConfig, IDictionary<string, object> props)
+        // {
+        //     Instance._dataSource= ShardingDataSourceFactory.CreateDataSource(dataSourceMap, shardingRuleConfig, new Dictionary<string, object>());
+        // }
+        public ShardingDbProviderFactory(IDictionary<string, IDataSource> dataSourceMap, ShardingRuleConfiguration shardingRuleConfig, IDictionary<string, object> props)
         {
-            return new ShardingConnection(DataSourceMap, _runtimeContext,
-                TransactionTypeHolder.Get() ?? TransactionTypeEnum.LOCAL);
+            _dataSourceMap = dataSourceMap;
+            _defaultDataSource = dataSourceMap.Values.FirstOrDefault(o => o.IsDefault()) ??
+                                 throw new InvalidOperationException("not found default data source for init sharding");
+            var databaseType = CreateDatabaseType();
+            _shardingRuntimeContext=new ShardingRuntimeContext(dataSourceMap, new ShardingRule(shardingRuleConfig, dataSourceMap.Keys), props, databaseType);
         }
 
-        public ShardingDbProviderFactory(IDictionary<string, IDataSource> dataSourceMap,
-            ShardingRule shardingRule, IDictionary<string, object> props) : base(dataSourceMap)
+        private IDatabaseType CreateDatabaseType()
         {
-            CheckDataSourceType(dataSourceMap);
-            _runtimeContext = new ShardingRuntimeContext(dataSourceMap, shardingRule, props, GetDatabaseType());
-        }
-
-        public ShardingDbProviderFactory(IDataSource dataSource, ShardingRule shardingRule,
-            IDictionary<string, object> props) : base(dataSource)
-        {
-            var dataSourceMap = new Dictionary<string, IDataSource>() {{"unique", dataSource}};
-            CheckDataSourceType(dataSourceMap);
-            _runtimeContext = new ShardingRuntimeContext(dataSourceMap, shardingRule, props, GetDatabaseType());
-        }
-
-        private void CheckDataSourceType(IDictionary<String, IDataSource> dataSourceMap)
-        {
-            foreach (var dataSource in dataSourceMap)
+            IDatabaseType result = null;
+            foreach (var dataSource in _dataSourceMap)
             {
-                // if (dataSource is MasterSlaveDataSource)
-                // {
-                //     throw new ShardingException("Initialized data sources can not be master-slave data sources.");
-                // }
+                IDatabaseType databaseType = CreateDatabaseType(dataSource.Value);
+                var flag = result != null && result != DatabaseType;
+                //保证所有的数据源都是相同数据库
+                if (flag)
+                {
+                    throw new ShardingException($"Database type inconsistent with '{result}' and '{databaseType}'");
+                }
+
+                result = databaseType;
+            }
+
+            return result;
+        }
+
+        private IDatabaseType CreateDatabaseType(IDataSource dataSource)
+        {
+            using (var connection = dataSource.GetDbProviderFactory().CreateConnection())
+            {
+                connection.ConnectionString = dataSource.GetConnectionString();
+                return DatabaseTypes.GetDataBaseTypeByDbConnection(connection);
             }
         }
 
-        protected override IRuntimeContext<IBaseRule> GetRuntimeContext()
+        public override DbConnection CreateConnection()
         {
-            return _runtimeContext;
+            return new ShardingConnection(_dataSourceMap,_shardingRuntimeContext,TransactionTypeEnum.LOCAL,_defaultDataSource.GetDbProviderFactory().CreateConnection());
+        }
+
+        public override DbCommand CreateCommand()
+        {
+            return new ShardingCommand(_defaultDataSource.GetDbProviderFactory().CreateCommand());
         }
     }
 }

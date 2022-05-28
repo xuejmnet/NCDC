@@ -1,15 +1,15 @@
 ﻿using Microsoft.Extensions.Logging;
 using MySqlConnector;
 using ShardingConnector.AdoNet.AdoNet.Core.DataSource;
-using ShardingConnector.AdoNet.Api;
-using ShardingConnector.Logger;
 using ShardingConnector.NewConnector.DataSource;
 using ShardingConnector.ShardingApi.Api.Config.Sharding;
 using ShardingConnector.ShardingApi.Api.Config.Sharding.Strategy;
 using ShardingConnector.ShardingApi.Api.Sharding.Standard;
 using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Diagnostics;
+using ShardingConnector.AdoNet.AdoNet.Core;
 
 namespace ShardingConnector.AppConsoleMySQLTest
 {
@@ -25,7 +25,6 @@ namespace ShardingConnector.AppConsoleMySQLTest
             //         .AddFilter("System", LogLevel.Warning)
             //         .AddSimpleConsole(c => c.TimestampFormat = "[yyyy-MM-dd HH:mm:ss]");
             // });
-          
             //var dbProviderFactory = ShardingCreateDbProviderFactory.CreateDataSource(dataSourceMap, new ShardingRuleConfiguration(),
             //    new Dictionary<string, object>());
             var dataSourceMap = new Dictionary<string, IDataSource>()
@@ -45,12 +44,13 @@ namespace ShardingConnector.AppConsoleMySQLTest
             shardingRuleConfig.DefaultDatabaseShardingStrategyConfig = new NoneShardingStrategyConfiguration();
             //2.7、配置默认数据源
             shardingRuleConfig.DefaultDataSourceName = "ds0";
-            var dataSource = ShardingDataSourceFactory.CreateDataSource(dataSourceMap, shardingRuleConfig, new Dictionary<string, object>());
-            Query(dataSource);
+            var shardingDbProviderFactory = new ShardingDbProviderFactory(dataSourceMap, shardingRuleConfig, new Dictionary<string, object>());
+            // var dataSource = ShardingDataSourceFactory.CreateDataSource(dataSourceMap, shardingRuleConfig, new Dictionary<string, object>());
+            Query(shardingDbProviderFactory);
             Stopwatch stopwatch = Stopwatch.StartNew();
             for (int i = 0; i < 1000; i++)
             {
-                QueryTest1(dataSource);
+                QueryTest1(shardingDbProviderFactory);
             }
             stopwatch.Stop();
             Console.WriteLine($"第1次:{stopwatch.ElapsedMilliseconds}");
@@ -65,7 +65,7 @@ namespace ShardingConnector.AppConsoleMySQLTest
             stopwatch.Restart();
             for (int i = 0; i < 1000; i++)
             {
-                QueryTest1(dataSource);
+                QueryTest1(shardingDbProviderFactory);
             }
             stopwatch.Stop();
             Console.WriteLine($"第3次:{stopwatch.ElapsedMilliseconds}");
@@ -81,18 +81,20 @@ namespace ShardingConnector.AppConsoleMySQLTest
 
             //for (int i = 0; i < 20; i++)
             //{
-            QueryPage(dataSource);
-            QueryMax(dataSource);
-            Delete(dataSource);
-            Insert(dataSource);
-            Update(dataSource);
-            Query(dataSource);
+            QueryPage(shardingDbProviderFactory);
+            QueryMax(shardingDbProviderFactory);
+            // Delete(shardingDbProviderFactory);
+            // Insert(shardingDbProviderFactory);
+            // Update(shardingDbProviderFactory);
+            Query(shardingDbProviderFactory);
+            Query1(shardingDbProviderFactory);
             //}
         }
 
-        static void QueryMax(IDataSource dataSource)
+        static void QueryMax(DbProviderFactory dataSource)
         {
             var dbConnection = dataSource.CreateConnection();
+            dbConnection.ConnectionString = conn;
             dbConnection.Open();
 
             var dbCommand = dbConnection.CreateCommand();
@@ -106,9 +108,10 @@ namespace ShardingConnector.AppConsoleMySQLTest
 
             Console.WriteLine("Hello World!");
         }
-        static void Delete(IDataSource dataSource)
+        static void Delete(DbProviderFactory dataSource)
         {
             var dbConnection = dataSource.CreateConnection();
+            dbConnection.ConnectionString = conn;
             dbConnection.Open();
             var dbCommand = dbConnection.CreateCommand();
             dbCommand.CommandText = @"delete from  SysUserMod where id = @id";
@@ -122,10 +125,11 @@ namespace ShardingConnector.AppConsoleMySQLTest
             Console.WriteLine("Hello World!");
         }
 
-        static void Insert(IDataSource dataSource)
+        static void Insert(DbProviderFactory dataSource)
         {
             var dbConnection = dataSource.CreateConnection();
 
+            dbConnection.ConnectionString = conn;
             dbConnection.Open();
             var dbCommand = dbConnection.CreateCommand();
             dbCommand.CommandText = @"insert into SysUserMod values(@id,@name,@age)";
@@ -151,10 +155,11 @@ namespace ShardingConnector.AppConsoleMySQLTest
             Console.WriteLine("Hello World!");
         }
 
-        static void Query(IDataSource dataSource)
+        static void Query(DbProviderFactory dataSource)
         {
             using (var dbConnection = dataSource.CreateConnection())
             {
+                dbConnection.ConnectionString = conn;
                 dbConnection.Open();
 
                 var dbCommand = dbConnection.CreateCommand();
@@ -180,9 +185,40 @@ namespace ShardingConnector.AppConsoleMySQLTest
                 Console.WriteLine("Hello World!");
             }
         }
-        static void QueryPage(IDataSource dataSource)
+        static void Query1(DbProviderFactory dbProviderFactory)
+        {
+            using (var dbConnection = dbProviderFactory.CreateConnection())
+            {
+                dbConnection.ConnectionString = conn;
+                dbConnection.Open();
+                var dbCommand = dbProviderFactory.CreateCommand();
+                dbCommand.Connection = dbConnection;
+                dbCommand.CommandText = @"select * from SysUserMod where id  in (@p1,@p2)";
+                var dbParameter = dbCommand.CreateParameter();
+                dbParameter.ParameterName = "@p1";
+                dbParameter.Value = "21";
+
+                var dbParameter2 = dbCommand.CreateParameter();
+                dbParameter2.ParameterName = "@p2";
+                dbParameter2.Value = "22";
+                //dbParameter.ParameterName = "@Id";
+                //dbParameter.Value = 21;
+                dbCommand.Parameters.Add(dbParameter);
+                dbCommand.Parameters.Add(dbParameter2);
+                //dbCommand.CommandText = @"select [d].[Id],[d].[Name],[d].[Age] from [dbo].[SysUserMod] as [d] where id='1'  order by [d].[Age] desc";
+                var dbDataReader = dbCommand.ExecuteReader();
+                while (dbDataReader.Read())
+                {
+                    Console.WriteLine($"{dbDataReader[0]}-{dbDataReader[1]}-{dbDataReader[2]}");
+                }
+
+                Console.WriteLine("Hello World!");
+            }
+        }
+        static void QueryPage(DbProviderFactory dataSource)
         {
             var dbConnection = dataSource.CreateConnection();
+            dbConnection.ConnectionString = conn;
             dbConnection.Open();
 
             var dbCommand = dbConnection.CreateCommand();
@@ -206,9 +242,10 @@ namespace ShardingConnector.AppConsoleMySQLTest
 
             Console.WriteLine("Hello World!");
         }
-        static void Update(IDataSource dataSource)
+        static void Update(DbProviderFactory dataSource)
         {
             var dbConnection = dataSource.CreateConnection();
+            dbConnection.ConnectionString = conn;
             dbConnection.Open();
             var dbCommand = dbConnection.CreateCommand();
             dbCommand.CommandText = @"update SysUserMod set age=1 where id  in (@p1,@p2)";
@@ -229,10 +266,11 @@ namespace ShardingConnector.AppConsoleMySQLTest
 
             Console.WriteLine($"update:{i}");
         }
-        static void QueryTest1(IDataSource dataSource)
+        static void QueryTest1(DbProviderFactory dataSource)
         {
             using (var dbConnection = dataSource.CreateConnection())
             {
+                dbConnection.ConnectionString = conn;
                 dbConnection.Open();
                 var dbCommand = dbConnection.CreateCommand();
                 dbCommand.CommandText = @"select * from SysUserMod where id  in (@p1)";

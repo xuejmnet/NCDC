@@ -1,6 +1,5 @@
 ﻿using Microsoft.Data.SqlClient;
 using ShardingConnector.AdoNet.AdoNet.Core.DataSource;
-using ShardingConnector.AdoNet.Api;
 using ShardingConnector.NewConnector.DataSource;
 using ShardingConnector.ShardingApi.Api.Config.Sharding;
 using ShardingConnector.ShardingApi.Api.Config.Sharding.Strategy;
@@ -16,56 +15,55 @@ namespace ShardingConnector.AppConsoleTest
     {
         static void Main(string[] args)
         {
-            InternalLoggerFactory.DefaultFactory = LoggerFactory.Create(builder =>
-            {
-                builder.AddFilter("Microsoft", LogLevel.Warning)
-                    .AddFilter("System", LogLevel.Warning)
-                    .AddSimpleConsole(c => c.TimestampFormat = "[yyyy-MM-dd HH:mm:ss]");
-            });
-
-            //var dbProviderFactory = ShardingCreateDbProviderFactory.CreateDataSource(dataSourceMap, new ShardingRuleConfiguration(),
-            //    new Dictionary<string, object>());
-            var dataSourceMap = new Dictionary<string, IDataSource>()
-            {
-                {
-                    "ds0",
-                    new GenericDataSource(SqlClientFactory.Instance,
-                        "Data Source=localhost;Initial Catalog=ShardingCoreDB;Integrated Security=True;",true
-                        )
-                }
-            };
-            //2、分库分表配置
-            ShardingRuleConfiguration shardingRuleConfig = new ShardingRuleConfiguration();
-            //2.2、配置各个表的分库分表策略，这里只配了一张表的就是t_order
-            shardingRuleConfig.TableRuleConfigs.Add(CreateSysUserModTableRule());
-            //2.5、配置默认分表规则
-            shardingRuleConfig.DefaultTableShardingStrategyConfig=new NoneShardingStrategyConfiguration();
-            //2.6、配置默认分库规则(不配置分库规则,则只采用分表规则)
-            shardingRuleConfig.DefaultDatabaseShardingStrategyConfig = new NoneShardingStrategyConfiguration();
-            //2.7、配置默认数据源
-            shardingRuleConfig.DefaultDataSourceName= "ds0";
-            var dataSource = ShardingDataSourceFactory.CreateDataSource(dataSourceMap, shardingRuleConfig, new Dictionary<string, object>());
-            var dbConnection = dataSource.CreateConnection();
-            dbConnection.Open();
-            var dbCommand = dbConnection.CreateCommand();                     
-            dbCommand.CommandText = @"select [d].[Id],[d].[Name],[d].[Age] from [dbo].[SysUserMod] as [d] where [d].[Id]  in (@p1,@p2)";
-            var dbParameter = dbCommand.CreateParameter();
-            dbParameter.ParameterName = "@p1";
-            dbParameter.Value = "21";
-
-            var dbParameter2 = dbCommand.CreateParameter();
-            dbParameter2.ParameterName = "@p2";
-            dbParameter2.Value = "22";
-            //dbParameter.ParameterName = "@Id";
-            //dbParameter.Value = 21;
-            dbCommand.Parameters.Add(dbParameter);
-            dbCommand.Parameters.Add(dbParameter2);
-            //dbCommand.CommandText = @"select [d].[Id],[d].[Name],[d].[Age] from [dbo].[SysUserMod] as [d] where id='1'  order by [d].[Age] desc";
-            var dbDataReader = dbCommand.ExecuteReader();
-            while (dbDataReader.Read())
-            {
-                Console.WriteLine($"{dbDataReader[0]}-{dbDataReader[1]}-{dbDataReader[2]}");
-            }
+            // InternalLoggerFactory.DefaultFactory = LoggerFactory.Create(builder =>
+            // {
+            //     builder.AddFilter("Microsoft", LogLevel.Warning)
+            //         .AddFilter("System", LogLevel.Warning)
+            //         .AddSimpleConsole(c => c.TimestampFormat = "[yyyy-MM-dd HH:mm:ss]");
+            // });
+            // //var dbProviderFactory = ShardingCreateDbProviderFactory.CreateDataSource(dataSourceMap, new ShardingRuleConfiguration(),
+            // //    new Dictionary<string, object>());
+            // var dataSourceMap = new Dictionary<string, IDataSource>()
+            // {
+            //     {
+            //         "ds0",
+            //         new GenericDataSource(SqlClientFactory.Instance,
+            //             "Data Source=localhost;Initial Catalog=ShardingCoreDB;Integrated Security=True;",true
+            //             )
+            //     }
+            // };
+            // //2、分库分表配置
+            // ShardingRuleConfiguration shardingRuleConfig = new ShardingRuleConfiguration();
+            // //2.2、配置各个表的分库分表策略，这里只配了一张表的就是t_order
+            // shardingRuleConfig.TableRuleConfigs.Add(CreateSysUserModTableRule());
+            // //2.5、配置默认分表规则
+            // shardingRuleConfig.DefaultTableShardingStrategyConfig=new NoneShardingStrategyConfiguration();
+            // //2.6、配置默认分库规则(不配置分库规则,则只采用分表规则)
+            // shardingRuleConfig.DefaultDatabaseShardingStrategyConfig = new NoneShardingStrategyConfiguration();
+            // //2.7、配置默认数据源
+            // shardingRuleConfig.DefaultDataSourceName= "ds0";
+            // var dataSource = ShardingDataSourceFactory.CreateDataSource(dataSourceMap, shardingRuleConfig, new Dictionary<string, object>());
+            // var dbConnection = dataSource.CreateConnection();
+            // dbConnection.Open();
+            // var dbCommand = dbConnection.CreateCommand();                     
+            // dbCommand.CommandText = @"select [d].[Id],[d].[Name],[d].[Age] from [dbo].[SysUserMod] as [d] where [d].[Id]  in (@p1,@p2)";
+            // var dbParameter = dbCommand.CreateParameter();
+            // dbParameter.ParameterName = "@p1";
+            // dbParameter.Value = "21";
+            //
+            // var dbParameter2 = dbCommand.CreateParameter();
+            // dbParameter2.ParameterName = "@p2";
+            // dbParameter2.Value = "22";
+            // //dbParameter.ParameterName = "@Id";
+            // //dbParameter.Value = 21;
+            // dbCommand.Parameters.Add(dbParameter);
+            // dbCommand.Parameters.Add(dbParameter2);
+            // //dbCommand.CommandText = @"select [d].[Id],[d].[Name],[d].[Age] from [dbo].[SysUserMod] as [d] where id='1'  order by [d].[Age] desc";
+            // var dbDataReader = dbCommand.ExecuteReader();
+            // while (dbDataReader.Read())
+            // {
+            //     Console.WriteLine($"{dbDataReader[0]}-{dbDataReader[1]}-{dbDataReader[2]}");
+            // }
             Console.WriteLine("Hello World!");
         }
 

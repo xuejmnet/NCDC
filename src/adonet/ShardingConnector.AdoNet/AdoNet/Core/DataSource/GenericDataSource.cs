@@ -26,16 +26,26 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.DataSource
             _isDefault = isDefault;
         }
 
+        public bool IsDefault()
+        {
+            return _isDefault;
+        }
+
+        public string GetConnectionString()
+        {
+            return _connectionString;
+        }
+
+        public DbProviderFactory GetDbProviderFactory()
+        {
+            return _dbProviderFactory;
+        }
+
         public DbConnection CreateConnection()
         {
             var dbConnection = _dbProviderFactory.CreateConnection();
             dbConnection.ConnectionString = _connectionString;
             return dbConnection;
-        }
-
-        public bool IsDefault()
-        {
-            return _isDefault;
         }
     }
 }
