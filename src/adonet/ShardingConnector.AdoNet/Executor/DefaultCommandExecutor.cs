@@ -1,19 +1,14 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using ShardingConnector.AdoNet.AdoNet.Core.Command;
-using ShardingConnector.AdoNet.AdoNet.Core.Connection;
 using ShardingConnector.AdoNet.Executor.Abstractions;
-using ShardingConnector.CommandParser.Command;
-using ShardingConnector.Exceptions;
 using ShardingConnector.Executor.Constant;
 using ShardingConnector.Executor.Context;
 using ShardingConnector.Extensions;
-using ShardingConnector.Helpers;
-using ShardingConnector.ParserBinder.Command;
 using ShardingConnector.ShardingExecute.Execute.DataReader;
 using ExecutionContext = ShardingConnector.Executor.Context.ExecutionContext;
 
@@ -22,7 +17,7 @@ namespace ShardingConnector.AdoNet.Executor
     public class DefaultCommandExecutor : ICommandExecutor
     {
         private readonly int _maxQueryConnectionsLimit;
-        private readonly List<DbDataReader> _dbDataReaders = new List<DbDataReader>();
+        private readonly ConcurrentBag<DbDataReader> _dbDataReaders = new ConcurrentBag<DbDataReader>();
 
         public event Func<ConnectionModeEnum, string /*dataSourceName*/, int /*connectionSize*/, List<DbConnection>>
             OnGetConnections;
@@ -48,7 +43,16 @@ namespace ShardingConnector.AdoNet.Executor
 
         public List<DbDataReader> GetDataReaders()
         {
-            return _dbDataReaders;
+            return _dbDataReaders.ToList();
+        }
+
+        public void Clear()
+        {
+            foreach (var dbDataReader in GetDataReaders())
+            {
+                dbDataReader.Dispose();
+            }
+            GetDataReaders().Clear();
         }
 
         private IStreamDataReader GetQueryEnumerator(DbCommand command, ConnectionModeEnum connectionMode)
@@ -89,16 +93,17 @@ namespace ShardingConnector.AdoNet.Executor
         private CommandExecuteUnit CreateCommandExecuteUnit(DbConnection connection, ExecutionUnit executionUnit,
             ConnectionModeEnum connectionMode)
         {
+            var commandText = executionUnit.GetSqlUnit().GetSql();
+            
             var shardingParameters = executionUnit.GetSqlUnit().GetParameterContext().GetDbParameters()
                 .Select(o => (ShardingParameter)o).ToList();
             var dbCommand = connection.CreateCommand();
             //TODO取消手动执行改成replay
-            dbCommand.CommandText = executionUnit.GetSqlUnit().GetSql();
+            dbCommand.CommandText = commandText;
             foreach (var shardingParameter in shardingParameters)
             {
                 var dbParameter = dbCommand.CreateParameter();
-                dbParameter.ParameterName = shardingParameter.ParameterName;
-                dbParameter.Value = shardingParameter.Value;
+                shardingParameter.ReplyTargetMethodInvoke(dbParameter);
                 dbCommand.Parameters.Add(dbParameter);
             }
 

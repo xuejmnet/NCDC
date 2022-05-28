@@ -35,7 +35,7 @@ namespace ShardingConnector.ShardingRewrite.Parameter.Impl
         public void Rewrite(IParameterBuilder parameterBuilder, ISqlCommandContext<ISqlCommand> sqlCommandContext, ParameterContext parameterContext)
         {
             var insertCommandContext = (InsertCommandContext)sqlCommandContext;
-            ShardingAssert.CantBeNull(insertCommandContext.GetGeneratedKeyContext(), "insertCommandContext.GetGeneratedKeyContext is required");
+            ShardingAssert.ShouldBeNotNull(insertCommandContext.GetGeneratedKeyContext(), "insertCommandContext.GetGeneratedKeyContext is required");
             ((GroupedParameterBuilder)parameterBuilder).SetDerivedColumnName(insertCommandContext.GetGeneratedKeyContext().GetColumnName());
             var generatedValues = insertCommandContext.GetGeneratedKeyContext().GetGeneratedValues().Reverse().GetEnumerator();
             int count = 0;

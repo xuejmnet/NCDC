@@ -25,7 +25,7 @@ namespace ShardingConnector.ShardingCommon.Core.Strategy.Route.Hint
         public IHintShardingAlgorithm<IComparable> ShardingAlgorithm { get; }
         public HintShardingStrategy(HintShardingStrategyConfiguration hintShardingStrategyConfig)
         {
-            ShardingAssert.CantBeNull(hintShardingStrategyConfig.ShardingAlgorithm, "Sharding algorithm cannot be null.");
+            ShardingAssert.ShouldBeNotNull(hintShardingStrategyConfig.ShardingAlgorithm, "Sharding algorithm cannot be null.");
             ShardingColumns = new SortedSet<string>(StringComparer.OrdinalIgnoreCase);
             ShardingAlgorithm = hintShardingStrategyConfig.ShardingAlgorithm;
         }

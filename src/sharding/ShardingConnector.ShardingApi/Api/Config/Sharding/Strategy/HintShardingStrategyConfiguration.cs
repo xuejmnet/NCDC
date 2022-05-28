@@ -19,7 +19,7 @@ namespace ShardingConnector.ShardingApi.Api.Config.Sharding.Strategy
     
         public HintShardingStrategyConfiguration(IHintShardingAlgorithm<IComparable> shardingAlgorithm)
         {
-            ShardingAssert.CantBeNull(shardingAlgorithm, "ShardingAlgorithm is required.");
+            ShardingAssert.ShouldBeNotNull(shardingAlgorithm, "ShardingAlgorithm is required.");
             this.ShardingAlgorithm = shardingAlgorithm;
         }
     }

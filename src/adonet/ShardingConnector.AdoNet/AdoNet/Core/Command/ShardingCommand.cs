@@ -1,18 +1,13 @@
 ﻿using ShardingConnector.AdoNet.AdoNet.Core.Connection;
 using ShardingConnector.AdoNet.Executor;
 using ShardingConnector.Exceptions;
-using ShardingConnector.Executor;
-using ShardingConnector.Merge.Reader;
 using ShardingConnector.Pluggable.Merge;
 using ShardingConnector.Pluggable.Prepare;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
-using System.Diagnostics;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using ShardingConnector.AdoNet.AdoNet.Abstraction;
 using ShardingConnector.AdoNet.Executor.Abstractions;
 using ShardingConnector.ShardingAdoNet;
@@ -71,7 +66,8 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Command
 
         public override void Cancel()
         {
-            throw new NotImplementedException();
+            _defaultDbCommand.Cancel();
+            RecordTargetMethodInvoke(command=>command.Cancel());
         }
 
         public override int ExecuteNonQuery()
@@ -99,11 +95,7 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Command
             RecordTargetMethodInvoke(command=>command.Prepare());
         }
 
-        public override string CommandText
-        {
-            get=>_defaultDbCommand.CommandText;
-            set => _defaultDbCommand.CommandText = value;
-        }
+        public override string CommandText { get; set; }
 
         public override int CommandTimeout
         {
@@ -140,13 +132,12 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Command
         /// </summary>
         protected override DbConnection DbConnection
         {
-            get=>_defaultDbCommand.Connection;
+            get=>_shardingConnection;
             set
             {
                 if (value is ShardingConnection shardingConnection)
                 {
                     _shardingConnection = shardingConnection;
-                    _defaultDbCommand.Connection = _shardingConnection.GetDefaultDbConnection();
                 }
                 else
                 {
@@ -157,6 +148,8 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Command
             }
         }
 
+
+        private ShardingParameterCollection _parameters;
         protected override DbParameterCollection DbParameterCollection
         {
             get
@@ -165,14 +158,13 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Command
                 {
                     // delay the creation of the SqlParameterCollection
                     // until user actually uses the ParameterContext property
-                    _parameters = new ShardingParameterCollection();
+                    _parameters = new ShardingParameterCollection(_defaultDbCommand.Parameters);
                 }
 
                 return _parameters;
             }
         }
-
-        protected override DbTransaction DbTransaction { get; set; }
+        protected override DbTransaction DbTransaction  { get; set; }
 
         public override bool DesignTimeVisible
         {
@@ -190,7 +182,6 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Command
             return new ShardingParameter(dbParameter);
         }
 
-        private ShardingParameterCollection _parameters;
 
         protected override DbDataReader ExecuteDbDataReader(CommandBehavior behavior)
         {
@@ -230,12 +221,7 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Command
 
         private ExecutionContext Prepare(string sql)
         {
-            // _commandExecutor.Clear();
-            foreach (var dbDataReader in _commandExecutor.GetDataReaders())
-            {
-                dbDataReader.Dispose();
-            }
-            _commandExecutor.GetDataReaders().Clear();
+            _commandExecutor.Clear();
             
             ShardingRuntimeContext runtimeContext = _shardingConnection.GetRuntimeContext();
             
@@ -277,8 +263,8 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Command
 
         protected override void Dispose(bool disposing)
         {
-            base.Dispose(disposing);
             _defaultDbCommand.Dispose();
+            base.Dispose(disposing);
         }
     }
 }

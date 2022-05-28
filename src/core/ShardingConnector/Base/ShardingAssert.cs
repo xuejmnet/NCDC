@@ -23,7 +23,7 @@ namespace ShardingConnector.Base
      /// </summary>
      /// <param name="argument">The argument.</param>
      /// <param name="name">The name.</param>
-        public static void CantBeNull(object argument, string name)
+        public static void ShouldBeNotNull(object argument, string name)
         {
             if (argument == null)
             {
@@ -41,7 +41,7 @@ namespace ShardingConnector.Base
         /// <param name="formattedError">The formatted error message.</param>
         public static void ShouldBeTrue<T>(Func<T, bool> checkFunc, T argument, string formattedError)
         {
-            CantBeNull(checkFunc, "checkFunc");
+            ShouldBeNotNull(checkFunc, "checkFunc");
             if (!checkFunc(argument))
             {
                 throw new ShardingAssertException(formattedError);

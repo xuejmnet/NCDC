@@ -25,7 +25,7 @@ namespace ShardingConnector.ShardingRewrite.Token.Generator.Impl
         public SqlToken GenerateSqlToken(SelectCommandContext sqlCommandContext)
         {
             var pagination = sqlCommandContext.GetPaginationContext();
-            ShardingAssert.CantBeNull(pagination.GetRowCountSegment(), "row count segment is required");
+            ShardingAssert.ShouldBeNotNull(pagination.GetRowCountSegment(), "row count segment is required");
             return new RowCountToken(pagination.GetRowCountSegment().GetStartIndex(), pagination.GetRowCountSegment().GetStopIndex(), pagination.GetRevisedRowCount(sqlCommandContext));
         }
 

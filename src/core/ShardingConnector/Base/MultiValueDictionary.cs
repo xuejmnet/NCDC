@@ -96,7 +96,7 @@ namespace ShardingConnector.Base
 		{
 
 
-            ShardingAssert.CantBeNull(key, "key");
+            ShardingAssert.ShouldBeNotNull(key, "key");
 
 			HashSet<TValue> container;
 			if (!this.TryGetValue(key, out container))
@@ -135,7 +135,7 @@ namespace ShardingConnector.Base
 		/// <returns>true if the value is stored for the specified key in this dictionary, false otherwise</returns>
 		public bool ContainsValue(TKey key, TValue value)
 		{
-            ShardingAssert.CantBeNull(key, "key");
+            ShardingAssert.ShouldBeNotNull(key, "key");
 			bool toReturn = false;
 			HashSet<TValue> values;
 			if (this.TryGetValue(key, out values))
@@ -153,7 +153,7 @@ namespace ShardingConnector.Base
 		/// <param name="value">The value.</param>
 		public void Remove(TKey key, TValue value)
 		{
-            ShardingAssert.CantBeNull(key, "key");
+            ShardingAssert.ShouldBeNotNull(key, "key");
 
 			HashSet<TValue> container;
 			if (this.TryGetValue(key, out container))

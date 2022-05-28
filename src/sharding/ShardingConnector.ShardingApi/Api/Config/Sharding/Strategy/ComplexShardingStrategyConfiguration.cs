@@ -22,7 +22,7 @@ namespace ShardingConnector.ShardingApi.Api.Config.Sharding.Strategy
         public ComplexShardingStrategyConfiguration(string shardingColumns, IComplexKeysShardingAlgorithm<IComparable> shardingAlgorithm)
         {
             ShardingAssert.If(string.IsNullOrWhiteSpace(shardingColumns), "ShardingColumns is required.");
-            ShardingAssert.CantBeNull(shardingAlgorithm, "ShardingAlgorithm is required.");
+            ShardingAssert.ShouldBeNotNull(shardingAlgorithm, "ShardingAlgorithm is required.");
             this.ShardingColumns = shardingColumns;
             this.ShardingAlgorithm = shardingAlgorithm;
         }

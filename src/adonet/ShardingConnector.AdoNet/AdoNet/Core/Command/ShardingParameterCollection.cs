@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Text;
+using ShardingConnector.Base;
+using ShardingConnector.Exceptions;
 
 namespace ShardingConnector.AdoNet.AdoNet.Core.Command
 {
@@ -15,111 +17,165 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Command
     */
     public sealed class ShardingParameterCollection:DbParameterCollection
     {
-        private readonly ICollection<ShardingMethodInvocation> shardingMethodInvocations =
-            new LinkedList<ShardingMethodInvocation>();
+        private readonly DbParameterCollection _dbParameterCollection;
 
-        private readonly List<ShardingParameter> @params = new List<ShardingParameter>();
+        private readonly List<ShardingParameter> _parameters;
+        public ShardingParameterCollection(DbParameterCollection dbParameterCollection)
+        {
+            _dbParameterCollection = dbParameterCollection;
+            _parameters = new List<ShardingParameter>(31);
+        }
 
         public List<ShardingParameter> GetParams()
         {
-            return @params;
+            return _parameters;
         }
-        public void ReplyMethodsInvocation(object target)
+        private ShardingParameter CheckValue(object value)
         {
-            foreach (var shardingMethodInvocation in shardingMethodInvocations)
+            if (value is ShardingParameter shardingParameter)
             {
-                shardingMethodInvocation.Inovke(target);
+                return shardingParameter;
+            }
+            else
+            {
+                throw new ShardingInvalidOperationException(
+                    $"{nameof(ShardingParameterCollection)} value type:[${value.GetType()}] not {nameof(ShardingParameter)}");
             }
         }
         public override int Add(object value)
         {
-            shardingMethodInvocations.Add(new ShardingMethodInvocation(typeof(DbParameterCollection).GetMethod("Add"),new object[]{value}));
-             
-            @params.Add((ShardingParameter)value);
-            return @params.Count - 1;
+            ShardingAssert.ShouldBeNotNull(value,nameof(value));
+           
+            var parameter = CheckValue(value);
+            var i = _dbParameterCollection.Add(parameter.GetDbParameter());
+            _parameters.Add(parameter);
+            return i;
         }
 
         public override void Clear()
         {
-            throw new NotImplementedException();
+            _dbParameterCollection.Clear();
+            _parameters.Clear();
         }
 
         public override bool Contains(object value)
         {
-            throw new NotImplementedException();
+            ShardingAssert.ShouldBeNotNull(value,nameof(value));
+            var parameter = CheckValue(value);
+            return _dbParameterCollection.Contains(parameter.GetDbParameter());
         }
 
         public override int IndexOf(object value)
         {
-            throw new NotImplementedException();
+            ShardingAssert.ShouldBeNotNull(value,nameof(value));
+            var parameter = CheckValue(value);
+            return _dbParameterCollection.IndexOf(parameter.GetDbParameter());
         }
 
         public override void Insert(int index, object value)
         {
-            throw new NotImplementedException();
+            ShardingAssert.ShouldBeNotNull(value,nameof(value));
+            var parameter = CheckValue(value);
+            _dbParameterCollection.Insert(index,parameter.GetDbParameter());
+            _parameters.Insert(index,parameter);
         }
 
         public override void Remove(object value)
         {
-            throw new NotImplementedException();
+            ShardingAssert.ShouldBeNotNull(value,nameof(value));
+            var parameter = CheckValue(value);
+            _dbParameterCollection.Remove(parameter.GetDbParameter());
+            _parameters.Remove(parameter);
         }
 
         public override void RemoveAt(int index)
         {
-            throw new NotImplementedException();
+            _dbParameterCollection.RemoveAt(index);
+            _parameters.RemoveAt(index);
         }
 
         public override void RemoveAt(string parameterName)
         {
-            throw new NotImplementedException();
+            ShardingAssert.ShouldBeNotNull(parameterName,nameof(parameterName));
+            var dbParameter = _dbParameterCollection[parameterName];
+            var index = _dbParameterCollection.IndexOf(dbParameter);
+            _dbParameterCollection.RemoveAt(parameterName);
+            _parameters.RemoveAt(index);
         }
 
+        public new ShardingParameter this[int index]
+        {
+            get => _parameters[index];
+            set => SetParameter(index, value);
+        }
+        
+        public new ShardingParameter this[string name]
+        {
+            get => _parameters[_dbParameterCollection.IndexOf(_dbParameterCollection[name])];
+            set => SetParameter(name, value);
+        }
         protected override void SetParameter(int index, DbParameter value)
         {
-            throw new NotImplementedException();
+            var parameter = CheckValue(value);
+            _dbParameterCollection[index] = parameter.GetDbParameter();
+            _parameters[index] = parameter;
         }
 
         protected override void SetParameter(string parameterName, DbParameter value)
         {
-            throw new NotImplementedException();
+            var parameter = CheckValue(value);
+            _dbParameterCollection[IndexOf(parameterName)] = parameter.GetDbParameter();
+            _parameters[IndexOf(parameterName)] = parameter;
         }
 
-        public override int Count { get; }
-        public override object SyncRoot { get; }
+        public override int Count => _dbParameterCollection.Count;
+        public override object SyncRoot => _dbParameterCollection.SyncRoot;
 
         public override int IndexOf(string parameterName)
         {
-            throw new NotImplementedException();
+            return _dbParameterCollection.IndexOf(parameterName);
         }
 
         public override bool Contains(string value)
         {
-            throw new NotImplementedException();
+            return _dbParameterCollection.Contains(value);
         }
 
         public override void CopyTo(Array array, int index)
         {
-            throw new NotImplementedException();
+            var arrayList = new DbParameter[array.Length];
+            int i = 0;
+            foreach (var o in array)
+            {
+                var parameter = CheckValue(o);
+                arrayList[i]=parameter.GetDbParameter();
+                i++;
+            }
+            _dbParameterCollection.CopyTo(arrayList,index);
+            ((ICollection)_parameters).CopyTo(array, index);
         }
 
         public override IEnumerator GetEnumerator()
         {
-            throw new NotImplementedException();
+            return _parameters.GetEnumerator();
         }
 
         protected override DbParameter GetParameter(int index)
         {
-            throw new NotImplementedException();
+            return _parameters[index];
         }
 
         protected override DbParameter GetParameter(string parameterName)
         {
-            throw new NotImplementedException();
+            return GetParameter(IndexOf(parameterName));
         }
 
         public override void AddRange(Array values)
         {
-            throw new NotImplementedException();
+            foreach (var value in values)
+            {
+                Add(value);
+            }
         }
     }
 }

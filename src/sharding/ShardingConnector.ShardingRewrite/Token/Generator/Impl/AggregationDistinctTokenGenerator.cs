@@ -26,7 +26,7 @@ namespace ShardingConnector.ShardingRewrite.Token.Generator.Impl
         }
     
         private AggregationDistinctToken GenerateSQLToken(AggregationDistinctProjection projection) {
-            ShardingAssert.CantBeNull(projection.GetAlias(),"alias is required");
+            ShardingAssert.ShouldBeNotNull(projection.GetAlias(),"alias is required");
             String derivedAlias = DerivedColumn.IsDerivedColumnName(projection.GetAlias()) ? projection.GetAlias() : null;
             return new AggregationDistinctToken(projection.StartIndex, projection.StopIndex, projection.GetDistinctInnerExpression(), derivedAlias);
         }

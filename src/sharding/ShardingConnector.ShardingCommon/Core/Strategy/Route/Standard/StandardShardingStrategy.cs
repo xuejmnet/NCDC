@@ -29,8 +29,8 @@ namespace ShardingConnector.ShardingCommon.Core.Strategy.Route.Standard
     
         public StandardShardingStrategy(StandardShardingStrategyConfiguration standardShardingStrategyConfig)
         {
-            ShardingAssert.CantBeNull(standardShardingStrategyConfig.ShardingColumn, "Sharding column cannot be null.");
-            ShardingAssert.CantBeNull(standardShardingStrategyConfig.PreciseShardingAlgorithm, "Sharding precise sharding algorithm cannot be null.");
+            ShardingAssert.ShouldBeNotNull(standardShardingStrategyConfig.ShardingColumn, "Sharding column cannot be null.");
+            ShardingAssert.ShouldBeNotNull(standardShardingStrategyConfig.PreciseShardingAlgorithm, "Sharding precise sharding algorithm cannot be null.");
             shardingColumn = standardShardingStrategyConfig.ShardingColumn;
             preciseShardingAlgorithm = standardShardingStrategyConfig.PreciseShardingAlgorithm;
             rangeShardingAlgorithm = standardShardingStrategyConfig.RangeShardingAlgorithm;

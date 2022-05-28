@@ -21,7 +21,7 @@ namespace ShardingConnector.ShardingRewrite.Token.Generator.Impl
         public SqlToken GenerateSqlToken(SelectCommandContext sqlCommandContext)
         {
             var pagination = sqlCommandContext.GetPaginationContext();
-            ShardingAssert.CantBeNull(pagination.GetOffsetSegment(), "offset segment is required");
+            ShardingAssert.ShouldBeNotNull(pagination.GetOffsetSegment(), "offset segment is required");
             return new OffsetToken(pagination.GetOffsetSegment().GetStartIndex(), pagination.GetOffsetSegment().GetStopIndex(), pagination.GetRevisedOffset());
         }
 

@@ -26,8 +26,8 @@ namespace ShardingConnector.ShardingCommon.Core.Strategy.Route.Complex
     
         public ComplexShardingStrategy(ComplexShardingStrategyConfiguration complexShardingStrategyConfig)
         {
-            ShardingAssert.CantBeNull(complexShardingStrategyConfig.ShardingColumns, "Sharding columns cannot be null.");
-            ShardingAssert.CantBeNull(complexShardingStrategyConfig.ShardingAlgorithm, "Sharding algorithm cannot be null.");
+            ShardingAssert.ShouldBeNotNull(complexShardingStrategyConfig.ShardingColumns, "Sharding columns cannot be null.");
+            ShardingAssert.ShouldBeNotNull(complexShardingStrategyConfig.ShardingAlgorithm, "Sharding algorithm cannot be null.");
             shardingColumns = new SortedSet<string>(StringComparer.OrdinalIgnoreCase);
             shardingColumns.AddAll(complexShardingStrategyConfig.ShardingColumns.Split(new []{','},StringSplitOptions.RemoveEmptyEntries));
             shardingAlgorithm = complexShardingStrategyConfig.ShardingAlgorithm;

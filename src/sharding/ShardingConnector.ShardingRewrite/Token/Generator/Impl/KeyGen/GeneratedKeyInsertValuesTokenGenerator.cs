@@ -28,9 +28,9 @@ namespace ShardingConnector.ShardingRewrite.Token.Generator.Impl.KeyGen
         public override SqlToken GenerateSqlToken(InsertCommandContext sqlCommandContext)
         {
             var result = FindPreviousSqlToken();
-           ShardingAssert.CantBeNull(result,"not find PreviousSqlToken");
+           ShardingAssert.ShouldBeNotNull(result,"not find PreviousSqlToken");
             var generatedKey = sqlCommandContext.GetGeneratedKeyContext();
-           ShardingAssert.CantBeNull(generatedKey,"generatedKey is required");
+           ShardingAssert.ShouldBeNotNull(generatedKey,"generatedKey is required");
            var generatedValues = generatedKey.GetGeneratedValues().Reverse().GetEnumerator();
             int count = 0;
             foreach (var insertValueContext in sqlCommandContext.GetInsertValueContexts())

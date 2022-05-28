@@ -58,7 +58,7 @@ namespace ShardingConnector.ShardingRewrite.Token.Generator.Impl
 
         private string GetDerivedProjectionText( IProjection projection)
         {
-            ShardingAssert.CantBeNull(projection.GetAlias(),"alias is required");
+            ShardingAssert.ShouldBeNotNull(projection.GetAlias(),"alias is required");
             if (projection is AggregationDistinctProjection aggregationDistinctProjection) {
                 return aggregationDistinctProjection.GetDistinctInnerExpression() + " AS " + projection.GetAlias() + " ";
             }

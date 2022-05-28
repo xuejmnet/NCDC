@@ -61,7 +61,7 @@ namespace ShardingConnector.ShardingRoute.Engine.RouteType.Broadcast
             foreach (var index in dropIndexCommand.Indexes)
             {
                 var tableName = FindLogicTableNameFromMetaData(index.Identifier.GetValue());
-                ShardingAssert.CantBeNull(tableName, $"Cannot find index name `{index.Identifier.GetValue()}`.");
+                ShardingAssert.ShouldBeNotNull(tableName, $"Cannot find index name `{index.Identifier.GetValue()}`.");
                 result.Add(tableName);
             }
 

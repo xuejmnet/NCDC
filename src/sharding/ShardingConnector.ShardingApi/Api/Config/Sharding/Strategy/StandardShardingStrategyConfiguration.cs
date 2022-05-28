@@ -29,7 +29,7 @@ namespace ShardingConnector.ShardingApi.Api.Config.Sharding.Strategy
         public StandardShardingStrategyConfiguration(string shardingColumn, IPreciseShardingAlgorithm<IComparable> preciseShardingAlgorithm, IRangeShardingAlgorithm<IComparable> rangeShardingAlgorithm)
         {
             ShardingAssert.If(string.IsNullOrWhiteSpace(shardingColumn), "ShardingColumns is required.");
-            ShardingAssert.CantBeNull(preciseShardingAlgorithm, "PreciseShardingAlgorithm is required.");
+            ShardingAssert.ShouldBeNotNull(preciseShardingAlgorithm, "PreciseShardingAlgorithm is required.");
             this.ShardingColumn = shardingColumn;
             this.PreciseShardingAlgorithm = preciseShardingAlgorithm;
             this.RangeShardingAlgorithm = rangeShardingAlgorithm;
