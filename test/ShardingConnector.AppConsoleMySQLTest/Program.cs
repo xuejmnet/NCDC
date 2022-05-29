@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Data.Common;
 using System.Diagnostics;
 using ShardingConnector.AdoNet.AdoNet.Core;
+using ShardingConnector.Logger;
 
 namespace ShardingConnector.AppConsoleMySQLTest
 {
@@ -19,12 +20,12 @@ namespace ShardingConnector.AppConsoleMySQLTest
         private static readonly string conn = "server=127.0.0.1;port=3306;database=test;userid=root;password=root;";
         static void Main(string[] args)
         {
-            // InternalLoggerFactory.DefaultFactory = LoggerFactory.Create(builder =>
-            // {
-            //     builder.AddFilter("Microsoft", LogLevel.Warning)
-            //         .AddFilter("System", LogLevel.Warning)
-            //         .AddSimpleConsole(c => c.TimestampFormat = "[yyyy-MM-dd HH:mm:ss]");
-            // });
+            InternalLoggerFactory.DefaultFactory = LoggerFactory.Create(builder =>
+            {
+                builder.AddFilter("Microsoft", LogLevel.Warning)
+                    .AddFilter("System", LogLevel.Warning)
+                    .AddSimpleConsole(c => c.TimestampFormat = "[yyyy-MM-dd HH:mm:ss]");
+            });
             //var dbProviderFactory = ShardingCreateDbProviderFactory.CreateDataSource(dataSourceMap, new ShardingRuleConfiguration(),
             //    new Dictionary<string, object>());
             var dataSourceMap = new Dictionary<string, IDataSource>()
@@ -45,47 +46,48 @@ namespace ShardingConnector.AppConsoleMySQLTest
             //2.7、配置默认数据源
             shardingRuleConfig.DefaultDataSourceName = "ds0";
             var shardingDbProviderFactory = new ShardingDbProviderFactory(dataSourceMap, shardingRuleConfig, new Dictionary<string, object>());
+
             // var dataSource = ShardingDataSourceFactory.CreateDataSource(dataSourceMap, shardingRuleConfig, new Dictionary<string, object>());
             Query(shardingDbProviderFactory);
-            Stopwatch stopwatch = Stopwatch.StartNew();
-            for (int i = 0; i < 1000; i++)
-            {
-                QueryTest1(shardingDbProviderFactory);
-            }
-            stopwatch.Stop();
-            Console.WriteLine($"第1次:{stopwatch.ElapsedMilliseconds}");
-            stopwatch.Restart();
-            for (int i = 0; i < 1000; i++)
-            {
-                QueryTest2();
-            }
-            stopwatch.Stop();
-            Console.WriteLine($"第2次:{stopwatch.ElapsedMilliseconds}");
-
-            stopwatch.Restart();
-            for (int i = 0; i < 1000; i++)
-            {
-                QueryTest1(shardingDbProviderFactory);
-            }
-            stopwatch.Stop();
-            Console.WriteLine($"第3次:{stopwatch.ElapsedMilliseconds}");
-
-            stopwatch.Restart();
-            for (int i = 0; i < 1000; i++)
-            {
-                QueryTest2();
-            }
-            stopwatch.Stop();
-            Console.WriteLine($"第4次:{stopwatch.ElapsedMilliseconds}");
+            // Stopwatch stopwatch = Stopwatch.StartNew();
+            // for (int i = 0; i < 1000; i++)
+            // {
+            //     QueryTest1(shardingDbProviderFactory);
+            // }
+            // stopwatch.Stop();
+            // Console.WriteLine($"第1次:{stopwatch.ElapsedMilliseconds}");
+            // stopwatch.Restart();
+            // for (int i = 0; i < 1000; i++)
+            // {
+            //     QueryTest2();
+            // }
+            // stopwatch.Stop();
+            // Console.WriteLine($"第2次:{stopwatch.ElapsedMilliseconds}");
+            //
+            // stopwatch.Restart();
+            // for (int i = 0; i < 1000; i++)
+            // {
+            //     QueryTest1(shardingDbProviderFactory);
+            // }
+            // stopwatch.Stop();
+            // Console.WriteLine($"第3次:{stopwatch.ElapsedMilliseconds}");
+            //
+            // stopwatch.Restart();
+            // for (int i = 0; i < 1000; i++)
+            // {
+            //     QueryTest2();
+            // }
+            // stopwatch.Stop();
+            // Console.WriteLine($"第4次:{stopwatch.ElapsedMilliseconds}");
 
 
             //for (int i = 0; i < 20; i++)
             //{
             QueryPage(shardingDbProviderFactory);
             QueryMax(shardingDbProviderFactory);
-            // Delete(shardingDbProviderFactory);
-            // Insert(shardingDbProviderFactory);
-            // Update(shardingDbProviderFactory);
+            Delete(shardingDbProviderFactory);
+            Insert(shardingDbProviderFactory);
+            Update(shardingDbProviderFactory);
             Query(shardingDbProviderFactory);
             Query1(shardingDbProviderFactory);
             //}
@@ -169,12 +171,12 @@ namespace ShardingConnector.AppConsoleMySQLTest
                 dbParameter.Value = "21";
 
                 var dbParameter2 = dbCommand.CreateParameter();
+                dbCommand.Parameters.Add(dbParameter2);
                 dbParameter2.ParameterName = "@p2";
                 dbParameter2.Value = "22";
                 //dbParameter.ParameterName = "@Id";
                 //dbParameter.Value = 21;
                 dbCommand.Parameters.Add(dbParameter);
-                dbCommand.Parameters.Add(dbParameter2);
                 //dbCommand.CommandText = @"select [d].[Id],[d].[Name],[d].[Age] from [dbo].[SysUserMod] as [d] where id='1'  order by [d].[Age] desc";
                 var dbDataReader = dbCommand.ExecuteReader();
                 while (dbDataReader.Read())

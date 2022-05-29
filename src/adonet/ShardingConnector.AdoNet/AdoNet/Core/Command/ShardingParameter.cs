@@ -14,94 +14,112 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Command
     * @Ver: 1.0
     * @Email: 326308290@qq.com
     */
-    public class ShardingParameter : DbParameter,IAdoMethodRecorder<DbParameter>
+    public class ShardingParameter : DbParameter, IAdoMethodRecorder<DbParameter>
     {
         private readonly DbParameter _dbParameter;
+        public ShardingParameterCollection ShardingParameters { get; set; }
 
-        public ShardingParameter(DbParameter dbParameter)
+        public ShardingParameter():this(null,null)
         {
-            _dbParameter = dbParameter;
+            
+        }
+        public ShardingParameter(string parameterName,object parameterValue)
+        {
+            this._parameterName = parameterName ?? string.Empty;
+            this._parameterValue = parameterValue;
         }
 
         public override void ResetDbType()
         {
             _dbParameter.ResetDbType();
-            RecordTargetMethodInvoke(dbParameter=>dbParameter.ResetDbType());
+            RecordTargetMethodInvoke(dbParameter => dbParameter.ResetDbType());
         }
 
-        
+
         public override DbType DbType
         {
             get => _dbParameter.DbType;
             set
             {
                 _dbParameter.DbType = value;
-                RecordTargetMethodInvoke(dbParameter=>dbParameter.DbType = value);
+                RecordTargetMethodInvoke(dbParameter => dbParameter.DbType = value);
             }
         }
 
         public override ParameterDirection Direction
         {
             get => _dbParameter.Direction;
-            set {
+            set
+            {
                 _dbParameter.Direction = value;
-                RecordTargetMethodInvoke(dbParameter=>dbParameter.Direction = value);
+                RecordTargetMethodInvoke(dbParameter => dbParameter.Direction = value);
+            }
         }
-        }
+
         public override bool IsNullable
         {
             get => _dbParameter.IsNullable;
             set
             {
                 _dbParameter.IsNullable = value;
-                RecordTargetMethodInvoke(dbParameter=>dbParameter.IsNullable = value);
+                RecordTargetMethodInvoke(dbParameter => dbParameter.IsNullable = value);
             }
         }
+
+        private string _parameterName;
         public override string ParameterName
         {
-            get => _dbParameter.ParameterName;
+            get => _parameterName;
             set
             {
-                _dbParameter.ParameterName = value;
-                RecordTargetMethodInvoke(dbParameter=>dbParameter.ParameterName = value);
+                var oldName = _parameterName;
+                _parameterName = value;
+                ShardingParameters?.ChangeParameterName(this, oldName, _parameterName);
+                RecordTargetMethodInvoke(dbParameter => dbParameter.ParameterName = value);
             }
         }
+
         public override string SourceColumn
         {
             get => _dbParameter.SourceColumn;
             set
             {
                 _dbParameter.SourceColumn = value;
-                RecordTargetMethodInvoke(dbParameter=>dbParameter.SourceColumn = value);
+                RecordTargetMethodInvoke(dbParameter => dbParameter.SourceColumn = value);
             }
         }
+
+        private object _parameterValue;
         public override object Value
         {
-            get => _dbParameter.Value;
+            get => _parameterValue;
             set
             {
-                _dbParameter.Value = value;
-                RecordTargetMethodInvoke(dbParameter=>dbParameter.Value = value);
+                _parameterValue = value;
+                RecordTargetMethodInvoke(dbParameter => dbParameter.Value = value);
             }
         }
+
         public override bool SourceColumnNullMapping
         {
             get => _dbParameter.SourceColumnNullMapping;
             set
             {
                 _dbParameter.SourceColumnNullMapping = value;
-                RecordTargetMethodInvoke(dbParameter=>dbParameter.SourceColumnNullMapping = value);
+                RecordTargetMethodInvoke(dbParameter => dbParameter.SourceColumnNullMapping = value);
             }
         }
+
         public override int Size
         {
             get => _dbParameter.Size;
             set
             {
                 _dbParameter.Size = value;
-                RecordTargetMethodInvoke(dbParameter=>dbParameter.Size = value);
+                RecordTargetMethodInvoke(dbParameter => dbParameter.Size = value);
             }
         }
+
         public override string ToString()
         {
             return $"{ParameterName}:{Value}";
@@ -113,6 +131,7 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Command
         }
 
         private event Action<DbParameter> OnRecorder;
+
         public void ReplyTargetMethodInvoke(DbParameter target)
         {
             OnRecorder?.Invoke(target);

@@ -5,57 +5,25 @@
 // using System.Threading;
 // using System.Threading.Tasks;
 // using ShardingConnector.AdoNet.Executor.Abstractions;
-// using ShardingConnector.CommandParser.Command;
 // using ShardingConnector.Exceptions;
 // using ShardingConnector.Executor.Constant;
 // using ShardingConnector.Executor.Context;
 // using ShardingConnector.Extensions;
-// using ShardingConnector.Helpers;
-// using ShardingConnector.ParserBinder.Command;
 //
 // namespace ShardingConnector.AdoNet.Executor
 // {
-//     public class DataReaderExecutor:IExecutor<IStreamDataReader>
+//     public class NoQueryExecutor:IExecutor<int>
 //     {
-//         // /// <summary>
-//         // /// not cancelled const mark
-//         // /// </summary>
-//         // private const int notCancelled = 1;
-//         //
-//         // /// <summary>
-//         // /// cancelled const mark
-//         // /// </summary>
-//         // private const int cancelled = 0;
-//         // /// <summary>
-//         // /// cancel status
-//         // /// </summary>
-//         // private int cancelStatus= notCancelled;
-//         // private readonly ISqlCommandContext<ISqlCommand> _sqlCommandContext;
-//         public event Func<DbCommand, ConnectionModeEnum, IStreamDataReader> OnCommandSqlExecute;
-//
-//         public DataReaderExecutor()
-//         {
-//             // ISqlCommandContext<ISqlCommand> sqlCommandContext
-//             // _sqlCommandContext = sqlCommandContext;
-//         }
-//         // protected void Cancel()
-//         // {
-//         //     Interlocked.Exchange(ref cancelStatus, cancelled);
-//         // }
-//         //
-//         // private bool IsCancelled()
-//         // {
-//         //     return cancelStatus == cancelled;
-//         // }
-//         public List<IStreamDataReader> Execute(DataSourceSqlExecutorUnit dataSourceSqlExecutorUnit)
+//         public event Func<DbCommand, ConnectionModeEnum, int> OnCommandSqlExecute;
+//         public List<int> Execute(DataSourceSqlExecutorUnit dataSourceSqlExecutorUnit)
 //         {
 //             return Execute0(dataSourceSqlExecutorUnit);
 //         }
 //
-//         private List<IStreamDataReader> Execute0(DataSourceSqlExecutorUnit dataSourceSqlExecutorUnit)
+//         private List<int> Execute0(DataSourceSqlExecutorUnit dataSourceSqlExecutorUnit)
 //         {
 //             var executorGroups = dataSourceSqlExecutorUnit.SqlExecutorGroups;
-//             var result = new List<IStreamDataReader>(executorGroups.Sum(o=>o.Groups.Count()));
+//             var result = new List<int>(executorGroups.Sum(o=>o.Groups.Count()));
 //             foreach (var executorGroup in executorGroups)
 //             {
 //                 var routeQueryResults =  GroupExecute(executorGroup.Groups);
@@ -65,21 +33,21 @@
 //             return result;
 //         }
 //
-//         private  IStreamDataReader[] GroupExecute(List<CommandExecuteUnit> commandExecuteUnits)
+//         private  int[] GroupExecute(List<CommandExecuteUnit> commandExecuteUnits)
 //         {
 //             if (commandExecuteUnits.Count <= 0)
 //             {
-//                 return Array.Empty<IStreamDataReader>();
+//                 return Array.Empty<int>();
 //             }
 //
 //             if (commandExecuteUnits.Count == 1)
 //             {
-//                 return new IStreamDataReader[1] { ExecuteCommandUnit(commandExecuteUnits[0]) };
+//                 return new int[1] { ExecuteCommandUnit(commandExecuteUnits[0]) };
 //             }
 //             else
 //             {
 //                 CancellationToken cancellationToken = new CancellationToken();
-//                 var dataReaders = new List<IStreamDataReader>(commandExecuteUnits.Count());
+//                 var dataReaders = new List<int>(commandExecuteUnits.Count());
 //                 var otherTasks = commandExecuteUnits.Skip(1)
 //                     .Select(o => Task.Run(() => ExecuteCommandUnit(o), cancellationToken)).ToArray();
 //                 var streamDataReader = ExecuteCommandUnit(commandExecuteUnits[0]);
@@ -90,7 +58,7 @@
 //             }
 //         }
 //
-//         private  IStreamDataReader ExecuteCommandUnit(CommandExecuteUnit commandExecuteUnit)
+//         private  int ExecuteCommandUnit(CommandExecuteUnit commandExecuteUnit)
 //         {
 //             if (OnCommandSqlExecute == null)
 //             {

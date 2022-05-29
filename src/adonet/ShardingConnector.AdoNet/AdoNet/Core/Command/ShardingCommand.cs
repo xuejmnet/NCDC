@@ -32,19 +32,19 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Command
         private ExecutionContext executionContext;
 
         private DbDataReader currentResultSet;
-        private  DbCommand _defaultDbCommand;
         private readonly ICommandExecutor _commandExecutor;
         private ShardingConnection _shardingConnection;
 
-        public ShardingCommand(string commandText,DbCommand defaultDbCommand)
+        public ShardingCommand():this(null)
         {
-            _defaultDbCommand = defaultDbCommand;
-            _commandExecutor = CreateCommandExecutor(10);
+            
+        }
+        public ShardingCommand(string commandText):this(commandText,null)
+        {
         }
         public ShardingCommand(string commandText, ShardingConnection connection)
         {
             _shardingConnection = connection;
-            _defaultDbCommand = connection.GetDefaultDbConnection().CreateCommand();
             _commandExecutor = CreateCommandExecutor(10);
         }
 
@@ -66,22 +66,20 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Command
 
         public override void Cancel()
         {
-            _defaultDbCommand.Cancel();
             RecordTargetMethodInvoke(command=>command.Cancel());
         }
 
         public override int ExecuteNonQuery()
         {
-            // try
-            // {
-            //     executionContext = Prepare(CommandText);
-            //     return _commandExecutor.ExecuteNonQuery();
-            // }
-            // finally
-            // {
-            //     currentResultSet = null;
-            // }
-            return 0;
+            try
+            {
+                executionContext = Prepare(CommandText);
+                return _commandExecutor.ExecuteNonQuery(true,executionContext).Sum();
+            }
+            finally
+            {
+                currentResultSet = null;
+            }
         }
 
         public override object ExecuteScalar()
@@ -91,39 +89,41 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Command
 
         public override void Prepare()
         {
-            _defaultDbCommand.Prepare();
             RecordTargetMethodInvoke(command=>command.Prepare());
         }
 
         public override string CommandText { get; set; }
 
+        private int _commandTimeout;
         public override int CommandTimeout
         {
-            get => _defaultDbCommand.CommandTimeout;
+            get => _commandTimeout;
             set
             {
                 RecordTargetMethodInvoke(command => command.CommandTimeout = value);
-                _defaultDbCommand.CommandTimeout = value;
+                _commandTimeout = value;
             }
         }
 
+        private CommandType _commandType=CommandType.Text;
         public override CommandType CommandType
         {
-            get => _defaultDbCommand.CommandType;
+            get => _commandType;
             set
             {
                 RecordTargetMethodInvoke(command => command.CommandType = value);
-                _defaultDbCommand.CommandType = value;
+                _commandType = value;
             }
         }
 
+        private UpdateRowSource _updatedRowSource;
         public override UpdateRowSource UpdatedRowSource
         {
-            get => _defaultDbCommand.UpdatedRowSource;
+            get => _updatedRowSource;
             set
             {
                 RecordTargetMethodInvoke(command => command.UpdatedRowSource = value);
-                _defaultDbCommand.UpdatedRowSource = value;
+                _updatedRowSource = value;
             }
         }
 
@@ -158,7 +158,7 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Command
                 {
                     // delay the creation of the SqlParameterCollection
                     // until user actually uses the ParameterContext property
-                    _parameters = new ShardingParameterCollection(_defaultDbCommand.Parameters);
+                    _parameters = new ShardingParameterCollection();
                 }
 
                 return _parameters;
@@ -166,20 +166,21 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Command
         }
         protected override DbTransaction DbTransaction  { get; set; }
 
+        private bool _designTimeVisible;
         public override bool DesignTimeVisible
         {
-            get => _defaultDbCommand.DesignTimeVisible;
+            get => _designTimeVisible;
             set
             {
                 RecordTargetMethodInvoke(command => command.DesignTimeVisible = value);
-                _defaultDbCommand.DesignTimeVisible = value;
+                _designTimeVisible = value;
             }
         }
 
         protected override DbParameter CreateDbParameter()
         {
-            var dbParameter = _defaultDbCommand.CreateParameter();
-            return new ShardingParameter(dbParameter);
+            var shardingParameter = new ShardingParameter();
+            return shardingParameter;
         }
 
 
@@ -261,10 +262,5 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Command
             OnRecorder += targetMethod;
         }
 
-        protected override void Dispose(bool disposing)
-        {
-            _defaultDbCommand.Dispose();
-            base.Dispose(disposing);
-        }
     }
 }

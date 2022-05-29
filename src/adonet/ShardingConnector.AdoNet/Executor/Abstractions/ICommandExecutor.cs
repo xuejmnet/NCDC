@@ -11,5 +11,6 @@ namespace ShardingConnector.AdoNet.Executor.Abstractions
         List<IStreamDataReader> ExecuteDbDataReader(bool serial, ExecutionContext executionContext, CancellationToken cancellationToken=new CancellationToken());
         List<DbDataReader> GetDataReaders();
         void Clear();
+        List<int> ExecuteNonQuery(bool serial,ExecutionContext executionContext, CancellationToken cancellationToken=new CancellationToken());
     }
 }

@@ -96,12 +96,12 @@ namespace ShardingConnector.AdoNet.AdoNet.Core
 
         public override DbCommand CreateCommand()
         {
-            return new ShardingCommand(null,_defaultDataSource.GetDbProviderFactory().CreateCommand());
+            return new ShardingCommand();
         }
 
         public override DbParameter CreateParameter()
         {
-            return new ShardingParameter(_defaultDataSource.GetDbProviderFactory().CreateParameter());
+            return new ShardingParameter();
         }
     }
 }
