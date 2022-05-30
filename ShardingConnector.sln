@@ -69,6 +69,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShardingConnector.DapperTes
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShardingConnector.FreeSqlTest", "test\ShardingConnector.FreeSqlTest\ShardingConnector.FreeSqlTest.csproj", "{EC4ABFD4-13C3-4B2F-9A11-1D56CF6D973C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShardingConnector.HiSqlTest", "test\ShardingConnector.HiSqlTest\ShardingConnector.HiSqlTest.csproj", "{D2F1584D-E4B9-4241-9416-BBE5563B5CAA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShardingConnector.ChloeTest", "test\ShardingConnector.ChloeTest\ShardingConnector.ChloeTest.csproj", "{9549FAB9-CFC4-4A90-A85C-2351420D3770}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -175,6 +179,14 @@ Global
 		{EC4ABFD4-13C3-4B2F-9A11-1D56CF6D973C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EC4ABFD4-13C3-4B2F-9A11-1D56CF6D973C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EC4ABFD4-13C3-4B2F-9A11-1D56CF6D973C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D2F1584D-E4B9-4241-9416-BBE5563B5CAA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D2F1584D-E4B9-4241-9416-BBE5563B5CAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D2F1584D-E4B9-4241-9416-BBE5563B5CAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D2F1584D-E4B9-4241-9416-BBE5563B5CAA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9549FAB9-CFC4-4A90-A85C-2351420D3770}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9549FAB9-CFC4-4A90-A85C-2351420D3770}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9549FAB9-CFC4-4A90-A85C-2351420D3770}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9549FAB9-CFC4-4A90-A85C-2351420D3770}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -211,6 +223,8 @@ Global
 		{0D276528-EC51-43F9-877B-9EFE3E75DE41} = {C37A1D9B-9BAA-435C-857B-0BB3E2C010B2}
 		{961BFBE1-423D-47B5-9849-670015414D7B} = {C37A1D9B-9BAA-435C-857B-0BB3E2C010B2}
 		{EC4ABFD4-13C3-4B2F-9A11-1D56CF6D973C} = {C37A1D9B-9BAA-435C-857B-0BB3E2C010B2}
+		{D2F1584D-E4B9-4241-9416-BBE5563B5CAA} = {C37A1D9B-9BAA-435C-857B-0BB3E2C010B2}
+		{9549FAB9-CFC4-4A90-A85C-2351420D3770} = {C37A1D9B-9BAA-435C-857B-0BB3E2C010B2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FE6C7648-4D94-4A48-B67D-3161C6FE3BC0}

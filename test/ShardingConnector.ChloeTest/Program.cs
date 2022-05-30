@@ -1,6 +1,8 @@
 ﻿
 using System.Data.Common;
-using FreeSql;
+using Chloe;
+using Chloe.Annotations;
+using Chloe.MySql;
 using Microsoft.Extensions.Logging;
 using MySqlConnector;
 using ShardingConnector.AdoNet.AdoNet.Core;
@@ -11,16 +13,12 @@ using ShardingConnector.ShardingApi.Api.Config.Sharding;
 using ShardingConnector.ShardingApi.Api.Config.Sharding.Strategy;
 using ShardingConnector.ShardingApi.Api.Sharding.Standard;
 
-namespace ShardingConnector.FreeSqlTest
+namespace ShardingConnector.ChloeTest
 {
-    /// <summary>
-    /// 还未实现
-    /// </summary>
     internal class Program
     {
         // private static readonly string conn = "server=127.0.0.1;port=3306;database=test;userid=root;password=L6yBtV6qNENrwBy7;";
         private static readonly string conn = "server=127.0.0.1;port=3306;database=test;userid=root;password=root;";
-        private static IFreeSql fsql;
         static void Main(string[] args)
         {
             InternalLoggerFactory.DefaultFactory = LoggerFactory.Create(builder =>
@@ -35,7 +33,7 @@ namespace ShardingConnector.FreeSqlTest
             {
                 {
                     "ds0",
-                    new GenericDataSource(MySqlConnectorFactory.Instance, conn,true)
+                    new GenericDataSource(MySqlConnectorFactory.Instance,conn,true)
                 }
             };
             //2、分库分表配置
@@ -49,21 +47,19 @@ namespace ShardingConnector.FreeSqlTest
             //2.7、配置默认数据源
             shardingRuleConfig.DefaultDataSourceName = "ds0";
             var shardingDbProviderFactory = new ShardingDbProviderFactory(dataSourceMap, shardingRuleConfig, new Dictionary<string, object>());
-            fsql  = new FreeSql.FreeSqlBuilder()
-                 .UseConnectionFactory(DataType.MySql, () =>
-                 {
-                     var dbConnection = shardingDbProviderFactory.CreateConnection();
-                     dbConnection.ConnectionString = conn;
-                     return dbConnection;
-                 })
-                .Build();
-            Test1();
+            Test1(shardingDbProviderFactory);
         }
 
-        static void Test1()
+        static void Test1(DbProviderFactory dbProviderFactory)
         {
             var ids = new[]{"21","22"};
-            var list = fsql.Select<User>().Where(o=>ids.Contains(o.Id)).ToList();
+            IDbContext context = new MySqlContext(() =>
+            {
+                var connection = dbProviderFactory.CreateConnection();
+                connection.ConnectionString = conn;
+                return connection;
+            });
+            var users = context.Query<User>().Where(o=> ids.Contains(o.Id)).ToList();
         }
 
         static TableRuleConfiguration CreateSysUserModTableRule()
@@ -107,6 +103,7 @@ namespace ShardingConnector.FreeSqlTest
         }
     }
 
+    [Table("SysUserMod")]
     public class User
     {
         public string Id { get; set; }

@@ -19,20 +19,20 @@ namespace ShardingConnector.ShardingAdoNet
             _parameters = new Dictionary<string, DbParameter>(capacity);
             foreach (var dbParameter in dbParameters)
             {
-                _parameters.Add(ParameterNameAdapterWithAt(dbParameter.ParameterName), dbParameter);
+                _parameters.Add(dbParameter.ParameterName, dbParameter);
             }
         }
-        private string ParameterNameAdapterWithAt(string parameterName)
-        {
-            if (parameterName.StartsWith("@", StringComparison.Ordinal))
-            {
-                return parameterName;
-            }
-            else
-            {
-                return $"@{parameterName}";
-            }
-        }
+        // private string ParameterNameAdapterWithAt(string parameterName)
+        // {
+        //     if (parameterName.StartsWith("?", StringComparison.Ordinal))
+        //     {
+        //         return parameterName;
+        //     }
+        //     else
+        //     {
+        //         return $"?{parameterName}";
+        //     }
+        // }
 
         public ParameterContext(DbParameter[] dbParameters):this(dbParameters, dbParameters.Length)
         {

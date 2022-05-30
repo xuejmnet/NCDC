@@ -172,14 +172,14 @@ namespace ShardingConnector.AppConsoleMySQLTest
                 dbConnection.Open();
 
                 var dbCommand = dbConnection.CreateCommand();
-                dbCommand.CommandText = @"select * from SysUserMod where id  in (@p1,@p2)";
+                dbCommand.CommandText = @"select * from SysUserMod where id  in (?p_1,?p_2)";
                 var dbParameter = dbCommand.CreateParameter();
-                dbParameter.ParameterName = "@p1";
+                dbParameter.ParameterName = "?p_1";
                 dbParameter.Value = "21";
 
                 var dbParameter2 = dbCommand.CreateParameter();
                 dbCommand.Parameters.Add(dbParameter2);
-                dbParameter2.ParameterName = "@p2";
+                dbParameter2.ParameterName = "?p_2";
                 dbParameter2.Value = "22";
                 //dbParameter.ParameterName = "@Id";
                 //dbParameter.Value = 21;

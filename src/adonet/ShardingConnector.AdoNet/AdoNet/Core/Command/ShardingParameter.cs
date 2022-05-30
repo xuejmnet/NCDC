@@ -74,25 +74,25 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Command
             set
             {
                 var oldName = _parameterName;
-                _parameterName = value;
+                _parameterName = value ==null?null:NormalizeParameterName(value);
                 ShardingParameters?.ChangeParameterName(this, oldName, _parameterName);
                 RecordTargetMethodInvoke(dbParameter => dbParameter.ParameterName = value);
             }
         }
         
-        // internal static string NormalizeParameterName(string name)
-        // {
-        //     name = name.Trim();
-        //
-        //     if ((name.StartsWith("@`", StringComparison.Ordinal) || name.StartsWith("?`", StringComparison.Ordinal)) && name.EndsWith("`", StringComparison.Ordinal))
-        //         return name.Substring(2, name.Length - 3).Replace("``", "`");
-        //     if ((name.StartsWith("@'", StringComparison.Ordinal) || name.StartsWith("?'", StringComparison.Ordinal)) && name.EndsWith("'", StringComparison.Ordinal))
-        //         return name.Substring(2, name.Length - 3).Replace("''", "'");
-        //     if ((name.StartsWith("@\"", StringComparison.Ordinal) || name.StartsWith("?\"", StringComparison.Ordinal)) && name.EndsWith("\"", StringComparison.Ordinal))
-        //         return name.Substring(2, name.Length - 3).Replace("\"\"", "\"");
-        //
-        //     return name.StartsWith("@", StringComparison.Ordinal) || name.StartsWith("?", StringComparison.Ordinal) ? name.Substring(1) : name;
-        // }
+        internal static string NormalizeParameterName(string name)
+        {
+            name = name.Trim();
+
+            if ((name.StartsWith("@`", StringComparison.Ordinal) || name.StartsWith("?`", StringComparison.Ordinal)) && name.EndsWith("`", StringComparison.Ordinal))
+                return name.Substring(2, name.Length - 3).Replace("``", "`");
+            if ((name.StartsWith("@'", StringComparison.Ordinal) || name.StartsWith("?'", StringComparison.Ordinal)) && name.EndsWith("'", StringComparison.Ordinal))
+                return name.Substring(2, name.Length - 3).Replace("''", "'");
+            if ((name.StartsWith("@\"", StringComparison.Ordinal) || name.StartsWith("?\"", StringComparison.Ordinal)) && name.EndsWith("\"", StringComparison.Ordinal))
+                return name.Substring(2, name.Length - 3).Replace("\"\"", "\"");
+
+            return name.StartsWith("@", StringComparison.Ordinal) || name.StartsWith("?", StringComparison.Ordinal) ? name.Substring(1) : name;
+        }
 
         private string _sourceColumn;
         public override string SourceColumn

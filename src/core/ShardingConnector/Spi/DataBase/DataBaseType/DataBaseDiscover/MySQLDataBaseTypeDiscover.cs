@@ -13,7 +13,7 @@ namespace ShardingConnector.Spi.DataBase.DataBaseType.DataBaseDiscover
     /// Email: 326308290@qq.com
     public class MySQLDataBaseTypeDiscover : IDataBaseTypeDiscover
     {
-        private readonly ISet<string> dbConnectionFullNames = new HashSet<string>() { "MySqlConnector.MySqlConnection" };
+        private readonly ISet<string> dbConnectionFullNames = new HashSet<string>() { "MySqlConnector.MySqlConnection","MySql.Data.MySqlClient.MySqlConnection" };
 
         public MySQLDataBaseTypeDiscover()
         {

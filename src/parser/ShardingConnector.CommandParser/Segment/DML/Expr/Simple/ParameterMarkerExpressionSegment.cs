@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
 using ShardingConnector.Base;
@@ -26,9 +27,13 @@ namespace ShardingConnector.CommandParser.Segment.DML.Expr.Simple
             _startIndex = startIndex;
             _stopIndex = stopIndex;
             _parameterMarkerIndex = parameterMarkerIndex;
-            _paramName = paramName;
+            _paramName = NormalizeParameterName(paramName);
         }
 
+        internal static string NormalizeParameterName(string name)
+        {
+            return name.StartsWith("@", StringComparison.Ordinal) || name.StartsWith("?", StringComparison.Ordinal) ? name.Substring(1) : name;
+        }
         public int GetStartIndex()
         {
             return _startIndex;
