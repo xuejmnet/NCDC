@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="6.0.0" />
+      <PackageReference Include="SqlSugar.MySqlConnectorCore" Version="1.3.0" />
+      <PackageReference Include="SqlSugarCore" Version="5.0.8.6" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\src\adonet\ShardingConnector.AdoNet\ShardingConnector.AdoNet.csproj" />
+    </ItemGroup>
+
+</Project>
