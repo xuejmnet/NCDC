@@ -67,6 +67,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShardingConnector.AppConsol
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShardingConnector.DapperTest", "test\ShardingConnector.DapperTest\ShardingConnector.DapperTest.csproj", "{961BFBE1-423D-47B5-9849-670015414D7B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShardingConnector.FreeSqlTest", "test\ShardingConnector.FreeSqlTest\ShardingConnector.FreeSqlTest.csproj", "{EC4ABFD4-13C3-4B2F-9A11-1D56CF6D973C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -169,6 +171,10 @@ Global
 		{961BFBE1-423D-47B5-9849-670015414D7B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{961BFBE1-423D-47B5-9849-670015414D7B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{961BFBE1-423D-47B5-9849-670015414D7B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EC4ABFD4-13C3-4B2F-9A11-1D56CF6D973C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EC4ABFD4-13C3-4B2F-9A11-1D56CF6D973C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EC4ABFD4-13C3-4B2F-9A11-1D56CF6D973C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EC4ABFD4-13C3-4B2F-9A11-1D56CF6D973C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -204,6 +210,7 @@ Global
 		{E9893BD0-A7B4-4714-AB9D-42352C16E22E} = {28CC1DDF-6535-418A-A081-1C72203EBDDD}
 		{0D276528-EC51-43F9-877B-9EFE3E75DE41} = {C37A1D9B-9BAA-435C-857B-0BB3E2C010B2}
 		{961BFBE1-423D-47B5-9849-670015414D7B} = {C37A1D9B-9BAA-435C-857B-0BB3E2C010B2}
+		{EC4ABFD4-13C3-4B2F-9A11-1D56CF6D973C} = {C37A1D9B-9BAA-435C-857B-0BB3E2C010B2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FE6C7648-4D94-4A48-B67D-3161C6FE3BC0}

@@ -202,6 +202,7 @@ namespace ShardingConnector.AppConsoleMySQLTest
                 dbConnection.Open();
                 var dbCommand = dbProviderFactory.CreateCommand();
                 dbCommand.Connection = dbConnection;
+                
                 dbCommand.CommandText = @"select * from SysUserMod where id  in (@p1,@p2)";
                 var dbParameter = dbCommand.CreateParameter();
                 dbParameter.ParameterName = "@p1";
