@@ -159,6 +159,13 @@ namespace ShardingConnector.AppConsoleMySQLTest
 
         static void Query(DbProviderFactory dataSource)
         {
+            // var mySqlParameter = new MySqlParameter();
+            // var mySqlCommand = new MySqlCommand();
+            // mySqlCommand.Parameters.Add(mySqlParameter);
+            // mySqlParameter.ParameterName = "@p21";
+            // var mySqlParameter1 = new MySqlParameter();
+            // mySqlCommand.Parameters.Add(mySqlParameter1);
+            // mySqlParameter1.ParameterName = "p22";
             using (var dbConnection = dataSource.CreateConnection())
             {
                 dbConnection.ConnectionString = conn;

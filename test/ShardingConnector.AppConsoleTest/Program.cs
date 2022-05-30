@@ -15,6 +15,14 @@ namespace ShardingConnector.AppConsoleTest
     {
         static void Main(string[] args)
         {
+            // var mySqlParameter = new SqlParameter();
+            // var mySqlCommand = new SqlCommand();
+            // mySqlCommand.Parameters.Add(mySqlParameter);
+            // mySqlParameter.ParameterName = "@p21";
+            // var mySqlParameter1 = new SqlParameter();
+            // mySqlCommand.Parameters.Add(mySqlParameter1);
+            // mySqlParameter1.ParameterName = "p22";
+            // Console.WriteLine("123");
             // InternalLoggerFactory.DefaultFactory = LoggerFactory.Create(builder =>
             // {
             //     builder.AddFilter("Microsoft", LogLevel.Warning)

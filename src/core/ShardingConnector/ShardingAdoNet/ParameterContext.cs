@@ -19,7 +19,18 @@ namespace ShardingConnector.ShardingAdoNet
             _parameters = new Dictionary<string, DbParameter>(capacity);
             foreach (var dbParameter in dbParameters)
             {
-                _parameters.Add(dbParameter.ParameterName, dbParameter);
+                _parameters.Add(ParameterNameAdapterWithAt(dbParameter.ParameterName), dbParameter);
+            }
+        }
+        private string ParameterNameAdapterWithAt(string parameterName)
+        {
+            if (parameterName.StartsWith("@", StringComparison.Ordinal))
+            {
+                return parameterName;
+            }
+            else
+            {
+                return $"@{parameterName}";
             }
         }
 
