@@ -1,3 +1,5 @@
+using System;
+
 namespace ShardingConnector.CommandParser.Segment.DML.Pagination.limit
 {
 /*
@@ -14,7 +16,12 @@ namespace ShardingConnector.CommandParser.Segment.DML.Pagination.limit
         public ParameterMarkerLimitValueSegment(int startIndex, int stopIndex,int parameterIndex,string paramName) : base(startIndex, stopIndex)
         {
             _parameterIndex = parameterIndex;
-            _paramName = paramName;
+            _paramName = NormalizeParameterName(paramName);
+            
+        }
+        internal static string NormalizeParameterName(string name)
+        {
+            return name.StartsWith("@", StringComparison.Ordinal) || name.StartsWith("?", StringComparison.Ordinal) ? name.Substring(1) : name;
         }
 
         public int GetParameterIndex()

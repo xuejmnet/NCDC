@@ -130,7 +130,6 @@ namespace ShardingConnector.AppConsoleMySQLTest
         static void Insert(DbProviderFactory dataSource)
         {
             var dbConnection = dataSource.CreateConnection();
-
             dbConnection.ConnectionString = conn;
             dbConnection.Open();
             var dbCommand = dbConnection.CreateCommand();

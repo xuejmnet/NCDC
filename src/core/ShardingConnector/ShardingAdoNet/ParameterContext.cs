@@ -22,16 +22,19 @@ namespace ShardingConnector.ShardingAdoNet
                 _parameters.Add(dbParameter.ParameterName, dbParameter);
             }
         }
-        // private string ParameterNameAdapterWithAt(string parameterName)
+        //
+        // internal static string NormalizeParameterName(string name)
         // {
-        //     if (parameterName.StartsWith("?", StringComparison.Ordinal))
-        //     {
-        //         return parameterName;
-        //     }
-        //     else
-        //     {
-        //         return $"?{parameterName}";
-        //     }
+        //     name = name.Trim();
+        //
+        //     if ((name.StartsWith("@`", StringComparison.Ordinal) || name.StartsWith("?`", StringComparison.Ordinal)) && name.EndsWith("`", StringComparison.Ordinal))
+        //         return name.Substring(2, name.Length - 3).Replace("``", "`");
+        //     if ((name.StartsWith("@'", StringComparison.Ordinal) || name.StartsWith("?'", StringComparison.Ordinal)) && name.EndsWith("'", StringComparison.Ordinal))
+        //         return name.Substring(2, name.Length - 3).Replace("''", "'");
+        //     if ((name.StartsWith("@\"", StringComparison.Ordinal) || name.StartsWith("?\"", StringComparison.Ordinal)) && name.EndsWith("\"", StringComparison.Ordinal))
+        //         return name.Substring(2, name.Length - 3).Replace("\"\"", "\"");
+        //
+        //     return name.StartsWith("@", StringComparison.Ordinal) || name.StartsWith("?", StringComparison.Ordinal) ? name.Substring(1) : name;
         // }
 
         public ParameterContext(DbParameter[] dbParameters):this(dbParameters, dbParameters.Length)
