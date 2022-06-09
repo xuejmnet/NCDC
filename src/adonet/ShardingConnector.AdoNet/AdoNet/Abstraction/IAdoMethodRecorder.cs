@@ -11,12 +11,11 @@ namespace ShardingConnector.AdoNet.AdoNet.Abstraction
 {
     public interface IAdoMethodRecorder<T>
     {
-
-         /// <summary>
-         /// 从新播放target的创建后的动作
-         /// </summary>
-         /// <param name="target"></param>
-         void ReplyTargetMethodInvoke(T target);
+        /// <summary>
+        /// 从新播放target的创建后的动作
+        /// </summary>
+        /// <param name="target"></param>
+        void ReplyTargetMethodInvoke(T target);
 
         /// <summary>
         /// 记录target的动作

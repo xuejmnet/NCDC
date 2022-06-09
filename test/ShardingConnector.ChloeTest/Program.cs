@@ -62,6 +62,18 @@ namespace ShardingConnector.ChloeTest
             var users = context.Query<User>().Where(o=> ids.Contains(o.Id)).ToList();
         }
 
+        static void Test2()
+        {
+            var ids = new[]{"21","22"};
+            IDbContext context = new MySqlContext(() =>
+            {
+                var connection = MySqlConnectorFactory.Instance.CreateConnection();
+                connection.ConnectionString = conn;
+                return connection;
+            });
+            var users = context.Query<User>().Where(o=> ids.Contains(o.Id)).ToList();
+        }
+
         static TableRuleConfiguration CreateSysUserModTableRule()
         {
             TableRuleConfiguration result = new TableRuleConfiguration("SysUserMod", new List<string>()

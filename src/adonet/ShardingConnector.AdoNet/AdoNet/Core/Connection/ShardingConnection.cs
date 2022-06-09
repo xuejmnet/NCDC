@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using ShardingConnector.AdoNet.AdoNet.Abstraction;
 using ShardingConnector.AdoNet.AdoNet.Core.Command;
+using ShardingConnector.AdoNet.AdoNet.Core.Transaction;
 using ShardingConnector.Exceptions;
 using ShardingConnector.NewConnector.DataSource;
 using ShardingConnector.Transaction;
@@ -64,7 +65,7 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Connection
                 Task.WaitAll(multiTasks);
             }
 
-            return transaction;
+            return new ShardingTransaction(transaction,this);
         }
 
         public override void ChangeDatabase(string databaseName)
