@@ -19,6 +19,14 @@
       <ProjectReference Include="..\..\adonet\ShardingConnector.AdoNet\ShardingConnector.AdoNet.csproj" />
       <ProjectReference Include="..\..\antlr4\ShardingConnector.MySqlParser\ShardingConnector.MySqlParser.csproj" />
       <ProjectReference Include="..\..\core\ShardingConnector\ShardingConnector.csproj" />
+      <ProjectReference Include="..\ShardingConnector.Proxy.Common\ShardingConnector.Proxy.Common.csproj" />
+      <ProjectReference Include="..\ShardingConnector.Proxy.Network\ShardingConnector.Proxy.Network.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Reference Include="DotNetty.Transport.Libuv">
+        <HintPath>..\..\..\..\..\..\.nuget\packages\dotnetty.transport.libuv\0.7.2\lib\netstandard2.0\DotNetty.Transport.Libuv.dll</HintPath>
+      </Reference>
     </ItemGroup>
 
 </Project>

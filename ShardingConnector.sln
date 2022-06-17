@@ -85,6 +85,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShardingConnector.Proxy.Com
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShardingConnector.Proxy.Backend", "src\proxy\ShardingConnector.Proxy.Backend\ShardingConnector.Proxy.Backend.csproj", "{632F14EB-8586-4A07-8596-7F59F060D2D3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShardingConnector.Proxy.Network", "src\proxy\ShardingConnector.Proxy.Network\ShardingConnector.Proxy.Network.csproj", "{CF38325B-069F-47D8-8622-B5BE66946186}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -219,6 +221,10 @@ Global
 		{632F14EB-8586-4A07-8596-7F59F060D2D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{632F14EB-8586-4A07-8596-7F59F060D2D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{632F14EB-8586-4A07-8596-7F59F060D2D3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CF38325B-069F-47D8-8622-B5BE66946186}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CF38325B-069F-47D8-8622-B5BE66946186}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CF38325B-069F-47D8-8622-B5BE66946186}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CF38325B-069F-47D8-8622-B5BE66946186}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -263,6 +269,7 @@ Global
 		{4B20DE00-6EB8-4CBB-A0DA-C7ACA594BBA4} = {527EA305-8E22-4CDF-B41F-355C7599D340}
 		{D17A89BE-9D36-4BD5-B0A9-D359967E647B} = {527EA305-8E22-4CDF-B41F-355C7599D340}
 		{632F14EB-8586-4A07-8596-7F59F060D2D3} = {527EA305-8E22-4CDF-B41F-355C7599D340}
+		{CF38325B-069F-47D8-8622-B5BE66946186} = {527EA305-8E22-4CDF-B41F-355C7599D340}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FE6C7648-4D94-4A48-B67D-3161C6FE3BC0}

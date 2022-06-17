@@ -46,6 +46,8 @@ namespace ShardingConnector.DapperTest
             shardingRuleConfig.DefaultDataSourceName = "ds0";
             var shardingDbProviderFactory = new ShardingDbProviderFactory(dataSourceMap, shardingRuleConfig, new Dictionary<string, object>());
             Test1(shardingDbProviderFactory);
+            var mySqlConnection = new MySqlConnection();
+            var mySqlTransaction = mySqlConnection.BeginTransaction();
         }
 
         static void Test1(DbProviderFactory dbProviderFactory)

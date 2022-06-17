@@ -29,6 +29,7 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Connection
         private readonly TransactionTypeEnum _transactionType;
         private bool _isOpenTransaction = false;
         private readonly DbConnection _defaultDbConnection;
+        internal ShardingTransaction CurrentTransaction;
 
         public ShardingConnection(IDictionary<string, IDataSource> dataSourceMap, ShardingRuntimeContext runtimeContext,
             TransactionTypeEnum transactionType):this(
@@ -65,7 +66,9 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Connection
                 Task.WaitAll(multiTasks);
             }
 
-            return new ShardingTransaction(transaction,this);
+            var shardingTransaction = new ShardingTransaction(transaction,this);
+            CurrentTransaction = shardingTransaction;
+            return shardingTransaction;
         }
 
         public override void ChangeDatabase(string databaseName)
@@ -142,10 +145,11 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Connection
             return dataSource.CreateConnection();
         }
 
-       
+        private bool _isDispose;
 
         protected override void Dispose(bool disposing)
         {
+            _isDispose = true;
             _defaultDbConnection.Dispose();
             base.Dispose(disposing);
         }
@@ -153,6 +157,12 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Connection
         public override DbConnection GetDefaultDbConnection()
         {
             return _defaultDbConnection;
+        }
+        
+        private void VerifyNotDisposed()
+        {
+            if (_isDispose)
+                throw new ObjectDisposedException(GetType().Name);
         }
     }
 }

@@ -2,8 +2,11 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using ShardingConnector.Logger;
 using ShardingConnector.Merge.Engine;
+using ShardingConnector.Proxy.Common;
+using ShardingConnector.Proxy.Network;
 using ShardingConnector.RewriteEngine.Context;
 using ShardingConnector.Route;
 
@@ -23,14 +26,29 @@ namespace ShardingConnector.Proxy.Starter
 
         private const int DEFAULT_PORT = 3307;
 
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
             RegisterDecorator();
+            var port = GetPort(args);
             InternalLoggerFactory.DefaultFactory = _loggerFactory;
             var serivces = new ServiceCollection();
             serivces.AddSingleton<IConfiguration>(serviceProvider => _configuration);
             serivces.AddSingleton<ILoggerFactory>(serviceProvider => _loggerFactory);
+            serivces.AddSingleton<ShardingProxyOption>(serviceProvider =>
+            {
+                var proxyOption = serviceProvider.GetRequiredService<IOptionsSnapshot<ShardingProxyOption>>().Value;
+                if (port.HasValue)
+                {
+                    proxyOption.Port = port.Value;
+                }
 
+                return proxyOption;
+            });
+            serivces.AddSingleton<IShardingProxy,ShardingProxy>();
+            serivces.Configure<ShardingProxyOption>(_configuration);
+            var buildServiceProvider = serivces.BuildServiceProvider();
+            var shardingProxyOption = buildServiceProvider.GetRequiredService<ShardingProxyOption>();
+            await StartAsync(shardingProxyOption, GetPort(args));
             Console.WriteLine("Hello World!");
         }
 
@@ -41,17 +59,17 @@ namespace ShardingConnector.Proxy.Starter
             NewInstanceServiceLoader.Register<IResultProcessEngine>();
         }
 
-        private static int GetPort(string[] args)
+        private static int? GetPort(string[] args)
         {
             if (args.Length == 0)
             {
-                return DEFAULT_PORT;
+                return null;
             }
 
-            return int.TryParse(args[0], out var port) ? port : DEFAULT_PORT;
+            return int.TryParse(args[0], out var port) ? port : null;
         }
 
-        private static void Start(IDictionary<string, string> options, int port)
+        private static async Task StartAsync(ShardingProxyOption option, int? port)
         {
             
         }
