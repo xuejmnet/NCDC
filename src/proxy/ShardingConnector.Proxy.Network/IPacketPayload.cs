@@ -1,6 +1,8 @@
+using DotNetty.Buffers;
+
 namespace ShardingConnector.Proxy.Network;
 
-public interface IPacketPayload
+public interface IPacketPayload:IDisposable
 {
-    byte[] GetBytes();
+    IByteBuffer GetByteBuffer();
 }

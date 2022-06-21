@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using ShardingConnector.Logger;
@@ -15,12 +16,12 @@ namespace ShardingConnector.Proxy.Starter
     class Program
     {
         private static IConfiguration _configuration =
-            new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
+            new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("appsettings.json").Build();
 
         private static ILoggerFactory _loggerFactory = LoggerFactory.Create(builder =>
         {
-            builder.AddFilter("Microsoft", LogLevel.Warning)
-                .AddFilter("System", LogLevel.Warning)
+            builder.AddFilter("Microsoft", LogLevel.Debug)
+                .AddFilter("System", LogLevel.Debug)
                 .AddSimpleConsole(c => c.TimestampFormat = "[yyyy-MM-dd HH:mm:ss]");
         });
 
@@ -44,12 +45,17 @@ namespace ShardingConnector.Proxy.Starter
 
                 return proxyOption;
             });
+            // serivces.AddSingleton<ServerHandlerInitializer>();
+            serivces.AddSingleton<PackDecoder>();
+            serivces.AddSingleton<PackEncoder>();
+            // serivces.AddSingleton<ApplicationChannelInboundHandler>();
             serivces.AddSingleton<IShardingProxy,ShardingProxy>();
             serivces.Configure<ShardingProxyOption>(_configuration);
             var buildServiceProvider = serivces.BuildServiceProvider();
             var shardingProxyOption = buildServiceProvider.GetRequiredService<ShardingProxyOption>();
-            await StartAsync(shardingProxyOption, GetPort(args));
+            await StartAsync(buildServiceProvider,shardingProxyOption, GetPort(args));
             Console.WriteLine("Hello World!");
+            Console.ReadLine();
         }
 
         private static void RegisterDecorator()
@@ -69,9 +75,10 @@ namespace ShardingConnector.Proxy.Starter
             return int.TryParse(args[0], out var port) ? port : null;
         }
 
-        private static async Task StartAsync(ShardingProxyOption option, int? port)
+        private static async Task StartAsync(IServiceProvider serviceProvider,ShardingProxyOption option, int? port)
         {
-            
+            var shardingProxy = serviceProvider.GetRequiredService<IShardingProxy>();
+           await shardingProxy.StartAsync();
         }
     }
 }
