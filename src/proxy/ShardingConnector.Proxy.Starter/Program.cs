@@ -7,9 +7,11 @@ using Microsoft.Extensions.Options;
 using ShardingConnector.Logger;
 using ShardingConnector.Merge.Engine;
 using ShardingConnector.Proxy.Common;
+using ShardingConnector.Proxy.Common.Context;
 using ShardingConnector.Proxy.Network;
 using ShardingConnector.RewriteEngine.Context;
 using ShardingConnector.Route;
+using ShardingConnector.ShardingCommon.Core.Rule;
 
 namespace ShardingConnector.Proxy.Starter
 {
@@ -53,6 +55,9 @@ namespace ShardingConnector.Proxy.Starter
             serivces.Configure<ShardingProxyOption>(_configuration);
             var buildServiceProvider = serivces.BuildServiceProvider();
             var shardingProxyOption = buildServiceProvider.GetRequiredService<ShardingProxyOption>();
+            var authentication = new Authentication();
+            authentication.Users.Add("root",new ProxyUser("123456",new List<string>(){"test"}));
+            ShardingProxyContext.GetInstance().Init(authentication,new Dictionary<string, string>());
             await StartAsync(buildServiceProvider,shardingProxyOption, GetPort(args));
             Console.WriteLine("Hello World!");
             Console.ReadLine();

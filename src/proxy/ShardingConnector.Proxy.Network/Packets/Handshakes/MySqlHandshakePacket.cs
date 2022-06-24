@@ -2,7 +2,7 @@ using System.Text;
 
 namespace ShardingConnector.Proxy.Network.Packets.Handshakes;
 
-public class MySqlHandshakePacket:MysqlPacket
+public class MySqlHandshakePacket:IMysqlPacket
 {
     private readonly int protocolVersion = MySQLServerInfo.PROTOCOL_VERSION;
     private readonly string _serverVersion;

@@ -16,7 +16,7 @@ public class PackEncoder:MessageToByteEncoder<DatabasePacket>
         //         out.writeByte(message.getSequenceId());
         //         out.writeBytes(payload.getByteBuf());
         // }
-        var mysqlPacket = message as MysqlPacket;
+        var mysqlPacket = message as IMysqlPacket;
         using (var mySqlPacketPayload = new MySqlPacketPayload(context.Allocator.Buffer(),Encoding.Default))
         {
             mysqlPacket.Write(mySqlPacketPayload);

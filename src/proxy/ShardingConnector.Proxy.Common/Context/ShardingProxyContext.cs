@@ -6,7 +6,7 @@ public sealed class ShardingProxyContext
 {
     private static readonly ShardingProxyContext INSTANCE = new ShardingProxyContext();
     private   IDictionary<string, string> _properties = new Dictionary<string, string>();
-    private Authentication _authentication;
+    public Authentication Authentication { get; private set; }
     private bool _isCircuitBreak;
     private ShardingProxyContext(){}
 
@@ -17,7 +17,7 @@ public sealed class ShardingProxyContext
 
     public void Init(Authentication authentication, IDictionary<string, string> properties)
     {
-        _authentication = authentication;
+        Authentication = authentication;
         _properties = properties;
     }
 }

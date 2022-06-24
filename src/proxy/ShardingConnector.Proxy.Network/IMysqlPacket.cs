@@ -1,6 +1,6 @@
 namespace ShardingConnector.Proxy.Network;
 
-public interface MysqlPacket:DatabasePacket<MySqlPacketPayload>
+public interface IMysqlPacket:DatabasePacket<MySqlPacketPayload>
 {
     int GetSequenceId();
 }

@@ -15,7 +15,10 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\core\ShardingConnector.Common\ShardingConnector.Common.csproj" />
       <ProjectReference Include="..\..\core\ShardingConnector\ShardingConnector.csproj" />
+      <ProjectReference Include="..\ShardingConnector.Protocol\ShardingConnector.Protocol.csproj" />
+      <ProjectReference Include="..\ShardingConnector.Proxy.Common\ShardingConnector.Proxy.Common.csproj" />
     </ItemGroup>
 
 </Project>

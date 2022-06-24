@@ -1,7 +1,7 @@
 using System.Text;
 using DotNetty.Buffers;
 using DotNetty.Transport.Channels;
-using ShardingConnector.Proxy.Network.Engines;
+using ShardingConnector.Proxy.Network.Authentications;
 using ShardingConnector.Proxy.Network.Servers;
 using ShardingConnector.Transaction;
 
@@ -10,6 +10,7 @@ namespace ShardingConnector.Proxy.Network;
 public class ApplicationChannelInboundHandler:SimpleChannelInboundHandler<object>
 {
     private readonly ServerConnection _serverConnection = new ServerConnection(TransactionTypeEnum.LOCAL);
+    private readonly IAuthenticationEngine _authenticationEngine = new MySqlAuthenticationEngine();
 
     private  volatile bool authorized;
     public ApplicationChannelInboundHandler()
@@ -17,8 +18,7 @@ public class ApplicationChannelInboundHandler:SimpleChannelInboundHandler<object
     }
     public override void ChannelActive(IChannelHandlerContext context)
     {
-        var mySqlAuthenticationEngine = new MySqlAuthenticationEngine();
-        mySqlAuthenticationEngine.Handshake(context,_serverConnection);
+        _authenticationEngine.Handshake(context,_serverConnection);
     }
 
     public override void ChannelInactive(IChannelHandlerContext context)
@@ -33,20 +33,40 @@ public class ApplicationChannelInboundHandler:SimpleChannelInboundHandler<object
 
     protected override void ChannelRead0(IChannelHandlerContext ctx, object msg)
     {
-        if (!authorized)
-        {
-            authorized=a
-        }
-        Console.WriteLine("收到消息");
-
         var byteBuffer = (IByteBuffer)msg;
         var s = byteBuffer.ToString(Encoding.Default);
         Console.WriteLine(s);
         byteBuffer.Retain();
+        Console.WriteLine("收到消息");
+        if (!authorized)
+        {
+            authorized = Auth(ctx, (IByteBuffer)msg);
+        }
+
+        Console.WriteLine("认证："+authorized);
+
+        // var byteBuffer = (IByteBuffer)msg;
+        // var s = byteBuffer.ToString(Encoding.Default);
+        // Console.WriteLine(s);
+        // byteBuffer.Retain();
     }
 
     private bool Auth(IChannelHandlerContext context,IByteBuffer byteBuffer)
     {
-        
+        using (var payload = new MySqlPacketPayload(byteBuffer,Encoding.UTF8))
+        {
+            try
+            {
+                return _authenticationEngine.Auth(context, payload, _serverConnection);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("exception occur:");
+                Console.WriteLine($"{e}");
+                // context.WriteAndFlushAsync()
+            }
+        }
+
+        return false;
     }
 }

@@ -5,5 +5,6 @@ namespace ShardingConnector.Proxy.Network.Authentications;
 
 public interface IAuthenticationEngine
 {
+    void Handshake(IChannelHandlerContext context, ServerConnection serverConnection);
     bool Auth(IChannelHandlerContext context, IPacketPayload payload, ServerConnection serverConnection);
 }

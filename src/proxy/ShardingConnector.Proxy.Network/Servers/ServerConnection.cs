@@ -12,6 +12,7 @@ public class ServerConnection:IDisposable
     private  TransactionTypeEnum _transactionType;
     private  bool _supportHint;
     public int ConnectionId { get; set; }
+    public string UserName{ get; set; }
 
     public ServerConnection(TransactionTypeEnum transactionType):this(transactionType,false)
     {
@@ -21,6 +22,17 @@ public class ServerConnection:IDisposable
     {
         _transactionType = transactionType;
         _supportHint = supportHint;
+    }
+
+    public string SchemaName { get;private set; }
+    public string LogicSchema { get; private set; }
+
+    public void SetCurrentSchema(string schemaName)
+    {
+        //todo 判断
+        SchemaName = schemaName;
+        LogicSchema = schemaName;
+
     }
     public void Dispose()
     {
