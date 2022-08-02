@@ -1,6 +1,7 @@
 using System.Text;
 using DotNetty.Buffers;
 using DotNetty.Transport.Channels;
+using ShardingConnector.Proxy.Application;
 using ShardingConnector.Proxy.Network.Authentications;
 using ShardingConnector.Proxy.Network.Servers;
 using ShardingConnector.Transaction;
@@ -34,16 +35,23 @@ public class ApplicationChannelInboundHandler:SimpleChannelInboundHandler<object
     protected override void ChannelRead0(IChannelHandlerContext ctx, object msg)
     {
         var byteBuffer = (IByteBuffer)msg;
-        var s = byteBuffer.ToString(Encoding.Default);
+        var s = byteBuffer.ToString(Encoding.UTF8);
         Console.WriteLine(s);
         byteBuffer.Retain();
         Console.WriteLine("收到消息");
         if (!authorized)
         {
-            authorized = Auth(ctx, (IByteBuffer)msg);
+            Console.WriteLine("authorized:"+authorized);
+            authorized = Auth(ctx, byteBuffer);
+            return;
         }
 
         Console.WriteLine("认证："+authorized);
+        var appCommand = new AppCommand(this._serverConnection,ctx,msg);
+        Task.Run(async () =>
+        {
+            await appCommand.ExecuteAsync();
+        });
 
         // var byteBuffer = (IByteBuffer)msg;
         // var s = byteBuffer.ToString(Encoding.Default);

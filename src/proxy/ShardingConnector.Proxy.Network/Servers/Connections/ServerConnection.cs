@@ -1,4 +1,10 @@
+using System.Data.Common;
 using ShardingConnector.Transaction;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Threading.Tasks;
+using ShardingConnector.Base;
 
 namespace ShardingConnector.Proxy.Network.Servers;
 
@@ -13,6 +19,13 @@ public class ServerConnection:IDisposable
     private  bool _supportHint;
     public int ConnectionId { get; set; }
     public string UserName{ get; set; }
+
+    private readonly MultiValueDictionary<string, DbConnection> _cachedConnections =
+        new MultiValueDictionary<string, DbConnection>();
+    private readonly ICollection<DbCommand> _cacheCommands 
+        = new SynchronizedCollection<DbCommand>();
+    private readonly ICollection<DbDataReader> _cacheDataReaders 
+        = new SynchronizedCollection<DbDataReader>();
 
     public ServerConnection(TransactionTypeEnum transactionType):this(transactionType,false)
     {
