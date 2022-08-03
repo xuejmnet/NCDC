@@ -4,5 +4,5 @@ public interface ISqlErrorCode
 {
     int GetErrorCode();
     string GetSqlState();
-    string GetErrorMessage();
+    string GetErrorMessage(params object[] args);
 }
