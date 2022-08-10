@@ -2,19 +2,19 @@ using DotNetty.Buffers;
 using DotNetty.Codecs;
 using DotNetty.Transport.Channels;
 using Microsoft.Extensions.Logging;
+using ShardingConnector.Logger;
 
 namespace ShardingConnector.ProtocolCore.Codecs;
 
-public sealed class MessagePackDecoder:ByteToMessageDecoder
+public sealed class MessagePacketDecoder:ByteToMessageDecoder
 {
-    private readonly ILogger<MessagePackDecoder> _logger;
+    private static readonly ILogger<MessagePacketDecoder> _logger = InternalLoggerFactory.CreateLogger<MessagePacketDecoder>();
     private readonly bool _isDebugEnabled;
     private readonly IDatabasePacketCodecEngine _databasePacketCodecEngine;
 
-    public MessagePackDecoder(ILogger<MessagePackDecoder> logger,IDatabasePacketCodecEngine databasePacketCodecEngine)
+    public MessagePacketDecoder(IDatabasePacketCodecEngine databasePacketCodecEngine)
     {
-        _logger = logger;
-        _isDebugEnabled=logger.IsEnabled(LogLevel.Debug);
+        _isDebugEnabled=_logger.IsEnabled(LogLevel.Debug);
         _databasePacketCodecEngine = databasePacketCodecEngine;
     }
     protected override void Decode(IChannelHandlerContext context, IByteBuffer input, List<object> output)

@@ -2,7 +2,7 @@ using System.Text;
 using DotNetty.Buffers;
 using ShardingConnector.ProtocolCore.Payloads;
 
-namespace ShardingConnector.ProtocolMysql.Payloads;
+namespace ShardingConnector.ProtocolMysql.Payload;
 
 public sealed class MySqlPacketPayload:IPacketPayload
 {

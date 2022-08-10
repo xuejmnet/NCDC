@@ -1,8 +1,8 @@
 using ShardingConnector.ProtocolCore.Payloads;
-using ShardingConnector.ProtocolMysql.Constants;
-using ShardingConnector.ProtocolMysql.Payloads;
+using ShardingConnector.ProtocolMysql.Constant;
+using ShardingConnector.ProtocolMysql.Payload;
 
-namespace ShardingConnector.ProtocolMysql.Packets.Generics;
+namespace ShardingConnector.ProtocolMysql.Packet.Generic;
 
 public class MySqlOkPacket : IMysqlPacket
 {
@@ -11,20 +11,20 @@ public class MySqlOkPacket : IMysqlPacket
     public int SequenceId { get; }
     public long AffectedRows { get; }
     public long LastInsertId { get; }
-    public MySQLStatusFlagEnum StatusFlag { get; }
+    public MySqlStatusFlagEnum StatusFlag { get; }
     public int Warnings { get; }
     public string Info { get; }
 
-    public MySqlOkPacket(int sequenceId, MySQLStatusFlagEnum statusFlag) : this(sequenceId, 0L, 0L, statusFlag)
+    public MySqlOkPacket(int sequenceId, MySqlStatusFlagEnum statusFlag) : this(sequenceId, 0L, 0L, statusFlag)
     {
     }
 
-    public MySqlOkPacket(int sequenceId, long affectedRows, long lastInsertId, MySQLStatusFlagEnum statusFlag) : this(
+    public MySqlOkPacket(int sequenceId, long affectedRows, long lastInsertId, MySqlStatusFlagEnum statusFlag) : this(
         sequenceId, affectedRows, lastInsertId, statusFlag, 0, string.Empty)
     {
     }
 
-    public MySqlOkPacket(int sequenceId, long affectedRows, long lastInsertId, MySQLStatusFlagEnum statusFlag,
+    public MySqlOkPacket(int sequenceId, long affectedRows, long lastInsertId, MySqlStatusFlagEnum statusFlag,
         int warnings, string info)
     {
         SequenceId = sequenceId;
@@ -45,7 +45,7 @@ public class MySqlOkPacket : IMysqlPacket
 
         AffectedRows = payload.ReadIntLenenc();
         LastInsertId = payload.ReadIntLenenc();
-        StatusFlag = (MySQLStatusFlagEnum)payload.ReadInt2();
+        StatusFlag = (MySqlStatusFlagEnum)payload.ReadInt2();
         Warnings = payload.ReadInt2();
         Info = payload.ReadStringEOF();
     }
@@ -58,5 +58,9 @@ public class MySqlOkPacket : IMysqlPacket
         payload.WriteInt2((int)StatusFlag);
         payload.WriteInt2(Warnings);
         payload.WriteStringEOF(Info);
+    }
+    public void Write(IPacketPayload payload)
+    {
+        Write((MySqlPacketPayload)payload);
     }
 }

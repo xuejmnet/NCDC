@@ -28,7 +28,7 @@ public interface IDatabasePacketCodecEngine
     /// <param name="context"></param>
     /// <param name="message"></param>
     /// <param name="output"></param>
-    void Encode(IChannelHandlerContext context, IDatabasePacket<IPacketPayload> message, IByteBuffer output);
+    void Encode(IChannelHandlerContext context, IDatabasePacket message, IByteBuffer output);
 
     /// <summary>
     /// 创建一个消息包

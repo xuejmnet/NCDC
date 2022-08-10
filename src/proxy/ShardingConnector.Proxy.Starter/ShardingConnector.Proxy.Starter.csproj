@@ -19,8 +19,11 @@
       <ProjectReference Include="..\..\adonet\ShardingConnector.AdoNet\ShardingConnector.AdoNet.csproj" />
       <ProjectReference Include="..\..\antlr4\ShardingConnector.MySqlParser\ShardingConnector.MySqlParser.csproj" />
       <ProjectReference Include="..\..\core\ShardingConnector\ShardingConnector.csproj" />
+      <ProjectReference Include="..\..\protocol\ShardingConnector.ProtocolCore\ShardingConnector.ProtocolCore.csproj" />
       <ProjectReference Include="..\ShardingConnector.Proxy.Common\ShardingConnector.Proxy.Common.csproj" />
       <ProjectReference Include="..\ShardingConnector.Proxy.Network\ShardingConnector.Proxy.Network.csproj" />
+      <ProjectReference Include="..\ShardingConnector.ProxyClientMySql\ShardingConnector.ProxyClientMySql.csproj" />
+      <ProjectReference Include="..\ShardingConnector.ProxyClient\ShardingConnector.ProxyClient.csproj" />
     </ItemGroup>
 
     <ItemGroup>

@@ -1,12 +1,9 @@
 // using System.Text;
 // using DotNetty.Buffers;
 // using DotNetty.Transport.Channels;
-// using ShardingConnector.Proxy.Application;
-// using ShardingConnector.Proxy.Network.Authentications;
-// using ShardingConnector.Proxy.Network.Servers;
 // using ShardingConnector.Transaction;
 //
-// namespace ShardingConnector.Proxy.Network;
+// namespace ShardingConnector.Proxy.Application.DotNettys;
 //
 // public class ApplicationChannelInboundHandler:SimpleChannelInboundHandler<object>
 // {

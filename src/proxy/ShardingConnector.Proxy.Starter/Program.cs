@@ -9,6 +9,8 @@ using ShardingConnector.Merge.Engine;
 using ShardingConnector.Proxy.Common;
 using ShardingConnector.Proxy.Common.Context;
 using ShardingConnector.Proxy.Network;
+using ShardingConnector.ProxyClient;
+using ShardingConnector.ProxyClientMySql;
 using ShardingConnector.RewriteEngine.Context;
 using ShardingConnector.Route;
 using ShardingConnector.ShardingCommon.Core.Rule;
@@ -22,8 +24,9 @@ namespace ShardingConnector.Proxy.Starter
 
         private static ILoggerFactory _loggerFactory = LoggerFactory.Create(builder =>
         {
-            builder.AddFilter("Microsoft", LogLevel.Debug)
-                .AddFilter("System", LogLevel.Debug)
+            builder.AddFilter("Microsoft", LogLevel.Trace)
+                .AddFilter("System", LogLevel.Trace)
+                .AddFilter("Default", LogLevel.Trace)
                 .AddSimpleConsole(c => c.TimestampFormat = "[yyyy-MM-dd HH:mm:ss]");
         });
 
@@ -52,6 +55,7 @@ namespace ShardingConnector.Proxy.Starter
             serivces.AddSingleton<PackEncoder>();
             // serivces.AddSingleton<ApplicationChannelInboundHandler>();
             serivces.AddSingleton<IShardingProxy,ShardingProxy>();
+            serivces.AddSingleton<IDatabaseProtocolClientEngine,MySqlClientEngine>();
             serivces.Configure<ShardingProxyOption>(_configuration);
             var buildServiceProvider = serivces.BuildServiceProvider();
             var shardingProxyOption = buildServiceProvider.GetRequiredService<ShardingProxyOption>();

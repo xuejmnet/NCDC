@@ -95,6 +95,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShardingConnector.ProtocolC
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShardingConnector.ProtocolMysql", "src\protocol\ShardingConnector.ProtocolMysql\ShardingConnector.ProtocolMysql.csproj", "{C091F56A-A902-4507-A3C3-4D8A50468865}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShardingConnector.ProxyServer", "src\proxy\ShardingConnector.ProxyServer\ShardingConnector.ProxyServer.csproj", "{D27A5095-10AA-44E2-B7E4-DFFC775A83F4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShardingConnector.ProxyClient", "src\proxy\ShardingConnector.ProxyClient\ShardingConnector.ProxyClient.csproj", "{C3750B32-000A-4214-A9F3-BDA6A1298D1C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShardingConnector.ProxyClientMySql", "src\proxy\ShardingConnector.ProxyClientMySql\ShardingConnector.ProxyClientMySql.csproj", "{7EE37FAA-A21A-454F-BE60-4D503CE3D513}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -245,6 +251,18 @@ Global
 		{C091F56A-A902-4507-A3C3-4D8A50468865}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C091F56A-A902-4507-A3C3-4D8A50468865}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C091F56A-A902-4507-A3C3-4D8A50468865}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D27A5095-10AA-44E2-B7E4-DFFC775A83F4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D27A5095-10AA-44E2-B7E4-DFFC775A83F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D27A5095-10AA-44E2-B7E4-DFFC775A83F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D27A5095-10AA-44E2-B7E4-DFFC775A83F4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C3750B32-000A-4214-A9F3-BDA6A1298D1C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C3750B32-000A-4214-A9F3-BDA6A1298D1C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C3750B32-000A-4214-A9F3-BDA6A1298D1C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C3750B32-000A-4214-A9F3-BDA6A1298D1C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7EE37FAA-A21A-454F-BE60-4D503CE3D513}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7EE37FAA-A21A-454F-BE60-4D503CE3D513}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7EE37FAA-A21A-454F-BE60-4D503CE3D513}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7EE37FAA-A21A-454F-BE60-4D503CE3D513}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -294,6 +312,9 @@ Global
 		{956A16CB-0A7F-44EC-AD72-9A2C693C09B0} = {8D052C6C-F76F-420E-AE82-241352E5ABB4}
 		{DB1D8A08-19AD-4946-83C0-1F7D504A5B86} = {956A16CB-0A7F-44EC-AD72-9A2C693C09B0}
 		{C091F56A-A902-4507-A3C3-4D8A50468865} = {956A16CB-0A7F-44EC-AD72-9A2C693C09B0}
+		{D27A5095-10AA-44E2-B7E4-DFFC775A83F4} = {527EA305-8E22-4CDF-B41F-355C7599D340}
+		{C3750B32-000A-4214-A9F3-BDA6A1298D1C} = {527EA305-8E22-4CDF-B41F-355C7599D340}
+		{7EE37FAA-A21A-454F-BE60-4D503CE3D513} = {527EA305-8E22-4CDF-B41F-355C7599D340}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FE6C7648-4D94-4A48-B67D-3161C6FE3BC0}

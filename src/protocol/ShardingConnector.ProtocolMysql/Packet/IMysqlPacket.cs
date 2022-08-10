@@ -1,7 +1,7 @@
 using ShardingConnector.ProtocolCore.Packets;
-using ShardingConnector.ProtocolMysql.Payloads;
+using ShardingConnector.ProtocolMysql.Payload;
 
-namespace ShardingConnector.ProtocolMysql.Packets;
+namespace ShardingConnector.ProtocolMysql.Packet;
 
 public interface IMysqlPacket:IDatabasePacket<MySqlPacketPayload>
 {

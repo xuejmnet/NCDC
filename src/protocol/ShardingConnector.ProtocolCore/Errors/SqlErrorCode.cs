@@ -23,8 +23,8 @@ public class SqlErrorCode:ISqlErrorCode
         return _sqlState;
     }
 
-    public string GetErrorMessage(params object[] args)
+    public string GetErrorMessage()
     {
-        return string.Format(_errorMessage,args);
+        return _errorMessage;
     }
 }

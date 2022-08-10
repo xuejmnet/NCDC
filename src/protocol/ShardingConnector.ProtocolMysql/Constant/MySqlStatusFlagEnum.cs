@@ -1,6 +1,6 @@
-namespace ShardingConnector.ProtocolMysql.Constants;
+namespace ShardingConnector.ProtocolMysql.Constant;
 
-public enum MySQLStatusFlagEnum
+public enum MySqlStatusFlagEnum
 {
     SERVER_STATUS_IN_TRANS=0x0001,
     

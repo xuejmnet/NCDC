@@ -3,25 +3,25 @@ using DotNetty.Buffers;
 using DotNetty.Codecs;
 using DotNetty.Transport.Channels;
 using Microsoft.Extensions.Logging;
+using ShardingConnector.Logger;
 using ShardingConnector.ProtocolCore.Packets;
 using ShardingConnector.ProtocolCore.Payloads;
 
 namespace ShardingConnector.ProtocolCore.Codecs;
 
-public sealed class MessagePackEncoder:MessageToByteEncoder<IDatabasePacket<IPacketPayload>>
+public sealed class MessagePacketEncoder:MessageToByteEncoder<IDatabasePacket>
 {
-    private readonly ILogger<MessagePackEncoder> _logger;
+    private readonly ILogger<MessagePacketEncoder> _logger= InternalLoggerFactory.CreateLogger<MessagePacketEncoder>();
     private readonly bool _isDebugEnabled;
     private readonly IDatabasePacketCodecEngine _databasePacketCodecEngine;
 
-    public MessagePackEncoder(ILogger<MessagePackEncoder> logger,IDatabasePacketCodecEngine databasePacketCodecEngine)
+    public MessagePacketEncoder(IDatabasePacketCodecEngine databasePacketCodecEngine)
     {
-        _logger = logger;
-        _isDebugEnabled=logger.IsEnabled(LogLevel.Debug);
+        _isDebugEnabled=_logger.IsEnabled(LogLevel.Debug);
         _databasePacketCodecEngine = databasePacketCodecEngine;
     }
     public override bool IsSharable => true;
-    protected override void Encode(IChannelHandlerContext context, IDatabasePacket<IPacketPayload> message, IByteBuffer output)
+    protected override void Encode(IChannelHandlerContext context, IDatabasePacket message, IByteBuffer output)
     {
         // try (MySQLPacketPayload payload = new MySQLPacketPayload(context.alloc().buffer())) {
         //     message.write(payload);

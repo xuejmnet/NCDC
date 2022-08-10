@@ -1,8 +1,9 @@
 using ShardingConnector.ProtocolCore;
-using ShardingConnector.ProtocolMysql.Constants;
-using ShardingConnector.ProtocolMysql.Payloads;
+using ShardingConnector.ProtocolCore.Payloads;
+using ShardingConnector.ProtocolMysql.Constant;
+using ShardingConnector.ProtocolMysql.Payload;
 
-namespace ShardingConnector.ProtocolMysql.Packets.Generics;
+namespace ShardingConnector.ProtocolMysql.Packet.Generic;
 
 public class MySqlEofPacket:IMysqlPacket
 {
@@ -11,11 +12,11 @@ public class MySqlEofPacket:IMysqlPacket
     /// </summary>
     public const int HEADER = 0xfe;
 
-    public MySqlEofPacket(int sequenceId,MySQLStatusFlagEnum statusFlag):this(sequenceId,0,statusFlag)
+    public MySqlEofPacket(int sequenceId,MySqlStatusFlagEnum statusFlag):this(sequenceId,0,statusFlag)
     {
         
     }
-    public MySqlEofPacket(int sequenceId,int warnings,MySQLStatusFlagEnum statusFlag)
+    public MySqlEofPacket(int sequenceId,int warnings,MySqlStatusFlagEnum statusFlag)
     {
         SequenceId = sequenceId;
         Warnings = warnings;
@@ -27,7 +28,7 @@ public class MySqlEofPacket:IMysqlPacket
         SequenceId = payload.ReadInt1();
         Check.ArgumentIfFail(HEADER==payload.ReadInt1(),"header of MySql Eof packet must be `0xfe`.");
         Warnings = payload.ReadInt2();
-        StatusFlag=(MySQLStatusFlagEnum)payload.ReadInt2();
+        StatusFlag=(MySqlStatusFlagEnum)payload.ReadInt2();
     }
     public void Write(MySqlPacketPayload payload)
     {
@@ -38,5 +39,9 @@ public class MySqlEofPacket:IMysqlPacket
 
     public int SequenceId { get; }
     public int Warnings { get; }
-    public MySQLStatusFlagEnum StatusFlag { get; }
+    public MySqlStatusFlagEnum StatusFlag { get; }
+    public void Write(IPacketPayload payload)
+    {
+        Write((MySqlPacketPayload)payload);
+    }
 }

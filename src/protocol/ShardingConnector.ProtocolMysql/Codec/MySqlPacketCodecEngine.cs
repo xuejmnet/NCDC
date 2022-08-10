@@ -3,12 +3,14 @@ using DotNetty.Buffers;
 using DotNetty.Transport.Channels;
 using ShardingConnector.ProtocolCore;
 using ShardingConnector.ProtocolCore.Codecs;
+using ShardingConnector.ProtocolCore.Errors;
 using ShardingConnector.ProtocolCore.Packets;
 using ShardingConnector.ProtocolCore.Payloads;
-using ShardingConnector.ProtocolMysql.Packets.Generics;
-using ShardingConnector.ProtocolMysql.Payloads;
+using ShardingConnector.ProtocolMysql.Packet;
+using ShardingConnector.ProtocolMysql.Packet.Generic;
+using ShardingConnector.ProtocolMysql.Payload;
 
-namespace ShardingConnector.ProtocolMysql.Codecs;
+namespace ShardingConnector.ProtocolMysql.Codec;
 
 public sealed class MySqlPacketCodecEngine : IDatabasePacketCodecEngine
 {
@@ -78,10 +80,11 @@ public sealed class MySqlPacketCodecEngine : IDatabasePacketCodecEngine
         _pendingmessages.Clear();
     }
 
-    public void Encode(IChannelHandlerContext context, IDatabasePacket<IPacketPayload> message, IByteBuffer output)
+    public void Encode(IChannelHandlerContext context, IDatabasePacket message, IByteBuffer output)
     {
         var markWriterIndex = PrepareMessageHeader(output).MarkWriterIndex();
-        var payload = new MySqlPacketPayload(markWriterIndex,context.Channel.GetAttribute(CommonConstants.CHARSET_ATTRIBUTE_KEY).Get());
+        var encoding = context.Channel.GetAttribute(CommonConstants.CHARSET_ATTRIBUTE_KEY).Get();
+        var payload = new MySqlPacketPayload(markWriterIndex,encoding);
         try
         {
             message.Write(payload);
@@ -89,8 +92,18 @@ public sealed class MySqlPacketCodecEngine : IDatabasePacketCodecEngine
         catch (Exception ex)
         {
             output.ResetWriterIndex();
-            new MySqlErrPacket(1,common)
+            new MySqlErrPacket(1, CommonSqlErrorCode.UNKNOWN_EXCEPTION_ARGS1, ex.Message).Write(payload);
         }
+        finally
+        {
+            UpdateMessageHeader(output, ((IMysqlPacket)message).SequenceId);
+        }
+    }
+
+    private void UpdateMessageHeader(IByteBuffer byteBuffer, int sequenceId)
+    {
+        byteBuffer.SetMediumLE(0, byteBuffer.ReadableBytes - PAYLOAD_LENGTH - SEQUENCE_LENGTH);
+        byteBuffer.SetByte(3, sequenceId);
     }
 
     private IByteBuffer PrepareMessageHeader(IByteBuffer output)
@@ -100,6 +113,6 @@ public sealed class MySqlPacketCodecEngine : IDatabasePacketCodecEngine
 
     public IPacketPayload CreatePacketPayload(IByteBuffer message, Encoding encoding)
     {
-        throw new NotImplementedException();
+        return new MySqlPacketPayload(message, encoding);
     }
 }

@@ -1,8 +1,9 @@
 using ShardingConnector.ProtocolCore;
 using ShardingConnector.ProtocolCore.Errors;
-using ShardingConnector.ProtocolMysql.Payloads;
+using ShardingConnector.ProtocolCore.Payloads;
+using ShardingConnector.ProtocolMysql.Payload;
 
-namespace ShardingConnector.ProtocolMysql.Packets.Generics;
+namespace ShardingConnector.ProtocolMysql.Packet.Generic;
 
 public class MySqlErrPacket: IMysqlPacket
 {
@@ -17,7 +18,7 @@ public class MySqlErrPacket: IMysqlPacket
     public string ErrorMessage { get; }
 
 
-    public MySqlErrPacket(int sequenceId,ISqlErrorCode sqlErrorCode):this(sequenceId,sqlErrorCode.GetErrorCode(),sqlErrorCode.GetSqlState(),sqlErrorCode.GetErrorMessage())
+    public MySqlErrPacket(int sequenceId,ISqlErrorCode sqlErrorCode,params object[] errorMessageArguments):this(sequenceId,sqlErrorCode.GetErrorCode(),sqlErrorCode.GetSqlState(),string.Format(sqlErrorCode.GetErrorMessage(),errorMessageArguments))
     {
         
     }
@@ -54,5 +55,10 @@ public class MySqlErrPacket: IMysqlPacket
     public int GetSequenceId()
     {
         throw new NotImplementedException();
+    }
+
+    public void Write(IPacketPayload payload)
+    {
+        Write((MySqlPacketPayload)payload);
     }
 }

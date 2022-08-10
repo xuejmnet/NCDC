@@ -6,8 +6,12 @@ using DotNetty.Transport.Channels.Sockets;
 using DotNetty.Transport.Libuv;
 using Microsoft.Extensions.Logging;
 using ShardingConnector.Logger;
+using ShardingConnector.ProtocolCore.Codecs;
+using ShardingConnector.ProtocolCore.DotNetty;
 using ShardingConnector.Proxy.Common;
 using ShardingConnector.Proxy.Network;
+using ShardingConnector.ProxyClient;
+using ShardingConnector.ProxyClient.DotNetty;
 using LogLevel = DotNetty.Handlers.Logging.LogLevel;
 
 namespace ShardingConnector.Proxy.Starter;
@@ -15,7 +19,10 @@ namespace ShardingConnector.Proxy.Starter;
 public class ShardingProxy:IShardingProxy
 {
     private static readonly ILogger<ShardingProxy> _logger = InternalLoggerFactory.CreateLogger<ShardingProxy>();
+ 
     private readonly ShardingProxyOption _shardingProxyOption;
+    private readonly IDatabasePacketCodecEngine _databasePacketCodecEngine;
+    private readonly IDatabaseProtocolClientEngine _databaseProtocolClientEngine;
 
     // 主工作线程组，设置为1个线程
     private IEventLoopGroup bossGroup;
@@ -29,9 +36,11 @@ public class ShardingProxy:IShardingProxy
     private ServerBootstrap _serverBootstrap;
     private Bootstrap _clientBootstrap;
 
-    public ShardingProxy(ShardingProxyOption shardingProxyOption)
+    public ShardingProxy(ShardingProxyOption shardingProxyOption,IDatabaseProtocolClientEngine databaseProtocolClientEngine)
     {
         _shardingProxyOption = shardingProxyOption;
+        _databaseProtocolClientEngine = databaseProtocolClientEngine;
+        _databasePacketCodecEngine = databaseProtocolClientEngine.GetCodecEngine();
     }
     public async Task StartAsync(CancellationToken cancellationToken = default)
     { 
@@ -75,16 +84,17 @@ public class ShardingProxy:IShardingProxy
                         //工作线程连接器 是设置了一个管道，服务端主线程所有接收到的信息都会通过这个管道一层层往下传输
                         //同时所有出栈的消息 也要这个管道的所有处理器进行一步步处理
                         IChannelPipeline pipeline = channel.Pipeline;
-                        pipeline.AddLast(new PackDecoder());
-                        pipeline.AddLast(new PackEncoder());
-                        pipeline.AddLast(new ApplicationChannelInboundHandler());
+                        pipeline.AddLast(new ChannelAttrInitializer());
+                        pipeline.AddLast(new MessagePacketDecoder(_databasePacketCodecEngine));
+                        pipeline.AddLast(new MessagePacketEncoder(_databasePacketCodecEngine));
+                        pipeline.AddLast(new ClientChannelInboundHandler(_databaseProtocolClientEngine,channel));
                         // pipeline.AddLast("tls", TlsHandler.Server(_option.TlsCertificate));
                         // pipeline.AddLast("tls", new TlsHandler(stream => new SslStream(stream, true, (sender, certificate, chain, errors) => true), new ClientTlsSettings(_targetHost)));
                         // pipeline.AddLast("framing-dec", new LengthFieldBasedFrameDecoder(int.MaxValue, 0, 4, 0, 4));
-                        // pipeline.AddLast(new MessagePackDecoder());
+                        // pipeline.AddLast(new MessagePacketDecoder());
                         // pipeline.AddLast("framing-enc", new LengthFieldPrepender(4, false));
                         //实体类编码器,心跳管理器,连接管理器
-                        // pipeline.AddLast(new MessagePackEncoder()
+                        // pipeline.AddLast(new MessagePacketEncoder()
                         //     , new IdleStateHandler(0, 0, _option.AllIdleTime),
                         //     new NettyServerConnectManagerHandler(), new NettyServerHandler(_serviceProvider));
                     }));
@@ -100,25 +110,25 @@ public class ShardingProxy:IShardingProxy
 
     }
 
-    private IChannel GetClientChannel(IChannel tcpSocketChannel)
-    {
-
-        try
-        {
-            var ipEndPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 3306);
-            var result = this._clientBootstrap.Handler(new ActionChannelInitializer<ISocketChannel>(channel =>
-            {
-                var channelPipeline = channel.Pipeline;
-                channelPipeline.AddLast(new ApplicationChannelInboundHandler());
-            })).ConnectAsync(ipEndPoint).GetAwaiter().GetResult();
-            return result;
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw;
-        }
-    }
+    // private IChannel GetClientChannel(IChannel tcpSocketChannel)
+    // {
+    //
+    //     try
+    //     {
+    //         var ipEndPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 3306);
+    //         var result = this._clientBootstrap.Handler(new ActionChannelInitializer<ISocketChannel>(channel =>
+    //         {
+    //             var channelPipeline = channel.Pipeline;
+    //             channelPipeline.AddLast(new ApplicationChannelInboundHandler());
+    //         })).ConnectAsync(ipEndPoint).GetAwaiter().GetResult();
+    //         return result;
+    //     }
+    //     catch (Exception e)
+    //     {
+    //         Console.WriteLine(e);
+    //         throw;
+    //     }
+    // }
 
     public async Task StopAsync(CancellationToken cancellationToken = default)
     {
