@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -10,7 +11,13 @@ using ShardingConnector.Proxy.Common;
 using ShardingConnector.Proxy.Common.Context;
 using ShardingConnector.Proxy.Network;
 using ShardingConnector.ProxyClient;
+using ShardingConnector.ProxyClient.Abstractions;
+using ShardingConnector.ProxyClient.Command;
 using ShardingConnector.ProxyClientMySql;
+using ShardingConnector.ProxyClientMySql.Command;
+using ShardingConnector.ProxyClientMySql.CommandExecutor;
+using ShardingConnector.ProxyServer.Abstractions;
+using ShardingConnector.ProxyServer.TextProtocolHandlers;
 using ShardingConnector.RewriteEngine.Context;
 using ShardingConnector.Route;
 using ShardingConnector.ShardingCommon.Core.Rule;
@@ -24,16 +31,17 @@ namespace ShardingConnector.Proxy.Starter
 
         private static ILoggerFactory _loggerFactory = LoggerFactory.Create(builder =>
         {
-            builder.AddFilter("Microsoft", LogLevel.Trace)
-                .AddFilter("System", LogLevel.Trace)
-                .AddFilter("Default", LogLevel.Trace)
-                .AddSimpleConsole(c => c.TimestampFormat = "[yyyy-MM-dd HH:mm:ss]");
+            builder
+                .AddSimpleConsole(c => c.TimestampFormat = "[yyyy-MM-dd HH:mm:ss]")
+                .AddFilter(level=>level>=LogLevel.Debug);
         });
 
         private const int DEFAULT_PORT = 3307;
 
         static async Task Main(string[] args)
         {
+            //注册常用编码
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
             RegisterDecorator();
             var port = GetPort(args);
             InternalLoggerFactory.DefaultFactory = _loggerFactory;
@@ -56,6 +64,9 @@ namespace ShardingConnector.Proxy.Starter
             // serivces.AddSingleton<ApplicationChannelInboundHandler>();
             serivces.AddSingleton<IShardingProxy,ShardingProxy>();
             serivces.AddSingleton<IDatabaseProtocolClientEngine,MySqlClientEngine>();
+            serivces.AddSingleton<ICommandExecuteEngine,MySqlCommandExecuteEngine>();
+            serivces.AddSingleton<ICommandExecutorFactory,MySqlCommandExecutorFactory>();
+            serivces.AddSingleton<ITextProtocolHandlerFactory,TextProtocolHandlerFactory>();
             serivces.Configure<ShardingProxyOption>(_configuration);
             var buildServiceProvider = serivces.BuildServiceProvider();
             var shardingProxyOption = buildServiceProvider.GetRequiredService<ShardingProxyOption>();

@@ -13,7 +13,7 @@ namespace ShardingConnector.CommandParser.Command
     {
         private int _parameterCount;
 
-        public int GetParameterCount()
+        public virtual int GetParameterCount()
         {
             return _parameterCount;
         }

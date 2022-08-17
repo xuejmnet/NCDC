@@ -2,6 +2,7 @@ namespace ShardingConnector.ProtocolMysql.Constant;
 
 public enum MySqlStatusFlagEnum
 {
+    SERVER_STATUS_DEFAULT=0x0000,
     SERVER_STATUS_IN_TRANS=0x0001,
     
     SERVER_STATUS_AUTOCOMMIT=0x0002,

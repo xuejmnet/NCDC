@@ -1,5 +1,6 @@
 using System.Data.Common;
 using ShardingConnector.Base;
+using ShardingConnector.ProxyServer.Session;
 using ShardingConnector.Transaction;
 
 namespace ShardingConnector.ProxyServer.Connection;
@@ -8,6 +9,8 @@ public class ServerConnection:IServerConnection,IDisposable
 {
     private const int MAXIMUM_RETRY_COUNT = 5;
 
+
+    private readonly ConnectionSession _connectionSession;
     private volatile string schemaName;
 
 
@@ -23,14 +26,9 @@ public class ServerConnection:IServerConnection,IDisposable
     private readonly ICollection<DbDataReader> _cacheDataReaders 
         = new SynchronizedCollection<DbDataReader>();
 
-    public ServerConnection(TransactionTypeEnum transactionType):this(transactionType,false)
+    public ServerConnection(ConnectionSession connectionSession)
     {
-        
-    }
-    public ServerConnection(TransactionTypeEnum transactionType,bool supportHint)
-    {
-        _transactionType = transactionType;
-        _supportHint = supportHint;
+        _connectionSession = connectionSession;
     }
 
     public string SchemaName { get;private set; }

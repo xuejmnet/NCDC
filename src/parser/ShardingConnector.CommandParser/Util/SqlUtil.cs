@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.RegularExpressions;
 using ShardingConnector.CommandParser.Constant;
 using ShardingConnector.Extensions;
 
@@ -11,12 +12,18 @@ namespace ShardingConnector.CommandParser.Util
     * @Ver: 1.0
     * @Email: 326308290@qq.com
     */
-    public class SqlUtil
+    public static class SqlUtil
     {
-        private SqlUtil()
-        {
-            
-        }
+        private const string SQL_END=";";
+        private const string COMMENT_PREFIX = "/*";
+        private const string COMMENT_SUFFIX = "*/";
+        private const string EXCLUDED_CHARACTERS = "[]`'\"";
+        private static readonly Regex SINGLE_CHARACTER_PATTERN = new Regex("^_|([^\\\\])_");
+        private static readonly Regex SINGLE_CHARACTER_ESCAPE_PATTERN = new Regex("\\\\_");
+        private static readonly Regex ANY_CHARACTER_PATTERN = new Regex("^%|([^\\\\])%");
+        private static readonly Regex ANY_CHARACTER_ESCAPE_PATTERN = new Regex("\\\\%");
+        
+        
 
         public static decimal GetExactlyNumber(string value, int radix)
         {
@@ -72,6 +79,28 @@ namespace ShardingConnector.CommandParser.Util
                 result++;
             }
             return result;
+        }
+
+
+        /// <summary>
+        /// 去掉注解
+        /// </summary>
+        /// <param name="sql"></param>
+        /// <returns></returns>
+        public static string TrimComment(string sql)
+        {
+            var result = sql;
+            if (sql.StartsWith(COMMENT_PREFIX))
+            {
+                result = result.Substring(sql.IndexOf(COMMENT_PREFIX, StringComparison.Ordinal) + 2);
+            }
+
+            if (sql.EndsWith(SQL_END))
+            {
+                result = result.Substring(0, result.Length - 1);
+            }
+
+            return result.Trim();
         }
     }
 }

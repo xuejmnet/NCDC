@@ -26,7 +26,7 @@ public class MySqlHandshakePacket:IMysqlPacket
         _connectionId = connectionId;
         _capabilityFlagsLower = MySqlCapabilityFlag.CalculateHandshakeCapabilityFlagsLower();
         _capabilityFlagsUpper = MySqlCapabilityFlag.CalculateHandshakeCapabilityFlagsUpper();
-        _characterSet = MySqlServerInfo.DEFAULT_CHARSET.Id;
+        _characterSet = MySqlServerInfo.DEFAULT_CHARSET.DbEncoding;
         _statusFlag = MySqlStatusFlagEnum.SERVER_STATUS_AUTOCOMMIT;
         _authPluginData = authPluginData;
         _authPluginName = MySqlAuthenticationMethod.NATIVE_PASSWORD_AUTHENTICATION;

@@ -12,6 +12,7 @@
 
     <ItemGroup>
       <Folder Include="Core" />
+      <Folder Include="Packet\Command\Query\Text\Query" />
     </ItemGroup>
 
 </Project>
