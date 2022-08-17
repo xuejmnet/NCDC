@@ -17,6 +17,7 @@ using ShardingConnector.ProxyClientMySql;
 using ShardingConnector.ProxyClientMySql.Command;
 using ShardingConnector.ProxyClientMySql.CommandExecutor;
 using ShardingConnector.ProxyServer.Abstractions;
+using ShardingConnector.ProxyServer.TextCommandHandlers;
 using ShardingConnector.ProxyServer.TextProtocolHandlers;
 using ShardingConnector.RewriteEngine.Context;
 using ShardingConnector.Route;
@@ -66,7 +67,7 @@ namespace ShardingConnector.Proxy.Starter
             serivces.AddSingleton<IDatabaseProtocolClientEngine,MySqlClientEngine>();
             serivces.AddSingleton<ICommandExecuteEngine,MySqlCommandExecuteEngine>();
             serivces.AddSingleton<ICommandExecutorFactory,MySqlCommandExecutorFactory>();
-            serivces.AddSingleton<ITextProtocolHandlerFactory,TextProtocolHandlerFactory>();
+            serivces.AddSingleton<ITextCommandHandlerFactory,TextCommandHandlerFactory>();
             serivces.Configure<ShardingProxyOption>(_configuration);
             var buildServiceProvider = serivces.BuildServiceProvider();
             var shardingProxyOption = buildServiceProvider.GetRequiredService<ShardingProxyOption>();

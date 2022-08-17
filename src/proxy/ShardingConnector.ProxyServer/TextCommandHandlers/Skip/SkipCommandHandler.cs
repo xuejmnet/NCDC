@@ -2,13 +2,13 @@ using ShardingConnector.CommandParser.Command;
 using ShardingConnector.ProxyServer.Abstractions;
 using ShardingConnector.ProxyServer.Response.Header;
 
-namespace ShardingConnector.ProxyServer.TextProtocolHandlers.Skip;
+namespace ShardingConnector.ProxyServer.TextCommandHandlers.Skip;
 
-public sealed class SkipHandler:ITextProtocolHandler
+public sealed class SkipCommandHandler:ITextCommandHandler
 {
     private readonly ISqlCommand _sqlCommand;
 
-    public SkipHandler(ISqlCommand sqlCommand)
+    public SkipCommandHandler(ISqlCommand sqlCommand)
     {
         _sqlCommand = sqlCommand;
     }

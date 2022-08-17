@@ -6,7 +6,7 @@ namespace ShardingConnector.ProxyServer.Abstractions;
 /// <summary>
 /// 文本协议处理
 /// </summary>
-public interface ITextProtocolHandler:IDisposable
+public interface ITextCommandHandler:IDisposable
 {
     IResponseHeader Execute();
 

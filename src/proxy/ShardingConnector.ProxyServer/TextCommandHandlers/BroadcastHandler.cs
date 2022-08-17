@@ -5,7 +5,7 @@ using ShardingConnector.ProxyServer.Session;
 
 namespace ShardingConnector.ProxyServer.TextProtocolHandlers;
 
-public sealed class BroadcastHandler:ITextProtocolHandler
+public sealed class BroadcastHandler:ITextCommandHandler
 {
     private readonly string _sql;
     private readonly ConnectionSession _connectionSession;
@@ -19,7 +19,7 @@ public sealed class BroadcastHandler:ITextProtocolHandler
     {
         var responseHeaders = new List<IResponseHeader>();
         // _connectionSession.getda
-
+        // _connectionSession.
         return new UpdateResponseHeader();
     }
 }

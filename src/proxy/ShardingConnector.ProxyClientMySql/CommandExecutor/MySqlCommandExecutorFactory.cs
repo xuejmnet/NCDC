@@ -16,11 +16,11 @@ namespace ShardingConnector.ProxyClientMySql.CommandExecutor;
 
 public sealed class MySqlCommandExecutorFactory:ICommandExecutorFactory
 {
-    private readonly ITextProtocolHandlerFactory _textProtocolHandlerFactory;
+    private readonly ITextCommandHandlerFactory _textCommandHandlerFactory;
 
-    public MySqlCommandExecutorFactory(ITextProtocolHandlerFactory textProtocolHandlerFactory)
+    public MySqlCommandExecutorFactory(ITextCommandHandlerFactory textCommandHandlerFactory)
     {
-        _textProtocolHandlerFactory = textProtocolHandlerFactory;
+        _textCommandHandlerFactory = textCommandHandlerFactory;
     }
     public ICommandExecutor Create(IPacketPayload payload, ConnectionSession connectionSession)
     {
@@ -34,7 +34,7 @@ public sealed class MySqlCommandExecutorFactory:ICommandExecutorFactory
         switch (commandType)
         {
             case MySqlCommandTypeEnum.COM_QUERY:return new MySqlQueryServerCommandExecutor(new MySqlQueryServerCommandPacket(payload),
-                connectionSession, _textProtocolHandlerFactory);
+                connectionSession, _textCommandHandlerFactory);
             case MySqlCommandTypeEnum.COM_QUIT: return new MySqlQuitServerCommandExecutor();
         }
 

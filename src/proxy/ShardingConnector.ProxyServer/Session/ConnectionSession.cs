@@ -14,6 +14,7 @@ public class ConnectionSession
     public ServerConnection ServerConnection { get; }
     public  IAttributeMap AttributeMap{ get; }
     private volatile bool autoCommit = true;
+    private volatile string _databseName;
     public ConnectionSession(TransactionTypeEnum transactionType,IAttributeMap attributeMap)
     {
         AttributeMap = attributeMap;
@@ -49,5 +50,15 @@ public class ConnectionSession
     public void SetGrantee(Grantee grantee)
     {
         _grantee = grantee;
+    }
+
+    public string GetDatabaseName()
+    {
+        return _databseName;
+    }
+
+    public void SetDatabaseName(string databaseName)
+    {
+        _databseName = databaseName;
     }
 }

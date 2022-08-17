@@ -3,7 +3,7 @@ using ShardingConnector.ProxyServer.Response.Header;
 
 namespace ShardingConnector.ProxyClientMySql.Command.Query.Text.Query;
 
-public sealed class MySqlMultiCommandHandler:ITextProtocolHandler
+public sealed class MySqlMultiCommandHandler:ITextCommandHandler
 {
     public void Dispose()
     {

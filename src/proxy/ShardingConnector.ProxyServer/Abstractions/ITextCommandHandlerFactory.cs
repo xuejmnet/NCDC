@@ -4,8 +4,8 @@ using ShardingConnector.ProxyServer.Session;
 
 namespace ShardingConnector.ProxyServer.Abstractions;
 
-public interface ITextProtocolHandlerFactory
+public interface ITextCommandHandlerFactory
 {
-    ITextProtocolHandler Create(DatabaseTypeEnum databaseType, string sql, ISqlCommand sqlCommand,
+    ITextCommandHandler Create(DatabaseTypeEnum databaseType, string sql, ISqlCommand sqlCommand,
         ConnectionSession connectionSession);
 }
