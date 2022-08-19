@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using ShardingConnector.CommandParser.Command;
 using ShardingConnector.CommandParser.Command.DAL.Dialect;
 using ShardingConnector.CommandParser.Command.DAL.Dialect.MySql;
@@ -5,6 +6,7 @@ using ShardingConnector.CommandParser.Command.DCL;
 using ShardingConnector.CommandParser.Command.DML;
 using ShardingConnector.CommandParser.Util;
 using ShardingConnector.Common;
+using ShardingConnector.Logger;
 using ShardingConnector.ProxyServer.Abstractions;
 using ShardingConnector.ProxyServer.Session;
 using ShardingConnector.ProxyServer.TextCommandHandlers.Skip;
@@ -14,9 +16,12 @@ namespace ShardingConnector.ProxyServer.TextCommandHandlers;
 
 public class TextCommandHandlerFactory:ITextCommandHandlerFactory
 {
+    private static readonly ILogger<TextCommandHandlerFactory> _logger =
+        InternalLoggerFactory.CreateLogger<TextCommandHandlerFactory>();
     public ITextCommandHandler Create(DatabaseTypeEnum databaseType, string sql, ISqlCommand sqlCommand,
         ConnectionSession connectionSession)
     {
+        _logger.LogDebug($"database type:{databaseType},sql:{sql},sql command:{sqlCommand}");
         //取消sql的注释信息
         var trimCommentSql = SqlUtil.TrimComment(sql);
         if (string.IsNullOrEmpty(trimCommentSql))
@@ -36,11 +41,12 @@ public class TextCommandHandlerFactory:ITextCommandHandlerFactory
     private ITextCommandHandler CreateDALCommandServerHandler(DALCommand dalCommand, string sql,
         ConnectionSession connectionSession)
     {
-        if (dalCommand is SetCommand)
+        if (dalCommand is SetCommand&&null==connectionSession.GetDatabaseName())
         {
-            return new BroadcastHandler(sql, connectionSession);
+            return new NoDatabaseSelectCommandHandler();
         }
-        throw new NotSupportedException();
+
+        return new SingleDatabaseTextCommandHandler();
     }
 
     private void CheckNotSupportCommand(ISqlCommand sqlCommand)

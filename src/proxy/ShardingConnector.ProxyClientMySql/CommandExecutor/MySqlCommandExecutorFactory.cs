@@ -1,4 +1,6 @@
+using Microsoft.Extensions.Logging;
 using ShardingConnector.Common;
+using ShardingConnector.Logger;
 using ShardingConnector.ProtocolCore.Packets;
 using ShardingConnector.ProtocolCore.Packets.Executor;
 using ShardingConnector.ProtocolCore.Payloads;
@@ -16,6 +18,8 @@ namespace ShardingConnector.ProxyClientMySql.CommandExecutor;
 
 public sealed class MySqlCommandExecutorFactory:ICommandExecutorFactory
 {
+    private static readonly ILogger<MySqlCommandExecutorFactory> _logger =
+        InternalLoggerFactory.CreateLogger<MySqlCommandExecutorFactory>();
     private readonly ITextCommandHandlerFactory _textCommandHandlerFactory;
 
     public MySqlCommandExecutorFactory(ITextCommandHandlerFactory textCommandHandlerFactory)
@@ -31,6 +35,7 @@ public sealed class MySqlCommandExecutorFactory:ICommandExecutorFactory
 
     public ICommandExecutor CreateServerCommandExecutor(MySqlCommandTypeEnum commandType, MySqlPacketPayload payload,ConnectionSession connectionSession)
     {
+        _logger.LogDebug($"create server command executor,command type: {commandType}");
         switch (commandType)
         {
             case MySqlCommandTypeEnum.COM_QUERY:return new MySqlQueryServerCommandExecutor(new MySqlQueryServerCommandPacket(payload),
