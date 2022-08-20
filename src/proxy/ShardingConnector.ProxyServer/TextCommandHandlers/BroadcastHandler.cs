@@ -1,9 +1,9 @@
-using ShardingConnector.CommandParser.Command;
 using ShardingConnector.ProxyServer.Abstractions;
-using ShardingConnector.ProxyServer.Response.Header;
+using ShardingConnector.ProxyServer.Response;
+using ShardingConnector.ProxyServer.Response.EffectRow;
 using ShardingConnector.ProxyServer.Session;
 
-namespace ShardingConnector.ProxyServer.TextProtocolHandlers;
+namespace ShardingConnector.ProxyServer.TextCommandHandlers;
 
 public sealed class BroadcastHandler:ITextCommandHandler
 {
@@ -15,11 +15,11 @@ public sealed class BroadcastHandler:ITextCommandHandler
         _sql = sql;
         _connectionSession = connectionSession;
     }
-    public IResponseHeader Execute()
+    public IServerResponse Execute()
     {
-        var responseHeaders = new List<IResponseHeader>();
+        var responseHeaders = new List<IServerResponse>();
         // _connectionSession.getda
         // _connectionSession.
-        return new UpdateResponseHeader();
+        return new EffectRowServerResponse();
     }
 }

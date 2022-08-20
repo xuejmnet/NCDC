@@ -1,3 +1,5 @@
+using System.Data.Common;
+using MySqlConnector;
 using ShardingConnector.CommandParser.Command;
 using ShardingConnector.CommandParser.Command.DML;
 using ShardingConnector.Common;
@@ -7,12 +9,16 @@ using ShardingConnector.ProtocolCore.Packets.Executor;
 using ShardingConnector.ProtocolMysql.Constant;
 using ShardingConnector.ProtocolMysql.Packet;
 using ShardingConnector.ProtocolMysql.Packet.Command.Admin;
+using ShardingConnector.ProtocolMysql.Packet.Command.Query.Text;
+using ShardingConnector.ProtocolMysql.Packet.Command.Query.Text.Query;
 using ShardingConnector.ProtocolMysql.Packet.Generic;
 using ShardingConnector.ProtocolMysql.Packet.ServerCommand.Query;
 using ShardingConnector.ProxyClientMySql.Command;
 using ShardingConnector.ProxyClientMySql.Command.Query.Text.Query;
 using ShardingConnector.ProxyServer.Abstractions;
-using ShardingConnector.ProxyServer.Response.Header;
+using ShardingConnector.ProxyServer.Response;
+using ShardingConnector.ProxyServer.Response.EffectRow;
+using ShardingConnector.ProxyServer.Response.Query;
 using ShardingConnector.ProxyServer.Session;
 
 namespace ShardingConnector.ProxyClientMySql.ServerCommand.Query;
@@ -22,7 +28,8 @@ public sealed class MySqlQueryServerCommandExecutor:IQueryCommandExecutor
     public ConnectionSession ConnectionSession { get; }
     public ITextCommandHandler TextCommandHandler { get; }
     public int MySqlEncoding { get; }
-    private int _currntSequenceId;
+    private int _currentSequenceId;
+    private ResponseTypeEnum _responseType;
 
     public MySqlQueryServerCommandExecutor(MySqlQueryServerCommandPacket mySqlQueryServerCommandPacket,ConnectionSession connectionSession,ITextCommandHandlerFactory textCommandHandlerFactory)
     {
@@ -57,7 +64,14 @@ public sealed class MySqlQueryServerCommandExecutor:IQueryCommandExecutor
     public List<IDatabasePacket> Execute()
     {
         var responseHeader = TextCommandHandler.Execute();
-        if (responseHeader is UpdateResponseHeader updateResponseHeader)
+        if (responseHeader is QueryResponse queryResponse)
+        {
+            return ProcessQuery(queryResponse);
+        }
+
+        _responseType = ResponseTypeEnum.UPDATE;
+        
+        if (responseHeader is EffectRowServerResponse updateResponseHeader)
         {
             return new List<IDatabasePacket>()
             {
@@ -68,19 +82,70 @@ public sealed class MySqlQueryServerCommandExecutor:IQueryCommandExecutor
         throw new NotImplementedException();
     }
 
+    private List<IDatabasePacket> ProcessQuery(QueryResponse queryResponse)
+    {
+        _responseType = ResponseTypeEnum.QUERY;
+        var result = BuildQueryResponsePackets(queryResponse,MySqlEncoding,(MySqlStatusFlagEnum)ServerStatusFlagCalculator.CalculateFor(ConnectionSession));
+        _currentSequenceId = result.Count;
+        return result;
+    }
+    
+    public static  List<IDatabasePacket> BuildQueryResponsePackets( QueryResponse queryResponseHeader,  int characterSet,  MySqlStatusFlagEnum statusFlags) {
+        List<IDatabasePacket> result = new (queryResponseHeader.DbColumns.Count+2);
+        int sequenceId = 0;
+        var dbColumns = queryResponseHeader.DbColumns;
+        result.Add(new MySqlFieldCountPacket(++sequenceId, dbColumns.Count));
+        foreach (var dbColumn in dbColumns)
+        {
+            result.Add(new MySqlColumnDefinition41Packet(++sequenceId,characterSet,GetColumnFieldDetailFlag(dbColumn),dbColumn.BaseSchemaName,dbColumn.BaseTableName,dbColumn.BaseTableName,
+                dbColumn.ColumnName,dbColumn.BaseColumnName,dbColumn.ColumnSize.Value,(int)((MySqlDbColumn)dbColumn).ProviderType,dbColumn.NumericScale??0,false));
+        }
+        result.Add(new MySqlEofPacket(++sequenceId, statusFlags));
+        return result;
+    }
+
+    private static int GetColumnFieldDetailFlag(DbColumn header) {
+        int result = 0;
+        if (header.IsKey is true) {
+            result += (int)MySqlColumnFieldDetailFlagEnum.PRIMARY_KEY;
+        }
+        if (!(header.AllowDBNull is true)) {
+            result += (int)MySqlColumnFieldDetailFlagEnum.NOT_NULL;
+        }
+
+        var mySqlDbColumn = (MySqlDbColumn)header;
+        var mySqlDbType = mySqlDbColumn.ProviderType;
+        if (mySqlDbType==MySqlDbType.UByte||mySqlDbType==MySqlDbType.UInt16||mySqlDbType==MySqlDbType.UInt24||mySqlDbType==MySqlDbType.UInt32||mySqlDbType==MySqlDbType.UInt64) {
+            result += (int)MySqlColumnFieldDetailFlagEnum.UNSIGNED;
+        }
+        if (header.IsIdentity is true) {
+            result += (int)MySqlColumnFieldDetailFlagEnum.AUTO_INCREMENT;
+        }
+        return result;
+    }
+
     public ResponseTypeEnum GetResponseType()
     {
-        throw new NotImplementedException();
+        return _responseType;
     }
 
     public IDatabasePacket GetQueryRowPacket()
     {
-        throw new NotImplementedException();
+        return new MySqlTextResultSetRowPacket(++_currentSequenceId, TextCommandHandler.GetRowData().GetData());
     }
 
-    private IMysqlPacket CreateUpdatePacket(UpdateResponseHeader responseHeader)
+    public bool MoveNext()
     {
-        return new MySqlOkPacket(1, responseHeader.GetUpdateCount(), responseHeader.LastInsertId,(MySqlStatusFlagEnum)ServerStatusFlagCalculator.CalculateFor(ConnectionSession));
+        return TextCommandHandler.MoveNext();
     }
 
+    private IMysqlPacket CreateUpdatePacket(EffectRowServerResponse serverResponse)
+    {
+        return new MySqlOkPacket(1, serverResponse.GetUpdateCount(), serverResponse.LastInsertId,(MySqlStatusFlagEnum)ServerStatusFlagCalculator.CalculateFor(ConnectionSession));
+    }
+
+    public void Dispose()
+    {
+        TextCommandHandler.Dispose();
+    }
 }

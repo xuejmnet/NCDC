@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.Common;
 using System.Linq;
 using System.Threading;
@@ -72,7 +73,7 @@ namespace ShardingConnector.AdoNet.Executor
         {
             // DbDataReader resultSet = command.ExecuteReader(sql);
             // command.CommandText = sql;
-            DbDataReader resultSet = command.ExecuteReader();
+            DbDataReader resultSet = command.ExecuteReader(CommandBehavior.SchemaOnly|CommandBehavior.KeyInfo);
             _dbDataReaders.Add(resultSet);
             if (ConnectionModeEnum.MEMORY_STRICTLY == connectionMode)
                 return new StreamQueryDataReader(resultSet);

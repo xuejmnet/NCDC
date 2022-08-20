@@ -16,9 +16,9 @@ using ShardingConnector.ProxyClient.Command;
 using ShardingConnector.ProxyClientMySql;
 using ShardingConnector.ProxyClientMySql.Command;
 using ShardingConnector.ProxyClientMySql.CommandExecutor;
+using ShardingConnector.ProxyServer;
 using ShardingConnector.ProxyServer.Abstractions;
 using ShardingConnector.ProxyServer.TextCommandHandlers;
-using ShardingConnector.ProxyServer.TextProtocolHandlers;
 using ShardingConnector.RewriteEngine.Context;
 using ShardingConnector.Route;
 using ShardingConnector.ShardingCommon.Core.Rule;
@@ -43,6 +43,7 @@ namespace ShardingConnector.Proxy.Starter
         {
             //注册常用编码
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+            ProxyContext.Init();
             RegisterDecorator();
             var port = GetPort(args);
             InternalLoggerFactory.DefaultFactory = _loggerFactory;
@@ -67,6 +68,7 @@ namespace ShardingConnector.Proxy.Starter
             serivces.AddSingleton<IDatabaseProtocolClientEngine,MySqlClientEngine>();
             serivces.AddSingleton<ICommandExecuteEngine,MySqlCommandExecuteEngine>();
             serivces.AddSingleton<ICommandExecutorFactory,MySqlCommandExecutorFactory>();
+            // serivces.AddSingleton<IServerConnector,AdoNetSer>();
             serivces.AddSingleton<ITextCommandHandlerFactory,TextCommandHandlerFactory>();
             serivces.Configure<ShardingProxyOption>(_configuration);
             var buildServiceProvider = serivces.BuildServiceProvider();

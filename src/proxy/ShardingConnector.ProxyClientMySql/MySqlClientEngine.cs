@@ -42,6 +42,6 @@ public class MySqlClientEngine:IDatabaseProtocolClientEngine
 
     public void HandleException(ConnectionSession connectionSession, Exception exception)
     {
-        throw new NotImplementedException();
+        Console.WriteLine(exception);
     }
 }

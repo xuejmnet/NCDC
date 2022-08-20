@@ -13,7 +13,7 @@ using ShardingConnector.ProxyServer.Session;
 
 namespace ShardingConnector.ProxyClientMySql.Command;
 
-public sealed class MySqlCommandExecuteEngine:ICommandExecuteEngine
+public sealed class MySqlCommandExecuteEngine : ICommandExecuteEngine
 {
     private readonly ICommandExecutorFactory _commandExecutorFactory;
 
@@ -21,6 +21,7 @@ public sealed class MySqlCommandExecuteEngine:ICommandExecuteEngine
     {
         _commandExecutorFactory = commandExecutorFactory;
     }
+
     public ICommandExecutor GetCommandExecutor(IPacketPayload payload,
         ConnectionSession connectionSession)
     {
@@ -37,9 +38,41 @@ public sealed class MySqlCommandExecuteEngine:ICommandExecuteEngine
         return null;
     }
 
-    public void WriteQueryData(IChannelHandlerContext context, ServerConnection serverConnection,
+    public void WriteQueryData(IChannelHandlerContext context, ConnectionSession connectionSession,
         IQueryCommandExecutor queryCommandExecutor, int headerPackagesCount)
     {
-        throw new NotImplementedException();
+        if (ResponseTypeEnum.QUERY != queryCommandExecutor.GetResponseType() || !context.Channel.Active)
+        {
+            return;
+        }
+
+        int count = 0;
+        int flushThreshold = 1;
+        // int flushThreshold = ProxyContext.getInstance().getContextManager().getMetaDataContexts().getMetaData()
+        //     .getProps().<Integer > getValue(ConfigurationPropertyKey.PROXY_FRONTEND_FLUSH_THRESHOLD);
+        int currentSequenceId = 0;
+        while (queryCommandExecutor.MoveNext())
+        {
+            count++;
+            while (!context.Channel.IsWritable && context.Channel.Active)
+            {
+                context.Flush();
+                // ((JDBCBackendConnection)backendConnection).getResourceLock().doAwait();
+            }
+
+            var queryRowPacket = queryCommandExecutor.GetQueryRowPacket();
+            context.WriteAsync(queryRowPacket);
+            if (flushThreshold == count)
+            {
+                context.Flush();
+                count = 0;
+            }
+
+            currentSequenceId++;
+        }
+
+        context.WriteAsync(new MySqlEofPacket(++currentSequenceId + headerPackagesCount,
+            (MySqlStatusFlagEnum)ServerStatusFlagCalculator.CalculateFor(connectionSession)));
+        
     }
 }

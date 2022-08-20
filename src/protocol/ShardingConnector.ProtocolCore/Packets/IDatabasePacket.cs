@@ -12,4 +12,9 @@ public interface IDatabasePacket
 public interface IDatabasePacket<T> :IDatabasePacket where T:IPacketPayload
 {
     void Write(T payload);
+
+    void IDatabasePacket.Write(IPacketPayload payload)
+    {
+        Write((T)payload);
+    }
 }

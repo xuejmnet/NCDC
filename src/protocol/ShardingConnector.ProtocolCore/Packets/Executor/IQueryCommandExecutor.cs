@@ -4,7 +4,7 @@ public interface IQueryCommandExecutor:ICommandExecutor
 {
     ResponseTypeEnum GetResponseType();
 
-    bool GetNext()
+    bool MoveNext()
     {
         return false;
     }

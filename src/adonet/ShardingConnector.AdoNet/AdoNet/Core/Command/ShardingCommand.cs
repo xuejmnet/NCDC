@@ -201,7 +201,7 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Command
                 var dataReaders = _commandExecutor.ExecuteDbDataReader(false,executionContext);
                 
                 var mergedResult = MergeQuery(dataReaders);
-                result = new ShardingDataReader(_commandExecutor.GetDataReaders(), mergedResult, this, executionContext);
+                result = new ShardingDataReader(_commandExecutor.GetDataReaders(), mergedResult, executionContext);
             }
             finally
             {

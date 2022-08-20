@@ -1,13 +1,13 @@
 using ShardingConnector.ProxyServer.Abstractions;
 
-namespace ShardingConnector.ProxyServer.Response.Header;
+namespace ShardingConnector.ProxyServer.Response.EffectRow;
 
-public sealed class UpdateResult:IExecuteResult
+public sealed class EffectRowServerExecuteResult:IServerExecuteResult
 {
     public int UpdateCount { get; }
     public long LastInsertId { get; }
 
-    public UpdateResult(int updateCount,long lastInsertId)
+    public EffectRowServerExecuteResult(int updateCount,long lastInsertId)
     {
         UpdateCount = updateCount;
         LastInsertId = lastInsertId;

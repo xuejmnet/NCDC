@@ -26,8 +26,8 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.DataReader
         private readonly IStreamDataReader _streamDataReader;
         //private readonly IDictionary<string, int> _columnLabelAndIndexMap;
 
-        public ShardingDataReader(List<DbDataReader> dataReaders, IStreamDataReader streamDataReader, DbCommand command,
-            ExecutionContext executionContext) : base(dataReaders, command, executionContext)
+        public ShardingDataReader(List<DbDataReader> dataReaders, IStreamDataReader streamDataReader, 
+            ExecutionContext executionContext) : base(dataReaders, executionContext)
         {
             _streamDataReader = streamDataReader;
             //_columnLabelAndIndexMap = CreateColumnLabelAndIndexMap(dataReaders[0]);

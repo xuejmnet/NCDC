@@ -10,14 +10,22 @@ using ShardingConnector.Logger;
 using ShardingConnector.ProxyServer.Abstractions;
 using ShardingConnector.ProxyServer.Session;
 using ShardingConnector.ProxyServer.TextCommandHandlers.Skip;
-using ShardingConnector.ProxyServer.TextProtocolHandlers;
 
 namespace ShardingConnector.ProxyServer.TextCommandHandlers;
 
 public class TextCommandHandlerFactory:ITextCommandHandlerFactory
 {
+    // private readonly IServerConnector _serverConnector;
+
     private static readonly ILogger<TextCommandHandlerFactory> _logger =
         InternalLoggerFactory.CreateLogger<TextCommandHandlerFactory>();
+
+    public TextCommandHandlerFactory(
+        // IServerConnector serverConnector
+        )
+    {
+        // _serverConnector = serverConnector;
+    }
     public ITextCommandHandler Create(DatabaseTypeEnum databaseType, string sql, ISqlCommand sqlCommand,
         ConnectionSession connectionSession)
     {
@@ -35,7 +43,7 @@ public class TextCommandHandlerFactory:ITextCommandHandlerFactory
             return CreateDALCommandServerHandler(dalCommand, sql,connectionSession);
         }
 
-        throw new NotSupportedException();
+        return new QueryTextCommandHandler(null,sql,connectionSession);
     }
 
     private ITextCommandHandler CreateDALCommandServerHandler(DALCommand dalCommand, string sql,
@@ -43,10 +51,10 @@ public class TextCommandHandlerFactory:ITextCommandHandlerFactory
     {
         if (dalCommand is SetCommand&&null==connectionSession.GetDatabaseName())
         {
-            return new NoDatabaseSelectCommandHandler();
+            return new NoDatabaseTextCommandHandler();
         }
 
-        return new SingleDatabaseTextCommandHandler();
+        return new GenericDatabaseTextCommandHandler();
     }
 
     private void CheckNotSupportCommand(ISqlCommand sqlCommand)

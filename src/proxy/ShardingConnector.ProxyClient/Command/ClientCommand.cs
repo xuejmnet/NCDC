@@ -91,11 +91,11 @@ public sealed class ClientCommand : IClientCommand
                      context.WriteAsync(responsePacket);
                 }
 
-                // if (commandExecutor is IQueryCommandExecutor queryCommandExecutor)
-                // {
-                //     commandExecuteEngine.WriteQueryData(context, _connectionSession.ServerConnection,
-                //         queryCommandExecutor, responsePackets.Count);
-                // }
+                if (commandExecutor is IQueryCommandExecutor queryCommandExecutor)
+                {
+                    commandExecuteEngine.WriteQueryData(context, _connectionSession,
+                        queryCommandExecutor, responsePackets.Count);
+                }
 
                 return true;
             }

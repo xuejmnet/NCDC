@@ -9,12 +9,12 @@ public class QueryResponseRow
         Cells = cells;
     }
 
-    public List<object> GetData()
+    public List<object?> GetData()
     {
-        var objects = new List<object>(Cells.Count);
+        var objects = new List<object?>(Cells.Count);
         foreach (var cell in Cells)
         {
-            objects.Add(cell);
+            objects.Add(cell.Data);
         }
 
         return objects;

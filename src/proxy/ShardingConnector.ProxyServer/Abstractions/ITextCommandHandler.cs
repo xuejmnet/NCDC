@@ -1,5 +1,5 @@
+using ShardingConnector.ProxyServer.Response;
 using ShardingConnector.ProxyServer.Response.Data;
-using ShardingConnector.ProxyServer.Response.Header;
 
 namespace ShardingConnector.ProxyServer.Abstractions;
 
@@ -8,9 +8,9 @@ namespace ShardingConnector.ProxyServer.Abstractions;
 /// </summary>
 public interface ITextCommandHandler:IDisposable
 {
-    IResponseHeader Execute();
+    IServerResponse Execute();
 
-    bool Next()
+    bool MoveNext()
     {
         return false;
     }

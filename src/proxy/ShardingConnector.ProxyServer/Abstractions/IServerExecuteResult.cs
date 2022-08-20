@@ -1,6 +1,6 @@
 namespace ShardingConnector.ProxyServer.Abstractions;
 
-public interface IExecuteResult
+public interface IServerExecuteResult
 {
     
 }

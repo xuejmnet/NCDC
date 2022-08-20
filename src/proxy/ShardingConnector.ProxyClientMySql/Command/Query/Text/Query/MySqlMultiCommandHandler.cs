@@ -1,5 +1,5 @@
 using ShardingConnector.ProxyServer.Abstractions;
-using ShardingConnector.ProxyServer.Response.Header;
+using ShardingConnector.ProxyServer.Response;
 
 namespace ShardingConnector.ProxyClientMySql.Command.Query.Text.Query;
 
@@ -10,12 +10,12 @@ public sealed class MySqlMultiCommandHandler:ITextCommandHandler
         throw new NotImplementedException();
     }
 
-    public IResponseHeader Execute()
+    public IServerResponse Execute()
     {
         throw new NotImplementedException();
     }
 
-    public bool Next()
+    public bool MoveNext()
     {
         throw new NotImplementedException();
     }

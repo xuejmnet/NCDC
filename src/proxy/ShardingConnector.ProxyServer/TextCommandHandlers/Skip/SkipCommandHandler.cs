@@ -1,6 +1,7 @@
 using ShardingConnector.CommandParser.Command;
 using ShardingConnector.ProxyServer.Abstractions;
-using ShardingConnector.ProxyServer.Response.Header;
+using ShardingConnector.ProxyServer.Response;
+using ShardingConnector.ProxyServer.Response.EffectRow;
 
 namespace ShardingConnector.ProxyServer.TextCommandHandlers.Skip;
 
@@ -12,8 +13,8 @@ public sealed class SkipCommandHandler:ITextCommandHandler
     {
         _sqlCommand = sqlCommand;
     }
-    public IResponseHeader Execute()
+    public IServerResponse Execute()
     {
-        return new UpdateResponseHeader();
+        return new EffectRowServerResponse();
     }
 }

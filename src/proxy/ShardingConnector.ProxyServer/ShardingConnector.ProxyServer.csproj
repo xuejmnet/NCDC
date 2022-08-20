@@ -7,12 +7,15 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\adonet\ShardingConnector.AdoNet\ShardingConnector.AdoNet.csproj" />
+      <ProjectReference Include="..\..\core\ShardingConnector.Executor\ShardingConnector.Executor.csproj" />
       <ProjectReference Include="..\..\core\ShardingConnector\ShardingConnector.csproj" />
       <ProjectReference Include="..\..\protocol\ShardingConnector.ProtocolCore\ShardingConnector.ProtocolCore.csproj" />
       <ProjectReference Include="..\..\sharding\ShardingConnector.ShardingCommon\ShardingConnector.ShardingCommon.csproj" />
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="MySqlConnector" Version="2.1.12" />
       <PackageReference Include="System.ServiceModel.Primitives" Version="4.9.0" />
     </ItemGroup>
 

@@ -1,16 +1,12 @@
-using System.Collections.Immutable;
-using ShardingConnector.CommandParser.Command;
-using ShardingConnector.Extensions;
+namespace ShardingConnector.ProxyServer.Response.EffectRow;
 
-namespace ShardingConnector.ProxyServer.Response.Header;
-
-public sealed class UpdateResponseHeader:IResponseHeader
+public sealed class EffectRowServerResponse:IServerResponse
 {
     public long LastInsertId { get; }
     public List<int> UpdateCounts { get; }
     private long _updateCount;
 
-    public UpdateResponseHeader():this(new List<UpdateResult>(0))
+    public EffectRowServerResponse():this(new List<EffectRowServerExecuteResult>(0))
     {
         
     }
@@ -20,7 +16,7 @@ public sealed class UpdateResponseHeader:IResponseHeader
         return _updateCount;
     }
 
-    public UpdateResponseHeader(List<UpdateResult> updateResults)
+    public EffectRowServerResponse(List<EffectRowServerExecuteResult> updateResults)
     {
         UpdateCounts = new List<int>(updateResults.Count);
         long lastInsertId = 0;

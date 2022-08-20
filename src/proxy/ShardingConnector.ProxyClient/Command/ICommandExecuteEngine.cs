@@ -20,6 +20,6 @@ public interface ICommandExecuteEngine
     IDatabasePacket GetErrorPacket(Exception exception);
     IDatabasePacket? GetOtherPacket(ConnectionSession connectionSession);
 
-    void WriteQueryData(IChannelHandlerContext context, ServerConnection serverConnection,
+    void WriteQueryData(IChannelHandlerContext context, ConnectionSession connectionSession,
         IQueryCommandExecutor queryCommandExecutor, int headerPackagesCount);
 }

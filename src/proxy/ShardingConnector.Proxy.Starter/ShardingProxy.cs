@@ -87,6 +87,7 @@ public class ShardingProxy:IShardingProxy
                         pipeline.AddLast(new ChannelAttrInitializer());
                         pipeline.AddLast(new MessagePacketDecoder(_databasePacketCodecEngine));
                         pipeline.AddLast(new MessagePacketEncoder(_databasePacketCodecEngine));
+                        pipeline.AddLast(new ConnectorManagerHandler());
                         pipeline.AddLast(new ClientChannelInboundHandler(_databaseProtocolClientEngine,channel));
                         // pipeline.AddLast("tls", TlsHandler.Server(_option.TlsCertificate));
                         // pipeline.AddLast("tls", new TlsHandler(stream => new SslStream(stream, true, (sender, certificate, chain, errors) => true), new ClientTlsSettings(_targetHost)));

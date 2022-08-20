@@ -24,9 +24,8 @@ namespace ShardingConnector.AdoNet.AdoNet.Abstraction
     /// </summary>
     public abstract class AbstractDataReader : DbDataReader
     {
-        private readonly List<DbDataReader> _dataReaders;
+        public List<DbDataReader> DataReaders { get; }
 
-        private readonly DbCommand _command;
         private readonly ExecutionContext executionContext;
 
         private bool closed;
@@ -35,12 +34,11 @@ namespace ShardingConnector.AdoNet.AdoNet.Abstraction
         private readonly ForceExecuteTemplate<DbDataReader> _forceExecuteTemplate =
             new ForceExecuteTemplate<DbDataReader>();
 
-        public AbstractDataReader(List<DbDataReader> dataReaders, DbCommand command, ExecutionContext executionContext)
+        public AbstractDataReader(List<DbDataReader> dataReaders, ExecutionContext executionContext)
         {
             if (dataReaders.IsEmpty())
                 throw new ArgumentNullException(nameof(dataReaders));
-            this._dataReaders = dataReaders;
-            this._command = command;
+            DataReaders = dataReaders;
             this.executionContext = executionContext;
         }
 
@@ -80,7 +78,7 @@ namespace ShardingConnector.AdoNet.AdoNet.Abstraction
 
         public override int GetOrdinal(string name)
         {
-            return _dataReaders[0].GetOrdinal(name);
+            return DataReaders[0].GetOrdinal(name);
         }
 
         public abstract override string GetString(int ordinal);
@@ -91,13 +89,13 @@ namespace ShardingConnector.AdoNet.AdoNet.Abstraction
 
         public abstract override bool IsDBNull(int ordinal);
 
-        public  override int FieldCount => _dataReaders[0].FieldCount;
+        public  override int FieldCount => DataReaders[0].FieldCount;
 
         public override object this[int ordinal] => GetValue(ordinal);
 
         public override object this[string name] => GetValue(GetOrdinal(name));
 
-        public override int RecordsAffected => _dataReaders.Sum(o=>o.RecordsAffected);
+        public override int RecordsAffected => DataReaders.Sum(o=>o.RecordsAffected);
 
         public override bool HasRows
         {
@@ -105,7 +103,7 @@ namespace ShardingConnector.AdoNet.AdoNet.Abstraction
             {
                 if (closed)
                     throw new ShardingException("datareader is closed");
-                return _dataReaders.Any(o => o.HasRows);
+                return DataReaders.Any(o => o.HasRows);
             }
         }
 
@@ -130,7 +128,7 @@ namespace ShardingConnector.AdoNet.AdoNet.Abstraction
         protected override void Dispose(bool disposing)
         {
             base.Dispose(disposing);
-            _forceExecuteTemplate.Execute(_dataReaders,reader=>reader.Dispose());
+            _forceExecuteTemplate.Execute(DataReaders,reader=>reader.Dispose());
         }
     }
 }
