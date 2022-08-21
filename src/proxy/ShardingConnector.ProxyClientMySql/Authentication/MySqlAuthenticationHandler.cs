@@ -2,7 +2,6 @@ using ShardingConnector.ProtocolCore.Errors;
 using ShardingConnector.ProtocolMysql.Constant;
 using ShardingConnector.ProtocolMysql.Helper;
 using ShardingConnector.ProtocolMysql.Packet.Handshake;
-using ShardingConnector.Proxy.Common.Context;
 using ShardingConnector.ProxyClientMySql.Authentication.Authenticator;
 using ShardingConnector.ShardingCommon.Core.Rule;
 using ShardingConnector.ShardingCommon.User;
@@ -11,7 +10,6 @@ namespace ShardingConnector.ProxyClientMySql.Authentication;
 
 public class MySqlAuthenticationHandler
 {
-    private static readonly ShardingProxyContext SHARDING_PROXY_CONTEXT = ShardingProxyContext.GetInstance();
 
     public MySqlAuthPluginData AuthPluginData = new MySqlAuthPluginData();
 

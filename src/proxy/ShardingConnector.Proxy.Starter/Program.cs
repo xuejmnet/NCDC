@@ -2,14 +2,10 @@
 using System.Text;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using ShardingConnector.Logger;
 using ShardingConnector.Merge.Engine;
-using ShardingConnector.Proxy.Common;
-using ShardingConnector.Proxy.Common.Context;
-using ShardingConnector.Proxy.Network;
 using ShardingConnector.ProxyClient;
 using ShardingConnector.ProxyClient.Abstractions;
 using ShardingConnector.ProxyClient.Command;
@@ -61,8 +57,8 @@ namespace ShardingConnector.Proxy.Starter
                 return proxyOption;
             });
             // serivces.AddSingleton<ServerHandlerInitializer>();
-            serivces.AddSingleton<PackDecoder>();
-            serivces.AddSingleton<PackEncoder>();
+            // serivces.AddSingleton<PackDecoder>();
+            // serivces.AddSingleton<PackEncoder>();
             // serivces.AddSingleton<ApplicationChannelInboundHandler>();
             serivces.AddSingleton<IShardingProxy,ShardingProxy>();
             serivces.AddSingleton<IDatabaseProtocolClientEngine,MySqlClientEngine>();

@@ -8,10 +8,9 @@ using Microsoft.Extensions.Logging;
 using ShardingConnector.Logger;
 using ShardingConnector.ProtocolCore.Codecs;
 using ShardingConnector.ProtocolCore.DotNetty;
-using ShardingConnector.Proxy.Common;
-using ShardingConnector.Proxy.Network;
 using ShardingConnector.ProxyClient;
 using ShardingConnector.ProxyClient.DotNetty;
+using ShardingConnector.ProxyServer;
 using LogLevel = DotNetty.Handlers.Logging.LogLevel;
 
 namespace ShardingConnector.Proxy.Starter;

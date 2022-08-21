@@ -1,4 +1,3 @@
-// using ShardingConnector.ProtocolCore.Packets;
 // using ShardingConnector.ProtocolMysql.Packet.Command;
 // using ShardingConnector.ProtocolMysql.Packet.Command.Admin;
 // using ShardingConnector.ProtocolMysql.Packet.ServerCommand.Query;

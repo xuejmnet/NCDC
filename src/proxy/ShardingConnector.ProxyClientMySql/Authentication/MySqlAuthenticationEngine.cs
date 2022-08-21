@@ -7,8 +7,8 @@ using ShardingConnector.ProtocolMysql.Constant;
 using ShardingConnector.ProtocolMysql.Packet.Generic;
 using ShardingConnector.ProtocolMysql.Packet.Handshake;
 using ShardingConnector.ProtocolMysql.Payload;
-using ShardingConnector.Proxy.Common;
 using ShardingConnector.ProxyClient.Authentication;
+using ShardingConnector.ProxyClient.Common;
 using ShardingConnector.ProxyClient.Core;
 using ShardingConnector.ProxyServer.Connection;
 

@@ -1,7 +1,5 @@
 // using Microsoft.Extensions.Logging;
 // using ShardingConnector.Logger;
-// using ShardingConnector.ProtocolCore.Packets;
-// using ShardingConnector.ProtocolCore.Packets.Executor;
 // using ShardingConnector.ProtocolMysql.Packet.Command;
 // using ShardingConnector.ProtocolMysql.Packet.Command.Admin;
 // using ShardingConnector.ProxyClientMySql.Command.Admin;

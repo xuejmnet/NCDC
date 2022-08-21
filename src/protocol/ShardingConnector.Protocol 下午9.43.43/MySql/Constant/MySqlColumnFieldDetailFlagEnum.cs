@@ -1,0 +1,34 @@
+namespace ShardingConnector.Protocol.MySql.Constant;
+
+public enum MySqlColumnFieldDetailFlagEnum
+{
+    NOT_NULL = 0x00000001,
+
+    PRIMARY_KEY = 0x00000002,
+
+    UNIQUE_KEY = 0x00000004,
+
+    MULTIPLE_KEY = 0x00000008,
+
+    BLOB = 0x00000010,
+
+    UNSIGNED = 0x00000020,
+
+    ZEROFILL_FLAG = 0x00000040,
+
+    BINARY_COLLATION = 0x00000080,
+
+    ENUM = 0x00000100,
+
+    AUTO_INCREMENT = 0x00000200,
+
+    TIMESTAMP = 0x00000400,
+
+    SET = 0x00000800,
+
+    NO_DEFAULT_VALUE_FLAG = 0x00001000,
+
+    ON_UPDATE_NOW_FLAG = 0x00002000,
+
+    NUM_FLAG = 0x00008000
+}

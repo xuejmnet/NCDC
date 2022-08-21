@@ -7,6 +7,7 @@ using ShardingConnector.ProxyClient.Command;
 using ShardingConnector.ProxyClientMySql.Authentication;
 using ShardingConnector.ProxyClientMySql.Command;
 using ShardingConnector.ProxyServer.Session;
+using MySqlPacketCodecEngine = ShardingConnector.ProxyClientMySql.Codec.MySqlPacketCodecEngine;
 
 namespace ShardingConnector.ProxyClientMySql;
 
