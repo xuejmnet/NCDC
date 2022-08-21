@@ -73,7 +73,7 @@ namespace ShardingConnector.AdoNet.Executor
         {
             // DbDataReader resultSet = command.ExecuteReader(sql);
             // command.CommandText = sql;
-            DbDataReader resultSet = command.ExecuteReader(CommandBehavior.SchemaOnly|CommandBehavior.KeyInfo);
+            DbDataReader resultSet = command.ExecuteReader();
             _dbDataReaders.Add(resultSet);
             if (ConnectionModeEnum.MEMORY_STRICTLY == connectionMode)
                 return new StreamQueryDataReader(resultSet);

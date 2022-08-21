@@ -63,12 +63,12 @@ public sealed class QueryTextCommandHandler:ITextCommandHandler
 
         var executionContext = Prepare(_sql);
         var dataReaders = _commandExecutor.ExecuteDbDataReader(false,executionContext);
-                
         StreamDataReader = MergeQuery(executionContext,dataReaders);
+       
         var result = new ShardingDataReader(_commandExecutor.GetDataReaders(), StreamDataReader,executionContext);
        var columns = result.DataReaders[0].GetColumnSchema().ToList();
-       // MySqlDbColumn
-       
+       var resultDataReader = result.DataReaders[0];
+       var mySqlDataReader = (MySqlDataReader)resultDataReader;
        //
         // var mySqlConnection = new MySqlConnection("server=127.0.0.1;port=3306;database=test;userid=root;password=root;");
         // var mySqlCommand = mySqlConnection.CreateCommand();
