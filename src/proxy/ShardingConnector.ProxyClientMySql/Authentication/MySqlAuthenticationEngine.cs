@@ -6,10 +6,10 @@ using ShardingConnector.Protocol.MySql.Packet.Generic;
 using ShardingConnector.Protocol.MySql.Packet.Handshake;
 using ShardingConnector.Protocol.MySql.Payload;
 using ShardingConnector.Protocol.Packets;
-using ShardingConnector.ProtocolCore;
 using ShardingConnector.ProxyClient.Authentication;
 using ShardingConnector.ProxyClient.Common;
 using ShardingConnector.ProxyClient.Core;
+using ShardingConnector.ProxyServer;
 
 namespace ShardingConnector.ProxyClientMySql.Authentication;
 

@@ -1,6 +1,5 @@
 using DotNetty.Transport.Channels;
 using ShardingConnector.Protocol.Packets;
-using ShardingConnector.ProtocolCore.Packets.Executor;
 using ShardingConnector.ProxyServer.Session;
 
 namespace ShardingConnector.ProxyClient.Command;

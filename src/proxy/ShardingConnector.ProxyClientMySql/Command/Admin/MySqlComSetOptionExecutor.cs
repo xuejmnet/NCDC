@@ -1,8 +1,8 @@
-using ShardingConnector.ProtocolCore.Packets;
-using ShardingConnector.ProtocolCore.Packets.Executor;
-using ShardingConnector.ProtocolMysql.Constant;
-using ShardingConnector.ProtocolMysql.Packet.Command.Admin;
-using ShardingConnector.ProtocolMysql.Packet.Generic;
+using ShardingConnector.Protocol.MySql.Constant;
+using ShardingConnector.Protocol.MySql.Packet.Generic;
+using ShardingConnector.Protocol.Packets;
+using ShardingConnector.ProxyClient;
+using ShardingConnector.ProxyServer.Commands;
 using ShardingConnector.ProxyServer.Session;
 
 namespace ShardingConnector.ProxyClientMySql.Command.Admin;
@@ -17,10 +17,10 @@ public class MySqlComSetOptionExecutor:ICommandExecutor
         _packet = packet;
         _connectionSession = connectionSession;
     }
-    public List<IDatabasePacket> Execute()
+    public List<IPacket> Execute()
     {
         _connectionSession.AttributeMap.GetAttribute(MySqlConstants.MYSQL_OPTION_MULTI_STATEMENTS).Set(_packet.Value);
-        return new List<IDatabasePacket>()
+        return new List<IPacket>()
         {
             new MySqlOkPacket(1, (MySqlStatusFlagEnum)ServerStatusFlagCalculator.CalculateFor(_connectionSession))
         };

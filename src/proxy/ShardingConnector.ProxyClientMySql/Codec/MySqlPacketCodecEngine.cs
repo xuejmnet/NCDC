@@ -1,18 +1,17 @@
 using System.Text;
 using DotNetty.Buffers;
 using DotNetty.Transport.Channels;
-using ShardingConnector.ProtocolCore;
-using ShardingConnector.ProtocolCore.Codecs;
-using ShardingConnector.ProtocolCore.Errors;
-using ShardingConnector.ProtocolCore.Packets;
-using ShardingConnector.ProtocolCore.Payloads;
-using ShardingConnector.ProtocolMysql.Packet;
-using ShardingConnector.ProtocolMysql.Packet.Generic;
-using ShardingConnector.ProtocolMysql.Payload;
+using ShardingConnector.Protocol.Errors;
+using ShardingConnector.Protocol.MySql.Packet;
+using ShardingConnector.Protocol.MySql.Packet.Generic;
+using ShardingConnector.Protocol.MySql.Payload;
+using ShardingConnector.Protocol.Packets;
+using ShardingConnector.ProxyClient.Codecs;
+using ShardingConnector.ProxyServer;
 
 namespace ShardingConnector.ProxyClientMySql.Codec;
 
-public sealed class MySqlPacketCodecEngine : IDatabasePacketCodecEngine
+public sealed class MySqlPacketCodecEngine : IPacketCodec
 {
     /// <summary>
     /// 16MB
@@ -80,7 +79,7 @@ public sealed class MySqlPacketCodecEngine : IDatabasePacketCodecEngine
         _pendingmessages.Clear();
     }
 
-    public void Encode(IChannelHandlerContext context, IDatabasePacket message, IByteBuffer output)
+    public void Encode(IChannelHandlerContext context, IPacket message, IByteBuffer output)
     {
         var markWriterIndex = PrepareMessageHeader(output).MarkWriterIndex();
         var encoding = context.Channel.GetAttribute(CommonConstants.CHARSET_ATTRIBUTE_KEY).Get();

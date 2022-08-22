@@ -1,4 +1,3 @@
-using ShardingConnector.ProtocolCore.Codecs;
 using ShardingConnector.ProxyClient.Authentication;
 using ShardingConnector.ProxyClient.Codecs;
 using ShardingConnector.ProxyClient.Command;

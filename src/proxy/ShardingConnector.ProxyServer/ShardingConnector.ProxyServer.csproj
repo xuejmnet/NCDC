@@ -19,10 +19,4 @@
       <PackageReference Include="System.ServiceModel.Primitives" Version="4.9.0" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Reference Include="ShardingConnector.ProtocolMysql">
-        <HintPath>..\ShardingConnector.Proxy.Starter\bin\Debug\net6.0\ShardingConnector.ProtocolMysql.dll</HintPath>
-      </Reference>
-    </ItemGroup>
-
 </Project>

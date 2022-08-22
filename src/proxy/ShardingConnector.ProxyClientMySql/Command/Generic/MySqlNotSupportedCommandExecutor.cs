@@ -1,6 +1,6 @@
-using ShardingConnector.ProtocolCore.Packets;
-using ShardingConnector.ProtocolCore.Packets.Executor;
-using ShardingConnector.ProtocolMysql.Packet.Command;
+using ShardingConnector.Protocol.MySql.Packet.Command;
+using ShardingConnector.Protocol.Packets;
+using ShardingConnector.ProxyClient;
 using ShardingConnector.ProxyClient.Exceptions;
 
 namespace ShardingConnector.ProxyClientMySql.Command.Generic;
@@ -13,7 +13,7 @@ public class MySqlNotSupportedCommandExecutor:ICommandExecutor
     {
         _commandTypeEnum = commandTypeEnum;
     }
-    public List<IDatabasePacket> Execute()
+    public List<IPacket> Execute()
     {
         throw new NotSupportedCommandException($"{_commandTypeEnum}");
     }

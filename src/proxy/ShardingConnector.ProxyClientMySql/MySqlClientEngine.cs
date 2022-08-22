@@ -1,5 +1,3 @@
-using ShardingConnector.ProtocolCore.Codecs;
-using ShardingConnector.ProtocolMysql.Codec;
 using ShardingConnector.ProxyClient;
 using ShardingConnector.ProxyClient.Abstractions;
 using ShardingConnector.ProxyClient.Authentication;

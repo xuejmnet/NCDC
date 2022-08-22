@@ -8,8 +8,10 @@ using ShardingConnector.Logger;
 using ShardingConnector.Merge.Engine;
 using ShardingConnector.ProxyClient;
 using ShardingConnector.ProxyClient.Abstractions;
+using ShardingConnector.ProxyClient.Codecs;
 using ShardingConnector.ProxyClient.Command;
 using ShardingConnector.ProxyClientMySql;
+using ShardingConnector.ProxyClientMySql.Codec;
 using ShardingConnector.ProxyClientMySql.Command;
 using ShardingConnector.ProxyClientMySql.CommandExecutor;
 using ShardingConnector.ProxyServer;
@@ -61,6 +63,7 @@ namespace ShardingConnector.Proxy.Starter
             // serivces.AddSingleton<PackEncoder>();
             // serivces.AddSingleton<ApplicationChannelInboundHandler>();
             serivces.AddSingleton<IShardingProxy,ShardingProxy>();
+            serivces.AddSingleton<IPacketCodec,MySqlPacketCodecEngine>();
             serivces.AddSingleton<IDatabaseProtocolClientEngine,MySqlClientEngine>();
             serivces.AddSingleton<ICommandExecuteEngine,MySqlCommandExecuteEngine>();
             serivces.AddSingleton<ICommandExecutorFactory,MySqlCommandExecutorFactory>();

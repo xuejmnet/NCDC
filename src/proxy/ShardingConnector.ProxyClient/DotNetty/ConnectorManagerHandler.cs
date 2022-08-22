@@ -2,7 +2,6 @@ using DotNetty.Handlers.Timeout;
 using DotNetty.Transport.Channels;
 using Microsoft.Extensions.Logging;
 using ShardingConnector.Logger;
-using ShardingConnector.ProtocolCore.Helper;
 
 namespace ShardingConnector.ProxyClient.DotNetty;
 

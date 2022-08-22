@@ -1,4 +1,4 @@
-using ShardingConnector.ProtocolMysql.Constant;
+using ShardingConnector.Protocol.MySql.Constant;
 using ShardingConnector.ProxyServer.Session;
 
 namespace ShardingConnector.ProxyClientMySql.Command;

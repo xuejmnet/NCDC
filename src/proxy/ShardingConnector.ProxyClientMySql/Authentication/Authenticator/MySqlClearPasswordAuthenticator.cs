@@ -1,5 +1,5 @@
 using System.Text;
-using ShardingConnector.ProtocolMysql.Constant;
+using ShardingConnector.Protocol.MySql.Constant;
 using ShardingConnector.ShardingCommon.User;
 
 namespace ShardingConnector.ProxyClientMySql.Authentication.Authenticator;

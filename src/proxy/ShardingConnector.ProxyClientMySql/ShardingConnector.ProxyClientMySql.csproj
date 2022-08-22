@@ -7,7 +7,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\protocol\ShardingConnector.ProtocolMysql\ShardingConnector.ProtocolMysql.csproj" />
       <ProjectReference Include="..\ShardingConnector.ProxyClient\ShardingConnector.ProxyClient.csproj" />
     </ItemGroup>
 

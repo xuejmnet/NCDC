@@ -1,6 +1,5 @@
 using ShardingConnector.Protocol.MySql.Packet.Command;
 using ShardingConnector.Protocol.MySql.Payload;
-using ShardingConnector.ProtocolMysql.Packet.ServerCommand;
 
 namespace ShardingConnector.ProxyServer.Commands;
 

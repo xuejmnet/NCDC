@@ -11,10 +11,4 @@
       <ProjectReference Include="..\ShardingConnector.ProxyServer\ShardingConnector.ProxyServer.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Reference Include="ShardingConnector.ProtocolCore">
-        <HintPath>..\ShardingConnector.Proxy.Starter\bin\Debug\net6.0\ShardingConnector.ProtocolCore.dll</HintPath>
-      </Reference>
-    </ItemGroup>
-
 </Project>
