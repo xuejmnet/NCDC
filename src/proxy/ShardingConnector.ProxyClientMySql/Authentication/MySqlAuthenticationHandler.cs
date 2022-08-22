@@ -1,7 +1,6 @@
-using ShardingConnector.ProtocolCore.Errors;
-using ShardingConnector.ProtocolMysql.Constant;
-using ShardingConnector.ProtocolMysql.Helper;
-using ShardingConnector.ProtocolMysql.Packet.Handshake;
+using ShardingConnector.Protocol.Errors;
+using ShardingConnector.Protocol.MySql.Constant;
+using ShardingConnector.Protocol.MySql.Packet.Handshake;
 using ShardingConnector.ProxyClientMySql.Authentication.Authenticator;
 using ShardingConnector.ShardingCommon.Core.Rule;
 using ShardingConnector.ShardingCommon.User;

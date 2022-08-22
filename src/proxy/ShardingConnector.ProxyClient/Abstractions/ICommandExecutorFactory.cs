@@ -1,5 +1,5 @@
-using ShardingConnector.ProtocolCore.Packets.Executor;
-using ShardingConnector.ProtocolCore.Payloads;
+using ShardingConnector.AdoNet.Executor.Abstractions;
+using ShardingConnector.Protocol.Packets;
 using ShardingConnector.ProxyServer.Session;
 
 namespace ShardingConnector.ProxyClient.Abstractions;

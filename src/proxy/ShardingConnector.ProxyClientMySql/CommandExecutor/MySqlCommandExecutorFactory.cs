@@ -1,17 +1,15 @@
 using Microsoft.Extensions.Logging;
 using ShardingConnector.Common;
 using ShardingConnector.Logger;
-using ShardingConnector.ProtocolCore.Packets;
-using ShardingConnector.ProtocolCore.Packets.Executor;
-using ShardingConnector.ProtocolCore.Payloads;
-using ShardingConnector.ProtocolMysql.Packet.Command;
-using ShardingConnector.ProtocolMysql.Packet.ServerCommand.Query;
-using ShardingConnector.ProtocolMysql.Payload;
+using ShardingConnector.Protocol.MySql.Packet.Command;
+using ShardingConnector.Protocol.MySql.Payload;
+using ShardingConnector.Protocol.Packets;
+using ShardingConnector.ProxyClient;
 using ShardingConnector.ProxyClient.Abstractions;
-using ShardingConnector.ProxyClientMySql.Command.Query.Text.Query;
 using ShardingConnector.ProxyClientMySql.ServerCommand.Query;
 using ShardingConnector.ProxyClientMySql.ServerCommand.Quit;
 using ShardingConnector.ProxyServer.Abstractions;
+using ShardingConnector.ProxyServer.Commands;
 using ShardingConnector.ProxyServer.Session;
 
 namespace ShardingConnector.ProxyClientMySql.CommandExecutor;

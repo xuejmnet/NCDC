@@ -11,13 +11,18 @@
       <ProjectReference Include="..\..\core\ShardingConnector.Executor\ShardingConnector.Executor.csproj" />
       <ProjectReference Include="..\..\core\ShardingConnector\ShardingConnector.csproj" />
       <ProjectReference Include="..\..\protocol\ShardingConnector.Protocol 下午9.43.43\ShardingConnector.Protocol.csproj" />
-      <ProjectReference Include="..\..\protocol\ShardingConnector.ProtocolCore\ShardingConnector.ProtocolCore.csproj" />
       <ProjectReference Include="..\..\sharding\ShardingConnector.ShardingCommon\ShardingConnector.ShardingCommon.csproj" />
     </ItemGroup>
 
     <ItemGroup>
       <PackageReference Include="MySqlConnector" Version="2.1.12" />
       <PackageReference Include="System.ServiceModel.Primitives" Version="4.9.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Reference Include="ShardingConnector.ProtocolMysql">
+        <HintPath>..\ShardingConnector.Proxy.Starter\bin\Debug\net6.0\ShardingConnector.ProtocolMysql.dll</HintPath>
+      </Reference>
     </ItemGroup>
 
 </Project>

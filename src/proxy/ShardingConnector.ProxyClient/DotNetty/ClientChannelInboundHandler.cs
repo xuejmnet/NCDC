@@ -28,6 +28,7 @@ public class ClientChannelInboundHandler:ChannelHandlerAdapter
     public override void ChannelActive(IChannelHandlerContext context)
     {
         var connectionId = _databaseProtocolClientEngine.GetAuthenticationEngine().Handshake(context);
+        Console.WriteLine($"connectionId:{connectionId}");
         _connectionSession.SetConnectionId(connectionId);
     }
 

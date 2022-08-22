@@ -6,9 +6,8 @@ using DotNetty.Transport.Channels.Sockets;
 using DotNetty.Transport.Libuv;
 using Microsoft.Extensions.Logging;
 using ShardingConnector.Logger;
-using ShardingConnector.ProtocolCore.Codecs;
-using ShardingConnector.ProtocolCore.DotNetty;
 using ShardingConnector.ProxyClient;
+using ShardingConnector.ProxyClient.Codecs;
 using ShardingConnector.ProxyClient.DotNetty;
 using ShardingConnector.ProxyServer;
 using LogLevel = DotNetty.Handlers.Logging.LogLevel;
@@ -20,7 +19,7 @@ public class ShardingProxy:IShardingProxy
     private static readonly ILogger<ShardingProxy> _logger = InternalLoggerFactory.CreateLogger<ShardingProxy>();
  
     private readonly ShardingProxyOption _shardingProxyOption;
-    private readonly IDatabasePacketCodecEngine _databasePacketCodecEngine;
+    private readonly IPacketCodec _packetCodec;
     private readonly IDatabaseProtocolClientEngine _databaseProtocolClientEngine;
 
     // 主工作线程组，设置为1个线程
@@ -39,7 +38,7 @@ public class ShardingProxy:IShardingProxy
     {
         _shardingProxyOption = shardingProxyOption;
         _databaseProtocolClientEngine = databaseProtocolClientEngine;
-        _databasePacketCodecEngine = databaseProtocolClientEngine.GetCodecEngine();
+        _packetCodec = databaseProtocolClientEngine.GetCodecEngine();
     }
     public async Task StartAsync(CancellationToken cancellationToken = default)
     { 
@@ -84,8 +83,8 @@ public class ShardingProxy:IShardingProxy
                         //同时所有出栈的消息 也要这个管道的所有处理器进行一步步处理
                         IChannelPipeline pipeline = channel.Pipeline;
                         pipeline.AddLast(new ChannelAttrInitializer());
-                        pipeline.AddLast(new MessagePacketDecoder(_databasePacketCodecEngine));
-                        pipeline.AddLast(new MessagePacketEncoder(_databasePacketCodecEngine));
+                        pipeline.AddLast(new MessagePacketDecoder(_packetCodec));
+                        pipeline.AddLast(new MessagePacketEncoder(_packetCodec));
                         pipeline.AddLast(new ConnectorManagerHandler());
                         pipeline.AddLast(new ClientChannelInboundHandler(_databaseProtocolClientEngine,channel));
                         // pipeline.AddLast("tls", TlsHandler.Server(_option.TlsCertificate));

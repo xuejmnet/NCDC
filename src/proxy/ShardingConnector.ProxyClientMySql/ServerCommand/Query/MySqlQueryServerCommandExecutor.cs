@@ -4,18 +4,17 @@ using ShardingConnector.CommandParser.Command;
 using ShardingConnector.CommandParser.Command.DML;
 using ShardingConnector.Common;
 using ShardingConnector.ParserEngine;
-using ShardingConnector.ProtocolCore.Packets;
-using ShardingConnector.ProtocolCore.Packets.Executor;
-using ShardingConnector.ProtocolMysql.Constant;
-using ShardingConnector.ProtocolMysql.Packet;
-using ShardingConnector.ProtocolMysql.Packet.Command.Admin;
-using ShardingConnector.ProtocolMysql.Packet.Command.Query.Text;
-using ShardingConnector.ProtocolMysql.Packet.Command.Query.Text.Query;
-using ShardingConnector.ProtocolMysql.Packet.Generic;
-using ShardingConnector.ProtocolMysql.Packet.ServerCommand.Query;
+using ShardingConnector.Protocol.MySql.Constant;
+using ShardingConnector.Protocol.MySql.Packet;
+using ShardingConnector.Protocol.MySql.Packet.Command;
+using ShardingConnector.Protocol.MySql.Packet.Generic;
+using ShardingConnector.Protocol.Packets;
+using ShardingConnector.ProxyClient;
 using ShardingConnector.ProxyClientMySql.Command;
 using ShardingConnector.ProxyClientMySql.Command.Query.Text.Query;
+using ShardingConnector.ProxyServer;
 using ShardingConnector.ProxyServer.Abstractions;
+using ShardingConnector.ProxyServer.Commands;
 using ShardingConnector.ProxyServer.Response;
 using ShardingConnector.ProxyServer.Response.EffectRow;
 using ShardingConnector.ProxyServer.Response.Query;
@@ -61,7 +60,7 @@ public sealed class MySqlQueryServerCommandExecutor:IQueryCommandExecutor
                 .GetAttribute(MySqlConstants.MYSQL_OPTION_MULTI_STATEMENTS).Get())
             && (sqlCommand is UpdateCommand || sqlCommand is DeleteCommand) && sql.Contains(";");
     }
-    public List<IDatabasePacket> Execute()
+    public List<IPacket> Execute()
     {
         var responseHeader = TextCommandHandler.Execute();
         if (responseHeader is QueryResponse queryResponse)
@@ -73,7 +72,7 @@ public sealed class MySqlQueryServerCommandExecutor:IQueryCommandExecutor
         
         if (responseHeader is EffectRowServerResponse updateResponseHeader)
         {
-            return new List<IDatabasePacket>()
+            return new List<IPacket>()
             {
                 CreateUpdatePacket(updateResponseHeader)
             };
@@ -82,7 +81,7 @@ public sealed class MySqlQueryServerCommandExecutor:IQueryCommandExecutor
         throw new NotImplementedException();
     }
 
-    private List<IDatabasePacket> ProcessQuery(QueryResponse queryResponse)
+    private List<IPacket> ProcessQuery(QueryResponse queryResponse)
     {
         _responseType = ResponseTypeEnum.QUERY;
         var result = BuildQueryResponsePackets(queryResponse,MySqlEncoding,(MySqlStatusFlagEnum)ServerStatusFlagCalculator.CalculateFor(ConnectionSession));
@@ -90,8 +89,8 @@ public sealed class MySqlQueryServerCommandExecutor:IQueryCommandExecutor
         return result;
     }
     
-    public static  List<IDatabasePacket> BuildQueryResponsePackets( QueryResponse queryResponseHeader,  int characterSet,  MySqlStatusFlagEnum statusFlags) {
-        List<IDatabasePacket> result = new (queryResponseHeader.DbColumns.Count+2);
+    public static  List<IPacket> BuildQueryResponsePackets( QueryResponse queryResponseHeader,  int characterSet,  MySqlStatusFlagEnum statusFlags) {
+        List<IPacket> result = new (queryResponseHeader.DbColumns.Count+2);
         int sequenceId = 0;
         var dbColumns = queryResponseHeader.DbColumns;
         result.Add(new MySqlFieldCountPacket(++sequenceId, dbColumns.Count));
@@ -129,7 +128,7 @@ public sealed class MySqlQueryServerCommandExecutor:IQueryCommandExecutor
         return _responseType;
     }
 
-    public IDatabasePacket GetQueryRowPacket()
+    public IPacket GetQueryRowPacket()
     {
         return new MySqlTextResultSetRowPacket(++_currentSequenceId, TextCommandHandler.GetRowData().GetData());
     }

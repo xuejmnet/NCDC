@@ -1,16 +1,15 @@
 using System.Net;
 using DotNetty.Transport.Channels;
+using ShardingConnector.Protocol.Errors;
+using ShardingConnector.Protocol.MySql.Constant;
+using ShardingConnector.Protocol.MySql.Packet.Generic;
+using ShardingConnector.Protocol.MySql.Packet.Handshake;
+using ShardingConnector.Protocol.MySql.Payload;
+using ShardingConnector.Protocol.Packets;
 using ShardingConnector.ProtocolCore;
-using ShardingConnector.ProtocolCore.Errors;
-using ShardingConnector.ProtocolCore.Payloads;
-using ShardingConnector.ProtocolMysql.Constant;
-using ShardingConnector.ProtocolMysql.Packet.Generic;
-using ShardingConnector.ProtocolMysql.Packet.Handshake;
-using ShardingConnector.ProtocolMysql.Payload;
 using ShardingConnector.ProxyClient.Authentication;
 using ShardingConnector.ProxyClient.Common;
 using ShardingConnector.ProxyClient.Core;
-using ShardingConnector.ProxyServer.Connection;
 
 namespace ShardingConnector.ProxyClientMySql.Authentication;
 

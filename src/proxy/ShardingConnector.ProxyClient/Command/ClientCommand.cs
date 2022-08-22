@@ -3,9 +3,8 @@ using DotNetty.Transport.Channels;
 using Microsoft.Extensions.Logging;
 using ShardingConnector.Extensions;
 using ShardingConnector.Logger;
-using ShardingConnector.ProtocolCore;
-using ShardingConnector.ProtocolCore.Packets.Executor;
-using ShardingConnector.ProtocolCore.Payloads;
+using ShardingConnector.Protocol.Packets;
+using ShardingConnector.ProxyServer;
 using ShardingConnector.ProxyServer.Session;
 
 namespace ShardingConnector.ProxyClient.Command;
@@ -101,7 +100,7 @@ public sealed class ClientCommand : IClientCommand
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                _logger.LogError("client command execute error.",e);
                 _databaseProtocolClientEngine.HandleException(_connectionSession, e);
                 throw;
             }

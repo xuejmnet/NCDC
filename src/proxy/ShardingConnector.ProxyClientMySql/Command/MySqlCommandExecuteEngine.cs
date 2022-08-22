@@ -1,15 +1,14 @@
 using DotNetty.Transport.Channels;
-using ShardingConnector.ProtocolCore.Packets;
-using ShardingConnector.ProtocolCore.Packets.Executor;
-using ShardingConnector.ProtocolCore.Payloads;
-using ShardingConnector.ProtocolMysql.Constant;
-using ShardingConnector.ProtocolMysql.Packet.Command;
-using ShardingConnector.ProtocolMysql.Packet.Generic;
-using ShardingConnector.ProtocolMysql.Payload;
+using ShardingConnector.Protocol.MySql.Constant;
+using ShardingConnector.Protocol.MySql.Packet.Generic;
+using ShardingConnector.Protocol.Packets;
 using ShardingConnector.ProxyClient.Abstractions;
 using ShardingConnector.ProxyClient.Command;
+using ShardingConnector.ProxyServer;
 using ShardingConnector.ProxyServer.Connection;
 using ShardingConnector.ProxyServer.Session;
+using ICommandExecutor = ShardingConnector.ProxyClient.ICommandExecutor;
+using IQueryCommandExecutor = ShardingConnector.ProxyClient.IQueryCommandExecutor;
 
 namespace ShardingConnector.ProxyClientMySql.Command;
 
@@ -28,12 +27,12 @@ public sealed class MySqlCommandExecuteEngine : ICommandExecuteEngine
         return _commandExecutorFactory.Create(payload, connectionSession);
     }
 
-    public IDatabasePacket GetErrorPacket(Exception exception)
+    public IPacket GetErrorPacket(Exception exception)
     {
         return new MySqlErrPacket(1, MySqlServerErrorCode.ER_BAD_DB_ERROR_ARG1, "123");
     }
 
-    public IDatabasePacket? GetOtherPacket(ConnectionSession connectionSession)
+    public IPacket? GetOtherPacket(ConnectionSession connectionSession)
     {
         return null;
     }

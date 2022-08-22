@@ -1,8 +1,6 @@
 using DotNetty.Transport.Channels;
-using ShardingConnector.ProtocolCore.Packets;
+using ShardingConnector.Protocol.Packets;
 using ShardingConnector.ProtocolCore.Packets.Executor;
-using ShardingConnector.ProtocolCore.Payloads;
-using ShardingConnector.ProxyServer.Connection;
 using ShardingConnector.ProxyServer.Session;
 
 namespace ShardingConnector.ProxyClient.Command;
@@ -17,8 +15,8 @@ public interface ICommandExecuteEngine
     ICommandExecutor GetCommandExecutor(IPacketPayload payload,
         ConnectionSession connectionSession);
 
-    IDatabasePacket GetErrorPacket(Exception exception);
-    IDatabasePacket? GetOtherPacket(ConnectionSession connectionSession);
+    IPacket GetErrorPacket(Exception exception);
+    IPacket? GetOtherPacket(ConnectionSession connectionSession);
 
     void WriteQueryData(IChannelHandlerContext context, ConnectionSession connectionSession,
         IQueryCommandExecutor queryCommandExecutor, int headerPackagesCount);
