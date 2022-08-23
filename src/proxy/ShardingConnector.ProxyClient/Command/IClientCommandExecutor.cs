@@ -1,6 +1,6 @@
 namespace ShardingConnector.ProxyClient.Command;
 
-public interface IClientCommand
+public interface IClientCommandExecutor
 {
     ValueTask ExecuteAsync();
 }

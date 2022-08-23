@@ -4,7 +4,7 @@ namespace ShardingConnector.ProxyServer.ServerHandlers;
 
 public sealed class GenericDatabaseServerHandler:IServerHandler
 {
-    public IServerResult Send()
+    public IServerResult Execute()
     {
         throw new NotImplementedException();
     }

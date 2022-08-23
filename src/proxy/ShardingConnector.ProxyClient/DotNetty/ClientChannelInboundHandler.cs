@@ -48,7 +48,7 @@ public class ClientChannelInboundHandler:ChannelHandlerAdapter
         }
 
         Console.WriteLine("认证："+_authenticated);
-        var clientCommand = new ClientCommand(_databaseProtocolClientEngine,_connectionSession,ctx,byteBuffer);
+        var clientCommand = new ClientCommandExecutor(_databaseProtocolClientEngine,_connectionSession,ctx,byteBuffer);
         Task.Run(async () => await clientCommand.ExecuteAsync());
         // var appCommand = new AppCommand(this._serverConnection,ctx,msg);
         // Task.Run(async () =>

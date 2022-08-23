@@ -9,6 +9,7 @@ using ShardingConnector.Logger;
 using ShardingConnector.ProxyClient;
 using ShardingConnector.ProxyClient.Codecs;
 using ShardingConnector.ProxyClient.DotNetty;
+using ShardingConnector.ProxyClientMySql.Codec;
 using ShardingConnector.ProxyServer;
 using LogLevel = DotNetty.Handlers.Logging.LogLevel;
 
@@ -33,12 +34,16 @@ public class ShardingProxy:IShardingProxy
     /// </summary>
     private ServerBootstrap _serverBootstrap;
     private Bootstrap _clientBootstrap;
+    private IChannelHandler _encoderHandler;
+    private IChannelHandler _connectorManagerHandler;
 
     public ShardingProxy(ShardingProxyOption shardingProxyOption,IDatabaseProtocolClientEngine databaseProtocolClientEngine)
     {
         _shardingProxyOption = shardingProxyOption;
         _databaseProtocolClientEngine = databaseProtocolClientEngine;
         _packetCodec = databaseProtocolClientEngine.GetPacketCodec();
+        _encoderHandler = new MessagePacketEncoder(_packetCodec);
+        _connectorManagerHandler = new ConnectorManagerHandler();
     }
     public async Task StartAsync(CancellationToken cancellationToken = default)
     { 
@@ -84,8 +89,8 @@ public class ShardingProxy:IShardingProxy
                         IChannelPipeline pipeline = channel.Pipeline;
                         pipeline.AddLast(new ChannelAttrInitializer());
                         pipeline.AddLast(new MessagePacketDecoder(_packetCodec));
-                        pipeline.AddLast(new MessagePacketEncoder(_packetCodec));
-                        pipeline.AddLast(new ConnectorManagerHandler());
+                        pipeline.AddLast(_encoderHandler);
+                        pipeline.AddLast(_connectorManagerHandler);
                         pipeline.AddLast(new ClientChannelInboundHandler(_databaseProtocolClientEngine,channel));
                         // pipeline.AddLast("tls", TlsHandler.Server(_option.TlsCertificate));
                         // pipeline.AddLast("tls", new TlsHandler(stream => new SslStream(stream, true, (sender, certificate, chain, errors) => true), new ClientTlsSettings(_targetHost)));

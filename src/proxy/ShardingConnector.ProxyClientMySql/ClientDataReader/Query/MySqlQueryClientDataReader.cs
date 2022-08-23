@@ -8,30 +8,30 @@ using ShardingConnector.Protocol.MySql.Constant;
 using ShardingConnector.Protocol.MySql.Packet;
 using ShardingConnector.Protocol.MySql.Packet.Command;
 using ShardingConnector.Protocol.MySql.Packet.Generic;
+using ShardingConnector.Protocol.MySql.Payload;
 using ShardingConnector.Protocol.Packets;
 using ShardingConnector.ProxyClient.Abstractions;
+using ShardingConnector.ProxyClientMySql.ClientConnections.Commands;
 using ShardingConnector.ProxyClientMySql.ClientDataReader.Query.ServerHandlers;
+using ShardingConnector.ProxyClientMySql.ClientDataReader.SetOption;
 using ShardingConnector.ProxyClientMySql.Common;
-using ShardingConnector.ProxyServer;
 using ShardingConnector.ProxyServer.Abstractions;
-using ShardingConnector.ProxyServer.Commands;
 using ShardingConnector.ProxyServer.Commons;
 using ShardingConnector.ProxyServer.ServerHandlers.Results;
 using ShardingConnector.ProxyServer.Session;
 
 namespace ShardingConnector.ProxyClientMySql.ClientDataReader.Query;
 
-public sealed class MySqlQueryClientDataReader:IClientQueryDataReader
+public sealed class MySqlQueryClientDataReader:IClientQueryDataReader<MySqlPacketPayload>
 {
     public ConnectionSession ConnectionSession { get; }
     public IServerHandler ServerHandler { get; }
     public int MySqlEncoding { get; }
     private int _currentSequenceId;
     public ResultTypeEnum ResultType{ get; private set; }
-    public MySqlQueryClientDataReader(MySqlQueryClientCommand mySqlQueryClientCommand,ConnectionSession connectionSession,IServerHandlerFactory serverHandlerFactory)
+    public MySqlQueryClientDataReader(string sql,ConnectionSession connectionSession,IServerHandlerFactory serverHandlerFactory)
     {
         ConnectionSession = connectionSession;
-        var sql = mySqlQueryClientCommand.Sql;
         var sqlCommand = ParseSql(sql);
         var isMultiCommands = IsMultiCommands(connectionSession,sqlCommand,sql);
         ServerHandler=isMultiCommands
@@ -54,13 +54,13 @@ public sealed class MySqlQueryClientDataReader:IClientQueryDataReader
     private bool IsMultiCommands(ConnectionSession connectionSession, ISqlCommand sqlCommand, string sql)
     {
         return connectionSession.AttributeMap.HasAttribute(MySqlConstants.MYSQL_OPTION_MULTI_STATEMENTS)
-               && MySqlServerComSetOptionPacket.MYSQL_OPTION_MULTI_STATEMENTS_ON.Equals(connectionSession.AttributeMap
+               && MySqlSetOptionClientCommand.MYSQL_OPTION_MULTI_STATEMENTS_ON.Equals(connectionSession.AttributeMap
                    .GetAttribute(MySqlConstants.MYSQL_OPTION_MULTI_STATEMENTS).Get())
                && (sqlCommand is UpdateCommand || sqlCommand is DeleteCommand) && sql.Contains(";");
     }
-    public List<IPacket> SendCommand()
+    public IEnumerable<IPacket<MySqlPacketPayload>> SendCommand()
     {
-        var serverResult = ServerHandler.Send();
+        var serverResult = ServerHandler.Execute();
         ResultType = serverResult.ResultType;
         if (serverResult is QueryServerResult queryServerResult)
         {
@@ -69,7 +69,7 @@ public sealed class MySqlQueryClientDataReader:IClientQueryDataReader
         
         if (serverResult is EffectRowServerResult effectResult)
         {
-            return new List<IPacket>()
+            return new List<IPacket<MySqlPacketPayload>>()
             {
                 CreateUpdatePacket(effectResult)
             };
@@ -78,21 +78,25 @@ public sealed class MySqlQueryClientDataReader:IClientQueryDataReader
         throw new NotImplementedException();
     }
 
-    public IPacket GetRowPacket()
+
+    public IPacket<MySqlPacketPayload>? GetRowPacket()
     {
         return new MySqlTextResultSetRowPacket(++_currentSequenceId, ServerHandler.GetRowData().Cells.Select(o=>o.Data).ToList());
     }
-    
 
-    private List<IPacket> ProcessQuery(QueryServerResult queryServerResult)
+    private IEnumerable<IPacket<MySqlPacketPayload>> ProcessQuery(QueryServerResult queryServerResult)
     {
         var result = BuildQueryResponsePackets(queryServerResult,MySqlEncoding,(MySqlStatusFlagEnum)ServerStatusFlagCalculator.CalculateFor(ConnectionSession));
         _currentSequenceId = result.Count;
         return result;
     }
     
-    public static  List<IPacket> BuildQueryResponsePackets( QueryServerResult queryServerResult,  int characterSet,  MySqlStatusFlagEnum statusFlags) {
-        List<IPacket> result = new (queryServerResult.DbColumns.Count+2);
+    public bool MoveNext()
+    {
+        return ServerHandler.Read();
+    }
+    public static  List<IPacket<MySqlPacketPayload>> BuildQueryResponsePackets( QueryServerResult queryServerResult,  int characterSet,  MySqlStatusFlagEnum statusFlags) {
+        List<IPacket<MySqlPacketPayload>> result = new (queryServerResult.DbColumns.Count+2);
         int sequenceId = 0;
         var dbColumns = queryServerResult.DbColumns;
         result.Add(new MySqlFieldCountPacket(++sequenceId, dbColumns.Count));
@@ -125,10 +129,6 @@ public sealed class MySqlQueryClientDataReader:IClientQueryDataReader
         return result;
     }
 
-    public bool MoveNext()
-    {
-        return ServerHandler.MoveNext();
-    }
 
     private IMysqlPacket CreateUpdatePacket(EffectRowServerResult effectResult)
     {

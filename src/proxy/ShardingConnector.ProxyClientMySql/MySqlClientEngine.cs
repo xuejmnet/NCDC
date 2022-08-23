@@ -11,13 +11,13 @@ namespace ShardingConnector.ProxyClientMySql;
 
 public class MySqlClientEngine:IDatabaseProtocolClientEngine
 {
-    private readonly ICommandExecuteEngine _commandExecuteEngine;
+    private readonly IClientDbConnection _clientDbConnection;
     private readonly IPacketCodec _packetCodec;
     private readonly IAuthenticationEngine _authenticationEngine = new MySqlAuthenticationEngine();
 
-    public MySqlClientEngine(ICommandExecuteEngine commandExecuteEngine,IPacketCodec packetCodec)
+    public MySqlClientEngine(IClientDbConnection clientDbConnection,IPacketCodec packetCodec)
     {
-        _commandExecuteEngine = commandExecuteEngine;
+        _clientDbConnection = clientDbConnection;
         _packetCodec = packetCodec;
     }
     public IPacketCodec GetPacketCodec()
@@ -30,9 +30,9 @@ public class MySqlClientEngine:IDatabaseProtocolClientEngine
         return _authenticationEngine;
     }
 
-    public ICommandExecuteEngine GetCommandExecuteEngine()
+    public IClientDbConnection GetClientDbConnection()
     {
-        return _commandExecuteEngine;
+        return _clientDbConnection;
     }
 
     public void Release(ConnectionSession connectionSession)

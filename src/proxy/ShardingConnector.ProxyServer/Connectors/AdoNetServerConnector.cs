@@ -39,7 +39,7 @@
 //     }
 //     
 //
-//     public bool MoveNext()
+//     public bool Read()
 //     {
 //         throw new NotImplementedException();
 //     }

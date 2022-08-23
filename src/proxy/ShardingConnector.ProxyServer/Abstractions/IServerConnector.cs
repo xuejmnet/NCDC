@@ -10,6 +10,6 @@
 // public interface IServerConnector
 // {
 //     IServerResponse Execute(ExecutionContext executionContext);
-//     bool MoveNext();
+//     bool Read();
 //     QueryResponseRow GetQueryRow();
 // }

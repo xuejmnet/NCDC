@@ -4,7 +4,7 @@ namespace ShardingConnector.ProxyClientMySql.ClientDataReader.Query.ServerHandle
 
 public sealed class MySqlMultiServerHandler:IServerHandler
 {
-    public IServerResult Send()
+    public IServerResult Execute()
     {
         throw new NotImplementedException();
     }

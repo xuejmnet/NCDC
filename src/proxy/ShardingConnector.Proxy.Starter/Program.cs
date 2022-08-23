@@ -11,6 +11,7 @@ using ShardingConnector.ProxyClient.Abstractions;
 using ShardingConnector.ProxyClient.Codecs;
 using ShardingConnector.ProxyClient.Command;
 using ShardingConnector.ProxyClientMySql;
+using ShardingConnector.ProxyClientMySql.ClientConnections;
 using ShardingConnector.ProxyClientMySql.ClientDataReader;
 using ShardingConnector.ProxyClientMySql.Codec;
 using ShardingConnector.ProxyServer;
@@ -64,8 +65,8 @@ namespace ShardingConnector.Proxy.Starter
             serivces.AddSingleton<IShardingProxy,ShardingProxy>();
             serivces.AddSingleton<IPacketCodec,MySqlPacketCodecEngine>();
             serivces.AddSingleton<IDatabaseProtocolClientEngine,MySqlClientEngine>();
-            serivces.AddSingleton<ICommandExecuteEngine,MySqlCommandExecuteEngine>();
-            serivces.AddSingleton<IClientDataReaderFactory,MySqlClientDataReaderFactory>();
+            serivces.AddSingleton<IClientDbConnection,MySqlClientDbConnection>();
+            // serivces.AddSingleton<IClientDataReaderFactory,MySqlClientDataReaderFactory>();
             // serivces.AddSingleton<IServerConnector,AdoNetSer>();
             serivces.AddSingleton<IServerHandlerFactory,ServerHandlerFactory>();
             serivces.Configure<ShardingProxyOption>(_configuration);

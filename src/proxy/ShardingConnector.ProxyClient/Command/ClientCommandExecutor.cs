@@ -10,16 +10,16 @@ using ShardingConnector.ProxyServer.Session;
 
 namespace ShardingConnector.ProxyClient.Command;
 
-public sealed class ClientCommand : IClientCommand
+public sealed class ClientCommandExecutor : IClientCommandExecutor
 {
-    private static readonly ILogger<ClientCommand> _logger = InternalLoggerFactory.CreateLogger<ClientCommand>();
+    private static readonly ILogger<ClientCommandExecutor> _logger = InternalLoggerFactory.CreateLogger<ClientCommandExecutor>();
     private readonly IDatabaseProtocolClientEngine _databaseProtocolClientEngine;
     private readonly ConnectionSession _connectionSession;
     private readonly IChannelHandlerContext _context;
     private readonly IByteBuffer _message;
     private readonly bool _logDebug;
 
-    public ClientCommand(IDatabaseProtocolClientEngine databaseProtocolClientEngine,
+    public ClientCommandExecutor(IDatabaseProtocolClientEngine databaseProtocolClientEngine,
         ConnectionSession connectionSession, IChannelHandlerContext context, IByteBuffer message)
     {
         _databaseProtocolClientEngine = databaseProtocolClientEngine;
@@ -61,9 +61,9 @@ public sealed class ClientCommand : IClientCommand
         //     log.error("Exception occur: ", cause);
         // }
         _logger.LogError($"Exception occur: {exception}");
-        var commandExecuteEngine = _databaseProtocolClientEngine.GetCommandExecuteEngine();
-         _context.WriteAsync(commandExecuteEngine.GetErrorPacket(exception));
-        var databasePacket = commandExecuteEngine.GetOtherPacket(_connectionSession);
+        var clientDbConnection = _databaseProtocolClientEngine.GetClientDbConnection();
+         _context.WriteAsync(clientDbConnection.GetErrorPacket(exception));
+        var databasePacket = clientDbConnection.GetOtherPacket(_connectionSession);
         if (null != databasePacket)
         {
              _context.WriteAsync(databasePacket);
@@ -74,30 +74,42 @@ public sealed class ClientCommand : IClientCommand
 
     private bool ExecuteCommand(IChannelHandlerContext context, IPacketPayload payload)
     {
-        var commandExecuteEngine = _databaseProtocolClientEngine.GetCommandExecuteEngine();
-        using (var clientDataReader =
-               commandExecuteEngine.GetClientDataReader(payload, _connectionSession))
+        var clientDbConnection = _databaseProtocolClientEngine.GetClientDbConnection();
+        using (var clientCommand =
+               clientDbConnection.CreateCommand(payload, _connectionSession))
         {
             try
             {
-                var responsePackets = clientDataReader.SendCommand();
-                if (responsePackets.IsEmpty())
+                using (var clientDataReader = clientCommand.ExecuteReader())
                 {
-                    return false;
-                }
+                    var responsePackets = clientDataReader.SendCommand();
+                    // var enumerable = responsePackets as IPacket[] ?? responsePackets.ToArray();
+                    // if (enumerable.IsEmpty())
+                    // {
+                    //     return false;
+                    // }
 
-                foreach (var responsePacket in responsePackets)
-                {
-                     context.WriteAsync(responsePacket);
-                }
+                    int i = 0;
+                    foreach (var responsePacket in responsePackets)
+                    {
+                        context.WriteAsync(responsePacket);
+                        i++;
+                    }
 
-                if (clientDataReader is IClientQueryDataReader clientQueryDataReader)
-                {
-                    commandExecuteEngine.WriteQueryData(context, _connectionSession,
-                        clientQueryDataReader, responsePackets.Count);
-                }
+                    if (i == 0)
+                    {
+                        return false;
+                    }
 
-                return true;
+                    if (clientDataReader is IClientQueryDataReader clientQueryDataReader)
+                    {
+                        clientDbConnection.WriteQueryData(context, _connectionSession,
+                            clientQueryDataReader, i);
+                    }
+
+                    return true;
+                }
+                
             }
             catch (Exception e)
             {

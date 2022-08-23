@@ -4,9 +4,9 @@ namespace ShardingConnector.ProxyServer.Abstractions;
 
 public interface IServerHandler:IDisposable
 {
-    IServerResult Send();
+    IServerResult Execute();
         
-    bool MoveNext()
+    bool Read()
     {
         return false;
     }

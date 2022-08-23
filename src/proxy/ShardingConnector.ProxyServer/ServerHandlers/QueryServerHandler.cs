@@ -47,7 +47,7 @@ public sealed class QueryServerHandler:IServerHandler
         };
         return commandExecutor;
     }
-    public IServerResult Send()
+    public IServerResult Execute()
     {
         var executionContext = Prepare(Sql);
         var dataReaders = _commandExecutor.ExecuteDbDataReader(false,executionContext);
@@ -94,7 +94,7 @@ public sealed class QueryServerHandler:IServerHandler
         return result;
     }
 
-    public bool MoveNext()
+    public bool Read()
     {
         return StreamDataReader!.Read();
     }

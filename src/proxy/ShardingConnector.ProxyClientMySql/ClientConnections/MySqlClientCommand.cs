@@ -2,7 +2,6 @@
 // using ShardingConnector.Logger;
 // using ShardingConnector.Protocol.MySql.Packet.Command;
 // using ShardingConnector.Protocol.MySql.Payload;
-// using ShardingConnector.Protocol.Packets;
 // using ShardingConnector.ProxyClient.Abstractions;
 // using ShardingConnector.ProxyClientMySql.ClientDataReader.NotSupported;
 // using ShardingConnector.ProxyClientMySql.ClientDataReader.Query;
@@ -11,25 +10,35 @@
 // using ShardingConnector.ProxyServer.Abstractions;
 // using ShardingConnector.ProxyServer.Session;
 //
-// namespace ShardingConnector.ProxyClientMySql.ClientDataReader;
+// namespace ShardingConnector.ProxyClientMySql.ClientConnections;
 //
-// public sealed class MySqlClientDataReaderFactory:IClientDataReaderFactory
+// public sealed class MySqlClientCommand:IClientCommand
 // {
-//     private static readonly ILogger<MySqlClientDataReaderFactory> _logger = InternalLoggerFactory.CreateLogger<MySqlClientDataReaderFactory>();
+//     private readonly MySqlPacketPayload _payload;
+//     private readonly ConnectionSession _connectionSession;
 //     private readonly IServerHandlerFactory _serverHandlerFactory;
 //
-//     public MySqlClientDataReaderFactory(IServerHandlerFactory serverHandlerFactory)
+//     private static readonly ILogger<MySqlClientCommand> _logger =
+//         InternalLoggerFactory.CreateLogger<MySqlClientCommand>();
+//
+//     public MySqlClientCommand(MySqlPacketPayload payload, ConnectionSession connectionSession,IServerHandlerFactory serverHandlerFactory)
 //     {
+//         _payload = payload;
+//         _connectionSession = connectionSession;
 //         _serverHandlerFactory = serverHandlerFactory;
 //     }
-//     public IClientDataReader Create(IPacketPayload payload, ConnectionSession connectionSession)
+//     public IClientDataReader ExecuteReader()
 //     {
-//         var mySqlPacketPayload = (MySqlPacketPayload)payload;
-//         var commandType = GetCommandType(mySqlPacketPayload);
-//         return CreateServerCommandExecutor(commandType, mySqlPacketPayload, connectionSession);
+//         var commandType = GetCommandType(_payload);
+//         return CreateClientDataReader(commandType, _payload, _connectionSession);
 //     }
-//
-//     public IClientDataReader CreateServerCommandExecutor(MySqlCommandTypeEnum commandType, MySqlPacketPayload payload,ConnectionSession connectionSession)
+//     
+//     private MySqlCommandTypeEnum GetCommandType(MySqlPacketPayload payload)
+//     {
+//         return MySqlCommandTypeProvider.GetMySqlCommandType(payload);
+//     }
+//     
+//     private IClientDataReader CreateClientDataReader(MySqlCommandTypeEnum commandType, MySqlPacketPayload payload,ConnectionSession connectionSession)
 //     {
 //         _logger.LogDebug($"create server command executor,command type: {commandType}");
 //         switch (commandType)
@@ -42,9 +51,4 @@
 //         }
 //     }
 //
-//     
-//     private MySqlCommandTypeEnum GetCommandType(MySqlPacketPayload payload)
-//     {
-//         return MySqlCommandTypeProvider.GetMySqlCommandType(payload);
-//     }
 // }

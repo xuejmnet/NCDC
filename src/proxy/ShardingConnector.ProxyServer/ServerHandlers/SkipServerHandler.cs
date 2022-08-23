@@ -5,7 +5,7 @@ namespace ShardingConnector.ProxyServer.ServerHandlers;
 
 public sealed class SkipServerHandler:IServerHandler
 {
-    public IServerResult Send()
+    public IServerResult Execute()
     {
         return new EffectRowServerResult();
     }

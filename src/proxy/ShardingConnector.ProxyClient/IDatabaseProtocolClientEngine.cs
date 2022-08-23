@@ -1,3 +1,4 @@
+using ShardingConnector.ProxyClient.Abstractions;
 using ShardingConnector.ProxyClient.Authentication;
 using ShardingConnector.ProxyClient.Codecs;
 using ShardingConnector.ProxyClient.Command;
@@ -10,7 +11,7 @@ public interface IDatabaseProtocolClientEngine
     
     IPacketCodec GetPacketCodec();
     IAuthenticationEngine GetAuthenticationEngine();
-    ICommandExecuteEngine GetCommandExecuteEngine();
+    IClientDbConnection GetClientDbConnection();
     void Release(ConnectionSession connectionSession);
     void HandleException(ConnectionSession connectionSession, Exception exception);
 }
