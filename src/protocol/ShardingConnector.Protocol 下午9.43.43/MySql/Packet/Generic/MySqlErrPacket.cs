@@ -42,7 +42,7 @@ public class MySqlErrPacket: IMysqlPacket
         ErrorMessage = payload.ReadStringEOF();
         
     }
-    public void Write(MySqlPacketPayload payload)
+    public void WriteTo(MySqlPacketPayload payload)
     {
         payload.WriteInt1(HEADER);
         payload.WriteInt2(ErrorCode);
@@ -59,8 +59,8 @@ public class MySqlErrPacket: IMysqlPacket
         throw new NotImplementedException();
     }
 
-    public void Write(IPacketPayload payload)
+    public void WriteTo(IPacketPayload payload)
     {
-        Write((MySqlPacketPayload)payload);
+        WriteTo((MySqlPacketPayload)payload);
     }
 }

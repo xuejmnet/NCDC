@@ -17,20 +17,20 @@ public abstract class AbstractMySqlServerCommandPacket:IMysqlPacket,IServerComma
         SequenceId = 0;
         _commandType = commandType;
     }
-    public void Write(MySqlPacketPayload payload)
+    public void WriteTo(MySqlPacketPayload payload)
     {
         payload.WriteInt1((int)_commandType);
-        DoWrite(payload);
+        DoWriteTo(payload);
     }
 
-    protected virtual void DoWrite(MySqlPacketPayload payload)
+    protected virtual void DoWriteTo(MySqlPacketPayload payload)
     {
         
     }
 
-    public void Write(IPacketPayload payload)
+    public void WriteTo(IPacketPayload payload)
     {
-        Write((MySqlPacketPayload)payload);
+        WriteTo((MySqlPacketPayload)payload);
     }
 
     public int SequenceId { get; }

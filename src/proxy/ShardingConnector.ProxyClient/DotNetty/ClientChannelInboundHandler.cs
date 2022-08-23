@@ -64,7 +64,7 @@ public class ClientChannelInboundHandler:ChannelHandlerAdapter
 
     private bool Authenticate(IChannelHandlerContext context,IByteBuffer message)
     {
-        using (var payload = _databaseProtocolClientEngine.GetCodecEngine().CreatePacketPayload(message,context.GetAttribute(CommonConstants.CHARSET_ATTRIBUTE_KEY).Get()))
+        using (var payload = _databaseProtocolClientEngine.GetPacketCodec().CreatePacketPayload(message,context.GetAttribute(CommonConstants.CHARSET_ATTRIBUTE_KEY).Get()))
         {
             try
             {

@@ -98,7 +98,7 @@ public sealed class MySqlColumnDefinition41Packet : IMysqlPacket
         _containDefaultValues = false;
     }
 
-    public void Write(MySqlPacketPayload payload)
+    public void WriteTo(MySqlPacketPayload payload)
     {
         payload.WriteStringLenenc(CATALOG);
         payload.WriteStringLenenc(_schema);

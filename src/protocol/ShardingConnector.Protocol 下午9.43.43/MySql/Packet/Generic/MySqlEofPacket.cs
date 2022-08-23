@@ -32,7 +32,7 @@ public class MySqlEofPacket:IMysqlPacket
         Warnings = payload.ReadInt2();
         StatusFlag=(MySqlStatusFlagEnum)payload.ReadInt2();
     }
-    public void Write(MySqlPacketPayload payload)
+    public void WriteTo(MySqlPacketPayload payload)
     {
        payload.WriteInt1(HEADER);
        payload.WriteInt2(Warnings);
@@ -42,8 +42,4 @@ public class MySqlEofPacket:IMysqlPacket
     public int SequenceId { get; }
     public int Warnings { get; }
     public MySqlStatusFlagEnum StatusFlag { get; }
-    public void Write(IPacketPayload payload)
-    {
-        Write((MySqlPacketPayload)payload);
-    }
 }

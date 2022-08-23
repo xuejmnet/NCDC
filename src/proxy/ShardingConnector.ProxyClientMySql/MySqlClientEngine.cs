@@ -4,7 +4,6 @@ using ShardingConnector.ProxyClient.Authentication;
 using ShardingConnector.ProxyClient.Codecs;
 using ShardingConnector.ProxyClient.Command;
 using ShardingConnector.ProxyClientMySql.Authentication;
-using ShardingConnector.ProxyClientMySql.Command;
 using ShardingConnector.ProxyServer.Session;
 using MySqlPacketCodecEngine = ShardingConnector.ProxyClientMySql.Codec.MySqlPacketCodecEngine;
 
@@ -21,7 +20,7 @@ public class MySqlClientEngine:IDatabaseProtocolClientEngine
         _commandExecuteEngine = commandExecuteEngine;
         _packetCodec = packetCodec;
     }
-    public IPacketCodec GetCodecEngine()
+    public IPacketCodec GetPacketCodec()
     {
         return _packetCodec;
     }

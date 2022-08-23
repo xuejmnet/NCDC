@@ -38,7 +38,7 @@ public class ShardingProxy:IShardingProxy
     {
         _shardingProxyOption = shardingProxyOption;
         _databaseProtocolClientEngine = databaseProtocolClientEngine;
-        _packetCodec = databaseProtocolClientEngine.GetCodecEngine();
+        _packetCodec = databaseProtocolClientEngine.GetPacketCodec();
     }
     public async Task StartAsync(CancellationToken cancellationToken = default)
     { 

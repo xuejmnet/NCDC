@@ -24,7 +24,7 @@ public sealed class MySqlFieldCountPacket:IMysqlPacket
     // public MySQLFieldCountPacket(final MySQLPacketPayload payload) {
     //     this(payload.readInt1(), payload.readInt1());
     // }
-    public void Write(MySqlPacketPayload payload)
+    public void WriteTo(MySqlPacketPayload payload)
     {
         payload.WriteIntLenenc(ColumnCount);
     }

@@ -50,7 +50,7 @@ public class MySqlOkPacket : IMysqlPacket
         Info = payload.ReadStringEOF();
     }
 
-    public void Write(MySqlPacketPayload payload)
+    public void WriteTo(MySqlPacketPayload payload)
     {
         payload.WriteInt1(HEADER);
         payload.WriteIntLenenc(AffectedRows);
@@ -58,9 +58,5 @@ public class MySqlOkPacket : IMysqlPacket
         payload.WriteInt2((int)StatusFlag);
         payload.WriteInt2(Warnings);
         payload.WriteStringEOF(Info);
-    }
-    public void Write(IPacketPayload payload)
-    {
-        Write((MySqlPacketPayload)payload);
     }
 }

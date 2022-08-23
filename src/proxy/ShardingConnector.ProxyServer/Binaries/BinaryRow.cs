@@ -7,7 +7,7 @@ public class BinaryRow
     /// <summary>
     /// 单元格
     /// </summary>
-    private List<BinaryCell> Cells { get; }
+    public List<BinaryCell> Cells { get; }
     public BinaryRow(List<BinaryCell> cells)
     {
         Cells = cells;

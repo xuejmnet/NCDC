@@ -20,7 +20,7 @@ public class MySqlQueryServerCommandPacket : AbstractMySqlServerCommandPacket
         Sql = payload.ReadStringEOF();
     }
 
-    protected override void DoWrite(MySqlPacketPayload payload)
+    protected override void DoWriteTo(MySqlPacketPayload payload)
     {
         payload.WriteStringEOF(Sql);
     }

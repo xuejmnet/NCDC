@@ -25,7 +25,7 @@ public sealed class MySqlTextResultSetRowPacket:IMysqlPacket
             _data.Add(payload.ReadStringLenenc());
         }
     }
-    public void Write(MySqlPacketPayload payload)
+    public void WriteTo(MySqlPacketPayload payload)
     {
         foreach (object o in _data)
         {

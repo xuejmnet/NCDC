@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using ShardingConnector.Extensions;
 using ShardingConnector.Logger;
 using ShardingConnector.Protocol.Packets;
+using ShardingConnector.ProxyClient.Abstractions;
 using ShardingConnector.ProxyServer;
 using ShardingConnector.ProxyServer.Session;
 
@@ -32,7 +33,7 @@ public sealed class ClientCommand : IClientCommand
     {
         bool isNeedFlush = false;
         bool sqlShow = true;
-        using (var payload = _databaseProtocolClientEngine.GetCodecEngine().CreatePacketPayload(_message,
+        using (var payload = _databaseProtocolClientEngine.GetPacketCodec().CreatePacketPayload(_message,
                    _context.Channel.GetAttribute(CommonConstants.CHARSET_ATTRIBUTE_KEY).Get()))
         {
             try
@@ -74,12 +75,12 @@ public sealed class ClientCommand : IClientCommand
     private bool ExecuteCommand(IChannelHandlerContext context, IPacketPayload payload)
     {
         var commandExecuteEngine = _databaseProtocolClientEngine.GetCommandExecuteEngine();
-        using (var commandExecutor =
-               commandExecuteEngine.GetCommandExecutor(payload, _connectionSession))
+        using (var clientDataReader =
+               commandExecuteEngine.GetClientDataReader(payload, _connectionSession))
         {
             try
             {
-                var responsePackets = commandExecutor.Execute();
+                var responsePackets = clientDataReader.SendCommand();
                 if (responsePackets.IsEmpty())
                 {
                     return false;
@@ -90,10 +91,10 @@ public sealed class ClientCommand : IClientCommand
                      context.WriteAsync(responsePacket);
                 }
 
-                if (commandExecutor is IQueryCommandExecutor queryCommandExecutor)
+                if (clientDataReader is IClientQueryDataReader clientQueryDataReader)
                 {
                     commandExecuteEngine.WriteQueryData(context, _connectionSession,
-                        queryCommandExecutor, responsePackets.Count);
+                        clientQueryDataReader, responsePackets.Count);
                 }
 
                 return true;

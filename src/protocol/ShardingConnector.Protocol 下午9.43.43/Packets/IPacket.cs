@@ -2,14 +2,14 @@ namespace ShardingConnector.Protocol.Packets;
 
 public interface IPacket
 {
-    void Write(IPacketPayload payload);
+    void WriteTo(IPacketPayload payload);
 }
 public interface IPacket<in T> :IPacket where T:IPacketPayload
 {
-    void Write(T payload);
+    void WriteTo(T payload);
 
-    void IPacket.Write(IPacketPayload payload)
+    void IPacket.WriteTo(IPacketPayload payload)
     {
-        Write((T)payload);
+        WriteTo((T)payload);
     }
 }

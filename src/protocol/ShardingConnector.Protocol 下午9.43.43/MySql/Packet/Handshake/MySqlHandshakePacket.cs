@@ -32,7 +32,7 @@ public class MySqlHandshakePacket:IMysqlPacket
         _authPluginName = MySqlAuthenticationMethod.NATIVE_PASSWORD_AUTHENTICATION;
     }
 
-    public void Write(MySqlPacketPayload payload)
+    public void WriteTo(MySqlPacketPayload payload)
     {
         payload.WriteInt1(protocolVersion);
         payload.WriteStringNul(_serverVersion);
@@ -68,9 +68,9 @@ public class MySqlHandshakePacket:IMysqlPacket
 
     public int SequenceId => 0;
 
-    public void Write(IPacketPayload payload)
+    public void WriteTo(IPacketPayload payload)
     {
-        Write((MySqlPacketPayload)payload);
+        WriteTo((MySqlPacketPayload)payload);
     }
 
 }

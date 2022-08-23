@@ -86,12 +86,12 @@ public sealed class MySqlPacketCodecEngine : IPacketCodec
         var payload = new MySqlPacketPayload(markWriterIndex,encoding);
         try
         {
-            message.Write(payload);
+            message.WriteTo(payload);
         }
         catch (Exception ex)
         {
             output.ResetWriterIndex();
-            new MySqlErrPacket(1, CommonSqlErrorCode.UNKNOWN_EXCEPTION_ARGS1, ex.Message).Write(payload);
+            new MySqlErrPacket(1, CommonSqlErrorCode.UNKNOWN_EXCEPTION_ARGS1, ex.Message).WriteTo(payload);
         }
         finally
         {
@@ -107,6 +107,7 @@ public sealed class MySqlPacketCodecEngine : IPacketCodec
 
     private IByteBuffer PrepareMessageHeader(IByteBuffer output)
     {
+        //先占4位 前3位长度 第4位sequenceId
         return output.WriteInt(0);
     }
 

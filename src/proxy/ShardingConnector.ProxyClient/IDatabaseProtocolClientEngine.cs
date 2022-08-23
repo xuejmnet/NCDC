@@ -8,7 +8,7 @@ namespace ShardingConnector.ProxyClient;
 public interface IDatabaseProtocolClientEngine
 {
     
-    IPacketCodec GetCodecEngine();
+    IPacketCodec GetPacketCodec();
     IAuthenticationEngine GetAuthenticationEngine();
     ICommandExecuteEngine GetCommandExecuteEngine();
     void Release(ConnectionSession connectionSession);

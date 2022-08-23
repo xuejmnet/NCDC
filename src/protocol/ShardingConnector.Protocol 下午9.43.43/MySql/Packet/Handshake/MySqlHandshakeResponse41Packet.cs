@@ -47,7 +47,7 @@ public class MySqlHandshakeResponse41Packet:IMysqlPacket
         return 0 != (CapabilityFlags & (int)MySqlCapabilityFlagEnum.CLIENT_PLUGIN_AUTH) ? payload.ReadStringNul() : null;
     }
 
-    public void Write(MySqlPacketPayload payload)
+    public void WriteTo(MySqlPacketPayload payload)
     {
        payload.WriteInt4(CapabilityFlags);
        payload.WriteInt4(_maxPacketSize);
@@ -81,9 +81,9 @@ public class MySqlHandshakeResponse41Packet:IMysqlPacket
     }
 
 
-    public void Write(IPacketPayload payload)
+    public void WriteTo(IPacketPayload payload)
     {
-       Write((MySqlPacketPayload)payload);
+       WriteTo((MySqlPacketPayload)payload);
     }
 
     public int SequenceId => _sequenceId;
