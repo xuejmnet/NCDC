@@ -1,6 +1,6 @@
 using ShardingConnector.ProxyServer.Abstractions;
 
-namespace ShardingConnector.ProxyClientMySql.ClientDataReader.Query.ServerHandlers;
+namespace ShardingConnector.ProxyClientMySql.ClientConnections.DataReaders.Query.ServerHandlers;
 
 public sealed class MySqlMultiServerHandler:IServerHandler
 {

@@ -4,7 +4,7 @@ using ShardingConnector.Protocol.MySql.Payload;
 using ShardingConnector.Protocol.Packets;
 using ShardingConnector.ProxyClient.Abstractions;
 
-namespace ShardingConnector.ProxyClientMySql.ClientDataReader.Quit;
+namespace ShardingConnector.ProxyClientMySql.ClientConnections.DataReaders.Quit;
 
 public class MySqlQuitClientDataReader:IClientDataReader<MySqlPacketPayload>
 {

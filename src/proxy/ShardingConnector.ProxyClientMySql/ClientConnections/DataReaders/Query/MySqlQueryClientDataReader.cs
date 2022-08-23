@@ -12,15 +12,14 @@ using ShardingConnector.Protocol.MySql.Payload;
 using ShardingConnector.Protocol.Packets;
 using ShardingConnector.ProxyClient.Abstractions;
 using ShardingConnector.ProxyClientMySql.ClientConnections.Commands;
-using ShardingConnector.ProxyClientMySql.ClientDataReader.Query.ServerHandlers;
-using ShardingConnector.ProxyClientMySql.ClientDataReader.SetOption;
+using ShardingConnector.ProxyClientMySql.ClientConnections.DataReaders.Query.ServerHandlers;
 using ShardingConnector.ProxyClientMySql.Common;
 using ShardingConnector.ProxyServer.Abstractions;
 using ShardingConnector.ProxyServer.Commons;
 using ShardingConnector.ProxyServer.ServerHandlers.Results;
 using ShardingConnector.ProxyServer.Session;
 
-namespace ShardingConnector.ProxyClientMySql.ClientDataReader.Query;
+namespace ShardingConnector.ProxyClientMySql.ClientConnections.DataReaders.Query;
 
 public sealed class MySqlQueryClientDataReader:IClientQueryDataReader<MySqlPacketPayload>
 {
@@ -47,8 +46,8 @@ public sealed class MySqlQueryClientDataReader:IClientQueryDataReader<MySqlPacke
         {
             throw new NotSupportedException(sql);
         }
-
         return SqlParserEngineFactory.GetSqlParserEngine("MySql").Parse(sql, false);
+
     }
 
     private bool IsMultiCommands(ConnectionSession connectionSession, ISqlCommand sqlCommand, string sql)

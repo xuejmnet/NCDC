@@ -5,7 +5,7 @@ using ShardingConnector.ProxyClient.Exceptions;
 
 namespace ShardingConnector.ProxyClientMySql.ClientConnections.Commands;
 
-public class MySqlNotSupportedClientCommand:IClientCommand<MySqlPacketPayload>
+public sealed class MySqlNotSupportedClientCommand:IClientCommand<MySqlPacketPayload>
 {
     private readonly MySqlCommandTypeEnum _commandType;
 

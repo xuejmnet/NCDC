@@ -1,6 +1,6 @@
 using ShardingConnector.Protocol.MySql.Payload;
 using ShardingConnector.ProxyClient.Abstractions;
-using ShardingConnector.ProxyClientMySql.ClientDataReader.SetOption;
+using ShardingConnector.ProxyClientMySql.ClientConnections.DataReaders.SetOption;
 using ShardingConnector.ProxyServer.Session;
 
 namespace ShardingConnector.ProxyClientMySql.ClientConnections.Commands;
