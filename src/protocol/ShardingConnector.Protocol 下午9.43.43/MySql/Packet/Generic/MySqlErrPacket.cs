@@ -53,14 +53,4 @@ public class MySqlErrPacket: IMysqlPacket
         }
         payload.WriteStringEOF(ErrorMessage);
     }
-
-    public int GetSequenceId()
-    {
-        throw new NotImplementedException();
-    }
-
-    public void WriteTo(IPacketPayload payload)
-    {
-        WriteTo((MySqlPacketPayload)payload);
-    }
 }

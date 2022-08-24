@@ -2,6 +2,7 @@ using ShardingConnector.Protocol.Errors;
 using ShardingConnector.Protocol.MySql.Constant;
 using ShardingConnector.Protocol.MySql.Packet.Handshake;
 using ShardingConnector.ProxyClientMySql.Authentication.Authenticator;
+using ShardingConnector.ProxyServer;
 using ShardingConnector.ShardingCommon.Core.Rule;
 using ShardingConnector.ShardingCommon.User;
 
@@ -23,9 +24,13 @@ public class MySqlAuthenticationHandler
     /// <returns>返回null说明登录成功</returns>
     public ISqlErrorCode? Login(string username,string hostname, byte[] authResponse, string? databaseName)
     {
-        var grantee = new Grantee(username,hostname);
+        var shardingConnectorUser = ProxyRuntimeContext.Instance.GetUser(username);
+        if (shardingConnectorUser == null)
+        {
+            return MySqlServerErrorCode.ER_ACCESS_DENIED_ERROR_ARG3;
+        }
         var mySqlAuthenticator = GetAuthenticator(username,hostname);
-        if (!mySqlAuthenticator.Authenticate(new ShardingConnectorUser(grantee.Username, "123456", grantee.Hostname), authResponse))
+        if (!mySqlAuthenticator.Authenticate(shardingConnectorUser, authResponse))
         {
             return MySqlServerErrorCode.ER_ACCESS_DENIED_ERROR_ARG3;
         }

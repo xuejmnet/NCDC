@@ -1,10 +1,13 @@
+using System.Collections.Concurrent;
+
 namespace ShardingConnector.ShardingCommon.User
 {
     public class ShardingConnectorUser
     {
         public string Password { get; }
-        private Grantee Grantee { get; }
-        public ShardingConnectorUser(string username,string password,string hostname )
+        public Grantee Grantee { get; }
+        public ConcurrentDictionary<string /*database*/, object> AuthorizeDatabases { get; } = new ConcurrentDictionary<string /*database*/, object>();
+        public ShardingConnectorUser(string username,string password,string hostname)
         {
             Grantee = new Grantee(username, hostname);
             Password = password;

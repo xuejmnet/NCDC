@@ -85,7 +85,7 @@ public sealed class MySqlQueryClientDataReader:IClientQueryDataReader<MySqlPacke
 
     private IEnumerable<IPacket<MySqlPacketPayload>> ProcessQuery(QueryServerResult queryServerResult)
     {
-        var result = BuildQueryResponsePackets(queryServerResult,MySqlEncoding,(MySqlStatusFlagEnum)ServerStatusFlagCalculator.CalculateFor(ConnectionSession));
+        var result = BuildQueryResponsePackets(queryServerResult,MySqlEncoding,ServerStatusFlagCalculator.CalculateFor(ConnectionSession));
         _currentSequenceId = result.Count;
         return result;
     }

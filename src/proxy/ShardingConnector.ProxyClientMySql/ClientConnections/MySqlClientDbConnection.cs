@@ -32,12 +32,22 @@ public sealed class MySqlClientDbConnection : IClientDbConnection<MySqlPacketPay
         _logger.LogDebug($"create server command executor,command type: {commandType}");
         switch (commandType)
         {
-            case MySqlCommandTypeEnum.COM_QUERY:
-                return new MySqlQueryClientCommand(payload, connectionSession, _serverHandlerFactory);
             case MySqlCommandTypeEnum.COM_QUIT:
                 return new MySqlQuitClientCommand();
+            case MySqlCommandTypeEnum.COM_FIELD_LIST:
+                return new MySqlFieldListClientCommand(payload);
+            case MySqlCommandTypeEnum.COM_INIT_DB:
+                return new MySqlInitDbClientCommand(payload, connectionSession);
+            case MySqlCommandTypeEnum.COM_QUERY:
+                return new MySqlQueryClientCommand(payload, connectionSession, _serverHandlerFactory);
+            case MySqlCommandTypeEnum.COM_STMT_PREPARE:
+                return new MySqlStmtPrepareClientCommand(payload,connectionSession);
+            // case MySqlCommandTypeEnum.COM_STMT_EXECUTE:
+            //     return new MySqlStmtPrepareClientCommand(payload,connectionSession);
             case MySqlCommandTypeEnum.COM_SET_OPTION:
                 return new MySqlSetOptionClientCommand(payload,connectionSession);
+            case MySqlCommandTypeEnum.COM_PING:
+                return new MySqlPingClientCommand(connectionSession);
             default: return new MySqlNotSupportedClientCommand(commandType);
         }
     }
@@ -75,8 +85,7 @@ public sealed class MySqlClientDbConnection : IClientDbConnection<MySqlPacketPay
             currentSequenceId++;
         }
 
-        context.WriteAsync(new MySqlEofPacket(++currentSequenceId + headerPackagesCount,
-            (MySqlStatusFlagEnum)ServerStatusFlagCalculator.CalculateFor(connectionSession)));
+        context.WriteAsync(new MySqlEofPacket(++currentSequenceId + headerPackagesCount,ServerStatusFlagCalculator.CalculateFor(connectionSession)));
     }
 
     public IPacket<MySqlPacketPayload> GetErrorPacket(Exception exception)

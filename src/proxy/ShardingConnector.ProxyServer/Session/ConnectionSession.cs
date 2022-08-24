@@ -59,6 +59,11 @@ public class ConnectionSession
 
     public void SetDatabaseName(string? databaseName)
     {
+        if (databaseName != null && databaseName == _databaseName)
+        {
+            return;
+        }
+        //todo 判断是否在事务中
         _databaseName = databaseName;
     }
 }

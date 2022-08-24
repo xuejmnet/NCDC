@@ -12,10 +12,10 @@ using ShardingConnector.ProxyClient.Codecs;
 using ShardingConnector.ProxyClient.Command;
 using ShardingConnector.ProxyClientMySql;
 using ShardingConnector.ProxyClientMySql.ClientConnections;
-using ShardingConnector.ProxyClientMySql.ClientDataReader;
 using ShardingConnector.ProxyClientMySql.Codec;
 using ShardingConnector.ProxyServer;
 using ShardingConnector.ProxyServer.Abstractions;
+using ShardingConnector.ProxyServer.Commons;
 using ShardingConnector.ProxyServer.ServerHandlers;
 using ShardingConnector.RewriteEngine.Context;
 using ShardingConnector.Route;
@@ -75,6 +75,8 @@ namespace ShardingConnector.Proxy.Starter
             var authentication = new Authentication();
             authentication.Users.Add("root",new ProxyUser("123456",new List<string>(){"test"}));
             ShardingProxyContext.GetInstance().Init(authentication,new Dictionary<string, string>());
+            
+            ProxyRuntimeContext.Instance.Init(BuildRuntimeOption());
             await StartAsync(buildServiceProvider,shardingProxyOption, GetPort(args));
             Console.WriteLine("Hello World!");
             Console.ReadLine();
@@ -101,6 +103,25 @@ namespace ShardingConnector.Proxy.Starter
         {
             var shardingProxy = serviceProvider.GetRequiredService<IShardingProxy>();
            await shardingProxy.StartAsync();
+        }
+
+        static ProxyRuntimeOption BuildRuntimeOption()
+        {
+            var proxyRuntimeOption = new ProxyRuntimeOption();
+            var userOption = new UserOption();
+            userOption.Username = "xjm";
+            userOption.Password = "abc";
+            userOption.Databases.Add("xxa");
+            proxyRuntimeOption.Users.Add(userOption);
+            var databaseOption = new DatabaseOption();
+            databaseOption.Name = "xxa";
+            var dataSourceOption = new DataSourceOption();
+            dataSourceOption.DataSourceName = "ds0";
+            dataSourceOption.ConnectionString = "server=127.0.0.1;port=3306;database=test;userid=root;password=root;";
+            dataSourceOption.IsDefault = true;
+            databaseOption.DataSources.Add(dataSourceOption);
+            proxyRuntimeOption.Databases.Add(databaseOption);
+            return proxyRuntimeOption;
         }
     }
 }
