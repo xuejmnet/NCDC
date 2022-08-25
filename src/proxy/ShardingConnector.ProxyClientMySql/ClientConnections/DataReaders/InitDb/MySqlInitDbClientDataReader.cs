@@ -26,7 +26,7 @@ public sealed class MySqlInitDbClientDataReader : IClientDataReader<MySqlPacketP
         var exactlySchema = SqlUtil.GetExactlyValue(_database);
         if (ProxyRuntimeContext.Instance.DatabaseExists(exactlySchema)&&IsAuthorizeDatabase(exactlySchema))
         {
-            _connectionSession.SetDatabaseName(exactlySchema);
+            _connectionSession.SetCurrentDatabaseName(exactlySchema);
             return new List<IPacket<MySqlPacketPayload>>()
             {
                 new MySqlOkPacket(1, ServerStatusFlagCalculator.CalculateFor(_connectionSession))

@@ -1,5 +1,7 @@
 using DotNetty.Common.Utilities;
+using ShardingConnector.AdoNet.AdoNet.Core.Context;
 using ShardingConnector.ProxyServer.Connection;
+using ShardingConnector.ProxyServer.DatabaseInfo;
 using ShardingConnector.ProxyServer.Session.Transaction;
 using ShardingConnector.ShardingCommon.User;
 using ShardingConnector.Transaction;
@@ -15,6 +17,8 @@ public class ConnectionSession
     public  IAttributeMap AttributeMap{ get; }
     private volatile bool autoCommit = true;
     private volatile string? _databaseName;
+    public string? DatabaseName => _databaseName;
+    public LogicDatabase? LogicDatabase { get; private set; }
     public ConnectionSession(TransactionTypeEnum transactionType,IAttributeMap attributeMap)
     {
         AttributeMap = attributeMap;
@@ -57,7 +61,7 @@ public class ConnectionSession
         return _databaseName;
     }
 
-    public void SetDatabaseName(string? databaseName)
+    public void SetCurrentDatabaseName(string? databaseName)
     {
         if (databaseName != null && databaseName == _databaseName)
         {
@@ -65,5 +69,6 @@ public class ConnectionSession
         }
         //todo 判断是否在事务中
         _databaseName = databaseName;
+        LogicDatabase = ProxyRuntimeContext.Instance.GetDatabase(databaseName!);
     }
 }

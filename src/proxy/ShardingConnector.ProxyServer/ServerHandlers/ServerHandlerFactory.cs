@@ -3,6 +3,7 @@ using ShardingConnector.CommandParser.Command;
 using ShardingConnector.CommandParser.Command.DAL.Dialect;
 using ShardingConnector.CommandParser.Command.DAL.Dialect.MySql;
 using ShardingConnector.CommandParser.Command.DCL;
+using ShardingConnector.CommandParser.Command.TCL;
 using ShardingConnector.CommandParser.Util;
 using ShardingConnector.Common;
 using ShardingConnector.Logger;
@@ -27,6 +28,10 @@ public sealed class ServerHandlerFactory:IServerHandlerFactory
         }
 
         CheckNotSupportCommand(sqlCommand);
+        if (sqlCommand is TCLCommand tclCommand)
+        {
+            return CreateTCLCommandServerHandler(tclCommand,sql, connectionSession);
+        }
         if (sqlCommand is DALCommand dalCommand)
         {
             return CreateDALCommandServerHandler(dalCommand, sql,connectionSession);
@@ -37,12 +42,38 @@ public sealed class ServerHandlerFactory:IServerHandlerFactory
     private IServerHandler CreateDALCommandServerHandler(DALCommand dalCommand, string sql,
         ConnectionSession connectionSession)
     {
-        if (dalCommand is SetCommand&&null==connectionSession.GetDatabaseName())
+        if (dalCommand is SetCommand)
         {
             return new NoDatabaseServerHandler();
         }
 
         return new GenericDatabaseServerHandler();
+    }
+
+    private IServerHandler CreateTCLCommandServerHandler(TCLCommand tclCommand, string sql,
+        ConnectionSession connectionSession)
+    {
+        if (tclCommand is BeginTransactionCommand beginTransactionCommand)
+        {
+            return new TransactionServerHandler(TransactionOperationTypeEnum.BEGIN, connectionSession);
+        }
+
+        if (tclCommand is SetAutoCommitCommand setAutoCommitCommand)
+        {
+            throw new NotSupportedException("SetAutoCommitCommand");
+        }
+
+        if (tclCommand is CommitCommand commitCommand)
+        {
+            throw new NotSupportedException("CommitCommand");
+        }
+
+        if (tclCommand is RollbackCommand rollbackCommand)
+        {
+            throw new NotSupportedException("RollbackCommand");
+        }
+
+        throw new NotSupportedException(tclCommand.GetType().FullName);
     }
 
     private void CheckNotSupportCommand(ISqlCommand sqlCommand)

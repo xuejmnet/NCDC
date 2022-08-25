@@ -72,6 +72,7 @@ public class ClientChannelInboundHandler:ChannelHandlerAdapter
                 if (authenticationResult.Finished)
                 {
                     _connectionSession.SetGrantee(new Grantee(authenticationResult.Username,authenticationResult.Hostname));
+                    _connectionSession.SetCurrentDatabaseName(authenticationResult.Database);
                 }
 
                 return authenticationResult.Finished;
