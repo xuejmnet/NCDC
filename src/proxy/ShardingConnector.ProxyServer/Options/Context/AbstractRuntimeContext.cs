@@ -5,9 +5,8 @@ using ShardingConnector.Common.Rule;
 using ShardingConnector.Executor.Engine;
 using ShardingConnector.ParserEngine;
 using ShardingConnector.Spi.DataBase.DataBaseType;
-using System.Collections.Generic;
 
-namespace ShardingConnector.AdoNet.AdoNet.Core.Context
+namespace ShardingConnector.ProxyServer.Options.Context
 {
     /*
     * @Author: xjm

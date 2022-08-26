@@ -1,4 +1,4 @@
-namespace ShardingConnector.ProxyServer.Commons;
+namespace ShardingConnector.ProxyServer.Options;
 
 public sealed class ProxyRuntimeOption
 {

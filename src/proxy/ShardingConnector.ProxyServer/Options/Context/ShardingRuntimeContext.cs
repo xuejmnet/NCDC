@@ -1,12 +1,11 @@
-﻿using ShardingConnector.NewConnector.DataSource;
+﻿using ShardingConnector.Common.MetaData.Decorator;
+using ShardingConnector.NewConnector.DataSource;
 using ShardingConnector.ParserBinder.MetaData.Schema;
+using ShardingConnector.ShardingCommon.Core.MetaData;
 using ShardingConnector.ShardingCommon.Core.Rule;
 using ShardingConnector.Spi.DataBase.DataBaseType;
-using System.Collections.Generic;
-using ShardingConnector.Common.MetaData.Decorator;
-using ShardingConnector.ShardingCommon.Core.MetaData;
 
-namespace ShardingConnector.AdoNet.AdoNet.Core.Context
+namespace ShardingConnector.ProxyServer.Options.Context
 {
     /*
     * @Author: xjm

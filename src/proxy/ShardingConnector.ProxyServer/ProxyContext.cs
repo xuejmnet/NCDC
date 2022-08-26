@@ -1,6 +1,4 @@
 using MySqlConnector;
-using ShardingConnector.AdoNet.AdoNet.Core.Context;
-using ShardingConnector.AdoNet.AdoNet.Core.DataSource;
 using ShardingConnector.Api.Database.DatabaseType;
 using ShardingConnector.Exceptions;
 using ShardingConnector.NewConnector.DataSource;
@@ -9,6 +7,9 @@ using ShardingConnector.ShardingApi.Api.Config.Sharding.Strategy;
 using ShardingConnector.ShardingApi.Api.Sharding.Standard;
 using ShardingConnector.ShardingCommon.Core.Rule;
 using ShardingConnector.Spi.DataBase.DataBaseType;
+using ShardingConnector.ProxyServer.Commons;
+using ShardingConnector.ProxyServer.Options;
+using ShardingConnector.ProxyServer.Options.Context;
 
 namespace ShardingConnector.ProxyServer;
 

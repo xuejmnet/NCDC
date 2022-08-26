@@ -1,16 +1,14 @@
-﻿using ShardingConnector.Common.Config;
+﻿using Microsoft.Extensions.Logging;
+using ShardingConnector.Common.Config;
 using ShardingConnector.Common.MetaData;
 using ShardingConnector.Common.MetaData.DataSource;
 using ShardingConnector.Common.Rule;
-using ShardingConnector.NewConnector.DataSource;
-using ShardingConnector.Spi.DataBase.DataBaseType;
-using System;
-using System.Collections.Generic;
-using Microsoft.Extensions.Logging;
 using ShardingConnector.Logger;
+using ShardingConnector.NewConnector.DataSource;
 using ShardingConnector.ParserBinder.MetaData.Schema;
+using ShardingConnector.Spi.DataBase.DataBaseType;
 
-namespace ShardingConnector.AdoNet.AdoNet.Core.Context
+namespace ShardingConnector.ProxyServer.Options.Context
 {
     /*
     * @Author: xjm
@@ -23,7 +21,7 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.Context
     /// <summary>
     /// 
     /// </summary>
-    public abstract class MultipleDataSourcesRuntimeContext<T> : AbstractRuntimeContext<T> where T : IBaseRule
+    public abstract class MultipleDataSourcesRuntimeContext<T> : ProxyServer.Options.Context.AbstractRuntimeContext<T> where T : IBaseRule
     {
         private static readonly ILogger<MultipleDataSourcesRuntimeContext<T>> _logger =
             InternalLoggerFactory.CreateLogger<MultipleDataSourcesRuntimeContext<T>>();

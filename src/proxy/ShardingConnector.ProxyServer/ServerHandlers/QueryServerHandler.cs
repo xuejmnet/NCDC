@@ -11,7 +11,7 @@ using ShardingConnector.ProxyServer.ServerHandlers.Results;
 using ShardingConnector.ProxyServer.Session;
 using ShardingConnector.ProxyServer.StreamMerges.Results;
 using ShardingConnector.ShardingAdoNet;
-using ShardingRuntimeContext = ShardingConnector.AdoNet.AdoNet.Core.Context.ShardingRuntimeContext;
+using ShardingRuntimeContext = ShardingConnector.ProxyServer.Options.Context.ShardingRuntimeContext;
 
 namespace ShardingConnector.ProxyServer.ServerHandlers;
 
@@ -44,7 +44,7 @@ public sealed class QueryServerHandler:IServerHandler
         }
         else
         {
-            var affectRowExecuteResult = (AffectRowExecuteResult)executeResult;
+            var affectRowExecuteResult = (AffectedRowsExecuteResult)executeResult;
             return new RecordsAffectedServerResult(new List<AffectRowUnitResult>(){new AffectRowUnitResult(affectRowExecuteResult.RecordsAffected,affectRowExecuteResult.LastInsertId)});
         }
         

@@ -1,7 +1,7 @@
 ﻿using System.Data.Common;
 using ShardingConnector.NewConnector.DataSource;
 
-namespace ShardingConnector.AdoNet.AdoNet.Core.DataSource
+namespace ShardingConnector.ProxyServer.Options
 {
     /*
     * @Author: xjm

@@ -16,6 +16,7 @@ using ShardingConnector.ProxyClientMySql.Codec;
 using ShardingConnector.ProxyServer;
 using ShardingConnector.ProxyServer.Abstractions;
 using ShardingConnector.ProxyServer.Commons;
+using ShardingConnector.ProxyServer.Options;
 using ShardingConnector.ProxyServer.ServerHandlers;
 using ShardingConnector.RewriteEngine.Context;
 using ShardingConnector.Route;

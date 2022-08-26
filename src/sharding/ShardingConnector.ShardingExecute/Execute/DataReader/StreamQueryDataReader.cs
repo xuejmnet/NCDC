@@ -13,7 +13,7 @@ namespace ShardingConnector.ShardingExecute.Execute.DataReader
 * @Date: Saturday, 17 April 2021 17:47:38
 * @Email: 326308290@qq.com
 */
-    public class StreamQueryDataReader:IStreamDataReader//IQueryDataReader
+    public class StreamQueryDataReader:IStreamDataReader
     {
         private readonly DbDataReader _dataReader;
         private readonly List<DbColumn> _columnSchema;

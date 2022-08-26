@@ -1,8 +1,6 @@
-using ShardingConnector.AdoNet.AdoNet.Core.Context;
 using ShardingConnector.Executor.Context;
-using ShardingConnector.Extensions;
 using ShardingConnector.Pluggable.Merge;
-using ShardingConnector.ProxyServer.Abstractions;
+using ShardingConnector.ProxyServer.Options.Context;
 using ShardingConnector.ProxyServer.StreamMerges.Results;
 
 namespace ShardingConnector.ProxyServer.StreamMerges;
@@ -29,17 +27,17 @@ public sealed class ServerExecuteResultShardingMerger:IShardingMerger<IExecuteRe
             long lastInsertId=0L;
             foreach (var r in parallelResults)
             {
-                var affectRowExecuteResult = (AffectRowExecuteResult)r;
-                recordsAffected += affectRowExecuteResult.RecordsAffected;
-                lastInsertId = Math.Max(lastInsertId, affectRowExecuteResult.LastInsertId);
+                var affectedRowsExecuteResult = (AffectedRowsExecuteResult)r;
+                recordsAffected += affectedRowsExecuteResult.RecordsAffected;
+                lastInsertId = Math.Max(lastInsertId, affectedRowsExecuteResult.LastInsertId);
             }
 
-            return new AffectRowExecuteResult(recordsAffected, lastInsertId);
+            return new AffectedRowsExecuteResult(recordsAffected, lastInsertId);
         }
     }
 
     public void InMemoryMerge(StreamMergeContext streamMergeContext, List<IExecuteResult> beforeInMemoryResults, List<IExecuteResult> parallelResults)
     {
-        throw new NotImplementedException();
+        beforeInMemoryResults.AddRange(parallelResults);
     }
 }

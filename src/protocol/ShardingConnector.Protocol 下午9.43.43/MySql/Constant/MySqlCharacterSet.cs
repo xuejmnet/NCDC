@@ -1,33 +1,23 @@
 using System.Collections.Immutable;
 using System.Text;
-using Microsoft.Extensions.Logging;
-using ShardingConnector.Logger;
 
 namespace ShardingConnector.Protocol.MySql.Constant;
 
 public class MySqlCharacterSet
 {
-    private static readonly ILogger<MySqlCharacterSet>
-        _logger = InternalLoggerFactory.CreateLogger<MySqlCharacterSet>();
     public int DbEncoding { get; }
     public Encoding Charset { get; }
 
-    public MySqlCharacterSet(int dbEncoding,Encoding languageEncoding)
+    public MySqlCharacterSet(int dbEncoding, Encoding languageEncoding)
     {
         DbEncoding = dbEncoding;
         Charset = languageEncoding;
     }
-    public MySqlCharacterSet(int dbEncoding,string encodingName)
+
+    public MySqlCharacterSet(int dbEncoding, string encodingName)
     {
         DbEncoding = dbEncoding;
-        try
-        {
-            Charset = Encoding.GetEncoding(encodingName);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogWarning($"not support languageEncoding:{encodingName},{ex}");
-        }
+        Charset = Encoding.GetEncoding(encodingName);
     }
 
     public static MySqlCharacterSet BIG5_CHINESE_CI { get; } = new MySqlCharacterSet(1, "big5");
@@ -39,13 +29,14 @@ public class MySqlCharacterSet
 
     static MySqlCharacterSet()
     {
-        _characterSets = ImmutableDictionary.CreateRange<int, MySqlCharacterSet>(new Dictionary<int, MySqlCharacterSet>()
-        {
-            {BIG5_CHINESE_CI.DbEncoding,BIG5_CHINESE_CI},
-            {LATIN2_CZECH_CS.DbEncoding,LATIN2_CZECH_CS},
-            {UTF8_GENERAL_CI.DbEncoding,UTF8_GENERAL_CI},
-            {UTF8MB4_GENERAL_CI.DbEncoding,UTF8MB4_GENERAL_CI}
-        });
+        _characterSets = ImmutableDictionary.CreateRange<int, MySqlCharacterSet>(
+            new Dictionary<int, MySqlCharacterSet>()
+            {
+                { BIG5_CHINESE_CI.DbEncoding, BIG5_CHINESE_CI },
+                { LATIN2_CZECH_CS.DbEncoding, LATIN2_CZECH_CS },
+                { UTF8_GENERAL_CI.DbEncoding, UTF8_GENERAL_CI },
+                { UTF8MB4_GENERAL_CI.DbEncoding, UTF8MB4_GENERAL_CI }
+            });
     }
 
     public static MySqlCharacterSet FindById(int id)

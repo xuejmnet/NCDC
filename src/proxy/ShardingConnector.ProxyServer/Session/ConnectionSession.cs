@@ -1,5 +1,4 @@
 using DotNetty.Common.Utilities;
-using ShardingConnector.AdoNet.AdoNet.Core.Context;
 using ShardingConnector.ProxyServer.Connection;
 using ShardingConnector.ProxyServer.DatabaseInfo;
 using ShardingConnector.ProxyServer.Session.Transaction;

@@ -5,6 +5,7 @@ using ShardingConnector.Extensions;
 using ShardingConnector.Logger;
 using ShardingConnector.ProxyServer.Commons;
 using ShardingConnector.ProxyServer.DatabaseInfo;
+using ShardingConnector.ProxyServer.Options;
 using ShardingConnector.ShardingCommon.User;
 
 namespace ShardingConnector.ProxyServer;

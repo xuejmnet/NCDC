@@ -34,7 +34,7 @@ public sealed class ServerExecuteResultExecutor:AbstractStreamMergeExecutor<IExe
         else
         {
             var lastInsertId=dbDataReader.Read() ? dbDataReader.GetInt64(0) : 0L;
-            return new AffectRowExecuteResult(dbDataReader.RecordsAffected, lastInsertId);
+            return new AffectedRowsExecuteResult(dbDataReader.RecordsAffected, lastInsertId);
         }
     }
     
