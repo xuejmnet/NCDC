@@ -1,4 +1,3 @@
-using ShardingConnector.AdoNet.AdoNet.Core.Command;
 using ShardingConnector.Exceptions;
 using ShardingConnector.Executor.Constant;
 using ShardingConnector.Executor.Context;
@@ -107,31 +106,5 @@ public abstract class AbstractExecuteServerDataReader:IServerDataReader
         var sqlExecutorGroups = sqlExecutorUnitPartitions
             .Select(o => new SqlExecutorGroup<ConnectionExecuteUnit>(connectionMode, o)).ToList();
         return new DataSourceSqlExecutorUnit(connectionMode, sqlExecutorGroups);
-    }
-    /// <summary>
-    /// 创建命令Command的执行最小单元
-    /// </summary>
-    /// <param name="connection">当前命令的所属链接</param>
-    /// <param name="executionUnit"></param>
-    /// <param name="connectionMode"></param>
-    /// <returns></returns>
-    private CommandExecuteUnit CreateCommandExecuteUnit(IServerDbConnection connection, ExecutionUnit executionUnit,
-        ConnectionModeEnum connectionMode)
-    {
-        var commandText = executionUnit.GetSqlUnit().GetSql();
-            
-        var shardingParameters = executionUnit.GetSqlUnit().GetParameterContext().GetDbParameters()
-            .Select(o => (ShardingParameter)o).ToList();
-        var dbCommand = connection.CreateCommand();
-        //TODO取消手动执行改成replay
-        dbCommand.CommandText = commandText;
-        foreach (var shardingParameter in shardingParameters)
-        {
-            var dbParameter = dbCommand.CreateParameter();
-            shardingParameter.ReplyTargetMethodInvoke(dbParameter);
-            dbCommand.Parameters.Add(dbParameter);
-        }
-
-        return new CommandExecuteUnit(executionUnit, dbCommand, connectionMode);
     }
 }

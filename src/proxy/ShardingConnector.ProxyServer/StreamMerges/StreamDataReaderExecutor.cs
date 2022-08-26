@@ -1,5 +1,4 @@
 using System.Data.Common;
-using ShardingConnector.AdoNet.AdoNet.Core.Command;
 using ShardingConnector.Executor.Constant;
 using ShardingConnector.ShardingExecute.Execute.DataReader;
 

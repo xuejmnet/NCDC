@@ -1,7 +1,5 @@
 using System.Data.Common;
 using MySqlConnector;
-using ShardingConnector.AdoNet.Executor;
-using ShardingConnector.AdoNet.Executor.Abstractions;
 using ShardingConnector.Executor.Context;
 using ShardingConnector.Extensions;
 using ShardingConnector.Pluggable.Merge;
@@ -12,7 +10,6 @@ using ShardingConnector.ProxyServer.ServerDataReaders;
 using ShardingConnector.ProxyServer.ServerHandlers.Results;
 using ShardingConnector.ProxyServer.Session;
 using ShardingConnector.ShardingAdoNet;
-using ShardingDataReader = ShardingConnector.AdoNet.AdoNet.Core.DataReader.ShardingDataReader;
 using ShardingRuntimeContext = ShardingConnector.AdoNet.AdoNet.Core.Context.ShardingRuntimeContext;
 
 namespace ShardingConnector.ProxyServer.ServerHandlers;
@@ -42,8 +39,7 @@ public sealed class QueryServerHandler:IServerHandler
             StreamDataReader = queryServerDataReader.ExecuteDbDataReader();
             // StreamDataReader = MergeQuery(executionContext,dataReaders);
             var dbDataReaders = ConnectionSession.ServerConnection.CachedConnections.SelectMany(o=>o.Value.Select(x=>x.GetDbDataReader())).ToList();
-            var result = new ShardingDataReader(dbDataReaders, StreamDataReader,executionContext);
-            var columns = result.DataReaders[0].GetColumnSchema().ToList();
+            var columns = dbDataReaders[0].GetColumnSchema().ToList();
             // var resultDataReader = result.DataReaders[0];
             // var mySqlDataReader = (MySqlDataReader)resultDataReader;
             //
