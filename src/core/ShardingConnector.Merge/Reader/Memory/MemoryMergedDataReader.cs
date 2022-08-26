@@ -42,6 +42,7 @@ namespace ShardingConnector.Merge.Reader.Memory
         protected abstract List<MemoryQueryResultRow> Init(T rule, SchemaMetaData schemaMetaData,
             ISqlCommandContext<ISqlCommand> sqlCommandContext, List<IStreamDataReader> queryEnumerators);
 
+
         public bool Read()
         {
             if (_memoryResultSetRows.MoveNext())

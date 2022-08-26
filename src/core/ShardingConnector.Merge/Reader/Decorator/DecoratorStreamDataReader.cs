@@ -23,6 +23,7 @@ namespace ShardingConnector.Merge.Reader.Decorator
             StreamDataReader = streamDataReader;
         }
 
+
         public virtual bool Read()
         {
             return StreamDataReader.Read();

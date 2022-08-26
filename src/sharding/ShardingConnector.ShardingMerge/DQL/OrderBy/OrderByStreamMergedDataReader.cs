@@ -47,6 +47,7 @@ namespace ShardingConnector.ShardingMerge.DQL.OrderBy
             SetCurrentStreamDataReader(OrderByValuesQueue.IsEmpty() ? streamDataReaders[0] : OrderByValuesQueue.Peek().GetStreamDataReader());
         }
 
+
         public override bool Read()
         {
             if (OrderByValuesQueue.IsEmpty())

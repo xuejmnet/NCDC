@@ -1,24 +1,22 @@
 using ShardingConnector.Executor.Constant;
 using ShardingConnector.Executor.Context;
-using ShardingConnector.ProxyServer.Abstractions;
-using ShardingConnector.ProxyServer.ProxyAdoNets;
 using ShardingConnector.ProxyServer.ProxyAdoNets.Abstractions;
 
 namespace ShardingConnector.ProxyServer.StreamMerges;
 
-public class ConnectionExecuteUnit
+
+public sealed class CommandExecuteUnit
 {
-    
     public ExecutionUnit ExecutionUnit { get; }
     
-    public IServerDbConnection Connection{ get; }
+    public IServerDbCommand ServerDbCommand{ get; }
     
     public ConnectionModeEnum ConnectionMode{ get; }
 
-    public ConnectionExecuteUnit(ExecutionUnit executionUnit, IServerDbConnection connection, ConnectionModeEnum connectionMode)
+    public CommandExecuteUnit(ExecutionUnit executionUnit, IServerDbCommand serverDbCommand, ConnectionModeEnum connectionMode)
     {
         ExecutionUnit = executionUnit;
-        Connection = connection;
+        ServerDbCommand = serverDbCommand;
         ConnectionMode = connectionMode;
     }
 }

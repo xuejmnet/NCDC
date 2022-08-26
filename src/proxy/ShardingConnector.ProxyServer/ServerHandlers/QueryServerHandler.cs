@@ -9,6 +9,7 @@ using ShardingConnector.ProxyServer.Binaries;
 using ShardingConnector.ProxyServer.ServerDataReaders;
 using ShardingConnector.ProxyServer.ServerHandlers.Results;
 using ShardingConnector.ProxyServer.Session;
+using ShardingConnector.ProxyServer.StreamMerges.Results;
 using ShardingConnector.ShardingAdoNet;
 using ShardingRuntimeContext = ShardingConnector.AdoNet.AdoNet.Core.Context.ShardingRuntimeContext;
 
@@ -31,29 +32,20 @@ public sealed class QueryServerHandler:IServerHandler
         var executionContext = Prepare(Sql);
         if (executionContext.GetExecutionUnits().IsEmpty())
         {
-            return new AffectRowServerResult();
+            return new RecordsAffectedServerResult();
         }
         var queryServerDataReader = new QueryServerDataReader(executionContext,ConnectionSession);
-        if (executionContext.IsSelect)
+        var executeResult = queryServerDataReader.ExecuteDbDataReader();
+        if (executeResult is QueryExecuteResult queryExecuteResult)
         {
-            StreamDataReader = queryServerDataReader.ExecuteDbDataReader();
-            // StreamDataReader = MergeQuery(executionContext,dataReaders);
-            var dbDataReaders = ConnectionSession.ServerConnection.CachedConnections.SelectMany(o=>o.Value.Select(x=>x.GetDbDataReader())).ToList();
-            var columns = dbDataReaders[0].GetColumnSchema().ToList();
-            // var resultDataReader = result.DataReaders[0];
-            // var mySqlDataReader = (MySqlDataReader)resultDataReader;
-            //
-            // var mySqlConnection = new MySqlConnection("server=127.0.0.1;port=3306;database=test;userid=root;password=root;");
-            // var mySqlCommand = mySqlConnection.CreateCommand();
-            // mySqlCommand.CommandText = _sql;
-            // var mySqlDataReader = mySqlCommand.ExecuteReader();
-            QueryServerResult= new QueryServerResult(columns);
+            StreamDataReader = queryExecuteResult.StreamDataReader;
+            QueryServerResult= new QueryServerResult(queryExecuteResult.DbColumns);
             return QueryServerResult;
         }
         else
         {
-            var affectCount = queryServerDataReader.ExecuteNonQuery();
-            return new AffectRowServerResult(new List<AffectRowUnitResult>(){new AffectRowUnitResult(affectCount,0)});
+            var affectRowExecuteResult = (AffectRowExecuteResult)executeResult;
+            return new RecordsAffectedServerResult(new List<AffectRowUnitResult>(){new AffectRowUnitResult(affectRowExecuteResult.RecordsAffected,affectRowExecuteResult.LastInsertId)});
         }
         
        

@@ -7,6 +7,8 @@ using ShardingConnector.Exceptions;
 using ShardingConnector.Executor.Constant;
 using ShardingConnector.Logger;
 using ShardingConnector.ProxyServer.Abstractions;
+using ShardingConnector.ProxyServer.ProxyAdoNets;
+using ShardingConnector.ProxyServer.ProxyAdoNets.Abstractions;
 using ShardingConnector.ShardingCommon.User;
 using ShardingConnector.Transaction;
 

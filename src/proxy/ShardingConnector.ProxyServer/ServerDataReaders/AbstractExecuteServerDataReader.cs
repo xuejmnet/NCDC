@@ -4,7 +4,10 @@ using ShardingConnector.Executor.Context;
 using ShardingConnector.Extensions;
 using ShardingConnector.Helpers;
 using ShardingConnector.ProxyServer.Abstractions;
+using ShardingConnector.ProxyServer.ProxyAdoNets;
+using ShardingConnector.ProxyServer.ProxyAdoNets.Abstractions;
 using ShardingConnector.ProxyServer.StreamMerges;
+using CommandExecuteUnit = ShardingConnector.ProxyServer.StreamMerges.CommandExecuteUnit;
 
 namespace ShardingConnector.ProxyServer.ServerDataReaders;
 
@@ -17,17 +20,11 @@ public abstract class AbstractExecuteServerDataReader:IServerDataReader
         StreamMergeContext = streamMergeContext;
     }
 
-    public  IStreamDataReader ExecuteDbDataReader(
+    public  IExecuteResult ExecuteDbDataReader(
         CancellationToken cancellationToken = new CancellationToken())
     {
-        var executor = StreamDataReaderExecutor.Instance;
-        return ExecuteAsync<IStreamDataReader>(executor, cancellationToken).GetAwaiter().GetResult();
-    }
-
-    public  int ExecuteNonQuery(CancellationToken cancellationToken = new CancellationToken())
-    {
-        var executor = AffectCountExecutor.Instance;
-        return ExecuteAsync(executor, cancellationToken).GetAwaiter().GetResult();
+        var executor = ServerExecuteResultExecutor.Instance;
+        return ExecuteAsync<IExecuteResult>(executor, cancellationToken).GetAwaiter().GetResult();
     }
     protected abstract List<IServerDbConnection> GetServerDbConnections(ConnectionModeEnum connectionMode,
         string dataSourceName, int connectionSize);
@@ -98,13 +95,18 @@ public abstract class AbstractExecuteServerDataReader:IServerDataReader
             .Select(executionUnits =>
             {
                 var commandExecuteUnits = executionUnits
-                    .Select((executionUnit, i) =>new ConnectionExecuteUnit( executionUnit,dbConnections[i], connectionMode))
+                    .Select((executionUnit, i) =>
+                    {
+                        var sqlUnit = executionUnit.GetSqlUnit();
+                        var serverDbCommand = dbConnections[i].CreateCommand(sqlUnit.GetSql(),sqlUnit.GetParameterContext().GetDbParameters());
+                        return new CommandExecuteUnit(executionUnit,serverDbCommand , connectionMode);
+                    })
                     .ToList();
                 return commandExecuteUnits;
             });
 
         var sqlExecutorGroups = sqlExecutorUnitPartitions
-            .Select(o => new SqlExecutorGroup<ConnectionExecuteUnit>(connectionMode, o)).ToList();
+            .Select(o => new SqlExecutorGroup<CommandExecuteUnit>(connectionMode, o)).ToList();
         return new DataSourceSqlExecutorUnit(connectionMode, sqlExecutorGroups);
     }
 }

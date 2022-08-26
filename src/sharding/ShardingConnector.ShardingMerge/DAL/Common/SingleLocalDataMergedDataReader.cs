@@ -23,7 +23,7 @@ namespace ShardingConnector.ShardingMerge.DAL.Common
             this._values = values.GetEnumerator();
         }
 
-        public int RecordsAffected { get; }
+
 
         public bool Read()
         {

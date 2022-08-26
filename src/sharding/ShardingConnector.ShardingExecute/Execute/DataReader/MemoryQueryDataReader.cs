@@ -23,6 +23,7 @@ namespace ShardingConnector.ShardingExecute.Execute.DataReader
             _dataReader = dataReader;
         }
 
+
         public bool Read()
         {
             return _dataReader.Read();

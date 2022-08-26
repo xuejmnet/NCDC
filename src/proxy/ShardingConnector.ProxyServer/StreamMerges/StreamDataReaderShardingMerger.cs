@@ -12,7 +12,7 @@ public sealed class StreamDataReaderShardingMerger:IShardingMerger<IStreamDataRe
         ShardingRuntimeContext runtimeContext = ProxyContext.ShardingRuntimeContext;
         MergeEngine mergeEngine = new MergeEngine(runtimeContext.GetRule().ToRules(),
             runtimeContext.GetProperties(), runtimeContext.GetDatabaseType(), runtimeContext.GetMetaData().Schema);
-        return mergeEngine.Merge(streamDataReaders, streamMergeContext.GetSqlCommandContext());
+        return mergeEngine.Merge(streamDataReaders.ToList(), streamMergeContext.GetSqlCommandContext());
     }
 
     public void InMemoryMerge(StreamMergeContext streamMergeContext,List<IStreamDataReader> beforeInMemoryResults, List<IStreamDataReader> parallelResults)

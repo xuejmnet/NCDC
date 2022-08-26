@@ -1,6 +1,8 @@
 using System.Data.Common;
 using ShardingConnector.Executor.Constant;
 using ShardingConnector.ProxyServer.Abstractions;
+using ShardingConnector.ProxyServer.ProxyAdoNets;
+using ShardingConnector.ProxyServer.ProxyAdoNets.Abstractions;
 using ShardingConnector.ProxyServer.Session;
 
 namespace ShardingConnector.ProxyServer.Connection;

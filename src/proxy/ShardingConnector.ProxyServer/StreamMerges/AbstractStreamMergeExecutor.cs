@@ -33,24 +33,24 @@ public abstract class AbstractStreamMergeExecutor<TResult>:IExecutor<TResult>
             return result;
         }
 
-        private  TResult[] GroupExecute(List<ConnectionExecuteUnit> connectionExecuteUnits)
+        private  TResult[] GroupExecute(List<CommandExecuteUnit> commandExecuteUnits)
         {
-            if (connectionExecuteUnits.Count <= 0)
+            if (commandExecuteUnits.Count <= 0)
             {
                 return Array.Empty<TResult>();
             }
 
-            if (connectionExecuteUnits.Count == 1)
+            if (commandExecuteUnits.Count == 1)
             {
-                return new TResult[1] { ExecuteConnectionUnit(connectionExecuteUnits[0]) };
+                return new TResult[1] { ExecuteCommandUnit(commandExecuteUnits[0]) };
             }
             else
             { 
                 CancellationToken cancellationToken = new CancellationToken();
-                var dataReaders = new List<TResult>(connectionExecuteUnits.Count());
-                var otherTasks = connectionExecuteUnits.Skip(1)
-                    .Select(o => Task.Run(() => ExecuteConnectionUnit(o), cancellationToken)).ToArray();
-                var streamDataReader = ExecuteConnectionUnit(connectionExecuteUnits[0]);
+                var dataReaders = new List<TResult>(commandExecuteUnits.Count());
+                var otherTasks = commandExecuteUnits.Skip(1)
+                    .Select(o => Task.Run(() => ExecuteCommandUnit(o), cancellationToken)).ToArray();
+                var streamDataReader = ExecuteCommandUnit(commandExecuteUnits[0]);
                 var streamDataReaders = Task.WhenAll(otherTasks).GetAwaiter().GetResult();
                 dataReaders.Add(streamDataReader);
                 dataReaders.AddAll(streamDataReaders);
@@ -58,7 +58,7 @@ public abstract class AbstractStreamMergeExecutor<TResult>:IExecutor<TResult>
             }
         }
 
-        protected abstract  TResult ExecuteConnectionUnit(ConnectionExecuteUnit commandExecuteUnit);
+        protected abstract  TResult ExecuteCommandUnit(CommandExecuteUnit commandExecuteUnit);
         // {
         //     // DbDataReader resultSet = command.ExecuteReader(sql);
         //     // command.CommandText = sql;

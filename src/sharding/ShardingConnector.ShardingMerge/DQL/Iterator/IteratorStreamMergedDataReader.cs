@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using ShardingConnector.Executor;
 using ShardingConnector.Extensions;
@@ -18,11 +19,13 @@ namespace ShardingConnector.ShardingMerge.DQL.Iterator
     {
         private readonly IEnumerator<IStreamDataReader> _streamDataReaderEnumerator;
 
-        public IteratorStreamMergedDataReader( List<IStreamDataReader> streamDataReaders)
+        public IteratorStreamMergedDataReader(List<IStreamDataReader> streamDataReaders)
         {
             _streamDataReaderEnumerator = streamDataReaders.GetEnumerator();
-            SetCurrentStreamDataReader(this._streamDataReaderEnumerator.Next());
+            SetCurrentStreamDataReader( this._streamDataReaderEnumerator.Next());
         }
+
+
         public override bool Read()
         {
             if (GetCurrentStreamDataReader().Read())

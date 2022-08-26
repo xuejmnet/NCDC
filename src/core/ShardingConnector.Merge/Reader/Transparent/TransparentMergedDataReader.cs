@@ -23,6 +23,7 @@ namespace ShardingConnector.Merge.Reader.Transparent
             this._streamDataReader = streamDataReader;
         }
 
+
         public bool Read()
         {
             return _streamDataReader.Read();
