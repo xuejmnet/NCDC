@@ -33,7 +33,7 @@ namespace ShardingConnector.ChloeTest
             {
                 {
                     "ds0",
-                    new GenericDataSource(MySqlConnectorFactory.Instance,conn,true)
+                    new GenericDataSource("ds0",MySqlConnectorFactory.Instance,conn,true)
                 }
             };
             //2、分库分表配置

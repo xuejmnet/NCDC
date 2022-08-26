@@ -21,7 +21,7 @@ public class ProxyContext
         {
             {
                 "ds0",
-                new GenericDataSource(MySqlConnectorFactory.Instance,"server=127.0.0.1;port=3306;database=test;userid=root;password=root;",true)
+                new GenericDataSource("ds0",MySqlConnectorFactory.Instance,"server=127.0.0.1;port=3306;database=test;userid=root;password=root;",true)
             }
         };
         //2、分库分表配置

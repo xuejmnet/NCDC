@@ -16,15 +16,18 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.DataSource
         private readonly string _connectionString;
         private readonly bool _isDefault;
 
-        public GenericDataSource(DbProviderFactory dbProviderFactory, string connectionString) : this(dbProviderFactory, connectionString, false)
+        public GenericDataSource(string dataSourceName,DbProviderFactory dbProviderFactory, string connectionString) : this(dataSourceName,dbProviderFactory, connectionString, false)
         {
         }
-        public GenericDataSource(DbProviderFactory dbProviderFactory, string connectionString, bool isDefault)
+        public GenericDataSource(string dataSourceName,DbProviderFactory dbProviderFactory, string connectionString, bool isDefault)
         {
+            DataSourceName = dataSourceName;
             _dbProviderFactory = dbProviderFactory;
             _connectionString = connectionString;
             _isDefault = isDefault;
         }
+
+        public string DataSourceName { get; }
 
         public bool IsDefault()
         {

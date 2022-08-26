@@ -34,9 +34,7 @@ public sealed class QueryServerHandler:IServerHandler
         var commandExecutor = new DefaultCommandExecutor(maxQueryConnectionsLimit);
         commandExecutor.OnGetConnections += (c, s, i) =>
         {
-            var mySqlConnection = new MySqlConnection("server=127.0.0.1;port=3306;database=test;userid=root;password=root;");
-            mySqlConnection.Open();
-            return new List<DbConnection>(){mySqlConnection};
+            return ConnectionSession.ServerConnection.GetConnections(c, s, i).Select(o=>o.GetDbConnection()).ToList();
             // if (_shardingConnection != null)
             // {
             //     return _shardingConnection.GetConnections(c, s, i);

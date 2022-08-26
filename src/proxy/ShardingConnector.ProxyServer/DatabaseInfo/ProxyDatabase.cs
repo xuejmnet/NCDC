@@ -1,26 +1,24 @@
+using ShardingConnector.NewConnector.DataSource;
+using ShardingConnector.ProxyServer.Abstractions;
+using ShardingConnector.ProxyServer.Commons;
+
 namespace ShardingConnector.ProxyServer.DatabaseInfo;
 
-public sealed class ProxyDatabase
+public sealed class ProxyDatabase:IProxyDatabase
 {
-    /// <summary>
-    /// 数据源名称
-    /// </summary>
-    public string DataSourceName { get; }
-
-    /// <summary>
-    /// 链接字符串
-    /// </summary>
-    public string ConnectionString { get; }
-
-    /// <summary>
-    /// 是否是默认数据源
-    /// </summary>
-    public bool IsDefault { get; }
-
-    public ProxyDatabase(string dataSourceName, string connectionString, bool isDefault = false)
+    private readonly IDataSource _dataSource;
+    public ProxyDatabase(IDataSource dataSource)
     {
-        DataSourceName = dataSourceName;
-        ConnectionString = connectionString;
-        IsDefault = isDefault;
+        _dataSource = dataSource;
+    }
+
+    public string DataSourceName =>_dataSource.DataSourceName;
+    public bool IsDefault => _dataSource.IsDefault();
+
+    public IServerDbConnection CreateServerDbConnection()
+    {
+        var dbConnection = _dataSource.CreateConnection();
+        dbConnection.Open();
+        return new ServerDbConnection(dbConnection);
     }
 }

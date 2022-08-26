@@ -72,6 +72,7 @@ public sealed class ServerHandlerFactory:IServerHandlerFactory
         {
             throw new NotSupportedException("RollbackCommand");
         }
+        //todo 判断设置隔离级别
 
         throw new NotSupportedException(tclCommand.GetType().FullName);
     }

@@ -11,6 +11,7 @@ namespace ShardingConnector.NewConnector.DataSource
     */
     public interface IDataSource
     {
+        string DataSourceName { get; }
         bool IsDefault();
         string GetConnectionString();
         DbProviderFactory GetDbProviderFactory();
