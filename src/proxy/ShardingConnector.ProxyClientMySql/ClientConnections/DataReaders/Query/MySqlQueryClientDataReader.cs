@@ -66,7 +66,7 @@ public sealed class MySqlQueryClientDataReader:IClientQueryDataReader<MySqlPacke
             return ProcessQuery(queryServerResult);
         }
         
-        if (serverResult is EffectRowServerResult effectResult)
+        if (serverResult is AffectRowServerResult effectResult)
         {
             return new List<IPacket<MySqlPacketPayload>>()
             {
@@ -129,9 +129,9 @@ public sealed class MySqlQueryClientDataReader:IClientQueryDataReader<MySqlPacke
     }
 
 
-    private IMysqlPacket CreateUpdatePacket(EffectRowServerResult effectResult)
+    private IMysqlPacket CreateUpdatePacket(AffectRowServerResult affectResult)
     {
-        return new MySqlOkPacket(1, effectResult.UpdateCount, effectResult.LastInsertId,(MySqlStatusFlagEnum)ServerStatusFlagCalculator.CalculateFor(ConnectionSession));
+        return new MySqlOkPacket(1, affectResult.UpdateCount, affectResult.LastInsertId,(MySqlStatusFlagEnum)ServerStatusFlagCalculator.CalculateFor(ConnectionSession));
     }
 
     public void Dispose()

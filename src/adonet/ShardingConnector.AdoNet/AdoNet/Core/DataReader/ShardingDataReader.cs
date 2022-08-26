@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Data.Common;
 using System.Threading;
 using System.Threading.Tasks;
-using ExecutionContext = ShardingConnector.Executor.Context.ExecutionContext;
+using ShardingConnector.Executor.Context;
 
 namespace ShardingConnector.AdoNet.AdoNet.Core.DataReader
 {
@@ -27,7 +27,7 @@ namespace ShardingConnector.AdoNet.AdoNet.Core.DataReader
         //private readonly IDictionary<string, int> _columnLabelAndIndexMap;
 
         public ShardingDataReader(List<DbDataReader> dataReaders, IStreamDataReader streamDataReader, 
-            ExecutionContext executionContext) : base(dataReaders, executionContext)
+            StreamMergeContext streamMergeContext) : base(dataReaders, streamMergeContext)
         {
             _streamDataReader = streamDataReader;
             //_columnLabelAndIndexMap = CreateColumnLabelAndIndexMap(dataReaders[0]);

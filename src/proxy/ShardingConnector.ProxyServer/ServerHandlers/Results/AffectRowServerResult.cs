@@ -3,19 +3,19 @@ using ShardingConnector.ProxyServer.Commons;
 
 namespace ShardingConnector.ProxyServer.ServerHandlers.Results;
 
-public class EffectRowServerResult:IServerResult
+public class AffectRowServerResult:IServerResult
 {
 
     public ResultTypeEnum ResultType => ResultTypeEnum.UPDATE;
     public long LastInsertId { get; }
     public List<int> UpdateCounts { get; }
     public long UpdateCount { get; private set; }
-    public EffectRowServerResult():this(new List<EffectRowUnitResult>(0))
+    public AffectRowServerResult():this(new List<AffectRowUnitResult>(0))
     {
         
     }
 
-    public EffectRowServerResult(List<EffectRowUnitResult> updateResults)
+    public AffectRowServerResult(List<AffectRowUnitResult> updateResults)
     {
         
         UpdateCounts = new List<int>(updateResults.Count);

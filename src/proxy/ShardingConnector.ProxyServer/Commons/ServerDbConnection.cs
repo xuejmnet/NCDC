@@ -9,6 +9,8 @@ public sealed class ServerDbConnection:IServerDbConnection
     private readonly DbConnection _dbConnection;
 
     private DbTransaction? _transaction;
+    private DbCommand? _dbCommand;
+    private DbDataReader? _dbDataReader;
     public ServerDbConnection(DbConnection dbConnection)
     {
         _dbConnection = dbConnection;
@@ -32,7 +34,8 @@ public sealed class ServerDbConnection:IServerDbConnection
 
     public DbCommand CreateCommand()
     {
-        throw new NotImplementedException();
+        _dbCommand= _dbConnection.CreateCommand();
+        return _dbCommand;
     }
 
     public DbConnection GetDbConnection()
@@ -40,18 +43,31 @@ public sealed class ServerDbConnection:IServerDbConnection
         return _dbConnection;
     }
 
-    public DbCommand GetDbCommand()
+    public DbCommand? GetDbCommand()
     {
-        throw new NotImplementedException();
+        return _dbCommand;
     }
 
-    public DbDataReader GetDbDataReader()
+    public DbDataReader ExecuteReader()
     {
-        throw new NotImplementedException();
+        _dbDataReader= _dbCommand!.ExecuteReader();
+        return _dbDataReader;
+    }
+
+    public DbDataReader? GetDbDataReader()
+    {
+        return _dbDataReader;
+    }
+
+    public int ExecuteNonQuery()
+    {
+       return _dbCommand!.ExecuteNonQuery();
     }
 
     public void Dispose()
     {
+        _dbDataReader?.Dispose();
+        _dbCommand?.Dispose();
         _transaction?.Dispose();
         _dbConnection.Dispose();
     }

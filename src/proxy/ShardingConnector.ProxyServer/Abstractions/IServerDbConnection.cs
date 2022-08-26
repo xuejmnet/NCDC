@@ -10,6 +10,8 @@ public interface IServerDbConnection:IDisposable
     void RollbackTransaction();
     DbCommand CreateCommand();
     DbConnection GetDbConnection();
-    DbCommand GetDbCommand();
-    DbDataReader GetDbDataReader();
+    DbCommand? GetDbCommand();
+    DbDataReader ExecuteReader();
+    DbDataReader? GetDbDataReader();
+    int ExecuteNonQuery();
 }

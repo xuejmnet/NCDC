@@ -29,6 +29,6 @@ public sealed class TransactionServerHandler:IServerHandler
             default: throw new NotSupportedException($"{_txType}");
         }
 
-        return new EffectRowServerResult();
+        return new AffectRowServerResult();
     }
 }

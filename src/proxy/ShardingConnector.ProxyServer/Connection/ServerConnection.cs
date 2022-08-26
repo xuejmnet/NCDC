@@ -21,7 +21,7 @@ public class ServerConnection:IServerConnection,IDisposable,IAdoMethodReplier<IS
     public int ConnectionId { get; set; }
     public string UserName{ get; set; }
 
-    private readonly Dictionary<string,List<IServerDbConnection>>  _cachedConnections =
+    public  Dictionary<string,List<IServerDbConnection>>  CachedConnections { get; }=
         new ();
 
     public ServerConnection(ConnectionSession connectionSession)
@@ -40,12 +40,12 @@ public class ServerConnection:IServerConnection,IDisposable,IAdoMethodReplier<IS
     public List<IServerDbConnection> GetConnections(ConnectionModeEnum connectionMode,string dataSourceName,  int connectionSize)
     {
         var serverDbConnections = GetServerDbConnectionFromContext(connectionMode,dataSourceName,connectionSize);
-        lock (_cachedConnections)
+        lock (CachedConnections)
         {
-            if (!_cachedConnections.TryGetValue(dataSourceName, out var cached))
+            if (!CachedConnections.TryGetValue(dataSourceName, out var cached))
             {
                 cached = new List<IServerDbConnection>(Math.Max(serverDbConnections.Count * 2,Environment.ProcessorCount));
-                _cachedConnections.TryAdd(dataSourceName, cached);
+                CachedConnections.TryAdd(dataSourceName, cached);
             }
             cached.AddAll(serverDbConnections);
         }

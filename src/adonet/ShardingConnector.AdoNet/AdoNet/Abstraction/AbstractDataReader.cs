@@ -7,7 +7,7 @@ using System.Data.Common;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using ExecutionContext = ShardingConnector.Executor.Context.ExecutionContext;
+using ShardingConnector.Executor.Context;
 
 namespace ShardingConnector.AdoNet.AdoNet.Abstraction
 {
@@ -26,7 +26,7 @@ namespace ShardingConnector.AdoNet.AdoNet.Abstraction
     {
         public List<DbDataReader> DataReaders { get; }
 
-        private readonly ExecutionContext executionContext;
+        private readonly StreamMergeContext _streamMergeContext;
 
         private bool closed;
 
@@ -34,12 +34,12 @@ namespace ShardingConnector.AdoNet.AdoNet.Abstraction
         private readonly ForceExecuteTemplate<DbDataReader> _forceExecuteTemplate =
             new ForceExecuteTemplate<DbDataReader>();
 
-        public AbstractDataReader(List<DbDataReader> dataReaders, ExecutionContext executionContext)
+        public AbstractDataReader(List<DbDataReader> dataReaders, StreamMergeContext streamMergeContext)
         {
             if (dataReaders.IsEmpty())
                 throw new ArgumentNullException(nameof(dataReaders));
             DataReaders = dataReaders;
-            this.executionContext = executionContext;
+            this._streamMergeContext = streamMergeContext;
         }
 
         public abstract override bool GetBoolean(int ordinal);

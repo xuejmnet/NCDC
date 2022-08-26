@@ -2,14 +2,16 @@ using System.Data.Common;
 using MySqlConnector;
 using ShardingConnector.AdoNet.Executor;
 using ShardingConnector.AdoNet.Executor.Abstractions;
+using ShardingConnector.Executor.Context;
+using ShardingConnector.Extensions;
 using ShardingConnector.Pluggable.Merge;
 using ShardingConnector.Pluggable.Prepare;
 using ShardingConnector.ProxyServer.Abstractions;
 using ShardingConnector.ProxyServer.Binaries;
+using ShardingConnector.ProxyServer.ServerDataReaders;
 using ShardingConnector.ProxyServer.ServerHandlers.Results;
 using ShardingConnector.ProxyServer.Session;
 using ShardingConnector.ShardingAdoNet;
-using ExecutionContext = ShardingConnector.Executor.Context.ExecutionContext;
 using ShardingDataReader = ShardingConnector.AdoNet.AdoNet.Core.DataReader.ShardingDataReader;
 using ShardingRuntimeContext = ShardingConnector.AdoNet.AdoNet.Core.Context.ShardingRuntimeContext;
 
@@ -19,7 +21,6 @@ public sealed class QueryServerHandler:IServerHandler
 {
     public string Sql { get; }
     public ConnectionSession ConnectionSession { get; }
-    private readonly ICommandExecutor _commandExecutor;
     public IStreamDataReader? StreamDataReader { get; private set; }
     public QueryServerResult? QueryServerResult { get; private set; }
 
@@ -27,53 +28,44 @@ public sealed class QueryServerHandler:IServerHandler
     {
         Sql = sql;
         ConnectionSession = connectionSession;
-        _commandExecutor= CreateCommandExecutor(10);
-    }
-    private ICommandExecutor CreateCommandExecutor(int maxQueryConnectionsLimit)
-    {
-        var commandExecutor = new DefaultCommandExecutor(maxQueryConnectionsLimit);
-        commandExecutor.OnGetConnections += (c, s, i) =>
-        {
-            return ConnectionSession.ServerConnection.GetConnections(c, s, i).Select(o=>o.GetDbConnection()).ToList();
-            // if (_shardingConnection != null)
-            // {
-            //     return _shardingConnection.GetConnections(c, s, i);
-            // }
-            //
-            // throw new ShardingException(
-            //     $"{nameof(ShardingCommand)} {nameof(_shardingConnection)} is null");
-        };
-        return commandExecutor;
     }
     public IServerResult Execute()
     {
         var executionContext = Prepare(Sql);
-        var dataReaders = _commandExecutor.ExecuteDbDataReader(false,executionContext);
-        StreamDataReader = MergeQuery(executionContext,dataReaders);
+        if (executionContext.GetExecutionUnits().IsEmpty())
+        {
+            return new AffectRowServerResult();
+        }
+        var queryServerDataReader = new QueryServerDataReader(executionContext,ConnectionSession);
+        if (executionContext.IsSelect)
+        {
+            StreamDataReader = queryServerDataReader.ExecuteDbDataReader();
+            // StreamDataReader = MergeQuery(executionContext,dataReaders);
+            var dbDataReaders = ConnectionSession.ServerConnection.CachedConnections.SelectMany(o=>o.Value.Select(x=>x.GetDbDataReader())).ToList();
+            var result = new ShardingDataReader(dbDataReaders, StreamDataReader,executionContext);
+            var columns = result.DataReaders[0].GetColumnSchema().ToList();
+            // var resultDataReader = result.DataReaders[0];
+            // var mySqlDataReader = (MySqlDataReader)resultDataReader;
+            //
+            // var mySqlConnection = new MySqlConnection("server=127.0.0.1;port=3306;database=test;userid=root;password=root;");
+            // var mySqlCommand = mySqlConnection.CreateCommand();
+            // mySqlCommand.CommandText = _sql;
+            // var mySqlDataReader = mySqlCommand.ExecuteReader();
+            QueryServerResult= new QueryServerResult(columns);
+            return QueryServerResult;
+        }
+        else
+        {
+            var affectCount = queryServerDataReader.ExecuteNonQuery();
+            return new AffectRowServerResult(new List<AffectRowUnitResult>(){new AffectRowUnitResult(affectCount,0)});
+        }
+        
        
-        var result = new ShardingDataReader(_commandExecutor.GetDataReaders(), StreamDataReader,executionContext);
-        var columns = result.DataReaders[0].GetColumnSchema().ToList();
-        // var resultDataReader = result.DataReaders[0];
-        // var mySqlDataReader = (MySqlDataReader)resultDataReader;
-        //
-        // var mySqlConnection = new MySqlConnection("server=127.0.0.1;port=3306;database=test;userid=root;password=root;");
-        // var mySqlCommand = mySqlConnection.CreateCommand();
-        // mySqlCommand.CommandText = _sql;
-        // var mySqlDataReader = mySqlCommand.ExecuteReader();
-        QueryServerResult= new QueryServerResult(columns);
-        return QueryServerResult;
     }
 
 
-    private IStreamDataReader MergeQuery(ExecutionContext executionContext,List<IStreamDataReader> streamDataReaders)
-    {
-        ShardingRuntimeContext runtimeContext = ProxyContext.ShardingRuntimeContext;
-        MergeEngine mergeEngine = new MergeEngine(runtimeContext.GetRule().ToRules(),
-            runtimeContext.GetProperties(), runtimeContext.GetDatabaseType(), runtimeContext.GetMetaData().Schema);
-        return mergeEngine.Merge(streamDataReaders, executionContext.GetSqlCommandContext());
-    }
 
-    private ExecutionContext Prepare(string sql)
+    private StreamMergeContext Prepare(string sql)
     {
 
         ShardingRuntimeContext runtimeContext = ProxyContext.ShardingRuntimeContext;
@@ -84,7 +76,7 @@ public sealed class QueryServerHandler:IServerHandler
         var parameterContext =
             new ParameterContext(Array.Empty<DbParameter>());
             
-        ExecutionContext result = prepareEngine.Prepare(sql, parameterContext);
+        StreamMergeContext result = prepareEngine.Prepare(sql, parameterContext);
         //TODO
         // _commandExecutor.Init(result);
         // //_commandExecutor.Commands.for

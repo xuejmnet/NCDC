@@ -7,6 +7,6 @@ public sealed class NoDatabaseServerHandler:IServerHandler
 {
     public IServerResult Execute()
     {
-        return new EffectRowServerResult();
+        return new AffectRowServerResult();
     }
 }

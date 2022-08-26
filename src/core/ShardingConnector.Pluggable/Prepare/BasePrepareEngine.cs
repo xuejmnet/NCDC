@@ -49,11 +49,11 @@ namespace ShardingConnector.Pluggable.Prepare
         protected abstract ParameterContext CloneParameters(ParameterContext parameterContext);
         protected abstract RouteContext Route(DataNodeRouter router,string sql, ParameterContext parameterContext);
 
-        public ExecutionContext Prepare(string sql, ParameterContext parameterContext)
+        public StreamMergeContext Prepare(string sql, ParameterContext parameterContext)
         {
             var cloneParameterContext = CloneParameters(parameterContext);
             var routeContext = ExecuteRoute(sql, cloneParameterContext);
-            ExecutionContext result = new ExecutionContext(routeContext.GetSqlCommandContext());
+            StreamMergeContext result = new StreamMergeContext(routeContext.GetSqlCommandContext());
   
             var executionUnits = ExecuteRewrite(sql, cloneParameterContext, routeContext);
             result.GetExecutionUnits().AddAll(executionUnits);

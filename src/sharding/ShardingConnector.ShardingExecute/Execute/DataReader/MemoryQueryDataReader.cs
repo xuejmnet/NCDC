@@ -22,6 +22,7 @@ namespace ShardingConnector.ShardingExecute.Execute.DataReader
             _columnSchema = dataReader.GetColumnSchema().ToList();
             _dataReader = dataReader;
         }
+
         public bool Read()
         {
             return _dataReader.Read();

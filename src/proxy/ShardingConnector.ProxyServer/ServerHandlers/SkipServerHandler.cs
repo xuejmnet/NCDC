@@ -7,6 +7,6 @@ public sealed class SkipServerHandler:IServerHandler
 {
     public IServerResult Execute()
     {
-        return new EffectRowServerResult();
+        return new AffectRowServerResult();
     }
 }

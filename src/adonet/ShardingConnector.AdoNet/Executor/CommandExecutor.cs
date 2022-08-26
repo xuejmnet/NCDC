@@ -12,7 +12,6 @@ using System.Threading.Tasks;
 using ShardingConnector.Executor.Context;
 using ShardingConnector.Executor.Engine;
 using ShardingConnector.Extensions;
-using ExecutionContext = ShardingConnector.Executor.Context.ExecutionContext;
 
 namespace ShardingConnector.AdoNet.Executor
 {
@@ -29,10 +28,10 @@ namespace ShardingConnector.AdoNet.Executor
         }
 
 
-        public void Init(ExecutionContext executionContext)
+        public void Init(StreamMergeContext streamMergeContext)
         {
-            SqlCommandContext = executionContext.GetSqlCommandContext();
-            InputGroups.AddAll(GetExecuteGroups(executionContext.GetExecutionUnits()));
+            SqlCommandContext = streamMergeContext.GetSqlCommandContext();
+            InputGroups.AddAll(GetExecuteGroups(streamMergeContext.GetExecutionUnits()));
             CacheCommands();
         }
 
