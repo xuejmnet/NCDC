@@ -179,5 +179,11 @@ namespace ShardingConnector.Merge.Reader.Memory
         {
             throw new System.NotImplementedException();
         }
+
+        public void Dispose()
+        {
+            _memoryResultSetRows?.Dispose();
+            _currentSetResultRow?.Dispose();
+        }
     }
 }

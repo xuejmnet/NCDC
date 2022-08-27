@@ -165,5 +165,10 @@ namespace ShardingConnector.ShardingExecute.Execute.DataReader
         {
             return _dataReader.NextResult();
         }
+
+        public void Dispose()
+        {
+            _dataReader?.Dispose();
+        }
     }
 }

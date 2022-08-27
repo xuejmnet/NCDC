@@ -163,5 +163,6 @@ namespace ShardingConnector.Merge.Reader.Stream
 
         protected IStreamDataReader CurrentQueryDataReader => GetCurrentStreamDataReader();
 
+        public abstract void Dispose();
     }
 }

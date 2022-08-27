@@ -48,5 +48,10 @@ public sealed class QueryServerDataReader:AbstractAdoServerDataReader
             return new RecordsAffectedServerResult(new List<AffectRowUnitResult>(){new AffectRowUnitResult(affectRowExecuteResult.RecordsAffected,affectRowExecuteResult.LastInsertId)});
         }
     }
+    public override void Dispose()
+    {
+        StreamDataReader?.Dispose();
+        ConnectionSession.CloseServerConnection();
+    }
 
 }

@@ -160,5 +160,10 @@ namespace ShardingConnector.ShardingMerge.DAL.Common
         {
             return false;
         }
+
+        public void Dispose()
+        {
+            _values?.Dispose();
+        }
     }
 }

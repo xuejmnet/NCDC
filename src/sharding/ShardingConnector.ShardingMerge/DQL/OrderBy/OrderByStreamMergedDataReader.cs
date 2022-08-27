@@ -75,5 +75,14 @@ namespace ShardingConnector.ShardingMerge.DQL.OrderBy
             SetCurrentStreamDataReader(OrderByValuesQueue.Peek().GetStreamDataReader());
             return true;
         }
+
+        public override void Dispose()
+        {
+            while (!OrderByValuesQueue.IsEmpty())
+            {
+                var orderByValue = OrderByValuesQueue.Poll();
+                orderByValue?.Dispose();
+            }
+        }
     }
 }

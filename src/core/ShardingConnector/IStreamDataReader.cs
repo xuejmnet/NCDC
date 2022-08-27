@@ -8,7 +8,7 @@ using System;
 */
 namespace ShardingConnector
 {
-    public interface IStreamDataReader
+    public interface IStreamDataReader:IDisposable
     {
         bool Read();
         int ColumnCount { get; }

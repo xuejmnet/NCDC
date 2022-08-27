@@ -17,10 +17,12 @@ namespace ShardingConnector.ShardingMerge.DQL.Iterator
     */
     public sealed class IteratorStreamMergedDataReader:StreamMergedDataReader
     {
+        private readonly List<IStreamDataReader> _streamDataReaders;
         private readonly IEnumerator<IStreamDataReader> _streamDataReaderEnumerator;
 
         public IteratorStreamMergedDataReader(List<IStreamDataReader> streamDataReaders)
         {
+            _streamDataReaders = streamDataReaders;
             _streamDataReaderEnumerator = streamDataReaders.GetEnumerator();
             SetCurrentStreamDataReader( this._streamDataReaderEnumerator.Next());
         }
@@ -48,6 +50,11 @@ namespace ShardingConnector.ShardingMerge.DQL.Iterator
                 hasNext = GetCurrentStreamDataReader().Read();
             }
             return hasNext;
+        }
+
+        public override void Dispose()
+        {
+            _streamDataReaders?.ForEach(o=>o.Dispose());
         }
     }
 }

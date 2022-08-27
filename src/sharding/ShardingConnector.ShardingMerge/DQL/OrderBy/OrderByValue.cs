@@ -20,7 +20,7 @@ namespace ShardingConnector.ShardingMerge.DQL.OrderBy
     * @Ver: 1.0
     * @Email: 326308290@qq.com
     */
-    public sealed class OrderByValue : IComparable, IComparable<OrderByValue>
+    public sealed class OrderByValue : IComparable, IComparable<OrderByValue>,IDisposable
     {
         private readonly IStreamDataReader _streamDataReader;
 
@@ -128,6 +128,11 @@ namespace ShardingConnector.ShardingMerge.DQL.OrderBy
         public IStreamDataReader GetStreamDataReader()
         {
             return _streamDataReader;
+        }
+
+        public void Dispose()
+        {
+            _streamDataReader?.Dispose();
         }
     }
 }

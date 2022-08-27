@@ -153,5 +153,10 @@ namespace ShardingConnector.Merge.Reader.Decorator
         {
             return StreamDataReader.NextResult();
         }
+
+        public void Dispose()
+        {
+            StreamDataReader?.Dispose();
+        }
     }
 }

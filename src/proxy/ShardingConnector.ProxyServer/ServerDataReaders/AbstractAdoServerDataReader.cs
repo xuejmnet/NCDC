@@ -19,9 +19,5 @@ public abstract class AbstractAdoServerDataReader:AbstractExecuteServerDataReade
     {
         return ConnectionSession.ServerConnection.GetConnections(connectionMode, dataSourceName, connectionSize);
     }
-    public override void Dispose()
-    {
-        ConnectionSession.CloseServerConnection();
-    }
 
 }

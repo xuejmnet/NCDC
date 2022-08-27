@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using ShardingConnector.Exceptions;
 using ShardingConnector.Executor;
 
@@ -15,7 +16,7 @@ namespace ShardingConnector.Merge.Reader.Memory
     /// <summary>
     /// 
     /// </summary>
-    public sealed class MemoryQueryResultRow
+    public sealed class MemoryQueryResultRow:IDisposable
     {
         private readonly IStreamDataReader _streamDataReader;
         private readonly object[] _data;
@@ -93,6 +94,11 @@ namespace ShardingConnector.Merge.Reader.Memory
             }
 
             return null == _data[columnIndex];
+        }
+
+        public void Dispose()
+        {
+            _streamDataReader?.Dispose();
         }
     }
 }

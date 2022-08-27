@@ -155,5 +155,10 @@ namespace ShardingConnector.Merge.Reader.Transparent
         {
             return _streamDataReader.NextResult();
         }
+
+        public void Dispose()
+        {
+            _streamDataReader?.Dispose();
+        }
     }
 }
