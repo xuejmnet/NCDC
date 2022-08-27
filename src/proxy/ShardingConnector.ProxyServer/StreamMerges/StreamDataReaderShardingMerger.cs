@@ -7,15 +7,15 @@ namespace ShardingConnector.ProxyServer.StreamMerges;
 public sealed class StreamDataReaderShardingMerger:IShardingMerger<IStreamDataReader>
 {
     public static StreamDataReaderShardingMerger Instance { get; } = new StreamDataReaderShardingMerger();
-    public IStreamDataReader StreamMerge(StreamMergeContext streamMergeContext,List<IStreamDataReader> streamDataReaders)
+    public IStreamDataReader StreamMerge(ShardingExecutionContext shardingExecutionContext,List<IStreamDataReader> streamDataReaders)
     {
         ShardingRuntimeContext runtimeContext = ProxyContext.ShardingRuntimeContext;
         MergeEngine mergeEngine = new MergeEngine(runtimeContext.GetRule().ToRules(),
             runtimeContext.GetProperties(), runtimeContext.GetDatabaseType(), runtimeContext.GetMetaData().Schema);
-        return mergeEngine.Merge(streamDataReaders.ToList(), streamMergeContext.GetSqlCommandContext());
+        return mergeEngine.Merge(streamDataReaders.ToList(), shardingExecutionContext.GetSqlCommandContext());
     }
 
-    public void InMemoryMerge(StreamMergeContext streamMergeContext,List<IStreamDataReader> beforeInMemoryResults, List<IStreamDataReader> parallelResults)
+    public void InMemoryMerge(ShardingExecutionContext shardingExecutionContext,List<IStreamDataReader> beforeInMemoryResults, List<IStreamDataReader> parallelResults)
     {
        
     }

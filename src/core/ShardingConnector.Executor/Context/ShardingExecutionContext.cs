@@ -13,7 +13,7 @@ namespace ShardingConnector.Executor.Context
     * @Ver: 1.0
     * @Email: 326308290@qq.com
     */
-    public sealed class StreamMergeContext
+    public sealed class ShardingExecutionContext
     {
         private readonly ISqlCommandContext<ISqlCommand> _sqlCommandContext;
     
@@ -22,7 +22,7 @@ namespace ShardingConnector.Executor.Context
         public bool IsSerialExecute { get; }
         public bool IsSelect => !IsSerialExecute;
 
-        public StreamMergeContext(ISqlCommandContext<ISqlCommand> sqlCommandContext)
+        public ShardingExecutionContext(ISqlCommandContext<ISqlCommand> sqlCommandContext)
         {
             _sqlCommandContext = sqlCommandContext;
             MaxQueryConnectionsLimit = 10;

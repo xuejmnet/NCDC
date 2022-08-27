@@ -15,7 +15,12 @@ namespace ShardingConnector.ProxyServer.ServerHandlers;
 public sealed class ServerHandlerFactory:IServerHandlerFactory
 {
     private static readonly ILogger<ServerHandlerFactory> _logger = InternalLoggerFactory.CreateLogger<ServerHandlerFactory>();
-    
+    private readonly IServerDataReaderFactory _serverDataReaderFactory;
+
+    public ServerHandlerFactory(IServerDataReaderFactory serverDataReaderFactory)
+    {
+        _serverDataReaderFactory = serverDataReaderFactory;
+    }
     public IServerHandler Create(DatabaseTypeEnum databaseType, string sql, ISqlCommand sqlCommand,
         ConnectionSession connectionSession)
     {
@@ -37,17 +42,22 @@ public sealed class ServerHandlerFactory:IServerHandlerFactory
             return CreateDALCommandServerHandler(dalCommand, sql,connectionSession);
         }
 
-        return new QueryServerHandler(sql,connectionSession);
+        return new QueryServerHandler(sql,connectionSession,_serverDataReaderFactory);
     }
     private IServerHandler CreateDALCommandServerHandler(DALCommand dalCommand, string sql,
         ConnectionSession connectionSession)
     {
-        if (dalCommand is SetCommand)
+        if (dalCommand is UseCommand useCommand)
         {
-            return new NoDatabaseServerHandler();
+            return new UseDatabaseServerHandler(useCommand, connectionSession);
         }
 
-        return new GenericDatabaseServerHandler();
+        if (dalCommand is ShowDatabasesCommand)
+        {
+            return new ShowDatabasesServerHandler(connectionSession);
+        }
+
+        return new UnicastServerHandler(sql, connectionSession, _serverDataReaderFactory);
     }
 
     private IServerHandler CreateTCLCommandServerHandler(TCLCommand tclCommand, string sql,
@@ -55,7 +65,8 @@ public sealed class ServerHandlerFactory:IServerHandlerFactory
     {
         if (tclCommand is BeginTransactionCommand beginTransactionCommand)
         {
-            return new TransactionServerHandler(TransactionOperationTypeEnum.BEGIN, connectionSession);
+            throw new NotSupportedException("BeginTransactionCommand");
+            // return new TransactionServerHandler(TransactionOperationTypeEnum.BEGIN, connectionSession);
         }
 
         if (tclCommand is SetAutoCommitCommand setAutoCommitCommand)
@@ -74,7 +85,8 @@ public sealed class ServerHandlerFactory:IServerHandlerFactory
         }
         //todo 判断设置隔离级别
 
-        throw new NotSupportedException(tclCommand.GetType().FullName);
+        return new UnicastServerHandler(sql,connectionSession,_serverDataReaderFactory);
+        // throw new NotSupportedException(tclCommand.GetType().FullName);
     }
 
     private void CheckNotSupportCommand(ISqlCommand sqlCommand)

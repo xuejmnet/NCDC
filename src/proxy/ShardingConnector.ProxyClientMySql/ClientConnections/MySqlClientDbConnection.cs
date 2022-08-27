@@ -20,10 +20,12 @@ public sealed class MySqlClientDbConnection : IClientDbConnection<MySqlPacketPay
     private static readonly ILogger<MySqlClientDbConnection> _logger =
         InternalLoggerFactory.CreateLogger<MySqlClientDbConnection>();
     private readonly IServerHandlerFactory _serverHandlerFactory;
+    private readonly IServerDataReaderFactory _serverDataReaderFactory;
 
-    public MySqlClientDbConnection(IServerHandlerFactory serverHandlerFactory)
+    public MySqlClientDbConnection(IServerHandlerFactory serverHandlerFactory,IServerDataReaderFactory serverDataReaderFactory)
     {
         _serverHandlerFactory = serverHandlerFactory;
+        _serverDataReaderFactory = serverDataReaderFactory;
     }
 
     public IClientCommand<MySqlPacketPayload> CreateCommand(MySqlPacketPayload payload,ConnectionSession connectionSession)
@@ -35,7 +37,7 @@ public sealed class MySqlClientDbConnection : IClientDbConnection<MySqlPacketPay
             case MySqlCommandTypeEnum.COM_QUIT:
                 return new MySqlQuitClientCommand();
             case MySqlCommandTypeEnum.COM_FIELD_LIST:
-                return new MySqlFieldListClientCommand(payload);
+                return new MySqlFieldListClientCommand(payload,connectionSession,_serverDataReaderFactory);
             case MySqlCommandTypeEnum.COM_INIT_DB:
                 return new MySqlInitDbClientCommand(payload, connectionSession);
             case MySqlCommandTypeEnum.COM_QUERY:
@@ -71,6 +73,8 @@ public sealed class MySqlClientDbConnection : IClientDbConnection<MySqlPacketPay
             while (!context.Channel.IsWritable && context.Channel.Active)
             {
                 context.Flush();
+                //当网络消费端消费过慢或者流量过大导致netty不可写入时但是链接还是激活的就等待网络恢复
+                connectionSession.WaitWhenChannelIsWritable();
                 // ((JDBCBackendConnection)backendConnection).getResourceLock().doAwait();
             }
 

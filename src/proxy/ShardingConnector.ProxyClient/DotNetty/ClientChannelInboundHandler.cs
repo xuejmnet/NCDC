@@ -88,4 +88,12 @@ public class ClientChannelInboundHandler:ChannelHandlerAdapter
 
         return false;
     }
+
+    public override void ChannelWritabilityChanged(IChannelHandlerContext context)
+    {
+        if (context.Channel.IsWritable)
+        {
+            _connectionSession.SetChannelIsWritable();
+        }
+    }
 }

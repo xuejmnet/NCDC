@@ -4,28 +4,36 @@ using ShardingConnector.Executor.Context;
 using ShardingConnector.Extensions;
 using ShardingConnector.Helpers;
 using ShardingConnector.ProxyServer.Abstractions;
-using ShardingConnector.ProxyServer.ProxyAdoNets;
-using ShardingConnector.ProxyServer.ProxyAdoNets.Abstractions;
+using ShardingConnector.ProxyServer.Binaries;
+using ShardingConnector.ProxyServer.ServerHandlers.Results;
+using ShardingConnector.ProxyServer.Session.Connection.Abstractions;
 using ShardingConnector.ProxyServer.StreamMerges;
+using ShardingConnector.ProxyServer.StreamMerges.Results;
 using CommandExecuteUnit = ShardingConnector.ProxyServer.StreamMerges.CommandExecuteUnit;
 
 namespace ShardingConnector.ProxyServer.ServerDataReaders;
 
 public abstract class AbstractExecuteServerDataReader:IServerDataReader
 {
-    protected StreamMergeContext StreamMergeContext { get; }
-
-    public AbstractExecuteServerDataReader(StreamMergeContext streamMergeContext)
+    protected ShardingExecutionContext ShardingExecutionContext { get; }
+    public AbstractExecuteServerDataReader(ShardingExecutionContext shardingExecutionContext)
     {
-        StreamMergeContext = streamMergeContext;
+        ShardingExecutionContext = shardingExecutionContext;
     }
 
-    public  IExecuteResult ExecuteDbDataReader(
+    public  IServerResult ExecuteDbDataReader(
         CancellationToken cancellationToken = new CancellationToken())
     {
         var executor = ServerExecuteResultExecutor.Instance;
-        return ExecuteAsync<IExecuteResult>(executor, cancellationToken).GetAwaiter().GetResult();
+        var executeResult = ExecuteAsync<IExecuteResult>(executor, cancellationToken).GetAwaiter().GetResult();
+        return Merge(executeResult);
     }
+
+    public abstract bool Read();
+
+    public abstract BinaryRow GetRowData();
+
+    protected abstract IServerResult Merge(IExecuteResult executeResult);
     protected abstract List<IServerDbConnection> GetServerDbConnections(ConnectionModeEnum connectionMode,
         string dataSourceName, int connectionSize);
 
@@ -36,12 +44,12 @@ public abstract class AbstractExecuteServerDataReader:IServerDataReader
             .ToList();
         if (results.IsEmpty())
             throw new ShardingException("sharding execute result empty");
-        return executor.GetShardingMerger().StreamMerge(StreamMergeContext,results);
+        return executor.GetShardingMerger().StreamMerge(ShardingExecutionContext,results);
     }
     protected Task<List<TResult>>[] ExecuteAsync0<TResult>(IExecutor<TResult> executor,
         CancellationToken cancellationToken = new CancellationToken())
     {
-        var waitTaskQueue = StreamMergeContext.GetExecutionUnits()
+        var waitTaskQueue = ShardingExecutionContext.GetExecutionUnits()
             .GroupBy(o => o.GetDataSourceName())
             .Select(o => GetSqlExecutorGroups(o))
             .Select(dataSourceSqlExecutorUnit =>
@@ -70,8 +78,8 @@ public abstract class AbstractExecuteServerDataReader:IServerDataReader
     /// <exception cref="ArgumentNullException"></exception>
     private DataSourceSqlExecutorUnit GetSqlExecutorGroups(IGrouping<string, ExecutionUnit> sqlGroups)
     {
-        var isSerialExecute = StreamMergeContext.IsSerialExecute;
-        var maxQueryConnectionsLimit = StreamMergeContext.MaxQueryConnectionsLimit;
+        var isSerialExecute = ShardingExecutionContext.IsSerialExecute;
+        var maxQueryConnectionsLimit = ShardingExecutionContext.MaxQueryConnectionsLimit;
         var dataSourceName = sqlGroups.Key;
         var sqlCount = sqlGroups.Count();
 
@@ -109,4 +117,6 @@ public abstract class AbstractExecuteServerDataReader:IServerDataReader
             .Select(o => new SqlExecutorGroup<CommandExecuteUnit>(connectionMode, o)).ToList();
         return new DataSourceSqlExecutorUnit(connectionMode, sqlExecutorGroups);
     }
+
+    public abstract void Dispose();
 }

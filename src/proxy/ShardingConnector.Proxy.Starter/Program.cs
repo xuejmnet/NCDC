@@ -17,6 +17,7 @@ using ShardingConnector.ProxyServer;
 using ShardingConnector.ProxyServer.Abstractions;
 using ShardingConnector.ProxyServer.Commons;
 using ShardingConnector.ProxyServer.Options;
+using ShardingConnector.ProxyServer.ServerDataReaders;
 using ShardingConnector.ProxyServer.ServerHandlers;
 using ShardingConnector.RewriteEngine.Context;
 using ShardingConnector.Route;
@@ -70,6 +71,7 @@ namespace ShardingConnector.Proxy.Starter
             // serivces.AddSingleton<IClientDataReaderFactory,MySqlClientDataReaderFactory>();
             // serivces.AddSingleton<IServerConnector,AdoNetSer>();
             serivces.AddSingleton<IServerHandlerFactory,ServerHandlerFactory>();
+            serivces.AddSingleton<IServerDataReaderFactory,ServerDataReaderFactory>();
             serivces.Configure<ShardingProxyOption>(_configuration);
             var buildServiceProvider = serivces.BuildServiceProvider();
             var shardingProxyOption = buildServiceProvider.GetRequiredService<ShardingProxyOption>();

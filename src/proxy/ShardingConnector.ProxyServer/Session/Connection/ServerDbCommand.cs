@@ -1,7 +1,8 @@
 using System.Data.Common;
-using ShardingConnector.ProxyServer.ProxyAdoNets.Abstractions;
+using ShardingConnector.Base;
+using ShardingConnector.ProxyServer.Session.Connection.Abstractions;
 
-namespace ShardingConnector.ProxyServer.ProxyAdoNets;
+namespace ShardingConnector.ProxyServer.Session.Connection;
 
 public sealed class ServerDbCommand:IServerDbCommand
 {
@@ -43,6 +44,7 @@ public sealed class ServerDbCommand:IServerDbCommand
 
     public IServerDbDataReader ExecuteReader()
     {
+        ShardingAssert.ShouldBeNull( _serverDbConnection.ServerDbDataReader,nameof( _serverDbConnection.ServerDbDataReader));
         var dbDataReader = _dbCommand.ExecuteReader();
         var serverDbDataReader = new ServerDbDataReader(_serverDbConnection,dbDataReader);
         _serverDbConnection.ServerDbDataReader = serverDbDataReader;

@@ -13,7 +13,7 @@ public interface IServerHandler:IDisposable
 
     BinaryRow GetRowData()
     {
-        return new BinaryRow(new List<BinaryCell>(0));
+        return BinaryRow.Empty;
     }
 
     void IDisposable.Dispose()

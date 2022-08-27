@@ -1,6 +1,6 @@
 using ShardingConnector.Executor.Constant;
 using ShardingConnector.Executor.Context;
-using ShardingConnector.ProxyServer.ProxyAdoNets.Abstractions;
+using ShardingConnector.ProxyServer.Session.Connection.Abstractions;
 
 namespace ShardingConnector.ProxyServer.StreamMerges;
 

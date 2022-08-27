@@ -1,6 +1,5 @@
 using ShardingConnector.ProxyServer.Abstractions;
-using ShardingConnector.ProxyServer.ProxyAdoNets;
-using ShardingConnector.ProxyServer.ProxyAdoNets.Abstractions;
+using ShardingConnector.ProxyServer.Session.Connection.Abstractions;
 
 namespace ShardingConnector.ProxyServer.DatabaseInfo;
 

@@ -84,15 +84,28 @@ public sealed class ProxyRuntimeContext
         }
     }
     
-    public bool DatabaseExists(string database)
+    public bool DatabaseExists(string? database)
     {
+        if (database == null)
+        {
+            return false;
+        }
         return _logicDatabase.ContainsKey(database);
     }
 
-    public LogicDatabase? GetDatabase(string database)
+    public LogicDatabase? GetDatabase(string? database)
     {
+        if (database == null)
+        {
+            return null;
+        }
         _logicDatabase.TryGetValue(database, out var logicDatabase);
         return logicDatabase;
+    }
+
+    public ICollection<string> GetAllDatabaseNames()
+    {
+        return _logicDatabase.Keys;
     }
 
     public ShardingConnectorUser? GetUser(string username)

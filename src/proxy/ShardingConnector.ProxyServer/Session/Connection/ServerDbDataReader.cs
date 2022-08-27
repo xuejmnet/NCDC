@@ -1,8 +1,7 @@
 using System.Data.Common;
-using ShardingConnector.Base;
-using ShardingConnector.ProxyServer.ProxyAdoNets.Abstractions;
+using ShardingConnector.ProxyServer.Session.Connection.Abstractions;
 
-namespace ShardingConnector.ProxyServer.ProxyAdoNets;
+namespace ShardingConnector.ProxyServer.Session.Connection;
 
 public sealed class ServerDbDataReader:IServerDbDataReader
 {

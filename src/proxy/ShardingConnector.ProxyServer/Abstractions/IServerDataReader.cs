@@ -1,9 +1,12 @@
+using ShardingConnector.ProxyServer.Binaries;
 using ShardingConnector.ProxyServer.StreamMerges;
 
 namespace ShardingConnector.ProxyServer.Abstractions;
 
-public interface IServerDataReader
+public interface IServerDataReader:IDisposable
 {
-    IExecuteResult ExecuteDbDataReader(CancellationToken cancellationToken=new CancellationToken());
+    IServerResult ExecuteDbDataReader(CancellationToken cancellationToken=new CancellationToken());
 
+    bool Read();
+    BinaryRow GetRowData();
 }

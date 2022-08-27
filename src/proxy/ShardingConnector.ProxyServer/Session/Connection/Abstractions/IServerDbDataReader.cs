@@ -1,6 +1,6 @@
 using System.Data.Common;
 
-namespace ShardingConnector.ProxyServer.ProxyAdoNets.Abstractions;
+namespace ShardingConnector.ProxyServer.Session.Connection.Abstractions;
 
 public interface IServerDbDataReader:IDisposable
 {

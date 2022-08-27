@@ -18,7 +18,7 @@ namespace ShardingConnector.ShardingMerge.DAL.Common
 
         private object _currentValue;
 
-        public SingleLocalDataMergedDataReader(ICollection<object> values)
+        public SingleLocalDataMergedDataReader(IEnumerable<object> values)
         {
             this._values = values.GetEnumerator();
         }

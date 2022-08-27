@@ -2,6 +2,7 @@ using ShardingConnector.Protocol.MySql.Packet.Command;
 using ShardingConnector.Protocol.MySql.Payload;
 using ShardingConnector.ProxyClient.Abstractions;
 using ShardingConnector.ProxyClient.Exceptions;
+using ShardingConnector.ProxyClientMySql.ClientConnections.DataReaders.NotSupport;
 
 namespace ShardingConnector.ProxyClientMySql.ClientConnections.Commands;
 
@@ -15,6 +16,6 @@ public sealed class MySqlNotSupportedClientCommand:IClientCommand<MySqlPacketPay
     }
     public IClientDataReader<MySqlPacketPayload> ExecuteReader()
     {
-        throw new NotSupportedCommandException($"{_commandType}");
+        return new MySqlNotSupportClientDataReader(_commandType);
     }
 }

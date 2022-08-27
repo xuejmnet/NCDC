@@ -40,12 +40,12 @@ public class MySqlAuthenticationHandler
         // var proxyUser = GetUser(username);
         // if (proxyUser == null || !IsPasswordRight(proxyUser.Password, authResponse))
         // {
-        //     return MySqlServerErrorCodeProvider.GetInstance().ER_DBACCESS_DENIED_ERROR;
+        //     return MySqlServerErrorCodeProvider.Instance().ER_DBACCESS_DENIED_ERROR;
         // }
         //
         // if (!IsAuthorizedSchema(proxyUser.AuthorizedSchemas, database))
         // {
-        //     return MySqlServerErrorCodeProvider.GetInstance().ER_DBACCESS_DENIED_ERROR;
+        //     return MySqlServerErrorCodeProvider.Instance().ER_DBACCESS_DENIED_ERROR;
         // }
         //
         // return null;

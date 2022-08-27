@@ -1,18 +1,16 @@
 using ShardingConnector.Executor.Constant;
 using ShardingConnector.Executor.Context;
 using ShardingConnector.ProxyServer.Abstractions;
-using ShardingConnector.ProxyServer.ProxyAdoNets;
-using ShardingConnector.ProxyServer.ProxyAdoNets.Abstractions;
 using ShardingConnector.ProxyServer.Session;
-using ShardingConnector.ProxyServer.StreamMerges;
+using ShardingConnector.ProxyServer.Session.Connection.Abstractions;
 
 namespace ShardingConnector.ProxyServer.ServerDataReaders;
 
-public class AbstractAdoServerDataReader:AbstractExecuteServerDataReader
+public abstract class AbstractAdoServerDataReader:AbstractExecuteServerDataReader
 {
     protected ConnectionSession ConnectionSession { get; }
 
-    public AbstractAdoServerDataReader(StreamMergeContext streamMergeContext,ConnectionSession connectionSession) : base(streamMergeContext)
+    public AbstractAdoServerDataReader(ShardingExecutionContext shardingExecutionContext,ConnectionSession connectionSession) : base(shardingExecutionContext)
     {
         ConnectionSession = connectionSession;
     }
@@ -20,6 +18,10 @@ public class AbstractAdoServerDataReader:AbstractExecuteServerDataReader
     protected override List<IServerDbConnection> GetServerDbConnections(ConnectionModeEnum connectionMode, string dataSourceName, int connectionSize)
     {
         return ConnectionSession.ServerConnection.GetConnections(connectionMode, dataSourceName, connectionSize);
+    }
+    public override void Dispose()
+    {
+        ConnectionSession.CloseServerConnection();
     }
 
 }

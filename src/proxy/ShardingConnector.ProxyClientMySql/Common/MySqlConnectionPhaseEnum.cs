@@ -1,4 +1,4 @@
-namespace ShardingConnector.ProxyClient.Common;
+namespace ShardingConnector.ProxyClientMySql.Common;
 
 /// <summary>
 /// <example><a href="https://dev.mysql.com/doc/internals/en/connection-phase.html">Connection Phase</a></example>

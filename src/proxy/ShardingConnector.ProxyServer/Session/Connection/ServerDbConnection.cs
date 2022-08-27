@@ -1,9 +1,9 @@
 using System.Data;
 using System.Data.Common;
 using ShardingConnector.Base;
-using ShardingConnector.ProxyServer.ProxyAdoNets.Abstractions;
+using ShardingConnector.ProxyServer.Session.Connection.Abstractions;
 
-namespace ShardingConnector.ProxyServer.ProxyAdoNets;
+namespace ShardingConnector.ProxyServer.Session.Connection;
 
 public sealed class ServerDbConnection:IServerDbConnection
 {
@@ -14,6 +14,7 @@ public sealed class ServerDbConnection:IServerDbConnection
     }
     public void BeginTransaction(IsolationLevel isolationLevel)
     {
+        ShardingAssert.ShouldBeNull(ServerDbTransaction,nameof(ServerDbTransaction));
         ServerDbTransaction = new ServerDbTransaction(this, isolationLevel);
     }
 
@@ -32,7 +33,9 @@ public sealed class ServerDbConnection:IServerDbConnection
 
     public IServerDbCommand CreateCommand(string sql, ICollection<DbParameter>? dbParameters)
     {
-        return new ServerDbCommand(this, sql, dbParameters);
+        ShardingAssert.ShouldBeNull(ServerDbCommand,nameof(ServerDbCommand));
+        ServerDbCommand= new ServerDbCommand(this, sql, dbParameters);
+        return ServerDbCommand;
     }
 
     public DbConnection GetDbConnection()

@@ -1,8 +1,8 @@
 using System.Data;
 using System.Data.Common;
-using ShardingConnector.ProxyServer.ProxyAdoNets.Abstractions;
+using ShardingConnector.ProxyServer.Session.Connection.Abstractions;
 
-namespace ShardingConnector.ProxyServer.ProxyAdoNets;
+namespace ShardingConnector.ProxyServer.Session.Connection;
 
 public sealed class ServerDbTransaction:IServerDbTransaction
 {

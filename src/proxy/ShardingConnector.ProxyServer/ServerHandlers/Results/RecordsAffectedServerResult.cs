@@ -5,7 +5,7 @@ namespace ShardingConnector.ProxyServer.ServerHandlers.Results;
 
 public class RecordsAffectedServerResult:IServerResult
 {
-
+    public static RecordsAffectedServerResult Empty { get; } = new RecordsAffectedServerResult();
     public ResultTypeEnum ResultType => ResultTypeEnum.UPDATE;
     public long LastInsertId { get; }
     public List<int> UpdateCounts { get; }

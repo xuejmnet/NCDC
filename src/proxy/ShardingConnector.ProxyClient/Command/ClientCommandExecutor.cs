@@ -103,10 +103,8 @@ public sealed class ClientCommandExecutor : IClientCommandExecutor
 
                     if (clientDataReader is IClientQueryDataReader clientQueryDataReader)
                     {
-                        clientDbConnection.WriteQueryData(context, _connectionSession,
-                            clientQueryDataReader, i);
+                        clientDbConnection.WriteQueryData(context, _connectionSession,clientQueryDataReader, i);
                     }
-
                     return true;
                 }
                 

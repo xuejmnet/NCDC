@@ -30,6 +30,13 @@ namespace ShardingConnector.Base
                 throw new ShardingAssertException(name);
             }
         }
+        public static void ShouldBeNull(object argument, string name)
+        {
+            if (argument != null)
+            {
+                throw new ShardingAssertException(name);
+            }
+        }
 
 
         /// <summary>

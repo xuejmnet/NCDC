@@ -93,6 +93,7 @@ public class ProxyContext
             //6、指定自增字段以及key的生成方式
             //result.setKeyGeneratorColumnName("order_id");
             //result.setKeyGenerator(new DefaultKeyGenerator());
+            // result.KeyGeneratorConfig = new KeyGeneratorConfiguration("id", "id");
             return result;
         }
 

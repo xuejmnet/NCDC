@@ -5,10 +5,10 @@ using MySqlConnector;
 using ShardingConnector.Exceptions;
 using ShardingConnector.Executor.Constant;
 using ShardingConnector.Logger;
-using ShardingConnector.ProxyServer.ProxyAdoNets.Abstractions;
 using ShardingConnector.Transaction;
 using ShardingConnector.ProxyServer.Commons;
 using ShardingConnector.ProxyServer.Options;
+using ShardingConnector.ProxyServer.Session.Connection.Abstractions;
 
 namespace ShardingConnector.ProxyServer.DatabaseInfo;
 

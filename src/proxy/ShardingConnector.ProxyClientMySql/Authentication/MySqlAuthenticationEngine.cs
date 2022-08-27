@@ -6,9 +6,9 @@ using ShardingConnector.Protocol.MySql.Packet.Generic;
 using ShardingConnector.Protocol.MySql.Packet.Handshake;
 using ShardingConnector.Protocol.MySql.Payload;
 using ShardingConnector.Protocol.Packets;
+using ShardingConnector.ProxyClient;
 using ShardingConnector.ProxyClient.Authentication;
-using ShardingConnector.ProxyClient.Common;
-using ShardingConnector.ProxyClient.Core;
+using ShardingConnector.ProxyClientMySql.Common;
 using ShardingConnector.ProxyServer;
 
 namespace ShardingConnector.ProxyClientMySql.Authentication;
@@ -27,7 +27,7 @@ public class MySqlAuthenticationEngine:IAuthenticationEngine
 
     public int Handshake(IChannelHandlerContext context)
     {
-        int connectionId = ConnectionIdGenerator.GetInstance().NextId();
+        int connectionId = ConnectionIdGenerator.Instance.NextId();
         _connectionPhase = MySqlConnectionPhaseEnum.AUTH_PHASE_FAST_PATH;
         context.WriteAndFlushAsync(new MySqlHandshakePacket(connectionId, _authenticationHandler.AuthPluginData));
         return connectionId;

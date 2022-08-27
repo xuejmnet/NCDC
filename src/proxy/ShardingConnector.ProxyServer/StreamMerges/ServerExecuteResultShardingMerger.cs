@@ -9,7 +9,7 @@ public sealed class ServerExecuteResultShardingMerger:IShardingMerger<IExecuteRe
 {
     private ServerExecuteResultShardingMerger(){}
     public static ServerExecuteResultShardingMerger Instance = new ServerExecuteResultShardingMerger();
-    public IExecuteResult StreamMerge(StreamMergeContext streamMergeContext, List<IExecuteResult> parallelResults)
+    public IExecuteResult StreamMerge(ShardingExecutionContext shardingExecutionContext, List<IExecuteResult> parallelResults)
     {
         var parallelResult = parallelResults[0];
         if (parallelResult is QueryExecuteResult queryExecuteResult)
@@ -18,7 +18,7 @@ public sealed class ServerExecuteResultShardingMerger:IShardingMerger<IExecuteRe
             ShardingRuntimeContext runtimeContext = ProxyContext.ShardingRuntimeContext;
             MergeEngine mergeEngine = new MergeEngine(runtimeContext.GetRule().ToRules(),
                 runtimeContext.GetProperties(), runtimeContext.GetDatabaseType(), runtimeContext.GetMetaData().Schema);
-            var streamDataReader = mergeEngine.Merge(parallelResults.Select(o=>((QueryExecuteResult)o).StreamDataReader).ToList(), streamMergeContext.GetSqlCommandContext());
+            var streamDataReader = mergeEngine.Merge(parallelResults.Select(o=>((QueryExecuteResult)o).StreamDataReader).ToList(), shardingExecutionContext.GetSqlCommandContext());
             return new QueryExecuteResult(dbColumns, streamDataReader);
         }
         else
@@ -36,7 +36,7 @@ public sealed class ServerExecuteResultShardingMerger:IShardingMerger<IExecuteRe
         }
     }
 
-    public void InMemoryMerge(StreamMergeContext streamMergeContext, List<IExecuteResult> beforeInMemoryResults, List<IExecuteResult> parallelResults)
+    public void InMemoryMerge(ShardingExecutionContext shardingExecutionContext, List<IExecuteResult> beforeInMemoryResults, List<IExecuteResult> parallelResults)
     {
         beforeInMemoryResults.AddRange(parallelResults);
     }
