@@ -41,6 +41,21 @@ namespace ShardingConnector.Proxy.Starter
 
         static async Task Main(string[] args)
         {
+            Console.WriteLine(@$"
+   ____                      ______                            __            
+  / __ \____  ___  ____     / ____/___  ____  ____  ___  _____/ /_____  _____
+ / / / / __ \/ _ \/ __ \   / /   / __ \/ __ \/ __ \/ _ \/ ___/ __/ __ \/ ___/
+/ /_/ / /_/ /  __/ / / /  / /___/ /_/ / / / / / / /  __/ /__/ /_/ /_/ / /    
+\____/ .___/\___/_/ /_/   \____/\____/_/ /_/_/ /_/\___/\___/\__/\____/_/     
+    /_/                                                                      
+-------------------------------------------------------------------
+Author           :  xuejiaming
+Version          :  0.0.1
+Github Repository:  https://github.com/xuejmnet/ShardingConnector
+Gitee Repository :  https://gitee.com/xuejm/ShardingConnector
+-------------------------------------------------------------------
+Start Time:{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}");
+
             //注册常用编码
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
             ProxyContext.Init();

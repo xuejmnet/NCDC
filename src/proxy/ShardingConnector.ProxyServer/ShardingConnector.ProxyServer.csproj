@@ -8,7 +8,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\antlr4\ShardingConnector.MySqlParser\ShardingConnector.MySqlParser.csproj" />
-      <ProjectReference Include="..\..\core\ShardingConnector.Merge\ShardingConnector.Merge.csproj" />
+      <ProjectReference Include="..\..\antlr4\ShardingConnector.SqlServerParser\ShardingConnector.SqlServerParser.csproj" />
       <ProjectReference Include="..\..\protocol\ShardingConnector.Protocol\ShardingConnector.Protocol.csproj" />
       <ProjectReference Include="..\..\sharding\ShardingConnector.ShardingMerge\ShardingConnector.ShardingMerge.csproj" />
       <ProjectReference Include="..\..\sharding\ShardingConnector.ShardingRewrite\ShardingConnector.ShardingRewrite.csproj" />

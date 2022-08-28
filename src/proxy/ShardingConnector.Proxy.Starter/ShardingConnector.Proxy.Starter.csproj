@@ -16,8 +16,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\adonet\ShardingConnector.AdoNet\ShardingConnector.AdoNet.csproj" />
-      <ProjectReference Include="..\..\antlr4\ShardingConnector.MySqlParser\ShardingConnector.MySqlParser.csproj" />
       <ProjectReference Include="..\..\core\ShardingConnector\ShardingConnector.csproj" />
       <ProjectReference Include="..\ShardingConnector.ProxyClientMySql\ShardingConnector.ProxyClientMySql.csproj" />
       <ProjectReference Include="..\ShardingConnector.ProxyClient\ShardingConnector.ProxyClient.csproj" />

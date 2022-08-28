@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\antlr4\ShardingConnector.SqlServerParser\ShardingConnector.SqlServerParser.csproj" />
     <ProjectReference Include="..\..\core\ShardingConnector.Route\ShardingConnector.Route.csproj" />
     <ProjectReference Include="..\ShardingConnector.ShardingCommon\ShardingConnector.ShardingCommon.csproj" />
   </ItemGroup>
