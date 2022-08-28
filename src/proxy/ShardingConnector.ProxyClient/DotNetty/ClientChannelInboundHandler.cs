@@ -2,6 +2,8 @@ using System.Text;
 using DotNetty.Buffers;
 using DotNetty.Transport.Channels;
 using DotNetty.Transport.Channels.Sockets;
+using Microsoft.Extensions.Logging;
+using ShardingConnector.Logger;
 using ShardingConnector.Protocol.MySql.Constant;
 using ShardingConnector.Protocol.MySql.Packet.Generic;
 using ShardingConnector.ProxyClient.Command;
@@ -14,6 +16,8 @@ namespace ShardingConnector.ProxyClient.DotNetty;
 
 public class ClientChannelInboundHandler:ChannelHandlerAdapter
 {
+    private static readonly ILogger<ClientChannelInboundHandler> _logger =
+        InternalLoggerFactory.CreateLogger<ClientChannelInboundHandler>();
     private readonly IDatabaseProtocolClientEngine _databaseProtocolClientEngine;
 
     private readonly ConnectionSession _connectionSession;
@@ -91,9 +95,14 @@ public class ClientChannelInboundHandler:ChannelHandlerAdapter
 
     public override void ChannelWritabilityChanged(IChannelHandlerContext context)
     {
+        _logger.LogWarning($"current channel writable changed:{context.Channel.IsWritable},connection id:{_connectionSession.GetConnectionId()}");
         if (context.Channel.IsWritable)
         {
-            _connectionSession.SetChannelIsWritable();
+            _connectionSession.OpenChannelIsWritable();
+        }
+        else
+        {
+            _connectionSession.CloseChannelIsWritable();
         }
     }
 }

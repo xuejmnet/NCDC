@@ -1,10 +1,5 @@
 using System.Data.Common;
-using ShardingConnector.Exceptions;
-using ShardingConnector.Executor.Constant;
-using ShardingConnector.Executor.Context;
 using ShardingConnector.Extensions;
-using ShardingConnector.ProxyServer.Abstractions;
-using ShardingConnector.ShardingExecute.Execute.DataReader;
 
 namespace ShardingConnector.ProxyServer.StreamMerges;
 

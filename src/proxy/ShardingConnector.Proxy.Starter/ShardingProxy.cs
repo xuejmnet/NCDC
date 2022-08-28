@@ -76,8 +76,8 @@ public class ShardingProxy:IShardingProxy
                     .Option(ChannelOption.SoReuseaddr, true)
                     .Option(ChannelOption.SoBacklog, 100) // 看最下面解释
                     .Option(ChannelOption.SoKeepalive, true) //保持连接
-                    .Option(ChannelOption.WriteBufferLowWaterMark, 8 * 1024 * 1024)
-                    .Option(ChannelOption.WriteBufferHighWaterMark, 16 * 1024 * 1024)
+                    .Option(ChannelOption.WriteBufferLowWaterMark, 8 * 1024 * 1024)//8mb用来控制流量flush
+                    .Option(ChannelOption.WriteBufferHighWaterMark, 16 * 1024 * 1024)//16mb用来控制流量flush
                     .Option(ChannelOption.ConnectTimeout, TimeSpan.FromSeconds(3)) //连接超时
                     .Option(ChannelOption.RcvbufAllocator, new AdaptiveRecvByteBufAllocator(1024, 1024, 65536))
                     .Handler(new LoggingHandler(LogLevel.INFO))

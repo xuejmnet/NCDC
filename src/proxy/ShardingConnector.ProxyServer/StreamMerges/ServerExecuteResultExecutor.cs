@@ -1,7 +1,5 @@
 using System.Data.Common;
 using ShardingConnector.Executor.Constant;
-using ShardingConnector.ProxyServer.Abstractions;
-using ShardingConnector.ProxyServer.ServerHandlers.Results;
 using ShardingConnector.ProxyServer.StreamMerges.Results;
 using ShardingConnector.ShardingExecute.Execute.DataReader;
 

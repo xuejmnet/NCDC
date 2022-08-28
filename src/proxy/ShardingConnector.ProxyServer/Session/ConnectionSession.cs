@@ -72,19 +72,16 @@ public class ConnectionSession:IDisposable
         LogicDatabase = ProxyRuntimeContext.Instance.GetDatabase(databaseName!);
     }
 
-    public void WaitWhenChannelIsWritable()
+    public void CloseChannelIsWritable()
     {
         _channelWaitWriteable.Reset();
-        try
-        {
-            _channelWaitWriteable.Wait(_channelWaitMillis);
-        }
-        finally
-        {
-            _channelWaitWriteable.Set();
-        }
+     
     }
-    public void SetChannelIsWritable()
+    public void WaitChannelIsWritable()
+    {
+        _channelWaitWriteable.Wait(_channelWaitMillis);
+    }
+    public void OpenChannelIsWritable()
     {
         _channelWaitWriteable.Set();
     }

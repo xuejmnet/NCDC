@@ -83,7 +83,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShardingConnector.ProxyClie
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShardingConnector.ProxyClientMySql", "src\proxy\ShardingConnector.ProxyClientMySql\ShardingConnector.ProxyClientMySql.csproj", "{7EE37FAA-A21A-454F-BE60-4D503CE3D513}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShardingConnector.Protocol", "src\protocol\ShardingConnector.Protocol 下午9.43.43\ShardingConnector.Protocol.csproj", "{FB88C552-DF4B-4040-B07B-627C935FD904}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShardingConnector.Protocol", "src\protocol\ShardingConnector.Protocol\ShardingConnector.Protocol.csproj", "{FB88C552-DF4B-4040-B07B-627C935FD904}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
