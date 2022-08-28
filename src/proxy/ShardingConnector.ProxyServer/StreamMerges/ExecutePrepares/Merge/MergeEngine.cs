@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
-using ShardingConnector.CommandParser.Command;
+﻿using ShardingConnector.CommandParser.Command;
 using ShardingConnector.CommandParserBinder.Command;
 using ShardingConnector.CommandParserBinder.MetaData.Schema;
 using ShardingConnector.Common.Config.Properties;
@@ -12,8 +8,9 @@ using ShardingConnector.Merge;
 using ShardingConnector.Merge.Engine;
 using ShardingConnector.Spi.DataBase.DataBaseType;
 using ShardingConnector.Spi.Order;
+using ShardingConnector.StreamDataReaders;
 
-namespace ShardingConnector.Pluggable.Merge
+namespace ShardingConnector.ProxyServer.StreamMerges.ExecutePrepares.Merge
 {
     /*
     * @Author: xjm

@@ -1,11 +1,12 @@
 using System.Data.Common;
-using ShardingConnector.Executor.Context;
 using ShardingConnector.Extensions;
-using ShardingConnector.Pluggable.Prepare;
 using ShardingConnector.ProxyServer.Abstractions;
 using ShardingConnector.ProxyServer.Options.Context;
 using ShardingConnector.ProxyServer.Session;
+using ShardingConnector.ProxyServer.StreamMerges.Executors.Context;
 using ShardingConnector.ShardingAdoNet;
+using BasePrepareEngine = ShardingConnector.ProxyServer.StreamMerges.ExecutePrepares.Prepare.BasePrepareEngine;
+using SimpleQueryPrepareEngine = ShardingConnector.ProxyServer.StreamMerges.ExecutePrepares.Prepare.SimpleQueryPrepareEngine;
 
 namespace ShardingConnector.ProxyServer.ServerDataReaders;
 

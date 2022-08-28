@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using ShardingConnector.Extensions;
 using ShardingConnector.Merge.Reader.Stream;
+using ShardingConnector.StreamDataReaders;
 
 namespace ShardingConnector.ShardingMerge.DQL.Iterator
 {

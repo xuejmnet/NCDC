@@ -17,6 +17,7 @@ using ShardingConnector.ShardingMerge.DQL.Iterator;
 using ShardingConnector.ShardingMerge.DQL.OrderBy;
 using ShardingConnector.ShardingMerge.DQL.Pagination;
 using ShardingConnector.Spi.DataBase.DataBaseType;
+using ShardingConnector.StreamDataReaders;
 
 namespace ShardingConnector.ShardingMerge.DQL
 {

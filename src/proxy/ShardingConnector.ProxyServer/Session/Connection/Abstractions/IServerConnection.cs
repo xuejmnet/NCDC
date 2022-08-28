@@ -1,4 +1,4 @@
-using ShardingConnector.Executor.Constant;
+using ShardingConnector.ProxyServer.Commons;
 
 namespace ShardingConnector.ProxyServer.Session.Connection.Abstractions;
 

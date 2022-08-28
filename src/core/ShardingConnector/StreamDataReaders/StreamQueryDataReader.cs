@@ -1,82 +1,45 @@
-using System;
-using System.Collections.Generic;
 using System.Data.Common;
-using System.Linq;
-using ShardingConnector.Executor;
 
-namespace ShardingConnector.ShardingExecute.Execute.DataReader
+namespace ShardingConnector.StreamDataReaders
 {
 /*
 * @Author: xjm
 * @Description:
-* @Date: Saturday, 17 April 2021 17:48:21
+* @Date: Saturday, 17 April 2021 17:47:38
 * @Email: 326308290@qq.com
 */
-    public class MemoryQueryDataReader:IStreamDataReader
+    public class StreamQueryDataReader:IStreamDataReader
     {
         private readonly DbDataReader _dataReader;
         private readonly List<DbColumn> _columnSchema;
 
-        public MemoryQueryDataReader(DbDataReader dataReader)
+        public StreamQueryDataReader(DbDataReader dataReader)
         {
             _columnSchema = dataReader.GetColumnSchema().ToList();
             _dataReader = dataReader;
         }
 
+
         public bool Read()
         {
             return _dataReader.Read();
         }
-
-        public Type GetFieldType(int columnIndex)
-        {
-            return _dataReader.GetFieldType(columnIndex);
-        }
-
-        public object GetValue(int columnIndex)
-        {
-           return _dataReader[columnIndex];
-        }
-
-        public int GetValues(object[] values)
-        {
-            return _dataReader.GetValues(values);
-        }
-
-        public int GetOrdinal(string name)
-        {
-            return _dataReader.GetOrdinal(name);
-        }
-
-        public bool GetBoolean(int columnIndex)
-        {
-            return _dataReader.GetBoolean(columnIndex);
-
-        }
-
-        public byte GetByte(int columnIndex)
-        {
-            return _dataReader.GetByte(columnIndex);
-        }
-
         public int ColumnCount => _dataReader.FieldCount;
-
         /// <summary>
-        /// select name as label from table
+        /// SELECT COLUMN_NAME AS COLUMN_LABEL FROMTABLE
         /// </summary>
         /// <param name="columnIndex"></param>
-        /// <returns>name</returns>
-
+        /// <returns>COLUMN_NAME</returns>
         public string GetColumnName(int columnIndex)
         {
             return _columnSchema[columnIndex].BaseColumnName;
         }
 
         /// <summary>
-        /// select name as label from table
+        /// SELECT COLUMN_NAME AS COLUMN_LABEL FROMTABLE
         /// </summary>
         /// <param name="columnIndex"></param>
-        /// <returns>label</returns>
+        /// <returns>COLUMN_LABEL</returns>
         public string GetColumnLabel(int columnIndex)
         {
             return _columnSchema[columnIndex].ColumnName;
@@ -96,9 +59,34 @@ namespace ShardingConnector.ShardingExecute.Execute.DataReader
             return _dataReader.GetDataTypeName(columnIndex);
         }
 
-        public DateTime GetDateTime(int columnIndex)
+        public Type GetFieldType(int columnIndex)
         {
-            return _dataReader.GetDateTime(columnIndex);
+            return _dataReader.GetFieldType(columnIndex);
+        }
+
+        public object GetValue(int columnIndex)
+        {
+            return _dataReader.GetValue(columnIndex);
+        }
+
+        public int GetValues(object[] values)
+        {
+            return _dataReader.GetValues(values);
+        }
+
+        public int GetOrdinal(string name)
+        {
+            return _dataReader.GetOrdinal(name);
+        }
+
+        public bool GetBoolean(int columnIndex)
+        {
+            return _dataReader.GetBoolean(columnIndex);
+        }
+
+        public byte GetByte(int columnIndex)
+        {
+            return _dataReader.GetByte(columnIndex);
         }
 
         public bool IsDBNull(int columnIndex)
@@ -106,9 +94,9 @@ namespace ShardingConnector.ShardingExecute.Execute.DataReader
             return _dataReader.IsDBNull(columnIndex);
         }
 
-        public long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length)
+        public long GetBytes(int columnIndex, long dataOffset, byte[] buffer, int bufferOffset, int length)
         {
-            return _dataReader.GetBytes(ordinal, dataOffset, buffer, bufferOffset, length);
+            return _dataReader.GetBytes(columnIndex, dataOffset, buffer, bufferOffset, length);
         }
 
         public char GetChar(int columnIndex)
@@ -116,9 +104,9 @@ namespace ShardingConnector.ShardingExecute.Execute.DataReader
             return _dataReader.GetChar(columnIndex);
         }
 
-        public long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length)
+        public long GetChars(int columnIndex, long dataOffset, char[] buffer, int bufferOffset, int length)
         {
-            return _dataReader.GetChars(ordinal, dataOffset, buffer, bufferOffset, length);
+            return _dataReader.GetChars(columnIndex, dataOffset, buffer, bufferOffset, length);
         }
 
         public Guid GetGuid(int columnIndex)
@@ -159,6 +147,11 @@ namespace ShardingConnector.ShardingExecute.Execute.DataReader
         public decimal GetDecimal(int columnIndex)
         {
             return _dataReader.GetDecimal(columnIndex);
+        }
+
+        public DateTime GetDateTime(int columnIndex)
+        {
+            return _dataReader.GetDateTime(columnIndex);
         }
 
         public bool NextResult()

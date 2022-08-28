@@ -1,15 +1,15 @@
 using ShardingConnector.Exceptions;
-using ShardingConnector.Executor.Constant;
-using ShardingConnector.Executor.Context;
 using ShardingConnector.Extensions;
 using ShardingConnector.Helpers;
 using ShardingConnector.ProxyServer.Abstractions;
 using ShardingConnector.ProxyServer.Binaries;
+using ShardingConnector.ProxyServer.Commons;
 using ShardingConnector.ProxyServer.ServerHandlers.Results;
 using ShardingConnector.ProxyServer.Session.Connection.Abstractions;
 using ShardingConnector.ProxyServer.StreamMerges;
+using ShardingConnector.ProxyServer.StreamMerges.Executors.Context;
 using ShardingConnector.ProxyServer.StreamMerges.Results;
-using CommandExecuteUnit = ShardingConnector.ProxyServer.StreamMerges.CommandExecuteUnit;
+using CommandExecuteUnit = ShardingConnector.ProxyServer.StreamMerges.Executors.Context.CommandExecuteUnit;
 
 namespace ShardingConnector.ProxyServer.ServerDataReaders;
 

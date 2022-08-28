@@ -4,8 +4,8 @@ using System.Linq;
 using Microsoft.Extensions.Logging;
 using ShardingConnector.CommandParser.Command;
 using ShardingConnector.CommandParserBinder.Command;
-using ShardingConnector.Executor.Context;
 using ShardingConnector.Logger;
+using ShardingConnector.ProxyServer.StreamMerges.Executors.Context;
 
 namespace ShardingConnector.Executor.SqlLog
 {

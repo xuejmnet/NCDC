@@ -2,6 +2,7 @@ using System;
 using ShardingConnector.Merge.Reader;
 using ShardingConnector.Merge.Reader.Decorator;
 using ShardingConnector.CommandParserBinder.Segment.Select.Pagination;
+using ShardingConnector.StreamDataReaders;
 
 namespace ShardingConnector.ShardingMerge.DQL.Pagination
 {

@@ -3,7 +3,6 @@ using System.Data.Common;
 using Microsoft.Extensions.Logging;
 using MySqlConnector;
 using ShardingConnector.Exceptions;
-using ShardingConnector.Executor.Constant;
 using ShardingConnector.Logger;
 using ShardingConnector.Transaction;
 using ShardingConnector.ProxyServer.Commons;

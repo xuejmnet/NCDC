@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\parser\ShardingConnector.CommandParserBinder\ShardingConnector.CommandParserBinder.csproj" />
-    <ProjectReference Include="..\ShardingConnector\ShardingConnector.csproj" />
   </ItemGroup>
 
 </Project>

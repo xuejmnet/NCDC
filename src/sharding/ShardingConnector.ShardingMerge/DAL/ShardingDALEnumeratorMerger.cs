@@ -12,6 +12,7 @@ using ShardingConnector.CommandParserBinder.MetaData.Schema;
 using ShardingConnector.ShardingCommon.Core.Rule;
 using ShardingConnector.ShardingMerge.DAL.Common;
 using ShardingConnector.ShardingMerge.DAL.Show;
+using ShardingConnector.StreamDataReaders;
 
 namespace ShardingConnector.ShardingMerge.DAL
 {

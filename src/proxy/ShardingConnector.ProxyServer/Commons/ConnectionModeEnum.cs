@@ -1,4 +1,4 @@
-﻿namespace ShardingConnector.Executor.Constant
+﻿namespace ShardingConnector.ProxyServer.Commons
 {
     public enum ConnectionModeEnum
     {

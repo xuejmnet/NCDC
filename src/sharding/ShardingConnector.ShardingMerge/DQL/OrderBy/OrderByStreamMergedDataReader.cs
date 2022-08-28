@@ -6,6 +6,7 @@ using ShardingConnector.Merge.Reader.Stream;
 using ShardingConnector.CommandParserBinder.Command.DML;
 using ShardingConnector.CommandParserBinder.MetaData.Schema;
 using ShardingConnector.CommandParserBinder.Segment.Select.OrderBy;
+using ShardingConnector.StreamDataReaders;
 
 namespace ShardingConnector.ShardingMerge.DQL.OrderBy
 {

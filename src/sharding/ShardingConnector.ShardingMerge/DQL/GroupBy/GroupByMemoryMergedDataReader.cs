@@ -15,6 +15,7 @@ using ShardingConnector.CommandParserBinder.MetaData.Table;
 using ShardingConnector.CommandParserBinder.Segment.Select.Projection.Impl;
 using ShardingConnector.ShardingCommon.Core.Rule;
 using ShardingConnector.ShardingMerge.DQL.GroupBy.Aggregation;
+using ShardingConnector.StreamDataReaders;
 
 namespace ShardingConnector.ShardingMerge.DQL.GroupBy
 {

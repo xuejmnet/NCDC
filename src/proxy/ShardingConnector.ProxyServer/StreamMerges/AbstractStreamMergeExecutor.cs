@@ -1,5 +1,6 @@
 using System.Data.Common;
 using ShardingConnector.Extensions;
+using ShardingConnector.ProxyServer.StreamMerges.Executors.Context;
 
 namespace ShardingConnector.ProxyServer.StreamMerges;
 

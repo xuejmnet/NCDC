@@ -9,6 +9,7 @@ using ShardingConnector.CommandParserBinder.MetaData.Schema;
 using ShardingConnector.CommandParserBinder.Segment.Select.Projection.Impl;
 using ShardingConnector.ShardingMerge.DQL.GroupBy.Aggregation;
 using ShardingConnector.ShardingMerge.DQL.OrderBy;
+using ShardingConnector.StreamDataReaders;
 
 namespace ShardingConnector.ShardingMerge.DQL.GroupBy
 {

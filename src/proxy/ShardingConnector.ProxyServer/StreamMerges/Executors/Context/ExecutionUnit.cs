@@ -1,4 +1,4 @@
-namespace ShardingConnector.Executor.Context
+namespace ShardingConnector.ProxyServer.StreamMerges.Executors.Context
 {
 /*
 * @Author: xjm

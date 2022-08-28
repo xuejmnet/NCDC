@@ -1,4 +1,5 @@
 ﻿using System;
+using ShardingConnector.StreamDataReaders;
 
 namespace ShardingConnector.Merge.Reader.Transparent
 {

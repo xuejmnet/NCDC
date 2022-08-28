@@ -1,15 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Data.Common;
-using System.Diagnostics;
-using System.Linq;
 using ShardingConnector.CommandParser.SqlParseEngines;
 using ShardingConnector.Common.Config.Properties;
 using ShardingConnector.Common.MetaData;
 using ShardingConnector.Common.Rule;
-using ShardingConnector.Executor.Context;
 using ShardingConnector.Executor.SqlLog;
 using ShardingConnector.Extensions;
+using ShardingConnector.ProxyServer.StreamMerges.Executors.Context;
 using ShardingConnector.RewriteEngine;
 using ShardingConnector.RewriteEngine.Context;
 using ShardingConnector.RewriteEngine.Engine;
@@ -18,7 +13,7 @@ using ShardingConnector.Route.Context;
 using ShardingConnector.ShardingAdoNet;
 using ShardingConnector.Spi.Order;
 
-namespace ShardingConnector.Pluggable.Prepare
+namespace ShardingConnector.ProxyServer.StreamMerges.ExecutePrepares.Prepare
 {
     /*
     * @Author: xjm

@@ -7,6 +7,7 @@ using ShardingConnector.Merge.Reader.Memory;
 using ShardingConnector.CommandParserBinder.Command;
 using ShardingConnector.CommandParserBinder.MetaData.Schema;
 using ShardingConnector.ShardingCommon.Core.Rule;
+using ShardingConnector.StreamDataReaders;
 
 namespace ShardingConnector.ShardingMerge.DAL.Show
 {

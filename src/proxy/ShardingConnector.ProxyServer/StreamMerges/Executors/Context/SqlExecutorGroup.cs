@@ -1,7 +1,6 @@
-using System.Collections.Generic;
-using ShardingConnector.Executor.Constant;
+using ShardingConnector.ProxyServer.Commons;
 
-namespace ShardingConnector.Executor.Context
+namespace ShardingConnector.ProxyServer.StreamMerges.Executors.Context
 {
     public sealed class SqlExecutorGroup<T>
     {

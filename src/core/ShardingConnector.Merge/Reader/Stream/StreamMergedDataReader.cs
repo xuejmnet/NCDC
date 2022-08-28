@@ -1,5 +1,6 @@
 ﻿using System;
 using ShardingConnector.Exceptions;
+using ShardingConnector.StreamDataReaders;
 
 namespace ShardingConnector.Merge.Reader.Stream
 {

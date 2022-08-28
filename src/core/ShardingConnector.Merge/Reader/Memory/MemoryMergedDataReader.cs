@@ -3,6 +3,7 @@ using ShardingConnector.CommandParser.Command;
 using ShardingConnector.Common.Rule;
 using ShardingConnector.CommandParserBinder.Command;
 using ShardingConnector.CommandParserBinder.MetaData.Schema;
+using ShardingConnector.StreamDataReaders;
 
 
 namespace ShardingConnector.Merge.Reader.Memory

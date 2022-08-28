@@ -1,8 +1,6 @@
-using System.Collections.Generic;
-using System.Data.Common;
 using ShardingConnector.ShardingAdoNet;
 
-namespace ShardingConnector.Executor.Context
+namespace ShardingConnector.ProxyServer.StreamMerges.Executors.Context
 {
 /*
 * @Author: xjm

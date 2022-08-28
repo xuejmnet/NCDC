@@ -10,6 +10,7 @@ using ShardingConnector.CommandParserBinder.MetaData.Schema;
 using ShardingConnector.Merge.Engine.Decorator;
 using ShardingConnector.Merge.Engine.Merger;
 using ShardingConnector.Merge.Reader.Transparent;
+using ShardingConnector.StreamDataReaders;
 
 namespace ShardingConnector.Merge
 {

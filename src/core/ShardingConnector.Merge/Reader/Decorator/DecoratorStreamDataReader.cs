@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using ShardingConnector.StreamDataReaders;
 
 namespace ShardingConnector.Merge.Reader.Decorator
 {

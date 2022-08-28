@@ -1,4 +1,4 @@
-using System;
+
 
 /*
 * @Author: xjm
@@ -6,7 +6,7 @@ using System;
 * @Date: DATE TIME
 * @Email: 326308290@qq.com
 */
-namespace ShardingConnector
+namespace ShardingConnector.StreamDataReaders
 {
     public interface IStreamDataReader:IDisposable
     {

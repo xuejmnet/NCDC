@@ -1,8 +1,7 @@
-using ShardingConnector.Executor.Constant;
-using ShardingConnector.Executor.Context;
+using ShardingConnector.ProxyServer.Commons;
 using ShardingConnector.ProxyServer.Session.Connection.Abstractions;
 
-namespace ShardingConnector.ProxyServer.StreamMerges;
+namespace ShardingConnector.ProxyServer.StreamMerges.Executors.Context;
 
 
 public sealed class CommandExecuteUnit

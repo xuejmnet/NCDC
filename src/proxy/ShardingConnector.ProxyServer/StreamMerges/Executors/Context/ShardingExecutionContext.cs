@@ -1,10 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Data.Common;
-using ShardingConnector.CommandParser.Command;
+﻿using ShardingConnector.CommandParser.Command;
 using ShardingConnector.CommandParserBinder.Command;
 using ShardingConnector.CommandParserBinder.Command.DML;
 
-namespace ShardingConnector.Executor.Context
+namespace ShardingConnector.ProxyServer.StreamMerges.Executors.Context
 {
     /*
     * @Author: xjm

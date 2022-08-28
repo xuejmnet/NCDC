@@ -1,16 +1,12 @@
-﻿using System.Collections.Generic;
-using System.Data.Common;
-using System.Linq;
-using ShardingConnector.CommandParser.SqlParseEngines;
+﻿using ShardingConnector.CommandParser.SqlParseEngines;
 using ShardingConnector.Common.Config.Properties;
 using ShardingConnector.Common.MetaData;
 using ShardingConnector.Common.Rule;
-using ShardingConnector.ParserEngine;
 using ShardingConnector.Route;
 using ShardingConnector.Route.Context;
 using ShardingConnector.ShardingAdoNet;
 
-namespace ShardingConnector.Pluggable.Prepare
+namespace ShardingConnector.ProxyServer.StreamMerges.ExecutePrepares.Prepare
 {
     /*
     * @Author: xjm
@@ -30,7 +26,7 @@ namespace ShardingConnector.Pluggable.Prepare
  *       for PostgreSQL is Simple Query;
  * </pre>
  */
-    public sealed class SimpleQueryPrepareEngine: BasePrepareEngine
+    public sealed class SimpleQueryPrepareEngine: ProxyServer.StreamMerges.ExecutePrepares.Prepare.BasePrepareEngine
     {
 
         public SimpleQueryPrepareEngine(ICollection<IBaseRule> rules, ConfigurationProperties properties, ShardingConnectorMetaData metaData, SqlParserEngine sqlParserEngine) : base(rules, properties, metaData, sqlParserEngine)

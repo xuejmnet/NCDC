@@ -1,7 +1,7 @@
 using ShardingConnector.Base;
 using ShardingConnector.Exceptions;
-using ShardingConnector.Executor.Constant;
 using ShardingConnector.ProxyServer.Abstractions;
+using ShardingConnector.ProxyServer.Commons;
 using ShardingConnector.ProxyServer.Session.Connection.Abstractions;
 using ShardingConnector.Transaction;
 
