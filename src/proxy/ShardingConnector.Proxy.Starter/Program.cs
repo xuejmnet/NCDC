@@ -51,8 +51,8 @@ namespace ShardingConnector.Proxy.Starter
 -------------------------------------------------------------------
 Author           :  xuejiaming
 Version          :  0.0.1
-Github Repository:  https://github.com/xuejmnet/ShardingConnector
-Gitee Repository :  https://gitee.com/xuejm/ShardingConnector
+Github Repository:  https://github.com/xuejmnet/OpenConnector
+Gitee Repository :  https://gitee.com/xuejm/OpenConnector
 -------------------------------------------------------------------
 Start Time:{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}");
 
