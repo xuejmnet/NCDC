@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using System.Text;
 using ShardingConnector.Base.PriorityQueues;
-using ShardingConnector.Executor;
 using ShardingConnector.Merge.Reader.Stream;
-using ShardingConnector.ParserBinder.Command.DML;
-using ShardingConnector.ParserBinder.MetaData.Schema;
-using ShardingConnector.ParserBinder.Segment.Select.OrderBy;
+using ShardingConnector.CommandParserBinder.Command.DML;
+using ShardingConnector.CommandParserBinder.MetaData.Schema;
+using ShardingConnector.CommandParserBinder.Segment.Select.OrderBy;
 
 namespace ShardingConnector.ShardingMerge.DQL.OrderBy
 {

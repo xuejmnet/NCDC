@@ -1,5 +1,5 @@
 using System;
-using ShardingConnector.AbstractParser.Visitor.Commands;
+using ShardingConnector.Parsers.Visitor.Commands;
 
 namespace ShardingConnector.SqlServerParser.Visitor.Impl
 {

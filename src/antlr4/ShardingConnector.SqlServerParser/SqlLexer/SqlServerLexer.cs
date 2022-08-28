@@ -1,6 +1,6 @@
 ﻿using System.IO;
 using Antlr4.Runtime;
-using ShardingConnector.AbstractParser.SqlLexer;
+using ShardingConnector.Parsers.SqlLexer;
 
 namespace ShardingConnector.SqlServerParser.SqlLexer
 {

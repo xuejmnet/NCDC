@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using ShardingConnector.AbstractParser;
-using ShardingConnector.AbstractParser.Visitor.Commands;
 using ShardingConnector.CommandParser.Command.TCL;
 using ShardingConnector.Extensions;
+using ShardingConnector.Parsers;
+using ShardingConnector.Parsers.Visitor.Commands;
 
 namespace ShardingConnector.SqlServerParser.Visitor.Impl
 {

@@ -2,12 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using ShardingConnector.CommandParserBinder.MetaData.Column;
+using ShardingConnector.CommandParserBinder.MetaData.Index;
+using ShardingConnector.CommandParserBinder.MetaData.Table;
 using ShardingConnector.Common.MetaData.Decorator;
-using ShardingConnector.Common.Rule;
 using ShardingConnector.Extensions;
-using ShardingConnector.ParserBinder.MetaData.Column;
-using ShardingConnector.ParserBinder.MetaData.Index;
-using ShardingConnector.ParserBinder.MetaData.Table;
 using ShardingConnector.ShardingCommon.Core.Rule;
 
 namespace ShardingConnector.ShardingCommon.Core.MetaData

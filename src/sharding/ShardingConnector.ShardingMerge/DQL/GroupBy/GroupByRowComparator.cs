@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using ShardingConnector.Base;
 using ShardingConnector.Extensions;
 using ShardingConnector.Merge.Reader.Memory;
-using ShardingConnector.ParserBinder.Command.DML;
-using ShardingConnector.ParserBinder.Segment.Select.OrderBy;
+using ShardingConnector.CommandParserBinder.Command.DML;
+using ShardingConnector.CommandParserBinder.Segment.Select.OrderBy;
 using ShardingConnector.ShardingMerge.DQL.OrderBy;
 
 namespace ShardingConnector.ShardingMerge.DQL.GroupBy

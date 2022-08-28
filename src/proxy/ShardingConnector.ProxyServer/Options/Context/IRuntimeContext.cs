@@ -1,4 +1,5 @@
-﻿using ShardingConnector.Common.Config.Properties;
+﻿using ShardingConnector.CommandParser.SqlParseEngines;
+using ShardingConnector.Common.Config.Properties;
 using ShardingConnector.Common.Rule;
 using ShardingConnector.Executor.Engine;
 using ShardingConnector.ParserEngine;

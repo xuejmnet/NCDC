@@ -1,5 +1,4 @@
 ﻿using System;
-using ShardingConnector.Executor;
 
 namespace ShardingConnector.Merge.Reader.Transparent
 {

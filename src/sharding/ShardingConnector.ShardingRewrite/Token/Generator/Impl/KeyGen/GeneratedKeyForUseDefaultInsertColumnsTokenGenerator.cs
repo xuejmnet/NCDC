@@ -4,9 +4,9 @@ using Antlr4.Runtime.Misc;
 using ShardingConnector.Base;
 using ShardingConnector.CommandParser.Command;
 using ShardingConnector.CommandParser.Command.DML;
-using ShardingConnector.ParserBinder.Command;
-using ShardingConnector.ParserBinder.Command.DML;
-using ShardingConnector.ParserBinder.Segment.Insert.Keygen;
+using ShardingConnector.CommandParserBinder.Command;
+using ShardingConnector.CommandParserBinder.Command.DML;
+using ShardingConnector.CommandParserBinder.Segment.Insert.Keygen;
 using ShardingConnector.RewriteEngine.Sql.Token.SimpleObject;
 using ShardingConnector.RewriteEngine.Sql.Token.SimpleObject.Generic;
 

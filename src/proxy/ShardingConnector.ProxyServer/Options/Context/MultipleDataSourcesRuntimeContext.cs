@@ -1,11 +1,12 @@
 ﻿using Microsoft.Extensions.Logging;
+using ShardingConnector.CommandParserBinder.MetaData.Schema;
 using ShardingConnector.Common.Config;
 using ShardingConnector.Common.MetaData;
 using ShardingConnector.Common.MetaData.DataSource;
 using ShardingConnector.Common.Rule;
 using ShardingConnector.Logger;
 using ShardingConnector.NewConnector.DataSource;
-using ShardingConnector.ParserBinder.MetaData.Schema;
+using ShardingConnector.Parsers;
 using ShardingConnector.Spi.DataBase.DataBaseType;
 
 namespace ShardingConnector.ProxyServer.Options.Context
@@ -27,8 +28,8 @@ namespace ShardingConnector.ProxyServer.Options.Context
             InternalLoggerFactory.CreateLogger<MultipleDataSourcesRuntimeContext<T>>();
         private readonly ShardingConnectorMetaData _metaData;
 
-        protected MultipleDataSourcesRuntimeContext(IDictionary<string, IDataSource> dataSourceMap, T rule,
-            IDictionary<string, object> props, IDatabaseType databaseType) : base(rule, props, databaseType)
+        protected MultipleDataSourcesRuntimeContext(IDictionary<string, IDataSource> dataSourceMap, T rule,ISqlParserConfiguration sqlParserConfiguration,
+            IDictionary<string, object> props, IDatabaseType databaseType) : base(rule,sqlParserConfiguration, props, databaseType)
         {
             _metaData = CreateMetaData(dataSourceMap, databaseType);
         }

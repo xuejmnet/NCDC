@@ -33,7 +33,7 @@ namespace ShardingConnector.Executor.Engine
         }
 
         /**
-     * Execute.
+     * Parse.
      *
      * @param inputGroups input groups
      * @param callback grouped callback
@@ -48,7 +48,7 @@ namespace ShardingConnector.Executor.Engine
         }
 
         /**
-     * Execute.
+     * Parse.
      *
      * @param inputGroups input groups
      * @param firstCallback first grouped callback

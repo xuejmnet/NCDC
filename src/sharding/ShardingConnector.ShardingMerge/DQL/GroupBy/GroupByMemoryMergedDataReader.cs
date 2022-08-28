@@ -5,16 +5,14 @@ using Antlr4.Runtime.Misc;
 
 using ShardingConnector.Base;
 using ShardingConnector.CommandParser.Command;
-using ShardingConnector.CommandParser.Segment.Generic.Table;
-using ShardingConnector.Executor;
 using ShardingConnector.Extensions;
 using ShardingConnector.Merge.Reader.Memory;
-using ShardingConnector.ParserBinder.Command;
-using ShardingConnector.ParserBinder.Command.DML;
-using ShardingConnector.ParserBinder.MetaData.Column;
-using ShardingConnector.ParserBinder.MetaData.Schema;
-using ShardingConnector.ParserBinder.MetaData.Table;
-using ShardingConnector.ParserBinder.Segment.Select.Projection.Impl;
+using ShardingConnector.CommandParserBinder.Command;
+using ShardingConnector.CommandParserBinder.Command.DML;
+using ShardingConnector.CommandParserBinder.MetaData.Column;
+using ShardingConnector.CommandParserBinder.MetaData.Schema;
+using ShardingConnector.CommandParserBinder.MetaData.Table;
+using ShardingConnector.CommandParserBinder.Segment.Select.Projection.Impl;
 using ShardingConnector.ShardingCommon.Core.Rule;
 using ShardingConnector.ShardingMerge.DQL.GroupBy.Aggregation;
 

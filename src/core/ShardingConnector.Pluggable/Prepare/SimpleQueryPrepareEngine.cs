@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
+using ShardingConnector.CommandParser.SqlParseEngines;
 using ShardingConnector.Common.Config.Properties;
 using ShardingConnector.Common.MetaData;
 using ShardingConnector.Common.Rule;

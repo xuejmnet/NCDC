@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Antlr4.Runtime.Misc;
-using ShardingConnector.Executor;
-using ShardingConnector.ParserBinder.Segment.Select.OrderBy;
+using ShardingConnector.CommandParserBinder.Segment.Select.OrderBy;
 
 namespace ShardingConnector.ShardingMerge.DQL.GroupBy
 {

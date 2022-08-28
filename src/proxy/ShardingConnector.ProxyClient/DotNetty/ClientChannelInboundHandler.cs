@@ -98,11 +98,7 @@ public class ClientChannelInboundHandler:ChannelHandlerAdapter
         _logger.LogWarning($"current channel writable changed:{context.Channel.IsWritable},connection id:{_connectionSession.GetConnectionId()}");
         if (context.Channel.IsWritable)
         {
-            _connectionSession.OpenChannelIsWritable();
-        }
-        else
-        {
-            _connectionSession.CloseChannelIsWritable();
+            _connectionSession.NotifyChannelIsWritable();
         }
     }
 }

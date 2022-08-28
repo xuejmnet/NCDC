@@ -8,6 +8,8 @@ using ShardingConnector.ShardingAdoNet;
 using ShardingConnector.ShardingCommon.Core.Strategy.Route.Value;
 using ShardingConnector.ShardingRoute.SPI;
 
+using Range=ShardingConnector.DataStructure.RangeStructure.Range;
+
 namespace ShardingConnector.ShardingRoute.Engine.Condition.Generator.Impl
 {
     /*

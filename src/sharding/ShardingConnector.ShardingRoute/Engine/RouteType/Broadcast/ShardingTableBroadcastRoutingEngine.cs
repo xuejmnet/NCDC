@@ -8,8 +8,8 @@ using ShardingConnector.CommandParser.Command.DDL;
 using ShardingConnector.CommandParser.Segment.DDL.Index;
 using ShardingConnector.Common.Rule;
 using ShardingConnector.Extensions;
-using ShardingConnector.ParserBinder.Command;
-using ShardingConnector.ParserBinder.MetaData.Schema;
+using ShardingConnector.CommandParserBinder.Command;
+using ShardingConnector.CommandParserBinder.MetaData.Schema;
 using ShardingConnector.Route.Context;
 using ShardingConnector.ShardingCommon.Core.Rule;
 

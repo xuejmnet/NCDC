@@ -1,8 +1,8 @@
 using System;
 using System.Linq;
 using ShardingConnector.CommandParser.Command;
-using ShardingConnector.ParserBinder.Command;
-using ShardingConnector.ParserBinder.Command.DML;
+using ShardingConnector.CommandParserBinder.Command;
+using ShardingConnector.CommandParserBinder.Command.DML;
 using ShardingConnector.RewriteEngine.Sql.Token.Generator;
 using ShardingConnector.RewriteEngine.Sql.Token.SimpleObject;
 using ShardingConnector.ShardingRewrite.Token.SimpleObject;

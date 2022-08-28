@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using ShardingConnector.AbstractParser;
-using ShardingConnector.AbstractParser.Visitor.Commands;
 using ShardingConnector.CommandParser.Command.DAL.Dialect;
 using ShardingConnector.CommandParser.Command.DAL.Dialect.MySql;
 using ShardingConnector.CommandParser.Segment.DAL;
@@ -10,6 +8,8 @@ using ShardingConnector.CommandParser.Segment.Generic;
 using ShardingConnector.CommandParser.Segment.Generic.Table;
 using ShardingConnector.CommandParser.Value.Identifier;
 using ShardingConnector.CommandParser.Value.Literal.Impl;
+using ShardingConnector.Parsers;
+using ShardingConnector.Parsers.Visitor.Commands;
 
 namespace ShardingConnector.MySqlParser.Visitor.Impl
 {

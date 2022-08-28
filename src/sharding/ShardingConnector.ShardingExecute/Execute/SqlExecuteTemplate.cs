@@ -29,7 +29,7 @@ namespace ShardingConnector.ShardingExecute.Execute
         public bool Serial { get; }
 
         /**
-     * Execute.
+     * Parse.
      *
      * @param inputGroups input groups
      * @param callback SQL execute callback
@@ -43,7 +43,7 @@ namespace ShardingConnector.ShardingExecute.Execute
         }
 
         /**
-     * Execute.
+     * Parse.
      *
      * @param inputGroups input groups
      * @param firstCallback first SQL execute callback

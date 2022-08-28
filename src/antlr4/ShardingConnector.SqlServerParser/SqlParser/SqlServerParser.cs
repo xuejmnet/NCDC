@@ -1,9 +1,9 @@
 ﻿using System;
 using System.IO;
 using Antlr4.Runtime;
-using ShardingConnector.AbstractParser;
-using ShardingConnector.AbstractParser.SqlParser;
 using ShardingConnector.ParserEngine.Core;
+using ShardingConnector.Parsers;
+using ShardingConnector.Parsers.SqlParser;
 
 namespace ShardingConnector.SqlServerParser.SqlParser
 {

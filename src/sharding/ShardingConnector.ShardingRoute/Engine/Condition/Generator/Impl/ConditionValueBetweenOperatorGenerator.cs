@@ -7,8 +7,8 @@ using ShardingConnector.DataStructure.RangeStructure;
 using ShardingConnector.ShardingAdoNet;
 using ShardingConnector.ShardingCommon.Core.Strategy.Route.Value;
 using ShardingConnector.ShardingRoute.SPI;
-using IComparable = System.IComparable;
 
+using Range=ShardingConnector.DataStructure.RangeStructure.Range;
 namespace ShardingConnector.ShardingRoute.Engine.Condition.Generator.Impl
 {
     /*

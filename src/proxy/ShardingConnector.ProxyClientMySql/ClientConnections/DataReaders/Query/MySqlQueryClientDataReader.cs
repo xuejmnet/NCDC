@@ -14,6 +14,7 @@ using ShardingConnector.ProxyClient.Abstractions;
 using ShardingConnector.ProxyClientMySql.ClientConnections.Commands;
 using ShardingConnector.ProxyClientMySql.ClientConnections.DataReaders.Query.ServerHandlers;
 using ShardingConnector.ProxyClientMySql.Common;
+using ShardingConnector.ProxyServer;
 using ShardingConnector.ProxyServer.Abstractions;
 using ShardingConnector.ProxyServer.Commons;
 using ShardingConnector.ProxyServer.ServerHandlers.Results;
@@ -49,7 +50,7 @@ public sealed class MySqlQueryClientDataReader : IClientQueryDataReader<MySqlPac
             throw new NotSupportedException(sql);
         }
 
-        return SqlParserEngineFactory.GetSqlParserEngine("MySql").Parse(sql, false);
+       return ProxyContext.ShardingRuntimeContext.GetSqlParserEngine().Parse(sql, false);
     }
 
     private bool IsMultiCommands(ConnectionSession connectionSession, ISqlCommand sqlCommand, string sql)

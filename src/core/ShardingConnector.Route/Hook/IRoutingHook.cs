@@ -1,5 +1,5 @@
 ﻿using System;
-using ShardingConnector.ParserBinder.MetaData.Schema;
+using ShardingConnector.CommandParserBinder.MetaData.Schema;
 using ShardingConnector.Route.Context;
 
 namespace ShardingConnector.Route.Hook

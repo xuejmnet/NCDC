@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Text;
 
 using ShardingConnector.CommandParser.Command;
-using ShardingConnector.ParserBinder.Command;
-using ShardingConnector.ParserBinder.MetaData.Schema;
+using ShardingConnector.CommandParserBinder.Command;
+using ShardingConnector.CommandParserBinder.MetaData.Schema;
 
 namespace ShardingConnector.RewriteEngine.Parameter.Rewrite
 {

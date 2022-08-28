@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
-using ShardingConnector.AbstractParser;
 using ShardingConnector.CommandParser.Constant;
 using ShardingConnector.CommandParser.Segment.Predicate;
 using ShardingConnector.Exceptions;
 using ShardingConnector.Extensions;
+using ShardingConnector.Parsers;
 
 namespace ShardingConnector.CommandParser.Predicate
 {

@@ -1,7 +1,7 @@
-﻿using ShardingConnector.AbstractParser;
-using ShardingConnector.AbstractParser.Visitor.Commands;
-using ShardingConnector.CommandParser.Command.TCL;
+﻿using ShardingConnector.CommandParser.Command.TCL;
 using ShardingConnector.CommandParser.Segment.TCL;
+using ShardingConnector.Parsers;
+using ShardingConnector.Parsers.Visitor.Commands;
 
 namespace ShardingConnector.MySqlParser.Visitor.Impl
 {

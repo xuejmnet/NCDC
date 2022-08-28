@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Text;
 
 using ShardingConnector.CommandParser.Command;
+using ShardingConnector.CommandParserBinder.Command;
 using ShardingConnector.Common.Config.Properties;
 using ShardingConnector.Common.Rule;
-using ShardingConnector.ParserBinder.Command;
 using ShardingConnector.Spi.DataBase.DataBaseType;
 
 namespace ShardingConnector.Merge.Engine.Merger

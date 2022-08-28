@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Data.Common;
 using ShardingConnector.CommandParser.Command;
-using ShardingConnector.ParserBinder.Command;
-using ShardingConnector.ParserBinder.Command.DML;
+using ShardingConnector.CommandParserBinder.Command;
+using ShardingConnector.CommandParserBinder.Command.DML;
 
 namespace ShardingConnector.Executor.Context
 {

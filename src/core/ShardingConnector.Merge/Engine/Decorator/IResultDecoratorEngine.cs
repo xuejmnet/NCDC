@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Text;
 
 using ShardingConnector.CommandParser.Command;
+using ShardingConnector.CommandParserBinder.Command;
+using ShardingConnector.CommandParserBinder.MetaData.Schema;
 using ShardingConnector.Common.Config.Properties;
 using ShardingConnector.Common.Rule;
-using ShardingConnector.ParserBinder.Command;
-using ShardingConnector.ParserBinder.MetaData.Schema;
 using ShardingConnector.Spi.DataBase.DataBaseType;
 
 namespace ShardingConnector.Merge.Engine.Decorator

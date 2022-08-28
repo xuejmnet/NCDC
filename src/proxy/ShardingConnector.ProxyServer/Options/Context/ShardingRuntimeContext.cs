@@ -1,6 +1,7 @@
-﻿using ShardingConnector.Common.MetaData.Decorator;
+﻿using ShardingConnector.CommandParserBinder.MetaData.Schema;
+using ShardingConnector.Common.MetaData.Decorator;
 using ShardingConnector.NewConnector.DataSource;
-using ShardingConnector.ParserBinder.MetaData.Schema;
+using ShardingConnector.Parsers;
 using ShardingConnector.ShardingCommon.Core.MetaData;
 using ShardingConnector.ShardingCommon.Core.Rule;
 using ShardingConnector.Spi.DataBase.DataBaseType;
@@ -23,7 +24,7 @@ namespace ShardingConnector.ProxyServer.Options.Context
         // private readonly CachedDatabaseMetaData cachedDatabaseMetaData;
         //
         // private readonly ShardingTransactionManagerEngine shardingTransactionManagerEngine;
-        public ShardingRuntimeContext(IDictionary<string, IDataSource> dataSourceMap, ShardingRule rule, IDictionary<string, object> props, IDatabaseType databaseType) : base(dataSourceMap, rule, props, databaseType)
+        public ShardingRuntimeContext(IDictionary<string, IDataSource> dataSourceMap, ShardingRule rule,ISqlParserConfiguration sqlParserConfiguration, IDictionary<string, object> props, IDatabaseType databaseType) : base(dataSourceMap, rule,sqlParserConfiguration, props, databaseType)
         {
         }
 

@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using ShardingConnector.AbstractParser;
-using ShardingConnector.AbstractParser.Visitor.Commands;
 using ShardingConnector.CommandParser.Command.DDL;
 using ShardingConnector.CommandParser.Segment.DDL;
 using ShardingConnector.CommandParser.Segment.DDL.Column;
@@ -14,6 +12,8 @@ using ShardingConnector.CommandParser.Segment.Generic;
 using ShardingConnector.CommandParser.Segment.Generic.Table;
 using ShardingConnector.CommandParser.Value.Collection;
 using ShardingConnector.Extensions;
+using ShardingConnector.Parsers;
+using ShardingConnector.Parsers.Visitor.Commands;
 
 namespace ShardingConnector.SqlServerParser.Visitor.Impl
 {

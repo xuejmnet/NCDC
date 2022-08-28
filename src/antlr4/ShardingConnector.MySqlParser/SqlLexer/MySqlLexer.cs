@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using Antlr4.Runtime;
-using ShardingConnector.AbstractParser.SqlLexer;
+using ShardingConnector.Parsers.SqlLexer;
 
 namespace ShardingConnector.MySqlParser.SqlLexer
 {

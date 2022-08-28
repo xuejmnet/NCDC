@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime.Misc;
 using ShardingConnector.Base;
-using ShardingConnector.Executor;
 using ShardingConnector.Extensions;
-using ShardingConnector.ParserBinder.Command.DML;
-using ShardingConnector.ParserBinder.MetaData.Schema;
-using ShardingConnector.ParserBinder.Segment.Select.Projection.Impl;
+using ShardingConnector.CommandParserBinder.Command.DML;
+using ShardingConnector.CommandParserBinder.MetaData.Schema;
+using ShardingConnector.CommandParserBinder.Segment.Select.Projection.Impl;
 using ShardingConnector.ShardingMerge.DQL.GroupBy.Aggregation;
 using ShardingConnector.ShardingMerge.DQL.OrderBy;
 

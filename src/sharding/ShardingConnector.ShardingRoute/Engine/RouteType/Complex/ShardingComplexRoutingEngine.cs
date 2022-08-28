@@ -6,7 +6,7 @@ using ShardingConnector.CommandParser.Command;
 using ShardingConnector.Common.Config.Properties;
 using ShardingConnector.Exceptions;
 using ShardingConnector.Extensions;
-using ShardingConnector.ParserBinder.Command;
+using ShardingConnector.CommandParserBinder.Command;
 using ShardingConnector.Route.Context;
 using ShardingConnector.ShardingCommon.Core.Rule;
 using ShardingConnector.ShardingRoute.Engine.Condition;

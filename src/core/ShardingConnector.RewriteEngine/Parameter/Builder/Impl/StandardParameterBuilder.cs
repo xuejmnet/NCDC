@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Common;
-using System.Linq;
-using ShardingConnector.Extensions;
-using ShardingConnector.ParserBinder.Segment.Select.Pagination;
-using ShardingConnector.ShardingAdoNet;
+﻿using ShardingConnector.ShardingAdoNet;
 
 namespace ShardingConnector.RewriteEngine.Parameter.Builder.Impl
 {

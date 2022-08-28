@@ -3,8 +3,7 @@ using System.Collections.Generic;
 
 using ShardingConnector.CommandParser.Command;
 using ShardingConnector.CommandParser.Command.DAL.Dialect.MySql;
-using ShardingConnector.CommandParser.Segment.Generic;
-using ShardingConnector.ParserBinder.Command;
+using ShardingConnector.CommandParserBinder.Command;
 using ShardingConnector.RewriteEngine.Sql.Token.SimpleObject;
 using ShardingConnector.RewriteEngine.Sql.Token.SimpleObject.Generic;
 

@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Data.Common;
 using ShardingConnector.CommandParser.Command;
+using ShardingConnector.CommandParserBinder.Command;
+using ShardingConnector.CommandParserBinder.MetaData.Schema;
 using ShardingConnector.Extensions;
-using ShardingConnector.ParserBinder.Command;
-using ShardingConnector.ParserBinder.MetaData.Schema;
 using ShardingConnector.RewriteEngine.Sql.Token.Generator.Aware;
 using ShardingConnector.RewriteEngine.Sql.Token.SimpleObject;
 using ShardingConnector.ShardingAdoNet;

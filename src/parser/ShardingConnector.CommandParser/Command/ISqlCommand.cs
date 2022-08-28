@@ -1,4 +1,4 @@
-using ShardingConnector.AbstractParser;
+using ShardingConnector.Parsers;
 
 namespace ShardingConnector.CommandParser.Command
 {

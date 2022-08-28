@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 
 using ShardingConnector.CommandParser.Command;
-using ShardingConnector.Executor;
+using ShardingConnector.CommandParserBinder.Command;
+using ShardingConnector.CommandParserBinder.MetaData.Schema;
 using ShardingConnector.Extensions;
 using ShardingConnector.Merge.Reader.Memory;
-using ShardingConnector.ParserBinder.Command;
-using ShardingConnector.ParserBinder.MetaData.Schema;
 using ShardingConnector.ShardingCommon.Core.Rule;
 
 namespace ShardingConnector.ShardingMerge.DAL.Show

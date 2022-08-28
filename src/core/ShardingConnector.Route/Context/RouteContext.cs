@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Data.Common;
 using ShardingConnector.CommandParser.Command;
-using ShardingConnector.ParserBinder.Command;
+using ShardingConnector.CommandParserBinder.Command;
 using ShardingConnector.ShardingAdoNet;
 
 namespace ShardingConnector.Route.Context

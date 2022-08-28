@@ -1,17 +1,15 @@
 using ShardingConnector.Common.Config.Properties;
 using ShardingConnector.Common.Rule;
-using ShardingConnector.Executor;
 using ShardingConnector.Merge.Engine;
-using ShardingConnector.Merge.Reader;
 using ShardingConnector.Spi.DataBase.DataBaseType;
 using System.Collections.Generic;
 
 using ShardingConnector.CommandParser.Command;
+using ShardingConnector.CommandParserBinder.Command;
+using ShardingConnector.CommandParserBinder.MetaData.Schema;
 using ShardingConnector.Merge.Engine.Decorator;
 using ShardingConnector.Merge.Engine.Merger;
 using ShardingConnector.Merge.Reader.Transparent;
-using ShardingConnector.ParserBinder.Command;
-using ShardingConnector.ParserBinder.MetaData.Schema;
 
 namespace ShardingConnector.Merge
 {

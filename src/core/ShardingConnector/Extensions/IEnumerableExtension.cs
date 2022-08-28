@@ -14,10 +14,6 @@ namespace ShardingConnector.Extensions
     */
     public static class IEnumerableExtension
     {
-        public static HashSet<T> ToHashSet<T>(this IEnumerable<T> source)
-        {
-            return new HashSet<T>(source);
-        }
         public static bool IsEmpty<T>(this IEnumerable<T> source)
         {
             return source==null||!source.Any();

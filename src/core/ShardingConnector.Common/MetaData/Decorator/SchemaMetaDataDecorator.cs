@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using ShardingConnector.CommandParserBinder.MetaData.Schema;
+using ShardingConnector.CommandParserBinder.MetaData.Table;
 using ShardingConnector.Common.Rule;
-using ShardingConnector.ParserBinder.MetaData.Schema;
-using ShardingConnector.ParserBinder.MetaData.Table;
 
 namespace ShardingConnector.Common.MetaData.Decorator
 {

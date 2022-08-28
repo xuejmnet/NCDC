@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 using Antlr4.Runtime;
-using ShardingConnector.AbstractParser;
-using ShardingConnector.AbstractParser.SqlParser;
-using ShardingConnector.AbstractParser.Visitor;
+using ShardingConnector.Parsers;
+using ShardingConnector.Parsers.SqlParser;
+using ShardingConnector.Parsers.Visitor;
 using ShardingConnector.SqlServerParser.SqlLexer;
 using ShardingConnector.SqlServerParser.Visitor;
 
@@ -18,13 +18,7 @@ namespace ShardingConnector.SqlServerParser
     * @Email: 326308290@qq.com
     */
     public sealed class SqlServerParserConfiguration : ISqlParserConfiguration
-
     {
-        public string GetDataSourceName()
-        {
-            return "SqlServer";
-        }
-
         public ISqlParser CreateSqlParser(string sql)
         {
             var charStream = CharStreams.fromString(sql);
@@ -33,9 +27,9 @@ namespace ShardingConnector.SqlServerParser
             return new SqlParser.SqlServerParser(commonTokenStream);
         }
 
-        public ISqlVisitorFacade CreateVisitorFacade()
+        public ISqlVisitorCreator CreateVisitorCreator()
         {
-            return new SqlServerVisitorFacade();
+            return new SqlServerVisitorCreator();
         }
 
     }

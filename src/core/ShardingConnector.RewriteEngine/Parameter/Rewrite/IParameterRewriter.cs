@@ -4,7 +4,7 @@ using System.Data.Common;
 using System.Text;
 
 using ShardingConnector.CommandParser.Command;
-using ShardingConnector.ParserBinder.Command;
+using ShardingConnector.CommandParserBinder.Command;
 using ShardingConnector.RewriteEngine.Parameter.Builder;
 using ShardingConnector.ShardingAdoNet;
 

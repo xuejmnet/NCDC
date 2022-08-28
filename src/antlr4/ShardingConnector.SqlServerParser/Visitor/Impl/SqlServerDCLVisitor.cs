@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
-using ShardingConnector.AbstractParser;
-using ShardingConnector.AbstractParser.Visitor.Commands;
 using ShardingConnector.CommandParser.Command.DCL;
 using ShardingConnector.CommandParser.Segment.Generic.Table;
+using ShardingConnector.Parsers;
+using ShardingConnector.Parsers.Visitor.Commands;
 
 namespace ShardingConnector.SqlServerParser.Visitor.Impl
 {

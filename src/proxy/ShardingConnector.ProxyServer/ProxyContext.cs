@@ -1,6 +1,7 @@
 using MySqlConnector;
 using ShardingConnector.Api.Database.DatabaseType;
 using ShardingConnector.Exceptions;
+using ShardingConnector.MySqlParser;
 using ShardingConnector.NewConnector.DataSource;
 using ShardingConnector.ShardingApi.Api.Config.Sharding;
 using ShardingConnector.ShardingApi.Api.Config.Sharding.Strategy;
@@ -39,7 +40,8 @@ public class ProxyContext
        var defaultDataSource = dataSourceMap.Values.FirstOrDefault(o => o.IsDefault()) ??
                              throw new InvalidOperationException("not found default data source for init sharding");
         var databaseType = CreateDatabaseType(dataSourceMap);
-        ShardingRuntimeContext=new ShardingRuntimeContext(dataSourceMap, new ShardingRule(shardingRuleConfig, dataSourceMap.Keys), new Dictionary<string, object>(), databaseType);
+        var mySqlParserConfiguration = new MySqlParserConfiguration();
+        ShardingRuntimeContext=new ShardingRuntimeContext(dataSourceMap, new ShardingRule(shardingRuleConfig, dataSourceMap.Keys),mySqlParserConfiguration, new Dictionary<string, object>(), databaseType);
     }
 
     private static IDatabaseType CreateDatabaseType(Dictionary<string, IDataSource> _dataSourceMap)

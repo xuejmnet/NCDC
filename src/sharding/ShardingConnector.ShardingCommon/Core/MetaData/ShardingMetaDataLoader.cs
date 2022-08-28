@@ -5,13 +5,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using ShardingConnector.CommandParserBinder.MetaData.Schema;
+using ShardingConnector.CommandParserBinder.MetaData.Table;
 using ShardingConnector.Common.Rule;
 using ShardingConnector.Exceptions;
-using ShardingConnector.Extensions;
 using ShardingConnector.Logger;
 using ShardingConnector.NewConnector.DataSource;
-using ShardingConnector.ParserBinder.MetaData.Schema;
-using ShardingConnector.ParserBinder.MetaData.Table;
 using ShardingConnector.ShardingCommon.Core.Rule;
 using ShardingConnector.Spi.DataBase.DataBaseType;
 

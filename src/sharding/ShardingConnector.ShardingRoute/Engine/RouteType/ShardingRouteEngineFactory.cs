@@ -14,7 +14,7 @@ using ShardingConnector.CommandParser.Command.TCL;
 using ShardingConnector.Common.Config.Properties;
 using ShardingConnector.Common.MetaData;
 using ShardingConnector.Extensions;
-using ShardingConnector.ParserBinder.Command;
+using ShardingConnector.CommandParserBinder.Command;
 using ShardingConnector.ShardingCommon.Core.Rule;
 using ShardingConnector.ShardingRoute.Engine.Condition;
 using ShardingConnector.ShardingRoute.Engine.RouteType.Broadcast;

@@ -2,12 +2,11 @@
 using System.Collections.Generic;
 using System.Text;
 using Antlr4.Runtime;
-using ShardingConnector.AbstractParser;
-using ShardingConnector.AbstractParser.SqlLexer;
-using ShardingConnector.AbstractParser.SqlParser;
-using ShardingConnector.AbstractParser.Visitor;
 using ShardingConnector.MySqlParser.SqlLexer;
 using ShardingConnector.MySqlParser.Visitor;
+using ShardingConnector.Parsers;
+using ShardingConnector.Parsers.SqlParser;
+using ShardingConnector.Parsers.Visitor;
 
 namespace ShardingConnector.MySqlParser
 {
@@ -19,10 +18,6 @@ namespace ShardingConnector.MySqlParser
     /// Email: 326308290@qq.com
     public sealed class MySqlParserConfiguration:ISqlParserConfiguration
     {
-        public string GetDataSourceName()
-        {
-            return "MySql";
-        }
 
         public ISqlParser CreateSqlParser(string sql)
         {
@@ -32,9 +27,10 @@ namespace ShardingConnector.MySqlParser
             return new SqlParser.MySqlParser(commonTokenStream);
         }
 
-        public ISqlVisitorFacade CreateVisitorFacade()
+        public ISqlVisitorCreator CreateVisitorCreator()
         {
-            return new MySqlVisitorFacade();
+            return new MySqlVisitorCreator();
         }
+
     }
 }

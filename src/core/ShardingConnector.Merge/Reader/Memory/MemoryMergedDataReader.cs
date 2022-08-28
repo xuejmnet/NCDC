@@ -1,11 +1,8 @@
 ﻿using System;
 using ShardingConnector.CommandParser.Command;
 using ShardingConnector.Common.Rule;
-using ShardingConnector.Executor;
-using ShardingConnector.ParserBinder.Command;
-using ShardingConnector.ParserBinder.MetaData.Schema;
-using System.Collections.Generic;
-using System.Linq;
+using ShardingConnector.CommandParserBinder.Command;
+using ShardingConnector.CommandParserBinder.MetaData.Schema;
 
 
 namespace ShardingConnector.Merge.Reader.Memory

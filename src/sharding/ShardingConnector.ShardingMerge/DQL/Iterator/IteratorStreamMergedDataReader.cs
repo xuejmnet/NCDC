@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using ShardingConnector.Executor;
 using ShardingConnector.Extensions;
 using ShardingConnector.Merge.Reader.Stream;
 

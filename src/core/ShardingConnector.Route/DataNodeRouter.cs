@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Common;
-using System.Diagnostics;
 using ShardingConnector.CommandParser.Command;
+using ShardingConnector.CommandParser.SqlParseEngines;
+using ShardingConnector.CommandParserBinder;
+using ShardingConnector.CommandParserBinder.Command;
 using ShardingConnector.Common.Config.Properties;
 using ShardingConnector.Common.MetaData;
 using ShardingConnector.Common.Rule;
-using ShardingConnector.ParserBinder;
-using ShardingConnector.ParserBinder.Command;
-using ShardingConnector.ParserEngine;
 using ShardingConnector.Route.Context;
 using ShardingConnector.Route.Hook;
 using ShardingConnector.ShardingAdoNet;
@@ -78,7 +76,7 @@ namespace ShardingConnector.Route
             try
             {
                 
-                ISqlCommandContext<ISqlCommand> sqlCommandContext = SqlCommandContextFactory.NewInstance(_metaData.Schema, sql, parameterContext, sqlCommand);
+                ISqlCommandContext<ISqlCommand> sqlCommandContext = SqlCommandContextFactory.Create(_metaData.Schema, sql, parameterContext, sqlCommand);
                 return new RouteContext(sqlCommandContext, parameterContext, new RouteResult());
                 // TODO should pass parameters for master-slave
             }

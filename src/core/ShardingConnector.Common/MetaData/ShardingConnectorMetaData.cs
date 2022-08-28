@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using ShardingConnector.CommandParserBinder.MetaData.Schema;
 using ShardingConnector.Common.MetaData.DataSource;
-using ShardingConnector.ParserBinder.MetaData.Schema;
 
 namespace ShardingConnector.Common.MetaData
 {

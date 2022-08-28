@@ -1,4 +1,5 @@
-﻿using ShardingConnector.ParserBinder.MetaData.Schema;
+﻿
+using ShardingConnector.CommandParserBinder.MetaData.Schema;
 
 namespace ShardingConnector.RewriteEngine.Sql.Token.Generator.Aware
 {

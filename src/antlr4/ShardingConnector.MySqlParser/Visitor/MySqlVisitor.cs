@@ -4,7 +4,6 @@ using System.Collections.ObjectModel;
 using System.Text;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
-using ShardingConnector.AbstractParser;
 using ShardingConnector.CommandParser.Command.DML;
 using ShardingConnector.CommandParser.Constant;
 using ShardingConnector.CommandParser.Predicate;
@@ -28,6 +27,7 @@ using ShardingConnector.CommandParser.Value.KeyWord;
 using ShardingConnector.CommandParser.Value.Literal.Impl;
 using ShardingConnector.CommandParser.Value.ParameterMaker;
 using ShardingConnector.Exceptions;
+using ShardingConnector.Parsers;
 
 namespace ShardingConnector.MySqlParser.Visitor
 {

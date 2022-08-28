@@ -3,16 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 
 using ShardingConnector.CommandParser.Command;
+using ShardingConnector.CommandParserBinder.Command;
+using ShardingConnector.CommandParserBinder.MetaData.Schema;
 using ShardingConnector.Common.Config.Properties;
 using ShardingConnector.Common.Rule;
 using ShardingConnector.Exceptions;
-using ShardingConnector.Executor;
-using ShardingConnector.Extensions;
 using ShardingConnector.Merge;
 using ShardingConnector.Merge.Engine;
-using ShardingConnector.Merge.Reader;
-using ShardingConnector.ParserBinder.Command;
-using ShardingConnector.ParserBinder.MetaData.Schema;
 using ShardingConnector.Spi.DataBase.DataBaseType;
 using ShardingConnector.Spi.Order;
 

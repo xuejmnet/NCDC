@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Data.Common;
 using ShardingConnector.CommandParser.Command;
-using ShardingConnector.ParserBinder.Command;
-using ShardingConnector.ParserBinder.Command.DML;
-using ShardingConnector.ParserBinder.MetaData.Schema;
+using ShardingConnector.CommandParserBinder.Command;
+using ShardingConnector.CommandParserBinder.Command.DML;
+using ShardingConnector.CommandParserBinder.MetaData.Schema;
 using ShardingConnector.RewriteEngine.Parameter.Builder;
 using ShardingConnector.RewriteEngine.Parameter.Builder.Impl;
 using ShardingConnector.RewriteEngine.Sql.Token.Generator;

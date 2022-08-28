@@ -3,13 +3,10 @@ using System.Collections.Generic;
 using System.Text;
 using ShardingConnector.Base;
 using ShardingConnector.CommandParser.Segment.DML.Order.Item;
-using ShardingConnector.CommandParser.Segment.Generic.Table;
-using ShardingConnector.Executor;
-using ShardingConnector.ParserBinder.Command.DML;
-using ShardingConnector.ParserBinder.MetaData.Column;
-using ShardingConnector.ParserBinder.MetaData.Schema;
-using ShardingConnector.ParserBinder.MetaData.Table;
-using ShardingConnector.ParserBinder.Segment.Select.OrderBy;
+using ShardingConnector.CommandParserBinder.Command.DML;
+using ShardingConnector.CommandParserBinder.MetaData.Column;
+using ShardingConnector.CommandParserBinder.MetaData.Schema;
+using ShardingConnector.CommandParserBinder.Segment.Select.OrderBy;
 
 namespace ShardingConnector.ShardingMerge.DQL.OrderBy
 {

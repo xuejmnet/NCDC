@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Data.Common;
 using ShardingConnector.CommandParser.Command;
+using ShardingConnector.CommandParserBinder.Command;
+using ShardingConnector.CommandParserBinder.MetaData.Schema;
 using ShardingConnector.Common.Config.Properties;
 using ShardingConnector.Common.Rule;
-using ShardingConnector.ParserBinder.Command;
-using ShardingConnector.ParserBinder.MetaData.Schema;
 using ShardingConnector.RewriteEngine.Context;
 using ShardingConnector.RewriteEngine.Sql.Token.Generator.Aware;
 using ShardingConnector.Route.Context;

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using ShardingConnector.AbstractParser.Visitor.Commands;
+using ShardingConnector.Parsers.Visitor.Commands;
 
 namespace ShardingConnector.MySqlParser.Visitor.Impl
 {

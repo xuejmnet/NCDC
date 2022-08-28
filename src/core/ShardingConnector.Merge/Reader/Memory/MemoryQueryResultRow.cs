@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using ShardingConnector.Exceptions;
-using ShardingConnector.Executor;
 
 namespace ShardingConnector.Merge.Reader.Memory
 {

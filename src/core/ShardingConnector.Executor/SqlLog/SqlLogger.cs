@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.Logging;
 using ShardingConnector.CommandParser.Command;
+using ShardingConnector.CommandParserBinder.Command;
 using ShardingConnector.Executor.Context;
 using ShardingConnector.Logger;
-using ShardingConnector.ParserBinder.Command;
 
 namespace ShardingConnector.Executor.SqlLog
 {

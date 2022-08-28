@@ -1,9 +1,11 @@
 ﻿using ShardingConnector.Api.Database.DatabaseType;
+using ShardingConnector.CommandParser.SqlParseEngines;
 using ShardingConnector.Common.Config.Properties;
 using ShardingConnector.Common.MetaData;
 using ShardingConnector.Common.Rule;
 using ShardingConnector.Executor.Engine;
 using ShardingConnector.ParserEngine;
+using ShardingConnector.Parsers;
 using ShardingConnector.Spi.DataBase.DataBaseType;
 
 namespace ShardingConnector.ProxyServer.Options.Context
@@ -31,17 +33,15 @@ namespace ShardingConnector.ProxyServer.Options.Context
 
         private readonly SqlParserEngine sqlParserEngine;
 
-        protected AbstractRuntimeContext(T rule, IDictionary<string, object> props, IDatabaseType databaseType)
+        protected AbstractRuntimeContext(T rule,ISqlParserConfiguration sqlParserConfiguration, IDictionary<string, object> props, IDatabaseType databaseType)
         {
             this.rule = rule;
-            // properties = new ConfigurationProperties(null == props ? new Properties() : props);
             properties = new ConfigurationProperties();
             this.databaseType = databaseType;
             executorEngine = ExecutorEngine.Instance;
             //更加数据库类型获取对应的解析器
-            sqlParserEngine = SqlParserEngineFactory.GetSqlParserEngine(DatabaseTypes.GetTrunkDatabaseTypeName(databaseType));
-            // ConfigurationLogger.log(rule.getRuleConfiguration());
-            // ConfigurationLogger.log(props);
+            sqlParserEngine = new SqlParserEngine(sqlParserConfiguration);
+           
         }
 
         /// <summary>

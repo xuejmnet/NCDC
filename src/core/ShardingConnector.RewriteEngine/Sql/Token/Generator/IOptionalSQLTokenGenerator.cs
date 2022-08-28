@@ -1,6 +1,6 @@
 
 using ShardingConnector.CommandParser.Command;
-using ShardingConnector.ParserBinder.Command;
+using ShardingConnector.CommandParserBinder.Command;
 using ShardingConnector.RewriteEngine.Sql.Token.SimpleObject;
 
 namespace ShardingConnector.RewriteEngine.Sql.Token.Generator
