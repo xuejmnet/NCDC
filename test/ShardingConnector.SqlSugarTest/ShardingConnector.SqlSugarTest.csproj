@@ -14,7 +14,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\src\adonet\ShardingConnector.AdoNet\ShardingConnector.AdoNet.csproj" />
+      <ProjectReference Include="..\..\src\adonet\OpenConnector.AdoNet\OpenConnector.AdoNet.csproj" />
     </ItemGroup>
 
 </Project>
