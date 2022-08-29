@@ -54,7 +54,7 @@ public sealed class MySqlClientDbConnection : IClientDbConnection<MySqlPacketPay
         }
     }
 
-    public void WriteQueryData(IChannelHandlerContext context, ConnectionSession connectionSession,
+    public async ValueTask WriteQueryDataAsync(IChannelHandlerContext context, ConnectionSession connectionSession,
         IClientQueryDataReader<MySqlPacketPayload> clientQueryDataReader, int headerPackagesCount)
     {
         if (ResultTypeEnum.QUERY != clientQueryDataReader.ResultType || !context.Channel.Active)
@@ -74,12 +74,12 @@ public sealed class MySqlClientDbConnection : IClientDbConnection<MySqlPacketPay
             {
                 context.Flush();
                 //当网络消费端消费过慢或者流量过大导致netty不可写入时但是链接还是激活的就等待网络恢复
-                connectionSession.WaitChannelIsWritable();
+               await connectionSession.WaitChannelIsWritable();
                 // ((JDBCBackendConnection)backendConnection).getResourceLock().doAwait();
             }
 
             var queryRowPacket = clientQueryDataReader.GetRowPacket();
-            context.WriteAsync(queryRowPacket);
+            _=context.WriteAsync(queryRowPacket);
             if (flushThreshold == count)
             {
                 context.Flush();
@@ -89,7 +89,7 @@ public sealed class MySqlClientDbConnection : IClientDbConnection<MySqlPacketPay
             currentSequenceId++;
         }
 
-        context.WriteAsync(new MySqlEofPacket(++currentSequenceId + headerPackagesCount,ServerStatusFlagCalculator.CalculateFor(connectionSession)));
+        _=context.WriteAsync(new MySqlEofPacket(++currentSequenceId + headerPackagesCount,ServerStatusFlagCalculator.CalculateFor(connectionSession)));
     }
 
     public IPacket<MySqlPacketPayload> GetErrorPacket(Exception exception)

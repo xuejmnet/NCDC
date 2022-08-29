@@ -8,6 +8,7 @@
 
     <ItemGroup>
       <PackageReference Include="MySqlConnector" Version="2.1.13" />
+      <PackageReference Include="Nito.AsyncEx" Version="5.1.2" />
     </ItemGroup>
 
     <ItemGroup>

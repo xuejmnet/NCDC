@@ -1,4 +1,5 @@
 using DotNetty.Common.Utilities;
+using Nito.AsyncEx;
 using OpenConnector.Base;
 using OpenConnector.Exceptions;
 using OpenConnector.ProxyServer.DatabaseInfo;
@@ -22,13 +23,14 @@ public class ConnectionSession:IDisposable
     public LogicDatabase? LogicDatabase { get; private set; }
     private readonly TimeSpan _channelWaitMillis = TimeSpan.FromMilliseconds(200);
 
-    private readonly ManualResetEventSlim _channelWaitWriteable = new ManualResetEventSlim(true);
+    private readonly ChannelIsWritableListener _channelWaitWriteableListener;
  
     public ConnectionSession(TransactionTypeEnum transactionType,IAttributeMap attributeMap)
     {
         AttributeMap = attributeMap;
         _transactionStatus=new TransactionStatus(transactionType);
         ServerConnection = new ServerConnection(this);
+        _channelWaitWriteableListener = new ChannelIsWritableListener();
     }
 
     public bool GetIsAutoCommit()
@@ -71,27 +73,13 @@ public class ConnectionSession:IDisposable
         _databaseName = databaseName;
         LogicDatabase = ProxyRuntimeContext.Instance.GetDatabase(databaseName!);
     }
-
-    private void SubscribeChannelIsWritable()
+    public async Task WaitChannelIsWritable()
     {
-        _channelWaitWriteable.Reset();
-     
-    }
-    public void WaitChannelIsWritable()
-    {
-        SubscribeChannelIsWritable();
-        try
-        {
-            _channelWaitWriteable.Wait(_channelWaitMillis);
-        }
-        finally
-        {
-            NotifyChannelIsWritable();
-        }
+        await  _channelWaitWriteableListener.WaitAsync(_channelWaitMillis);
     }
     public void NotifyChannelIsWritable()
     {
-        _channelWaitWriteable.Set();
+        _channelWaitWriteableListener.Set();
     }
 
     public void CloseServerConnection()

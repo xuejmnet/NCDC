@@ -29,7 +29,7 @@ public sealed class ClientCommandExecutor : IClientCommandExecutor
         _logDebug = _logger.IsEnabled(LogLevel.Debug);
     }
 
-    public  ValueTask ExecuteAsync()
+    public  async ValueTask ExecuteAsync()
     {
         bool isNeedFlush = false;
         bool sqlShow = true;
@@ -38,7 +38,7 @@ public sealed class ClientCommandExecutor : IClientCommandExecutor
         {
             try
             {
-                isNeedFlush =  ExecuteCommand(_context, payload);
+                isNeedFlush =  await ExecuteCommandAsync(_context, payload);
             }
             catch (Exception exception)
             {
@@ -52,7 +52,6 @@ public sealed class ClientCommandExecutor : IClientCommandExecutor
                 }
             }
         }
-        return ValueTask.CompletedTask;
     }
 
     private void ProcessException(Exception exception)
@@ -72,7 +71,7 @@ public sealed class ClientCommandExecutor : IClientCommandExecutor
         _context.Flush();
     }
 
-    private bool ExecuteCommand(IChannelHandlerContext context, IPacketPayload payload)
+    private async ValueTask<bool> ExecuteCommandAsync(IChannelHandlerContext context, IPacketPayload payload)
     {
         var clientDbConnection = _databaseProtocolClientEngine.GetClientDbConnection();
         using (var clientCommand =
@@ -92,7 +91,7 @@ public sealed class ClientCommandExecutor : IClientCommandExecutor
                     int i = 0;
                     foreach (var responsePacket in responsePackets)
                     {
-                        context.WriteAsync(responsePacket);
+                       _= context.WriteAsync(responsePacket);
                         i++;
                     }
 
@@ -103,7 +102,7 @@ public sealed class ClientCommandExecutor : IClientCommandExecutor
 
                     if (clientDataReader is IClientQueryDataReader clientQueryDataReader)
                     {
-                        clientDbConnection.WriteQueryData(context, _connectionSession,clientQueryDataReader, i);
+                      await  clientDbConnection.WriteQueryDataAsync(context, _connectionSession,clientQueryDataReader, i);
                     }
                     return true;
                 }
