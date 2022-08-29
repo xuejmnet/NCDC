@@ -18,7 +18,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\..\parser\OpenConnector.CommandParser\OpenConnector.CommandParser.csproj" />
+	  <ProjectReference Include="..\..\core\OpenConnector.CommandParser\OpenConnector.CommandParser.csproj" />
 	</ItemGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
