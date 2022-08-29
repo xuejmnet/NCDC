@@ -8,14 +8,13 @@ public sealed class ChannelIsWritableListener
 
     public ChannelIsWritableListener()
     {
+        //默认设置为wait阻塞
         _asyncManualResetEvent = new AsyncManualResetEvent(false);
     }
 
     public Task<bool> WaitAsync(TimeSpan timeout, CancellationToken cancellationToken = default)
     {
-        //将AsyncManualResetEvent设置为wait等待模式
-        _asyncManualResetEvent.Reset();
-        return WaitAutoSetIfTimeoutAsync(timeout, cancellationToken);
+        return WaitAsync0(timeout, cancellationToken);
     }
 
     /// <summary>
@@ -23,17 +22,20 @@ public sealed class ChannelIsWritableListener
     /// </summary>
     /// <param name="timeout"></param>
     /// <param name="cancellationToken"></param>
-    /// <returns></returns>
-    private async Task<bool> WaitAutoSetIfTimeoutAsync(TimeSpan timeout, CancellationToken cancellationToken = default)
+    /// <returns>true表示未超时返回,false表示超时返回</returns>
+    private async Task<bool> WaitAsync0(TimeSpan timeout, CancellationToken cancellationToken = default)
     {
-        
+        var isTimeout = false;
         var eventTask = _asyncManualResetEvent.WaitAsync(cancellationToken);
-        if (await Task.WhenAny(eventTask, Task.Delay(timeout, cancellationToken)) == eventTask)
+        if (await Task.WhenAny(eventTask, Task.Delay(timeout, cancellationToken)) != eventTask)
         {
-            return true;
+            isTimeout = true;
+            //超时了先取消掉之前的wait的task
+            _asyncManualResetEvent.Set();
         }
-        _asyncManualResetEvent.Set();
-        return false;
+        //将AsyncManualResetEvent设置为wait等待模式
+        _asyncManualResetEvent.Reset();
+        return !isTimeout;
     }
 
     public void Set()

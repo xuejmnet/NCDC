@@ -74,7 +74,7 @@ public sealed class MySqlClientDbConnection : IClientDbConnection<MySqlPacketPay
             {
                 context.Flush();
                 //当网络消费端消费过慢或者流量过大导致netty不可写入时但是链接还是激活的就等待网络恢复
-               await connectionSession.WaitChannelIsWritableAsync();
+               await connectionSession.WaitChannelIsWritableAsync().ConfigureAwait(false);
                 // ((JDBCBackendConnection)backendConnection).getResourceLock().doAwait();
             }
 

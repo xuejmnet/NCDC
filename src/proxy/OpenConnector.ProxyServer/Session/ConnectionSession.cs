@@ -73,9 +73,9 @@ public class ConnectionSession:IDisposable
         _databaseName = databaseName;
         LogicDatabase = ProxyRuntimeContext.Instance.GetDatabase(databaseName!);
     }
-    public async Task WaitChannelIsWritableAsync(CancellationToken cancellationToken=default)
+    public  Task WaitChannelIsWritableAsync(CancellationToken cancellationToken=default)
     {
-        await  _channelWaitWriteableListener.WaitAsync(_channelWaitMillis,cancellationToken);
+        return  _channelWaitWriteableListener.WaitAsync(_channelWaitMillis,cancellationToken);
     }
     public void NotifyChannelIsWritable()
     {
