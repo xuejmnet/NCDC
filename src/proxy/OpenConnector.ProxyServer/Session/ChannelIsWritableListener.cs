@@ -38,7 +38,10 @@ public sealed class ChannelIsWritableListener
         return !isTimeout;
     }
 
-    public void Set()
+    /// <summary>
+    /// 唤醒
+    /// </summary>
+    public void Wakeup()
     {
         _asyncManualResetEvent.Set();
     }

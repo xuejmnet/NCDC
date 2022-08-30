@@ -1,24 +1,25 @@
-using System.Net;
 using DotNetty.Handlers.Logging;
 using DotNetty.Transport.Bootstrapping;
 using DotNetty.Transport.Channels;
 using DotNetty.Transport.Channels.Sockets;
-using DotNetty.Transport.Libuv;
 using Microsoft.Extensions.Logging;
+using OpenConnector.Host;
 using OpenConnector.Logger;
 using OpenConnector.ProxyClient;
 using OpenConnector.ProxyClient.Codecs;
+using OpenConnector.ProxyClient.Command;
 using OpenConnector.ProxyClient.DotNetty;
-using OpenConnector.ProxyClientMySql.Codec;
 using OpenConnector.ProxyServer;
-using LogLevel = DotNetty.Handlers.Logging.LogLevel;
+using OpenConnector.ProxyServer.Abstractions;
 
 namespace OpenConnector.Proxy.Starter;
 
-public class ShardingProxy:IShardingProxy
+public class DefaultServiceHost:IServiceHost
 {
-    private static readonly ILogger<ShardingProxy> _logger = InternalLoggerFactory.CreateLogger<ShardingProxy>();
+    private static readonly ILogger<DefaultServiceHost> _logger = InternalLoggerFactory.CreateLogger<DefaultServiceHost>();
  
+    private readonly ICommandListener _commandListener= new DefaultCommandListener();
+    private readonly IChannelHandler _connectorManagerHandler= new ConnectorManagerHandler();
     private readonly ShardingProxyOption _shardingProxyOption;
     private readonly IPacketCodec _packetCodec;
     private readonly IDatabaseProtocolClientEngine _databaseProtocolClientEngine;
@@ -35,18 +36,18 @@ public class ShardingProxy:IShardingProxy
     private ServerBootstrap _serverBootstrap;
     private Bootstrap _clientBootstrap;
     private IChannelHandler _encoderHandler;
-    private IChannelHandler _connectorManagerHandler;
 
-    public ShardingProxy(ShardingProxyOption shardingProxyOption,IDatabaseProtocolClientEngine databaseProtocolClientEngine)
+    public DefaultServiceHost(ShardingProxyOption shardingProxyOption,IDatabaseProtocolClientEngine databaseProtocolClientEngine)
     {
         _shardingProxyOption = shardingProxyOption;
         _databaseProtocolClientEngine = databaseProtocolClientEngine;
         _packetCodec = databaseProtocolClientEngine.GetPacketCodec();
         _encoderHandler = new MessagePacketEncoder(_packetCodec);
-        _connectorManagerHandler = new ConnectorManagerHandler();
+        _commandListener.Received += CommandListener_Received;
     }
-    public async Task StartAsync(CancellationToken cancellationToken = default)
-    { 
+
+    public async Task StartAsync()
+    {
         _logger.LogInformation("----------开始启动----------");
         _logger.LogInformation($"----------监听端口:{_shardingProxyOption.Port}----------");
         // var dispatcher = new DispatcherEventLoopGroup();
@@ -80,7 +81,7 @@ public class ShardingProxy:IShardingProxy
                     .Option(ChannelOption.WriteBufferHighWaterMark, 16 * 1024 * 1024)//16mb用来控制流量flush
                     .Option(ChannelOption.ConnectTimeout, TimeSpan.FromSeconds(3)) //连接超时
                     .Option(ChannelOption.RcvbufAllocator, new AdaptiveRecvByteBufAllocator(1024, 1024, 65536))
-                    .Handler(new LoggingHandler(LogLevel.INFO))
+                    // .Handler(new LoggingHandler(LogLevel.INFO))
                     // .ChildHandler(_serverHandlerInitializer);
                     .ChildHandler(new ActionChannelInitializer<ISocketChannel>(channel =>
                     {
@@ -91,7 +92,7 @@ public class ShardingProxy:IShardingProxy
                         pipeline.AddLast(new MessagePacketDecoder(_packetCodec));
                         pipeline.AddLast(_encoderHandler);
                         pipeline.AddLast(_connectorManagerHandler);
-                        pipeline.AddLast(new ClientChannelInboundHandler(_databaseProtocolClientEngine,channel));
+                        pipeline.AddLast(new ClientChannelInboundHandler(_databaseProtocolClientEngine,channel,_commandListener));
                         // pipeline.AddLast("tls", TlsHandler.Server(_option.TlsCertificate));
                         // pipeline.AddLast("tls", new TlsHandler(stream => new SslStream(stream, true, (sender, certificate, chain, errors) => true), new ClientTlsSettings(_targetHost)));
                         // pipeline.AddLast("framing-dec", new LengthFieldBasedFrameDecoder(int.MaxValue, 0, 4, 0, 4));
@@ -104,7 +105,7 @@ public class ShardingProxy:IShardingProxy
                     }));
 
                 // bootstrap绑定到指定端口的行为 就是服务端启动服务，同样的Serverbootstrap可以bind到多个端口
-                await _serverBootstrap.BindAsync(_shardingProxyOption.Port);
+                await _serverBootstrap.BindAsync(_shardingProxyOption.Port).ConfigureAwait(false);
                 _logger.LogInformation($"----------启动完成端口:{_shardingProxyOption.Port}----------");
             }
             catch (Exception ex)
@@ -114,38 +115,22 @@ public class ShardingProxy:IShardingProxy
 
     }
 
-    // private IChannel GetClientChannel(IChannel tcpSocketChannel)
-    // {
-    //
-    //     try
-    //     {
-    //         var ipEndPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 3306);
-    //         var result = this._clientBootstrap.Handler(new ActionChannelInitializer<ISocketChannel>(channel =>
-    //         {
-    //             var channelPipeline = channel.Pipeline;
-    //             channelPipeline.AddLast(new ApplicationChannelInboundHandler());
-    //         })).ConnectAsync(ipEndPoint).GetAwaiter().GetResult();
-    //         return result;
-    //     }
-    //     catch (Exception e)
-    //     {
-    //         Console.WriteLine(e);
-    //         throw;
-    //     }
-    // }
-
-    public async Task StopAsync(CancellationToken cancellationToken = default)
+    public async Task StopAsync()
     {
         try
         {
             _logger.LogInformation("----------开始停止----------");
-            await bossGroup.ShutdownGracefullyAsync(TimeSpan.FromMilliseconds(100), TimeSpan.FromSeconds(1));
-            await workerGroup.ShutdownGracefullyAsync(TimeSpan.FromMilliseconds(100), TimeSpan.FromSeconds(1));
+            await bossGroup.ShutdownGracefullyAsync(TimeSpan.FromMilliseconds(100), TimeSpan.FromSeconds(1)).ConfigureAwait(false);
+            await workerGroup.ShutdownGracefullyAsync(TimeSpan.FromMilliseconds(100), TimeSpan.FromSeconds(1)).ConfigureAwait(false);
             _logger.LogInformation("----------已停止----------");
         }
         catch (Exception e)
         {
             _logger.LogInformation($"----------停止异常:{e}----------");
         }
+    }
+    private ValueTask CommandListener_Received(ICommand command)
+    {
+        return command.ExecuteAsync();
     }
 }

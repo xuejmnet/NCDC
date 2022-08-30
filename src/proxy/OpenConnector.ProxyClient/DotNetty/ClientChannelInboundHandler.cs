@@ -8,6 +8,7 @@ using OpenConnector.Protocol.MySql.Constant;
 using OpenConnector.Protocol.MySql.Packet.Generic;
 using OpenConnector.ProxyClient.Command;
 using OpenConnector.ProxyServer;
+using OpenConnector.ProxyServer.Abstractions;
 using OpenConnector.ProxyServer.Session;
 using OpenConnector.ShardingCommon.User;
 using OpenConnector.Transaction;
@@ -19,14 +20,16 @@ public class ClientChannelInboundHandler:ChannelHandlerAdapter
     private static readonly ILogger<ClientChannelInboundHandler> _logger =
         InternalLoggerFactory.CreateLogger<ClientChannelInboundHandler>();
     private readonly IDatabaseProtocolClientEngine _databaseProtocolClientEngine;
+    private readonly ICommandListener _commandListener;
 
     private readonly ConnectionSession _connectionSession;
     // private readonly IAuthenticationEngine _authenticationEngine = new MySqlAuthenticationEngine();
 
     private  volatile bool _authenticated;
-    public ClientChannelInboundHandler(IDatabaseProtocolClientEngine databaseProtocolClientEngine,ISocketChannel channel)
+    public ClientChannelInboundHandler(IDatabaseProtocolClientEngine databaseProtocolClientEngine,ISocketChannel channel,ICommandListener commandListener)
     {
         _databaseProtocolClientEngine = databaseProtocolClientEngine;
+        _commandListener = commandListener;
         _connectionSession = new ConnectionSession(TransactionTypeEnum.LOCAL,channel);
     }
     public override void ChannelActive(IChannelHandlerContext context)
@@ -37,6 +40,11 @@ public class ClientChannelInboundHandler:ChannelHandlerAdapter
     }
 
 
+    /// <summary>
+    /// https://github.com/caozhiyuan/DotNetty/blob/dev/src/DotNetty.Rpc/Server/RpcHandler.cs#L28
+    /// </summary>
+    /// <param name="ctx"></param>
+    /// <param name="msg"></param>
     public override void ChannelRead(IChannelHandlerContext ctx, object msg)
     {
         var byteBuffer = (IByteBuffer)msg;
@@ -52,18 +60,16 @@ public class ClientChannelInboundHandler:ChannelHandlerAdapter
         }
 
         Console.WriteLine("认证："+_authenticated);
-        var clientCommand = new ClientCommandExecutor(_databaseProtocolClientEngine,_connectionSession,ctx,byteBuffer);
-        Task.Run(async () => await clientCommand.ExecuteAsync().ConfigureAwait(false));
-        // var appCommand = new AppCommand(this._serverConnection,ctx,msg);
-        // Task.Run(async () =>
-        // {
-        //     await appCommand.ExecuteAsync();
-        // });
-
-        // var byteBuffer = (IByteBuffer)msg;
-        // var s = byteBuffer.ToString(Encoding.Default);
-        // Console.WriteLine(s);
-        // byteBuffer.Retain();
+        var commandMessageSender = new Command.Command(_databaseProtocolClientEngine,_connectionSession,ctx,byteBuffer);
+        
+        Task.Factory.StartNew(async sender =>
+            {
+                var messageSender = (ICommand)sender!;
+                await _commandListener.OnReceived(messageSender).ConfigureAwait(false);
+            }, commandMessageSender,
+            default(CancellationToken),
+            TaskCreationOptions.DenyChildAttach,
+            TaskScheduler.Default);
     }
 
     private bool Authenticate(IChannelHandlerContext context,IByteBuffer message)

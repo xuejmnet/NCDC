@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using OpenConnector.Host;
 using OpenConnector.Logger;
 using OpenConnector.Merge.Engine;
 using OpenConnector.ProxyClient;
@@ -79,7 +80,8 @@ Start Time:{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}");
             // serivces.AddSingleton<PackDecoder>();
             // serivces.AddSingleton<PackEncoder>();
             // serivces.AddSingleton<ApplicationChannelInboundHandler>();
-            serivces.AddSingleton<IShardingProxy,ShardingProxy>();
+            // serivces.AddSingleton<IShardingProxy,ShardingProxy>();
+            serivces.AddSingleton<IServiceHost,DefaultServiceHost>();
             serivces.AddSingleton<IPacketCodec,MySqlPacketCodecEngine>();
             serivces.AddSingleton<IDatabaseProtocolClientEngine,MySqlClientEngine>();
             serivces.AddSingleton<IClientDbConnection,MySqlClientDbConnection>();
@@ -96,8 +98,6 @@ Start Time:{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}");
             
             ProxyRuntimeContext.Instance.Init(BuildRuntimeOption());
             await StartAsync(buildServiceProvider,shardingProxyOption, GetPort(args));
-            Console.WriteLine("Hello World!");
-            Console.ReadLine();
         }
 
         private static void RegisterDecorator()
@@ -119,8 +119,15 @@ Start Time:{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}");
 
         private static async Task StartAsync(IServiceProvider serviceProvider,ShardingProxyOption option, int? port)
         {
-            var shardingProxy = serviceProvider.GetRequiredService<IShardingProxy>();
-           await shardingProxy.StartAsync();
+            var host = serviceProvider.GetRequiredService<IServiceHost>();
+           await host.StartAsync();
+           while (Console.ReadLine()!="quit")
+           {
+               Console.WriteLine("unknown input params");
+           }
+
+           await host.StopAsync();
+           Console.WriteLine("open connector safe quit");
         }
 
         static ProxyRuntimeOption BuildRuntimeOption()

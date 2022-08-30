@@ -79,7 +79,7 @@ public class ConnectionSession:IDisposable
     }
     public void NotifyChannelIsWritable()
     {
-        _channelWaitWriteableListener.Set();
+        _channelWaitWriteableListener.Wakeup();
     }
 
     public void CloseServerConnection()
