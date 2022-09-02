@@ -13,7 +13,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "antlr4", "antlr4", "{28CC1D
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenConnector.SqlServerParser", "src\antlr4\OpenConnector.SqlServerParser\OpenConnector.SqlServerParser.csproj", "{81CCA66E-A081-4880-8421-BBED2E64ACDB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenConnector.CommandParser", "src\core\OpenConnector.CommandParser\OpenConnector.CommandParser.csproj", "{149F34EB-C266-433A-8730-DCC500FBF32E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenConnector.CommandParser", "src\core\parser\OpenConnector.CommandParser\OpenConnector.CommandParser.csproj", "{149F34EB-C266-433A-8730-DCC500FBF32E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "core", "core", "{13416211-E7FD-42AB-9728-E17F58F306CA}"
 EndProject
@@ -57,9 +57,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenConnector.ProxyClientMy
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenConnector.Protocol", "src\protocol\OpenConnector.Protocol\OpenConnector.Protocol.csproj", "{FB88C552-DF4B-4040-B07B-627C935FD904}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenConnector.CommandParserBinder", "src\core\OpenConnector.CommandParserBinder\OpenConnector.CommandParserBinder.csproj", "{C2E1FF8A-EE80-41AB-9220-785FBCEA3A74}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenConnector.CommandParserBinder", "src\core\parser\OpenConnector.CommandParserBinder\OpenConnector.CommandParserBinder.csproj", "{C2E1FF8A-EE80-41AB-9220-785FBCEA3A74}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenConnector.Configuration", "src\core\OpenConnector.Configuration\OpenConnector.Configuration.csproj", "{47577451-0627-4A56-9878-D7E4E06A72B8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "parser", "parser", "{ABFF6635-BAA5-4E98-B9FA-FEE39FCDC12C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenConnector.ParserTest", "src\core\parser\OpenConnector.ParserTest\OpenConnector.ParserTest.csproj", "{211B9309-3D2C-4BD7-A6F1-2847749F4178}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -151,6 +155,10 @@ Global
 		{47577451-0627-4A56-9878-D7E4E06A72B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{47577451-0627-4A56-9878-D7E4E06A72B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{47577451-0627-4A56-9878-D7E4E06A72B8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{211B9309-3D2C-4BD7-A6F1-2847749F4178}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{211B9309-3D2C-4BD7-A6F1-2847749F4178}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{211B9309-3D2C-4BD7-A6F1-2847749F4178}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{211B9309-3D2C-4BD7-A6F1-2847749F4178}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -180,9 +188,11 @@ Global
 		{C3750B32-000A-4214-A9F3-BDA6A1298D1C} = {527EA305-8E22-4CDF-B41F-355C7599D340}
 		{7EE37FAA-A21A-454F-BE60-4D503CE3D513} = {527EA305-8E22-4CDF-B41F-355C7599D340}
 		{FB88C552-DF4B-4040-B07B-627C935FD904} = {956A16CB-0A7F-44EC-AD72-9A2C693C09B0}
-		{149F34EB-C266-433A-8730-DCC500FBF32E} = {13416211-E7FD-42AB-9728-E17F58F306CA}
-		{C2E1FF8A-EE80-41AB-9220-785FBCEA3A74} = {13416211-E7FD-42AB-9728-E17F58F306CA}
 		{47577451-0627-4A56-9878-D7E4E06A72B8} = {13416211-E7FD-42AB-9728-E17F58F306CA}
+		{ABFF6635-BAA5-4E98-B9FA-FEE39FCDC12C} = {13416211-E7FD-42AB-9728-E17F58F306CA}
+		{211B9309-3D2C-4BD7-A6F1-2847749F4178} = {ABFF6635-BAA5-4E98-B9FA-FEE39FCDC12C}
+		{C2E1FF8A-EE80-41AB-9220-785FBCEA3A74} = {ABFF6635-BAA5-4E98-B9FA-FEE39FCDC12C}
+		{149F34EB-C266-433A-8730-DCC500FBF32E} = {ABFF6635-BAA5-4E98-B9FA-FEE39FCDC12C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FE6C7648-4D94-4A48-B67D-3161C6FE3BC0}

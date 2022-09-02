@@ -5,12 +5,12 @@ namespace OpenConnector.ProxyClient.Command;
 public class DefaultCommandListener : ICommandListener
 {
 
-    public event ReceivedDelegate? Received;
+    public event ReceivedDelegate? OnReceived;
 
-    public ValueTask OnReceived(ICommand messageSender)
+    public ValueTask Received(ICommand messageSender)
     {
-        if (Received != null)
-            return Received(messageSender);
+        if (OnReceived != null)
+            return OnReceived(messageSender);
         return ValueTask.CompletedTask;
     }
 }

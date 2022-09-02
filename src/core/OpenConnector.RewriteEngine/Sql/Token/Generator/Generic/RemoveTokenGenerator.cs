@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-
+using OpenConnector.CommandParser.Abstractions;
 using OpenConnector.CommandParser.Command;
 using OpenConnector.CommandParser.Command.DAL.Dialect.MySql;
 using OpenConnector.CommandParserBinder.Command;

@@ -41,18 +41,18 @@ namespace OpenConnector.ProxyServer.Options.Context
      */
         IDatabaseType GetDatabaseType();
     
-        /**
-     * Get execute engine.
-     * 
-     * @return execute engine
-     */
-        ExecutorEngine GetExecutorEngine();
+     //    /**
+     // * Get execute engine.
+     // * 
+     // * @return execute engine
+     // */
+     //    ExecutorEngine GetExecutorEngine();
     
         /**
      * Get SQL parser engine.
      * 
      * @return SQL parser engine
      */
-        SqlParserEngine GetSqlParserEngine();
+        SqlCommandParser GetSqlParserEngine();
     }
 }

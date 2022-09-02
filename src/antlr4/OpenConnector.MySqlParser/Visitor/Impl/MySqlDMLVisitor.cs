@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text;
+using OpenConnector.CommandParser.Abstractions;
+using OpenConnector.CommandParser.Abstractions.Visitor.Commands;
 using OpenConnector.CommandParser.Command.DML;
 using OpenConnector.CommandParser.Segment.DML;
 using OpenConnector.CommandParser.Segment.DML.Assignment;
@@ -23,8 +25,7 @@ using OpenConnector.CommandParser.Value.Identifier;
 using OpenConnector.CommandParser.Value.Literal.Impl;
 using OpenConnector.CommandParser.Value.ParameterMaker;
 using OpenConnector.Extensions;
-using OpenConnector.Parsers;
-using OpenConnector.Parsers.Visitor.Commands;
+
 
 namespace OpenConnector.MySqlParser.Visitor.Impl
 {

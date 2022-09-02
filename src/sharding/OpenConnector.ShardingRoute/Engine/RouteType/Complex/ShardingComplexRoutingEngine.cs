@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-
+using OpenConnector.CommandParser.Abstractions;
 using OpenConnector.CommandParser.Command;
 using OpenConnector.Common.Config.Properties;
 using OpenConnector.Exceptions;

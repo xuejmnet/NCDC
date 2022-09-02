@@ -1,7 +1,8 @@
-﻿using OpenConnector.CommandParserBinder.MetaData.Schema;
+﻿using OpenConnector.CommandParser.Abstractions;
+using OpenConnector.CommandParserBinder.MetaData.Schema;
 using OpenConnector.Common.MetaData.Decorator;
 using OpenConnector.NewConnector.DataSource;
-using OpenConnector.Parsers;
+
 using OpenConnector.ShardingCommon.Core.MetaData;
 using OpenConnector.ShardingCommon.Core.Rule;
 using OpenConnector.Spi.DataBase.DataBaseType;

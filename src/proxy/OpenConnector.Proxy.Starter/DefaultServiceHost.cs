@@ -43,7 +43,7 @@ public class DefaultServiceHost:IServiceHost
         _databaseProtocolClientEngine = databaseProtocolClientEngine;
         _packetCodec = databaseProtocolClientEngine.GetPacketCodec();
         _encoderHandler = new MessagePacketEncoder(_packetCodec);
-        _commandListener.Received += CommandListener_Received;
+        _commandListener.OnReceived += CommandListenerOnReceived;
     }
 
     public async Task StartAsync()
@@ -129,7 +129,7 @@ public class DefaultServiceHost:IServiceHost
             _logger.LogInformation($"----------停止异常:{e}----------");
         }
     }
-    private ValueTask CommandListener_Received(ICommand command)
+    private ValueTask CommandListenerOnReceived(ICommand command)
     {
         return command.ExecuteAsync();
     }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
+using OpenConnector.CommandParser.Abstractions;
 using OpenConnector.CommandParser.Command;
 using OpenConnector.CommandParser.Segment.DML.Assignment;
 using OpenConnector.CommandParser.Segment.DML.Expr;

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.Logging;
+using OpenConnector.CommandParser.Abstractions;
 using OpenConnector.CommandParser.Command;
 using OpenConnector.CommandParserBinder.Command;
 using OpenConnector.Logger;

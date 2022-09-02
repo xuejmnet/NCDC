@@ -3,7 +3,7 @@ using OpenConnector.Common.Rule;
 using OpenConnector.Merge.Engine;
 using OpenConnector.Spi.DataBase.DataBaseType;
 using System.Collections.Generic;
-
+using OpenConnector.CommandParser.Abstractions;
 using OpenConnector.CommandParser.Command;
 using OpenConnector.CommandParserBinder.Command;
 using OpenConnector.CommandParserBinder.MetaData.Schema;

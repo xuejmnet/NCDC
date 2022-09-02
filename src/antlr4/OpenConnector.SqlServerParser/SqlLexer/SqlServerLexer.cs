@@ -1,6 +1,6 @@
 ﻿using System.IO;
 using Antlr4.Runtime;
-using OpenConnector.Parsers.SqlLexer;
+using OpenConnector.CommandParser.Abstractions.SqlLexer;
 
 namespace OpenConnector.SqlServerParser.SqlLexer
 {

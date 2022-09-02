@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using OpenConnector.CommandParser.Abstractions;
+using OpenConnector.CommandParser.Abstractions.Visitor.Commands;
 using OpenConnector.CommandParser.Command.DML;
 using OpenConnector.CommandParser.Segment.DML;
 using OpenConnector.CommandParser.Segment.DML.Assignment;
@@ -19,8 +21,7 @@ using OpenConnector.CommandParser.Value.Collection;
 using OpenConnector.CommandParser.Value.Identifier;
 using OpenConnector.CommandParser.Value.Literal.Impl;
 using OpenConnector.Extensions;
-using OpenConnector.Parsers;
-using OpenConnector.Parsers.Visitor.Commands;
+
 
 namespace OpenConnector.SqlServerParser.Visitor.Impl
 {

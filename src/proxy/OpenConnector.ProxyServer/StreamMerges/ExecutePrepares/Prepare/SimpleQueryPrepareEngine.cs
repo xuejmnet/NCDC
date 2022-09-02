@@ -29,7 +29,7 @@ namespace OpenConnector.ProxyServer.StreamMerges.ExecutePrepares.Prepare
     public sealed class SimpleQueryPrepareEngine: ProxyServer.StreamMerges.ExecutePrepares.Prepare.BasePrepareEngine
     {
 
-        public SimpleQueryPrepareEngine(ICollection<IBaseRule> rules, ConfigurationProperties properties, OpenConnectorMetaData metaData, SqlParserEngine sqlParserEngine) : base(rules, properties, metaData, sqlParserEngine)
+        public SimpleQueryPrepareEngine(ICollection<IBaseRule> rules, ConfigurationProperties properties, OpenConnectorMetaData metaData, SqlCommandParser sqlCommandParser) : base(rules, properties, metaData, sqlCommandParser)
         {
         }
 

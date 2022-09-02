@@ -1,5 +1,6 @@
 using System;
 using OpenConnector.Base;
+using OpenConnector.CommandParser.Abstractions;
 using OpenConnector.CommandParser.Command;
 using OpenConnector.CommandParser.Segment.DML.Pagination;
 using OpenConnector.CommandParserBinder.Command;

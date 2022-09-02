@@ -1,4 +1,5 @@
 ﻿using System;
+using OpenConnector.CommandParser.Abstractions;
 using OpenConnector.CommandParser.Command;
 using OpenConnector.Common.Rule;
 using OpenConnector.CommandParserBinder.Command;

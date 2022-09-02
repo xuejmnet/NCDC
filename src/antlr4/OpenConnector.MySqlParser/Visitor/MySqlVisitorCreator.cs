@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using OpenConnector.CommandParser.Abstractions.Visitor;
+using OpenConnector.CommandParser.Abstractions.Visitor.Commands;
 using OpenConnector.MySqlParser.Visitor.Impl;
-using OpenConnector.Parsers.Visitor;
-using OpenConnector.Parsers.Visitor.Commands;
 
 namespace OpenConnector.MySqlParser.Visitor
 {

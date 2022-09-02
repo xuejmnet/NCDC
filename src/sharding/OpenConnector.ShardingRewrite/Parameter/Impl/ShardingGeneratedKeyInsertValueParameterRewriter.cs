@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 
 using OpenConnector.Base;
+using OpenConnector.CommandParser.Abstractions;
 using OpenConnector.CommandParser.Command;
 using OpenConnector.Extensions;
 using OpenConnector.CommandParserBinder.Command;

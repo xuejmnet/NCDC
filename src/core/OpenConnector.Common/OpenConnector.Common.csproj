@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\core\OpenConnector.CommandParserBinder\OpenConnector.CommandParserBinder.csproj" />
+    <ProjectReference Include="..\..\core\parser\OpenConnector.CommandParserBinder\OpenConnector.CommandParserBinder.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,7 +1,8 @@
-﻿using OpenConnector.CommandParser.Command.TCL;
+﻿using OpenConnector.CommandParser.Abstractions;
+using OpenConnector.CommandParser.Abstractions.Visitor.Commands;
+using OpenConnector.CommandParser.Command.TCL;
 using OpenConnector.CommandParser.Segment.TCL;
-using OpenConnector.Parsers;
-using OpenConnector.Parsers.Visitor.Commands;
+
 
 namespace OpenConnector.MySqlParser.Visitor.Impl
 {

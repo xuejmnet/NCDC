@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using Antlr4.Runtime;
+using OpenConnector.CommandParser.Abstractions;
+using OpenConnector.CommandParser.Abstractions.SqlParser;
 using OpenConnector.ParserEngine.Core;
-using OpenConnector.Parsers;
-using OpenConnector.Parsers.SqlParser;
+
 
 namespace OpenConnector.MySqlParser.SqlParser
 {

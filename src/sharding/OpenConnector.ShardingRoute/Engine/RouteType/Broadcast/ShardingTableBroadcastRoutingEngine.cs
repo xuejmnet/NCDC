@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using OpenConnector.Base;
+using OpenConnector.CommandParser.Abstractions;
 using OpenConnector.CommandParser.Command;
 using OpenConnector.CommandParser.Command.DDL;
 using OpenConnector.CommandParser.Segment.DDL.Index;

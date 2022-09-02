@@ -1,8 +1,10 @@
 using System.Data.Common;
 using MySqlConnector;
+using OpenConnector.CommandParser.Abstractions;
 using OpenConnector.CommandParser.Command;
 using OpenConnector.CommandParser.Command.DML;
 using OpenConnector.Common;
+using OpenConnector.Enums;
 using OpenConnector.ParserEngine;
 using OpenConnector.Protocol.MySql.Constant;
 using OpenConnector.Protocol.MySql.Packet;

@@ -1,4 +1,5 @@
 
+using OpenConnector.CommandParser.Abstractions;
 using OpenConnector.CommandParser.Command;
 using OpenConnector.CommandParserBinder.Command;
 using OpenConnector.RewriteEngine.Sql.Token.SimpleObject;

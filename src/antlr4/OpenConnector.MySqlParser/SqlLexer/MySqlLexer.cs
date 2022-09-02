@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using Antlr4.Runtime;
-using OpenConnector.Parsers.SqlLexer;
+using OpenConnector.CommandParser.Abstractions.SqlLexer;
 
 namespace OpenConnector.MySqlParser.SqlLexer
 {

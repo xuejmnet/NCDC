@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using OpenConnector.CommandParser.Abstractions;
 using OpenConnector.CommandParser.Command;
 using OpenConnector.CommandParser.SqlParseEngines;
 using OpenConnector.CommandParserBinder;
@@ -24,15 +25,15 @@ namespace OpenConnector.Route
     {
         private readonly OpenConnectorMetaData _metaData;
         private readonly ConfigurationProperties _properties;
-        private readonly SqlParserEngine _parserEngine;
+        private readonly SqlCommandParser _commandParser;
         private readonly IDictionary<IBaseRule, IRouteDecorator> _decorators =
             new Dictionary<IBaseRule, IRouteDecorator>();
 
 
-        public DataNodeRouter(OpenConnectorMetaData metaData, SqlParserEngine parserEngine, ConfigurationProperties properties)
+        public DataNodeRouter(OpenConnectorMetaData metaData, SqlCommandParser commandParser, ConfigurationProperties properties)
         {
             _metaData = metaData;
-            _parserEngine = parserEngine;
+            _commandParser = commandParser;
             _properties = properties;
         }
         public void RegisterDecorator(IBaseRule rule, IRouteDecorator decorator)
@@ -72,18 +73,18 @@ namespace OpenConnector.Route
 
         private RouteContext CreateRouteContext(string sql, ParameterContext parameterContext, bool useCache)
         {
-            var sqlCommand = _parserEngine.Parse(sql, useCache);
-            try
-            {
-                
+            var sqlCommand = _commandParser.Parse(sql, useCache);
+            // try
+            // {
+            //     
                 ISqlCommandContext<ISqlCommand> sqlCommandContext = SqlCommandContextFactory.Create(_metaData.Schema, sql, parameterContext, sqlCommand);
                 return new RouteContext(sqlCommandContext, parameterContext, new RouteResult());
-                // TODO should pass parameters for master-slave
-            }
-            catch (IndexOutOfRangeException ex)
-            {
-                return new RouteContext(new GenericSqlCommandContext<ISqlCommand>(sqlCommand), parameterContext, new RouteResult());
-            }
+            //     // TODO should pass parameters for master-slave
+            // }
+            // catch (IndexOutOfRangeException ex)
+            // {
+            //     return new RouteContext(new GenericSqlCommandContext<ISqlCommand>(sqlCommand), parameterContext, new RouteResult());
+            // }
         }
     }
 }

@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 using System.Data.Common;
 using System.Linq;
 using System.Text;
-
+using OpenConnector.CommandParser.Abstractions;
 using OpenConnector.CommandParser.Command;
 using OpenConnector.CommandParser.Command.DML;
 using OpenConnector.CommandParser.Segment.DML.Assignment;

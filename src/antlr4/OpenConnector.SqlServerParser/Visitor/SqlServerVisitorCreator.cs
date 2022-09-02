@@ -1,6 +1,6 @@
 using System;
-using OpenConnector.Parsers.Visitor;
-using OpenConnector.Parsers.Visitor.Commands;
+using OpenConnector.CommandParser.Abstractions.Visitor;
+using OpenConnector.CommandParser.Abstractions.Visitor.Commands;
 using OpenConnector.SqlServerParser.Visitor.Impl;
 
 namespace OpenConnector.SqlServerParser.Visitor

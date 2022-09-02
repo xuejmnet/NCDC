@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Logging;
+using OpenConnector.CommandParser.Abstractions;
 using OpenConnector.CommandParser.Command;
 using OpenConnector.CommandParser.Command.DAL.Dialect;
 using OpenConnector.CommandParser.Command.DAL.Dialect.MySql;
@@ -6,6 +7,7 @@ using OpenConnector.CommandParser.Command.DCL;
 using OpenConnector.CommandParser.Command.TCL;
 using OpenConnector.CommandParser.Util;
 using OpenConnector.Common;
+using OpenConnector.Enums;
 using OpenConnector.Logger;
 using OpenConnector.ProxyServer.Abstractions;
 using OpenConnector.ProxyServer.Session;

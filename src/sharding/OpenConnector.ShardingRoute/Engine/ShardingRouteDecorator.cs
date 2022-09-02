@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 
 using OpenConnector.Base;
+using OpenConnector.CommandParser.Abstractions;
 using OpenConnector.CommandParser.Command;
 using OpenConnector.CommandParser.Command.DML;
 using OpenConnector.Common.Config.Properties;

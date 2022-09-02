@@ -1,6 +1,6 @@
 using System;
 using System.Linq;
-
+using OpenConnector.CommandParser.Abstractions;
 using OpenConnector.CommandParser.Command;
 using OpenConnector.CommandParser.Constant;
 using OpenConnector.CommandParser.Segment.DML.Order.Item;

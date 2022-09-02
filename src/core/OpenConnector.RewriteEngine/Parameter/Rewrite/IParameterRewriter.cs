@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Text;
-
+using OpenConnector.CommandParser.Abstractions;
 using OpenConnector.CommandParser.Command;
 using OpenConnector.CommandParserBinder.Command;
 using OpenConnector.RewriteEngine.Parameter.Builder;

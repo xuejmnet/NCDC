@@ -1,5 +1,5 @@
 using System;
-using OpenConnector.Parsers.Visitor.Commands;
+using OpenConnector.CommandParser.Abstractions.Visitor.Commands;
 
 namespace OpenConnector.SqlServerParser.Visitor.Impl
 {

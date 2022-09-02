@@ -1,4 +1,5 @@
-﻿using OpenConnector.CommandParser.Command;
+﻿using OpenConnector.CommandParser.Abstractions;
+using OpenConnector.CommandParser.Command;
 using OpenConnector.CommandParserBinder.Command;
 using OpenConnector.CommandParserBinder.MetaData.Schema;
 using OpenConnector.Common.Config.Properties;

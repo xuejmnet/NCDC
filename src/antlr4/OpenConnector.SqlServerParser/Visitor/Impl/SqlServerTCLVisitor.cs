@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using OpenConnector.CommandParser.Abstractions;
+using OpenConnector.CommandParser.Abstractions.Visitor.Commands;
 using OpenConnector.CommandParser.Command.TCL;
 using OpenConnector.Extensions;
-using OpenConnector.Parsers;
-using OpenConnector.Parsers.Visitor.Commands;
+
 
 namespace OpenConnector.SqlServerParser.Visitor.Impl
 {

@@ -1,5 +1,5 @@
 using System;
-
+using OpenConnector.CommandParser.Abstractions;
 using OpenConnector.CommandParser.Command;
 using OpenConnector.CommandParser.Command.DML;
 using OpenConnector.CommandParserBinder.Command;

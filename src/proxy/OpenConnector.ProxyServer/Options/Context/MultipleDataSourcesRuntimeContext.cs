@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using OpenConnector.CommandParser.Abstractions;
 using OpenConnector.CommandParserBinder.MetaData.Schema;
 using OpenConnector.Common.Config;
 using OpenConnector.Common.MetaData;
@@ -6,7 +7,7 @@ using OpenConnector.Common.MetaData.DataSource;
 using OpenConnector.Common.Rule;
 using OpenConnector.Logger;
 using OpenConnector.NewConnector.DataSource;
-using OpenConnector.Parsers;
+
 using OpenConnector.Spi.DataBase.DataBaseType;
 
 namespace OpenConnector.ProxyServer.Options.Context
@@ -22,7 +23,7 @@ namespace OpenConnector.ProxyServer.Options.Context
     /// <summary>
     /// 
     /// </summary>
-    public abstract class MultipleDataSourcesRuntimeContext<T> : ProxyServer.Options.Context.AbstractRuntimeContext<T> where T : IBaseRule
+    public abstract class MultipleDataSourcesRuntimeContext<T> : AbstractRuntimeContext<T> where T : IBaseRule
     {
         private static readonly ILogger<MultipleDataSourcesRuntimeContext<T>> _logger =
             InternalLoggerFactory.CreateLogger<MultipleDataSourcesRuntimeContext<T>>();

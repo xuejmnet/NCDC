@@ -4,6 +4,7 @@ using System.Data.Common;
 using System.Linq;
 using System.Text;
 using Antlr4.Runtime.Misc;
+using OpenConnector.CommandParser.Abstractions;
 using OpenConnector.CommandParser.Command;
 using OpenConnector.CommandParser.Segment.Predicate;
 using OpenConnector.DataStructure.RangeStructure;

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using OpenConnector.CommandParser.Abstractions;
+using OpenConnector.CommandParser.Abstractions.Visitor.Commands;
 using OpenConnector.CommandParser.Command.DDL;
 using OpenConnector.CommandParser.Segment.DDL;
 using OpenConnector.CommandParser.Segment.DDL.Column;
@@ -12,8 +14,7 @@ using OpenConnector.CommandParser.Segment.Generic;
 using OpenConnector.CommandParser.Segment.Generic.Table;
 using OpenConnector.CommandParser.Value.Collection;
 using OpenConnector.Extensions;
-using OpenConnector.Parsers;
-using OpenConnector.Parsers.Visitor.Commands;
+
 
 namespace OpenConnector.SqlServerParser.Visitor.Impl
 {

@@ -6,7 +6,7 @@ public interface ICommandListener
     /// <summary>
     /// 接收到的消息
     /// </summary>
-    event ReceivedDelegate Received;
+    event ReceivedDelegate OnReceived;
 
-    ValueTask OnReceived(ICommand messageSender);
+    ValueTask Received(ICommand messageSender);
 }

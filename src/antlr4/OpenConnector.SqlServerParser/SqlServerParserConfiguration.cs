@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.Text;
 using Antlr4.Runtime;
-using OpenConnector.Parsers;
-using OpenConnector.Parsers.SqlParser;
-using OpenConnector.Parsers.Visitor;
+using OpenConnector.CommandParser.Abstractions;
+using OpenConnector.CommandParser.Abstractions.SqlParser;
+using OpenConnector.CommandParser.Abstractions.Visitor;
+
 using OpenConnector.SqlServerParser.SqlLexer;
 using OpenConnector.SqlServerParser.Visitor;
 

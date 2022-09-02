@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 
 using OpenConnector.Api.Database.DatabaseType;
+using OpenConnector.CommandParser.Abstractions;
 using OpenConnector.CommandParser.Command;
 using OpenConnector.CommandParser.Constant;
 using OpenConnector.CommandParser.Segment.DML.Order.Item;

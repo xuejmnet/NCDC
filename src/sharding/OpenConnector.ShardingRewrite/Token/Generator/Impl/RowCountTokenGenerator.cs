@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 
 using OpenConnector.Base;
+using OpenConnector.CommandParser.Abstractions;
 using OpenConnector.CommandParser.Command;
 using OpenConnector.CommandParser.Segment.DML.Pagination;
 using OpenConnector.CommandParserBinder.Command;

@@ -4,6 +4,7 @@ using System.Linq;
 using Antlr4.Runtime.Misc;
 
 using OpenConnector.Base;
+using OpenConnector.CommandParser.Abstractions;
 using OpenConnector.CommandParser.Command;
 using OpenConnector.Extensions;
 using OpenConnector.Merge.Reader.Memory;

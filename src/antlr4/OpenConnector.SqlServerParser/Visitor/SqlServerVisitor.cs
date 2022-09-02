@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
+using OpenConnector.CommandParser.Abstractions;
 using OpenConnector.CommandParser.Command.DML;
 using OpenConnector.CommandParser.Constant;
 using OpenConnector.CommandParser.Predicate;
@@ -26,7 +27,7 @@ using OpenConnector.CommandParser.Value.KeyWord;
 using OpenConnector.CommandParser.Value.Literal.Impl;
 using OpenConnector.CommandParser.Value.ParameterMaker;
 using OpenConnector.Exceptions;
-using OpenConnector.Parsers;
+
 
 namespace OpenConnector.SqlServerParser.Visitor
 {

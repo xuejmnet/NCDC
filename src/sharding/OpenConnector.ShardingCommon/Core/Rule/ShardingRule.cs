@@ -54,7 +54,7 @@ namespace OpenConnector.ShardingCommon.Core.Rule
                 throw new ArgumentNullException(nameof(shardingRuleConfig));
             if (dataSourceNames == null || dataSourceNames.IsEmpty())
                 throw new ArgumentNullException("data sources cannot be empty.");
-            this.RuleConfiguration = shardingRuleConfig;
+            RuleConfiguration = shardingRuleConfig;
             ShardingDataSourceNames = new ShardingDataSourceNames(shardingRuleConfig, dataSourceNames);
             TableRules = CreateTableRules(shardingRuleConfig);
             BroadcastTables = shardingRuleConfig.BroadcastTables;

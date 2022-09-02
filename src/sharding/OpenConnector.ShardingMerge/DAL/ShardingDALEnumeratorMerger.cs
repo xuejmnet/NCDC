@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 
 using OpenConnector.Api.Database;
+using OpenConnector.CommandParser.Abstractions;
 using OpenConnector.CommandParser.Command;
 using OpenConnector.CommandParser.Command.DAL.Dialect.MySql;
 using OpenConnector.Merge.Engine.Merger;

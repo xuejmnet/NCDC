@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using OpenConnector.CommandParser.Abstractions;
+using OpenConnector.CommandParser.Abstractions.Visitor.Commands;
 using OpenConnector.CommandParser.Command.DAL.Dialect;
 using OpenConnector.CommandParser.Command.DAL.Dialect.MySql;
 using OpenConnector.CommandParser.Segment.DAL;
@@ -8,8 +10,7 @@ using OpenConnector.CommandParser.Segment.Generic;
 using OpenConnector.CommandParser.Segment.Generic.Table;
 using OpenConnector.CommandParser.Value.Identifier;
 using OpenConnector.CommandParser.Value.Literal.Impl;
-using OpenConnector.Parsers;
-using OpenConnector.Parsers.Visitor.Commands;
+
 
 namespace OpenConnector.MySqlParser.Visitor.Impl
 {

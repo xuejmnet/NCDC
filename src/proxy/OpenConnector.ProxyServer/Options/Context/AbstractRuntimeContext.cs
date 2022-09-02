@@ -1,11 +1,12 @@
 ﻿using OpenConnector.Api.Database.DatabaseType;
+using OpenConnector.CommandParser.Abstractions;
 using OpenConnector.CommandParser.SqlParseEngines;
 using OpenConnector.Common.Config.Properties;
 using OpenConnector.Common.MetaData;
 using OpenConnector.Common.Rule;
 using OpenConnector.Executor.Engine;
 using OpenConnector.ParserEngine;
-using OpenConnector.Parsers;
+
 using OpenConnector.Spi.DataBase.DataBaseType;
 
 namespace OpenConnector.ProxyServer.Options.Context
@@ -29,18 +30,18 @@ namespace OpenConnector.ProxyServer.Options.Context
 
         private readonly IDatabaseType databaseType;
 
-        private readonly ExecutorEngine executorEngine;
+        // private readonly ExecutorEngine executorEngine;
 
-        private readonly SqlParserEngine sqlParserEngine;
+        private readonly SqlCommandParser _sqlCommandParser;
 
         protected AbstractRuntimeContext(T rule,ISqlParserConfiguration sqlParserConfiguration, IDictionary<string, object> props, IDatabaseType databaseType)
         {
             this.rule = rule;
             properties = new ConfigurationProperties();
             this.databaseType = databaseType;
-            executorEngine = ExecutorEngine.Instance;
+            // executorEngine = ExecutorEngine.Instance;
             //更加数据库类型获取对应的解析器
-            sqlParserEngine = new SqlParserEngine(sqlParserConfiguration);
+            _sqlCommandParser = new SqlCommandParser(sqlParserConfiguration);
            
         }
 
@@ -65,14 +66,14 @@ namespace OpenConnector.ProxyServer.Options.Context
             return databaseType;
         }
 
-        public ExecutorEngine GetExecutorEngine()
-        {
-            return executorEngine;
-        }
+        // public ExecutorEngine GetExecutorEngine()
+        // {
+        //     return executorEngine;
+        // }
 
-        public SqlParserEngine GetSqlParserEngine()
+        public SqlCommandParser GetSqlParserEngine()
         {
-            return sqlParserEngine;
+            return _sqlCommandParser;
         }
 
         public void Dispose()
