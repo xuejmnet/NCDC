@@ -3,8 +3,8 @@ using System.Data.Common;
 using OpenConnector.CommandParserBinder.MetaData.Column;
 using OpenConnector.CommandParserBinder.MetaData.Index;
 using OpenConnector.CommandParserBinder.MetaData.Table;
+using OpenConnector.DataSource;
 using OpenConnector.Exceptions;
-using OpenConnector.NewConnector.DataSource;
 
 namespace OpenConnector.CommandParserBinder.MetaData.Schema
 {

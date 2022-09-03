@@ -1,4 +1,5 @@
-﻿using OpenConnector.CommandParser.SqlParseEngines;
+﻿using OpenConnector.CommandParser.Abstractions;
+using OpenConnector.CommandParser.SqlParseEngines;
 using OpenConnector.Common.Config.Properties;
 using OpenConnector.Common.Rule;
 using OpenConnector.Executor.Engine;
@@ -53,6 +54,6 @@ namespace OpenConnector.ProxyServer.Options.Context
      * 
      * @return SQL parser engine
      */
-        SqlCommandParser GetSqlParserEngine();
+        ISqlCommandParser GetSqlParserEngine();
     }
 }

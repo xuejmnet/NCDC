@@ -1,4 +1,4 @@
-﻿namespace OpenConnector.NewConnector.DataSource
+﻿namespace OpenConnector.DataSource
 {
     /*
     * @Author: xjm

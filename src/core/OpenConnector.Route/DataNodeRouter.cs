@@ -25,12 +25,12 @@ namespace OpenConnector.Route
     {
         private readonly OpenConnectorMetaData _metaData;
         private readonly ConfigurationProperties _properties;
-        private readonly SqlCommandParser _commandParser;
+        private readonly ISqlCommandParser _commandParser;
         private readonly IDictionary<IBaseRule, IRouteDecorator> _decorators =
             new Dictionary<IBaseRule, IRouteDecorator>();
 
 
-        public DataNodeRouter(OpenConnectorMetaData metaData, SqlCommandParser commandParser, ConfigurationProperties properties)
+        public DataNodeRouter(OpenConnectorMetaData metaData, ISqlCommandParser commandParser, ConfigurationProperties properties)
         {
             _metaData = metaData;
             _commandParser = commandParser;

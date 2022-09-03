@@ -1,8 +1,8 @@
 using MySqlConnector;
 using OpenConnector.Api.Database.DatabaseType;
+using OpenConnector.DataSource;
 using OpenConnector.Exceptions;
 using OpenConnector.MySqlParser;
-using OpenConnector.NewConnector.DataSource;
 using OpenConnector.ShardingApi.Api.Config.Sharding;
 using OpenConnector.ShardingApi.Api.Config.Sharding.Strategy;
 using OpenConnector.ShardingApi.Api.Sharding.Standard;

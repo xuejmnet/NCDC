@@ -19,7 +19,11 @@ namespace OpenConnector.MySqlParser
     /// Email: 326308290@qq.com
     public sealed class MySqlParserConfiguration:ISqlParserConfiguration
     {
-
+        private readonly ISqlVisitorCreator _sqlVisitorCreator;
+        public MySqlParserConfiguration()
+        {
+            _sqlVisitorCreator=new MySqlVisitorCreator();
+        }
         public ISqlParser CreateSqlParser(string sql)
         {
             var charStream = CharStreams.fromString(sql);
@@ -30,7 +34,7 @@ namespace OpenConnector.MySqlParser
 
         public ISqlVisitorCreator CreateVisitorCreator()
         {
-            return new MySqlVisitorCreator();
+            return _sqlVisitorCreator;
         }
 
     }

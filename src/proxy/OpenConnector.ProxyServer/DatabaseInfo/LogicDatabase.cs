@@ -2,6 +2,7 @@ using System.Collections.Concurrent;
 using System.Data.Common;
 using Microsoft.Extensions.Logging;
 using MySqlConnector;
+using OpenConnector.DataSource;
 using OpenConnector.Exceptions;
 using OpenConnector.Logger;
 using OpenConnector.Transaction;

@@ -1,6 +1,6 @@
 ﻿using System.Data.Common;
 
-namespace OpenConnector.NewConnector.DataSource
+namespace OpenConnector.DataSource
 {
     /*
     * @Author: xjm

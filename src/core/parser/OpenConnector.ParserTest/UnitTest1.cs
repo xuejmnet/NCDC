@@ -1,5 +1,6 @@
 using OpenConnector.CommandParser.Abstractions;
 using OpenConnector.CommandParser.Command.DML;
+using OpenConnector.CommandParser.Constant;
 using OpenConnector.CommandParser.SqlParseEngines;
 using OpenConnector.MySqlParser;
 
@@ -20,6 +21,9 @@ public class Tests
     {
         var sqlCommand = _sqlCommandParser.Parse("select * from test",false);
         Assert.True(sqlCommand is SelectCommand);
-        Assert.Pass();
+        var sqlCommand1 = _sqlCommandParser.Parse("select id,name,age from test",false);
+        Assert.True(sqlCommand1 is SelectCommand);
+        var selectCommand1 = (SelectCommand)sqlCommand1;
+        Assert.True(3==selectCommand1.Projections.GetProjections().Count);
     }
 }

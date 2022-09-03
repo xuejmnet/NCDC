@@ -13,36 +13,6 @@ namespace OpenConnector.SqlServerParser.Visitor
 */
     public sealed class SqlServerVisitorCreator:ISqlVisitorCreator
     {
-        //public Type GetDMLVisitorType()
-        //{
-        //    return typeof(SqlServerDMLVisitor);
-        //}
-
-        //public Type GetDDLVisitorType()
-        //{
-        //    return typeof(SqlServerDDLVisitor);
-        //}
-
-        //public Type GetTCLVisitorType()
-        //{
-        //    return typeof(SqlServerTCLVisitor);
-        //}
-
-        //public Type GetDCLVisitorType()
-        //{
-        //    return typeof(SqlServerDCLVisitor);
-        //}
-
-        //public Type GetDALVisitorType()
-        //{
-        //    return typeof(SqlServerDALVisitor);
-        //}
-
-        //public Type GetRLVisitorType()
-        //{
-        //    return null;
-        //}
-
         public IDMLVisitor CreateDMLVisitor()
         {
             return new SqlServerDMLVisitor();

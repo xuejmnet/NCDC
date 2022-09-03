@@ -43,18 +43,6 @@ namespace OpenConnector.CommandParserBinder.Command.DML
 
         private readonly bool _containsSubQuery;
 
-        // TODO to be remove, for test case only
-        public SelectCommandContext(SelectCommand sqlCommand, GroupByContext groupByContext,
-        OrderByContext orderByContext, ProjectionsContext projectionsContext, PaginationContext paginationContext) : base(sqlCommand)
-        {
-            _tablesContext = new TablesContext(sqlCommand.GetSimpleTableSegments());
-            this._groupByContext =groupByContext;
-            this._orderByContext = orderByContext;
-            this._projectionsContext =projectionsContext;
-            this._paginationContext =paginationContext;
-            _containsSubQuery = ContainsSubQuery();
-        }
-
         public SelectCommandContext(SchemaMetaData schemaMetaData, string sql, ParameterContext parameterContext, SelectCommand sqlCommand) : base(sqlCommand)
         {
             _tablesContext = new TablesContext(sqlCommand.GetSimpleTableSegments());

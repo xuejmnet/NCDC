@@ -20,6 +20,11 @@ namespace OpenConnector.SqlServerParser
     */
     public sealed class SqlServerParserConfiguration : ISqlParserConfiguration
     {
+        private readonly ISqlVisitorCreator _sqlVisitorCreator;
+        public SqlServerParserConfiguration()
+        {
+            _sqlVisitorCreator = new SqlServerVisitorCreator();
+        }
         public ISqlParser CreateSqlParser(string sql)
         {
             var charStream = CharStreams.fromString(sql);
@@ -30,7 +35,7 @@ namespace OpenConnector.SqlServerParser
 
         public ISqlVisitorCreator CreateVisitorCreator()
         {
-            return new SqlServerVisitorCreator();
+            return _sqlVisitorCreator;
         }
 
     }

@@ -1,4 +1,5 @@
-﻿using OpenConnector.CommandParser.SqlParseEngines;
+﻿using OpenConnector.CommandParser.Abstractions;
+using OpenConnector.CommandParser.SqlParseEngines;
 using OpenConnector.Common.Config.Properties;
 using OpenConnector.Common.MetaData;
 using OpenConnector.Common.Rule;
@@ -26,10 +27,10 @@ namespace OpenConnector.ProxyServer.StreamMerges.ExecutePrepares.Prepare
  *       for PostgreSQL is Simple Query;
  * </pre>
  */
-    public sealed class SimpleQueryPrepareEngine: ProxyServer.StreamMerges.ExecutePrepares.Prepare.BasePrepareEngine
+    public sealed class SimpleQueryPrepareEngine: BasePrepareEngine
     {
 
-        public SimpleQueryPrepareEngine(ICollection<IBaseRule> rules, ConfigurationProperties properties, OpenConnectorMetaData metaData, SqlCommandParser sqlCommandParser) : base(rules, properties, metaData, sqlCommandParser)
+        public SimpleQueryPrepareEngine(ICollection<IBaseRule> rules, ConfigurationProperties properties, OpenConnectorMetaData metaData, ISqlCommandParser sqlCommandParser) : base(rules, properties, metaData, sqlCommandParser)
         {
         }
 

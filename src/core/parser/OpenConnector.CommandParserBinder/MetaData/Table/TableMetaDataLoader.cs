@@ -1,6 +1,6 @@
 ﻿using OpenConnector.CommandParserBinder.MetaData.Column;
 using OpenConnector.CommandParserBinder.MetaData.Index;
-using OpenConnector.NewConnector.DataSource;
+using OpenConnector.DataSource;
 
 namespace OpenConnector.CommandParserBinder.MetaData.Table
 {

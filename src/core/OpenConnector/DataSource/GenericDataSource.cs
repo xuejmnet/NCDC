@@ -1,7 +1,6 @@
 ﻿using System.Data.Common;
-using OpenConnector.NewConnector.DataSource;
 
-namespace OpenConnector.ProxyServer.Options
+namespace OpenConnector.DataSource
 {
     /*
     * @Author: xjm

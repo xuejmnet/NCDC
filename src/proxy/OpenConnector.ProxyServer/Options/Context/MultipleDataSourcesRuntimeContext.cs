@@ -5,9 +5,8 @@ using OpenConnector.Common.Config;
 using OpenConnector.Common.MetaData;
 using OpenConnector.Common.MetaData.DataSource;
 using OpenConnector.Common.Rule;
+using OpenConnector.DataSource;
 using OpenConnector.Logger;
-using OpenConnector.NewConnector.DataSource;
-
 using OpenConnector.Spi.DataBase.DataBaseType;
 
 namespace OpenConnector.ProxyServer.Options.Context

@@ -8,9 +8,9 @@ using Microsoft.Extensions.Logging;
 using OpenConnector.CommandParserBinder.MetaData.Schema;
 using OpenConnector.CommandParserBinder.MetaData.Table;
 using OpenConnector.Common.Rule;
+using OpenConnector.DataSource;
 using OpenConnector.Exceptions;
 using OpenConnector.Logger;
-using OpenConnector.NewConnector.DataSource;
 using OpenConnector.ShardingCommon.Core.Rule;
 using OpenConnector.Spi.DataBase.DataBaseType;
 

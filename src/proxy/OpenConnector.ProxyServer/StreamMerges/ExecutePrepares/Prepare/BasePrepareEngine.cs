@@ -1,3 +1,4 @@
+using OpenConnector.CommandParser.Abstractions;
 using OpenConnector.CommandParser.SqlParseEngines;
 using OpenConnector.Common.Config.Properties;
 using OpenConnector.Common.MetaData;
@@ -31,7 +32,7 @@ namespace OpenConnector.ProxyServer.StreamMerges.ExecutePrepares.Prepare
         private readonly ConfigurationProperties _properties;
         private readonly OpenConnectorMetaData _metaData;
 
-        protected BasePrepareEngine(ICollection<IBaseRule> rules, ConfigurationProperties properties, OpenConnectorMetaData metaData, SqlCommandParser sqlCommandParser)
+        protected BasePrepareEngine(ICollection<IBaseRule> rules, ConfigurationProperties properties, OpenConnectorMetaData metaData, ISqlCommandParser sqlCommandParser)
         {
             _router = new DataNodeRouter(metaData,sqlCommandParser, properties);
             _rules = rules;

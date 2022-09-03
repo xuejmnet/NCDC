@@ -71,7 +71,7 @@ namespace OpenConnector.ProxyServer.Options.Context
         //     return executorEngine;
         // }
 
-        public SqlCommandParser GetSqlParserEngine()
+        public ISqlCommandParser GetSqlParserEngine()
         {
             return _sqlCommandParser;
         }

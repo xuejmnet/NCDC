@@ -65,6 +65,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "parser", "parser", "{ABFF66
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenConnector.ParserTest", "src\core\parser\OpenConnector.ParserTest\OpenConnector.ParserTest.csproj", "{211B9309-3D2C-4BD7-A6F1-2847749F4178}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "route", "route", "{548AD322-4FF9-43EB-BB06-89C5F4A1AAA7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenConnector.RouteTest", "src\core\route\OpenConnector.RouteTest\OpenConnector.RouteTest.csproj", "{C775B5CC-A17C-4EB9-9034-531C2253AD8E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -159,6 +163,10 @@ Global
 		{211B9309-3D2C-4BD7-A6F1-2847749F4178}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{211B9309-3D2C-4BD7-A6F1-2847749F4178}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{211B9309-3D2C-4BD7-A6F1-2847749F4178}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C775B5CC-A17C-4EB9-9034-531C2253AD8E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C775B5CC-A17C-4EB9-9034-531C2253AD8E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C775B5CC-A17C-4EB9-9034-531C2253AD8E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C775B5CC-A17C-4EB9-9034-531C2253AD8E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -193,6 +201,8 @@ Global
 		{211B9309-3D2C-4BD7-A6F1-2847749F4178} = {ABFF6635-BAA5-4E98-B9FA-FEE39FCDC12C}
 		{C2E1FF8A-EE80-41AB-9220-785FBCEA3A74} = {ABFF6635-BAA5-4E98-B9FA-FEE39FCDC12C}
 		{149F34EB-C266-433A-8730-DCC500FBF32E} = {ABFF6635-BAA5-4E98-B9FA-FEE39FCDC12C}
+		{548AD322-4FF9-43EB-BB06-89C5F4A1AAA7} = {13416211-E7FD-42AB-9728-E17F58F306CA}
+		{C775B5CC-A17C-4EB9-9034-531C2253AD8E} = {548AD322-4FF9-43EB-BB06-89C5F4A1AAA7}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FE6C7648-4D94-4A48-B67D-3161C6FE3BC0}
