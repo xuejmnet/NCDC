@@ -1,7 +1,7 @@
+using OpenConnector.Configuration.User;
 using OpenConnector.Protocol.Helper;
 using OpenConnector.Protocol.MySql.Constant;
 using OpenConnector.Protocol.MySql.Packet.Handshake;
-using OpenConnector.ShardingCommon.User;
 
 namespace OpenConnector.ProxyClientMySql.Authentication.Authenticator;
 

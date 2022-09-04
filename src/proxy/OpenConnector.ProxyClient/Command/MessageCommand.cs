@@ -1,6 +1,7 @@
 using DotNetty.Buffers;
 using DotNetty.Transport.Channels;
 using Microsoft.Extensions.Logging;
+using OpenConnector.Configuration.Session;
 using OpenConnector.Logger;
 using OpenConnector.Protocol.Packets;
 using OpenConnector.ProxyClient.Abstractions;

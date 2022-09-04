@@ -1,7 +1,7 @@
 using OpenConnector.Exceptions;
 using OpenConnector.Transaction;
 
-namespace OpenConnector.ProxyServer.Session.Transaction;
+namespace OpenConnector.Configuration.Connection;
 
 /// <summary>
 /// 事务状态

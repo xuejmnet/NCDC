@@ -1,6 +1,6 @@
 using System.Text;
+using OpenConnector.Configuration.User;
 using OpenConnector.Protocol.MySql.Constant;
-using OpenConnector.ShardingCommon.User;
 
 namespace OpenConnector.ProxyClientMySql.Authentication.Authenticator;
 

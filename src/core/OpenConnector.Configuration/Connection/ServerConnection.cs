@@ -1,11 +1,10 @@
 using OpenConnector.Base;
+using OpenConnector.Configuration.Connection.Abstractions;
 using OpenConnector.Exceptions;
-using OpenConnector.ProxyServer.Abstractions;
-using OpenConnector.ProxyServer.Commons;
 using OpenConnector.ProxyServer.Session.Connection.Abstractions;
 using OpenConnector.Transaction;
 
-namespace OpenConnector.ProxyServer.Session.Connection;
+namespace OpenConnector.Configuration.Connection;
 
 public class ServerConnection : IServerConnection, IDisposable, IAdoMethodReplier<IServerDbConnection>
 {
@@ -21,14 +20,14 @@ public class ServerConnection : IServerConnection, IDisposable, IAdoMethodReplie
     public IDictionary<string, List<IServerDbConnection>> CachedConnections { get; } =
         new Dictionary<string, List<IServerDbConnection>>();
 
-    public ServerConnection(ConnectionSession connectionSession)
+    public ServerConnection(IConnectionSession connectionSession)
     {
         _transactionType = TransactionTypeEnum.LOCAL;
         ConnectionSession = connectionSession;
         Replier = new LinkedList<Action<IServerDbConnection>>();
     }
 
-    public ConnectionSession ConnectionSession { get; }
+    public IConnectionSession ConnectionSession { get; }
 
     public List<IServerDbConnection> GetConnections(ConnectionModeEnum connectionMode, string dataSourceName,
         int connectionSize)

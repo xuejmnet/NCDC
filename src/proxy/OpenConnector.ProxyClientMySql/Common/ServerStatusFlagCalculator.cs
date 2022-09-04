@@ -1,3 +1,4 @@
+using OpenConnector.Configuration.Session;
 using OpenConnector.Protocol.MySql.Constant;
 using OpenConnector.ProxyServer.Session;
 

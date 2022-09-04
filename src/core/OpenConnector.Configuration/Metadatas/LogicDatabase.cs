@@ -1,48 +1,47 @@
 using System.Collections.Concurrent;
 using System.Data.Common;
 using Microsoft.Extensions.Logging;
-using MySqlConnector;
 using OpenConnector.DataSource;
 using OpenConnector.Exceptions;
 using OpenConnector.Logger;
-using OpenConnector.Transaction;
-using OpenConnector.ProxyServer.Commons;
-using OpenConnector.ProxyServer.Options;
 using OpenConnector.ProxyServer.Session.Connection.Abstractions;
+using OpenConnector.Transaction;
 
-namespace OpenConnector.ProxyServer.DatabaseInfo;
+namespace OpenConnector.Configuration.Metadatas;
 
-public sealed class LogicDatabase
+public class LogicDatabase:ILogicDatabase
 {
     private static ILogger<LogicDatabase> _logger = InternalLoggerFactory.CreateLogger<LogicDatabase>();
-    public string Database { get; }
+    public string Name { get; }
     private readonly ConcurrentDictionary<string /*data source name*/, IProxyDatabase> _proxyDatabases = new();
 
     private readonly ConcurrentDictionary<string/*username*/, object?> _connectorUsers = new();
+
+    public LogicDatabase(string name)
+    {
+        Name = name;
+    }
+
     public string DefaultDataSourceName { get; private set; }
     public string DefaultConnectionString { get; private set; }
 
-    public LogicDatabase( string database)
-    {
-        Database = database;
-    }
 
-    public bool AddDataSource(string dataSourceName, string connectionString, bool isDefault)
+    public bool AddDataSource(string dataSourceName, string connectionString,DbProviderFactory dbProviderFactory, bool isDefault)
     {
         if (isDefault)
         {
             if (_proxyDatabases.Values.Any(o => o.IsDefault))
-                throw new ArgumentException($"{Database}:multi default data source");
+                throw new ArgumentException($"{Name}:multi default data source");
             DefaultDataSourceName = dataSourceName;
             DefaultConnectionString = connectionString;
         }
 
         if (_proxyDatabases.TryGetValue(dataSourceName, out var proxyDatabase))
         {
-            throw new ArgumentException($"{Database}:datasource name repeat");
+            throw new ArgumentException($"{Name}:datasource name repeat");
         }
 
-        var genericDataSource = new GenericDataSource(dataSourceName,MySqlConnectorFactory.Instance,connectionString, isDefault);
+        var genericDataSource = new GenericDataSource(dataSourceName,dbProviderFactory,connectionString, isDefault);
         return _proxyDatabases.TryAdd(dataSourceName, new ProxyDatabase(genericDataSource));
     }
 
@@ -110,5 +109,5 @@ public sealed class LogicDatabase
     {
         return proxyDatabase.CreateServerDbConnection();
     }
-
+    
 }

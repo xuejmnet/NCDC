@@ -1,6 +1,5 @@
-using OpenConnector.ProxyServer.Abstractions;
-using OpenConnector.ProxyServer.Commons;
-using OpenConnector.ProxyServer.Session;
+using OpenConnector.Configuration;
+using OpenConnector.Configuration.Session;
 using OpenConnector.ProxyServer.Session.Connection.Abstractions;
 using OpenConnector.ProxyServer.StreamMerges.Executors.Context;
 

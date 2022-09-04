@@ -1,4 +1,4 @@
-namespace OpenConnector.ProxyServer.Abstractions;
+namespace OpenConnector.Configuration;
 
 public interface IAdoMethodReplier<T>
 {

@@ -1,4 +1,5 @@
 using DotNetty.Transport.Channels;
+using OpenConnector.Configuration.Session;
 using OpenConnector.Protocol.Packets;
 using OpenConnector.ProxyServer.Session;
 

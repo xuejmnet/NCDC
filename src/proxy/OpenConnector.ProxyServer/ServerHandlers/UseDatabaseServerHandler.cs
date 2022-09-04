@@ -1,5 +1,6 @@
 using OpenConnector.CommandParser.Command.DAL.Dialect.MySql;
 using OpenConnector.CommandParser.Util;
+using OpenConnector.Configuration.Session;
 using OpenConnector.Exceptions;
 using OpenConnector.ProxyServer.Abstractions;
 using OpenConnector.ProxyServer.ServerHandlers.Results;

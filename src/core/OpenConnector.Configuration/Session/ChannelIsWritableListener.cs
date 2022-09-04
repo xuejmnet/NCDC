@@ -1,6 +1,6 @@
 using Nito.AsyncEx;
 
-namespace OpenConnector.ProxyServer.Session;
+namespace OpenConnector.Configuration.Session;
 
 public sealed class ChannelIsWritableListener
 {

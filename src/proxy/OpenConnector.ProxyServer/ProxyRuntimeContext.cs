@@ -1,12 +1,13 @@
 using System.Collections.Concurrent;
 using Microsoft.Extensions.Logging;
 using OpenConnector.Base;
+using OpenConnector.Configuration.Metadatas;
+using OpenConnector.Configuration.User;
 using OpenConnector.Extensions;
 using OpenConnector.Logger;
 using OpenConnector.ProxyServer.Commons;
 using OpenConnector.ProxyServer.DatabaseInfo;
 using OpenConnector.ProxyServer.Options;
-using OpenConnector.ShardingCommon.User;
 
 namespace OpenConnector.ProxyServer;
 

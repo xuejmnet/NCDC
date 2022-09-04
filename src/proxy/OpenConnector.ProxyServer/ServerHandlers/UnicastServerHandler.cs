@@ -1,3 +1,4 @@
+using OpenConnector.Configuration.Session;
 using OpenConnector.Exceptions;
 using OpenConnector.Extensions;
 using OpenConnector.ProxyServer.Abstractions;

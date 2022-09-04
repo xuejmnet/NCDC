@@ -1,5 +1,5 @@
+using OpenConnector.Configuration.User;
 using OpenConnector.ProxyClient.Authentication;
-using OpenConnector.ShardingCommon.User;
 
 namespace OpenConnector.ProxyClientMySql.Authentication.Authenticator;
 

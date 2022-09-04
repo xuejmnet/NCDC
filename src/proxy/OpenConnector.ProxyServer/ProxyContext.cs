@@ -1,4 +1,5 @@
 using MySqlConnector;
+using Nito.AsyncEx;
 using OpenConnector.Api.Database.DatabaseType;
 using OpenConnector.DataSource;
 using OpenConnector.Exceptions;

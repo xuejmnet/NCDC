@@ -1,4 +1,5 @@
 using System.Data.Common;
+using OpenConnector.Configuration;
 using OpenConnector.ProxyServer.Commons;
 using OpenConnector.ProxyServer.StreamMerges.Executors.Context;
 using OpenConnector.ProxyServer.StreamMerges.Results;

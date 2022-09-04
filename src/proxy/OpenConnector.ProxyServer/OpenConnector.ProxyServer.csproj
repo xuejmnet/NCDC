@@ -8,12 +8,12 @@
 
     <ItemGroup>
       <PackageReference Include="MySqlConnector" Version="2.1.13" />
-      <PackageReference Include="Nito.AsyncEx" Version="5.1.2" />
     </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\..\antlr4\OpenConnector.MySqlParser\OpenConnector.MySqlParser.csproj" />
       <ProjectReference Include="..\..\antlr4\OpenConnector.SqlServerParser\OpenConnector.SqlServerParser.csproj" />
+      <ProjectReference Include="..\..\core\OpenConnector.Configuration\OpenConnector.Configuration.csproj" />
       <ProjectReference Include="..\..\protocol\OpenConnector.Protocol\OpenConnector.Protocol.csproj" />
       <ProjectReference Include="..\..\sharding\OpenConnector.ShardingMerge\OpenConnector.ShardingMerge.csproj" />
       <ProjectReference Include="..\..\sharding\OpenConnector.ShardingRewrite\OpenConnector.ShardingRewrite.csproj" />

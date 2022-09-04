@@ -1,6 +1,7 @@
 using MySqlConnector;
 using OpenConnector.CommandParser.Abstractions;
 using OpenConnector.CommandParser.Command.DML;
+using OpenConnector.Configuration.Session;
 using OpenConnector.Protocol.MySql.Constant;
 using OpenConnector.Protocol.MySql.Packet.Generic;
 using OpenConnector.Protocol.MySql.Payload;

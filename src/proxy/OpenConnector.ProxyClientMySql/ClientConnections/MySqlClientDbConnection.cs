@@ -1,5 +1,6 @@
 using DotNetty.Transport.Channels;
 using Microsoft.Extensions.Logging;
+using OpenConnector.Configuration.Session;
 using OpenConnector.Logger;
 using OpenConnector.Protocol.MySql.Constant;
 using OpenConnector.Protocol.MySql.Packet.Command;

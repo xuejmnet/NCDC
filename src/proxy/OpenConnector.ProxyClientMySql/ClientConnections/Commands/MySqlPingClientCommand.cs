@@ -1,3 +1,4 @@
+using OpenConnector.Configuration.Session;
 using OpenConnector.Protocol.MySql.Payload;
 using OpenConnector.ProxyClient.Abstractions;
 using OpenConnector.ProxyClientMySql.ClientConnections.DataReaders.Ping;

@@ -1,10 +1,8 @@
 using OpenConnector.DataSource;
-using OpenConnector.ProxyServer.Abstractions;
-using OpenConnector.ProxyServer.Commons;
 using OpenConnector.ProxyServer.Session.Connection;
 using OpenConnector.ProxyServer.Session.Connection.Abstractions;
 
-namespace OpenConnector.ProxyServer.DatabaseInfo;
+namespace OpenConnector.Configuration.Metadatas;
 
 public sealed class ProxyDatabase:IProxyDatabase
 {

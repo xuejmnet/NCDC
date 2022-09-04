@@ -3,6 +3,8 @@ using DotNetty.Buffers;
 using DotNetty.Transport.Channels;
 using DotNetty.Transport.Channels.Sockets;
 using Microsoft.Extensions.Logging;
+using OpenConnector.Configuration.Session;
+using OpenConnector.Configuration.User;
 using OpenConnector.Logger;
 using OpenConnector.Protocol.MySql.Constant;
 using OpenConnector.Protocol.MySql.Packet.Generic;
@@ -10,7 +12,6 @@ using OpenConnector.ProxyClient.Command;
 using OpenConnector.ProxyServer;
 using OpenConnector.ProxyServer.Abstractions;
 using OpenConnector.ProxyServer.Session;
-using OpenConnector.ShardingCommon.User;
 using OpenConnector.Transaction;
 
 namespace OpenConnector.ProxyClient.DotNetty;

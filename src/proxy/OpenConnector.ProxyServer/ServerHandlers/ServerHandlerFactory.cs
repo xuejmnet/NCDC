@@ -7,6 +7,7 @@ using OpenConnector.CommandParser.Command.DCL;
 using OpenConnector.CommandParser.Command.TCL;
 using OpenConnector.CommandParser.Util;
 using OpenConnector.Common;
+using OpenConnector.Configuration.Session;
 using OpenConnector.Enums;
 using OpenConnector.Logger;
 using OpenConnector.ProxyServer.Abstractions;

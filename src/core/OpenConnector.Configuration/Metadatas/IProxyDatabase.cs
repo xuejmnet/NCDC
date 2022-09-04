@@ -1,7 +1,6 @@
-using OpenConnector.ProxyServer.Abstractions;
 using OpenConnector.ProxyServer.Session.Connection.Abstractions;
 
-namespace OpenConnector.ProxyServer.DatabaseInfo;
+namespace OpenConnector.Configuration.Metadatas;
 
 public interface IProxyDatabase
 {

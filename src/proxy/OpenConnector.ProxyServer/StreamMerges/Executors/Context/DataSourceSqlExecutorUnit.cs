@@ -1,3 +1,4 @@
+using OpenConnector.Configuration;
 using OpenConnector.ProxyServer.Commons;
 
 namespace OpenConnector.ProxyServer.StreamMerges.Executors.Context

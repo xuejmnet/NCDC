@@ -1,6 +1,6 @@
 using System.Collections.Concurrent;
 
-namespace OpenConnector.ShardingCommon.User
+namespace OpenConnector.Configuration.User
 {
     public class OpenConnectorUser
     {

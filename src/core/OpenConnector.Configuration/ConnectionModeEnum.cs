@@ -1,4 +1,4 @@
-﻿namespace OpenConnector.ProxyServer.Commons
+﻿namespace OpenConnector.Configuration
 {
     public enum ConnectionModeEnum
     {

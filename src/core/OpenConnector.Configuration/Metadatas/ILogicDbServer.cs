@@ -1,4 +1,5 @@
 using System.Collections.Immutable;
+using OpenConnector.Configuration.User;
 
 namespace OpenConnector.Configuration.Metadatas;
 
@@ -23,7 +24,7 @@ public interface ILogicDbServer
     /// 获取所有的逻辑数据库
     /// </summary>
     /// <returns></returns>
-    IReadOnlyCollection<ILogicDatabase> GetAllLogicDatabases();
+    IEnumerable<string> GetAllLogicDatabaseNames();
 
     /// <summary>
     /// 是否包含对应的逻辑数据库名称
@@ -45,4 +46,11 @@ public interface ILogicDbServer
     /// <param name="logicDatabaseName"></param>
     /// <returns></returns>
     bool DropLogicDatabase(string logicDatabaseName);
+
+
+    bool DatabaseExists(string? database);
+
+    ILogicDatabase? GetDatabase(string? database);
+
+    OpenConnectorUser? GetUser(string username);
 }

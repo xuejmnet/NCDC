@@ -1,3 +1,4 @@
+using OpenConnector.Configuration.Session;
 using OpenConnector.Protocol.MySql.Packet.Generic;
 using OpenConnector.Protocol.MySql.Payload;
 using OpenConnector.Protocol.Packets;

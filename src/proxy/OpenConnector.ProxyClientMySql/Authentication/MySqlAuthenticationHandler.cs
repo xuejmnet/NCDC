@@ -4,7 +4,6 @@ using OpenConnector.Protocol.MySql.Packet.Handshake;
 using OpenConnector.ProxyClientMySql.Authentication.Authenticator;
 using OpenConnector.ProxyServer;
 using OpenConnector.ShardingCommon.Core.Rule;
-using OpenConnector.ShardingCommon.User;
 
 namespace OpenConnector.ProxyClientMySql.Authentication;
 

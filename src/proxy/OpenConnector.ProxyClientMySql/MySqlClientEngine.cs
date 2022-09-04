@@ -1,3 +1,4 @@
+using OpenConnector.Configuration.Session;
 using OpenConnector.ProxyClient;
 using OpenConnector.ProxyClient.Abstractions;
 using OpenConnector.ProxyClient.Authentication;

@@ -1,6 +1,6 @@
 using OpenConnector.Extensions;
 
-namespace OpenConnector.ShardingCommon.User
+namespace OpenConnector.Configuration.User
 {
     public sealed class Grantee
     {

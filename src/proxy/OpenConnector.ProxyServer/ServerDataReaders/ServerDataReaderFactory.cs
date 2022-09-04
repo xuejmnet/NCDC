@@ -1,4 +1,5 @@
 using System.Data.Common;
+using OpenConnector.Configuration.Session;
 using OpenConnector.Extensions;
 using OpenConnector.ProxyServer.Abstractions;
 using OpenConnector.ProxyServer.Options.Context;

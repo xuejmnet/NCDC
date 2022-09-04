@@ -1,4 +1,5 @@
 using System.Text;
+using OpenConnector.Configuration.Session;
 using OpenConnector.Protocol.MySql.Constant;
 using OpenConnector.Protocol.MySql.Packet.Command;
 using OpenConnector.Protocol.MySql.Packet.Generic;

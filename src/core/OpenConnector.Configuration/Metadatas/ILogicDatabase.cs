@@ -1,3 +1,6 @@
+using OpenConnector.ProxyServer.Session.Connection.Abstractions;
+using OpenConnector.Transaction;
+
 namespace OpenConnector.Configuration.Metadatas;
 
 /// <summary>
@@ -9,4 +12,14 @@ public interface ILogicDatabase
     /// 逻辑数据库名称
     /// </summary>
     string Name { get; }
+    
+     string DefaultDataSourceName { get; }
+     string DefaultConnectionString { get;}
+
+      bool AddConnectorUser(string username);
+
+      bool UserNameAuthorize(string username);
+
+     List<IServerDbConnection> GetServerDbConnections(ConnectionModeEnum connectionMode, string dataSourceName,
+         int connectionSize, TransactionTypeEnum transactionType);
 }

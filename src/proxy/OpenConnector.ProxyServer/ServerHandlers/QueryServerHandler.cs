@@ -1,5 +1,6 @@
 using System.Data.Common;
 using MySqlConnector;
+using OpenConnector.Configuration.Session;
 using OpenConnector.Exceptions;
 using OpenConnector.ProxyServer.Abstractions;
 using OpenConnector.ProxyServer.Binaries;
