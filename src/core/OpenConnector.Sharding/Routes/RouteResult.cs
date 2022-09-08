@@ -26,7 +26,7 @@ namespace OpenConnector.Sharding.Routes;
          */
         public ICollection<string> GetActualDataSourceNames()
         {
-            return _routeUnits.Select(o => o.DataSourceMapper.ActualName).ToHashSet();
+            return _routeUnits.Select(o => o.DataSource).ToHashSet();
         }
 
         /**
@@ -51,7 +51,7 @@ namespace OpenConnector.Sharding.Routes;
             ISet<string> result = new HashSet<string>();
             foreach (var routeUnit in _routeUnits)
             {
-                if (actualDataSourceName.EqualsIgnoreCase(routeUnit.DataSourceMapper.ActualName))
+                if (actualDataSourceName.EqualsIgnoreCase(routeUnit.DataSource))
                 {
                     result.AddAll(routeUnit.GetActualTableNames(logicTableName));
                 }
@@ -85,7 +85,7 @@ namespace OpenConnector.Sharding.Routes;
             ISet<string> result = new HashSet<string>();
             foreach (var routeUnit in _routeUnits)
             {
-                if (actualDataSourceName.EqualsIgnoreCase(routeUnit.DataSourceMapper.ActualName))
+                if (actualDataSourceName.EqualsIgnoreCase(routeUnit.DataSource))
                 {
                     result.AddAll(routeUnit.GetLogicTableNames());
                 }

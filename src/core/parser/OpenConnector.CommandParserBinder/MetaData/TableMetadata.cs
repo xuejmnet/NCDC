@@ -20,7 +20,11 @@ public class TableMetadata
         ShardingTableColumns = new HashSet<string>();
         ShardingDataSourceColumns = new HashSet<string>();
         ShardingKeyGenerator = new NotSupportShardingKeyGenerator();
+        DataSources = new List<string>();
+        TableNames = new List<string>();
     }
+    public ICollection<string> DataSources { get; }
+    public ICollection<string> TableNames { get; }
 
     /// <summary>
     /// 是否多数据源

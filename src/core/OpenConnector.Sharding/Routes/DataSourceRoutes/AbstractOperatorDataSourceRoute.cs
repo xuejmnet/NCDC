@@ -1,11 +1,12 @@
 using OpenConnector.CommandParser.Abstractions;
 using OpenConnector.CommandParserBinder.Command;
+using OpenConnector.Sharding.Abstractions;
 using OpenConnector.Sharding.Extensions;
 using OpenConnector.Sharding.Helpers;
 using OpenConnector.ShardingAdoNet;
 using OpenConnector.Shardings;
 
-namespace OpenConnector.Sharding.Abstractions;
+namespace OpenConnector.Sharding.Routes.DataSourceRoutes;
 
 public abstract class AbstractOperatorDataSourceRoute:AbstractFilterDataSourceRoute
 {

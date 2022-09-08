@@ -2,9 +2,9 @@ using OpenConnector.CommandParser.Abstractions;
 using OpenConnector.CommandParserBinder.Command;
 using OpenConnector.ShardingAdoNet;
 
-namespace OpenConnector.Sharding.Abstractions;
+namespace OpenConnector.Sharding.Routes.DataSourceRoutes;
 
-public interface ITableRoute
+public interface IDataSourceRoute
 {
     string TableName { get; }
     ICollection<string> Route(ISqlCommandContext<ISqlCommand> sqlCommandContext,ParameterContext parameterContext);

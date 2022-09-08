@@ -4,13 +4,13 @@ namespace OpenConnector.Sharding.Routes;
 
 public sealed class RouteUnit
 {
-    public RouteMapper DataSourceMapper { get; }
+    public string DataSource { get; }
 
     public ICollection<RouteMapper> TableMappers { get; }
 
-    public RouteUnit(RouteMapper dataSourceMapper, ICollection<RouteMapper> tableMappers)
+    public RouteUnit(string dataSource, ICollection<RouteMapper> tableMappers)
     {
-        DataSourceMapper = dataSourceMapper;
+        DataSource = dataSource;
         TableMappers = tableMappers;
     }
 
@@ -47,7 +47,7 @@ public sealed class RouteUnit
     {
         foreach (var tableMapper in TableMappers)
         {
-            if (logicDataSourceName.EqualsIgnoreCase(DataSourceMapper.LogicName) &&
+            if (logicDataSourceName.EqualsIgnoreCase(DataSource) &&
                 actualTableName.EqualsIgnoreCase(tableMapper.ActualName))
             {
                 return tableMapper;
@@ -59,7 +59,7 @@ public sealed class RouteUnit
 
     private bool Equals(RouteUnit other)
     {
-        return Equals(DataSourceMapper, other.DataSourceMapper) && Equals(TableMappers, other.TableMappers);
+        return Equals(DataSource, other.DataSource) && Equals(TableMappers, other.TableMappers);
     }
 
     public override bool Equals(object obj)
@@ -71,8 +71,8 @@ public sealed class RouteUnit
     {
         unchecked
         {
-            return ((DataSourceMapper != null ? DataSourceMapper.GetHashCode() : 0) * 397) ^
-                   (TableMappers != null ? TableMappers.GetHashCode() : 0);
+            return (DataSource.GetHashCode() * 397) ^
+                   TableMappers.GetHashCode();
         }
     }
 }
