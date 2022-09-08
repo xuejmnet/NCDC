@@ -1,7 +1,7 @@
 ﻿using OpenConnector.CommandParser.Command.DML;
 using OpenConnector.CommandParser.Predicate;
+using OpenConnector.CommandParser.Segment.DML.Predicate;
 using OpenConnector.CommandParser.Segment.Generic.Table;
-using OpenConnector.CommandParser.Segment.Predicate;
 using OpenConnector.CommandParserBinder.Segment.Table;
 using OpenConnector.Extensions;
 

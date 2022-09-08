@@ -6,7 +6,7 @@ using System.Text;
 using Antlr4.Runtime.Misc;
 using OpenConnector.CommandParser.Abstractions;
 using OpenConnector.CommandParser.Command;
-using OpenConnector.CommandParser.Segment.Predicate;
+using OpenConnector.CommandParser.Segment.DML.Predicate;
 using OpenConnector.DataStructure.RangeStructure;
 using OpenConnector.Exceptions;
 using OpenConnector.Extensions;
@@ -98,7 +98,7 @@ namespace OpenConnector.ShardingRoute.Engine.Condition.Engine
             foreach (var predicate in andPredicate.GetPredicates())
             {
                 var tableName = sqlCommandContext.GetTablesContext()
-                    .FindTableName(predicate.GetColumn(), schemaMetaData);
+                    .FindTableName(predicate.GetColumn(), null);
                 if (tableName == null ||
                     !shardingRule.IsShardingColumn(predicate.GetColumn().GetIdentifier().GetValue(), tableName))
                 {

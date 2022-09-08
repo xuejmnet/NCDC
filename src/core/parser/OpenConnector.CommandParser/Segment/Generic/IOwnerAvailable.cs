@@ -9,7 +9,7 @@
     */
     public interface IOwnerAvailable:ISqlSegment
     {
-        OwnerSegment GetOwner();
+        OwnerSegment? GetOwner();
         void SetOwner(OwnerSegment owner);
     }
 }

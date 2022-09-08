@@ -4,8 +4,8 @@ using OpenConnector.CommandParser.Segment.DML;
 using OpenConnector.CommandParser.Segment.DML.Item;
 using OpenConnector.CommandParser.Segment.DML.Order;
 using OpenConnector.CommandParser.Segment.DML.Pagination.limit;
+using OpenConnector.CommandParser.Segment.DML.Predicate;
 using OpenConnector.CommandParser.Segment.Generic.Table;
-using OpenConnector.CommandParser.Segment.Predicate;
 
 namespace OpenConnector.CommandParser.Command.DML
 {

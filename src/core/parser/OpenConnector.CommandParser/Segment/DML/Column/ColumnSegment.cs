@@ -17,7 +17,7 @@ namespace OpenConnector.CommandParser.Segment.DML.Column
         private readonly int _startIndex;
         private readonly int _stopIndex;
         private readonly IdentifierValue _identifier;
-        private  OwnerSegment owner;
+        private  OwnerSegment? owner;
 
         public ColumnSegment(int startIndex, int stopIndex, IdentifierValue identifier)
         {
@@ -41,12 +41,12 @@ namespace OpenConnector.CommandParser.Segment.DML.Column
             return _identifier;
         }
 
-        public OwnerSegment GetOwner()
+        public OwnerSegment? GetOwner()
         {
             return owner;
         }
 
-        public void SetOwner(OwnerSegment owner)
+        public void SetOwner(OwnerSegment? owner)
         {
             this.owner = owner;
         }

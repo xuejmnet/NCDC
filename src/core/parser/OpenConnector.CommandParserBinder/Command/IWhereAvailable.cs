@@ -1,4 +1,4 @@
-using OpenConnector.CommandParser.Segment.Predicate;
+using OpenConnector.CommandParser.Segment.DML.Predicate;
 
 namespace OpenConnector.CommandParserBinder.Command
 {
@@ -11,6 +11,6 @@ namespace OpenConnector.CommandParserBinder.Command
     public interface IWhereAvailable
     {
         
-        WhereSegment GetWhere();
+        WhereSegment? GetWhere();
     }
 }

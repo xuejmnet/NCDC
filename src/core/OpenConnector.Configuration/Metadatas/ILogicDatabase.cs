@@ -1,3 +1,4 @@
+using OpenConnector.CommandParserBinder.MetaData.Schema;
 using OpenConnector.ProxyServer.Session.Connection.Abstractions;
 using OpenConnector.Transaction;
 
@@ -22,4 +23,5 @@ public interface ILogicDatabase
 
      List<IServerDbConnection> GetServerDbConnections(ConnectionModeEnum connectionMode, string dataSourceName,
          int connectionSize, TransactionTypeEnum transactionType);
+     SchemaMetaData SchemaMetaData { get; }
 }

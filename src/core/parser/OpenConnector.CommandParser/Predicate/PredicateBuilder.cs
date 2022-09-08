@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using OpenConnector.CommandParser.Abstractions;
 using OpenConnector.CommandParser.Constant;
-using OpenConnector.CommandParser.Segment.Predicate;
+using OpenConnector.CommandParser.Segment.DML.Predicate;
 using OpenConnector.Exceptions;
 using OpenConnector.Extensions;
 

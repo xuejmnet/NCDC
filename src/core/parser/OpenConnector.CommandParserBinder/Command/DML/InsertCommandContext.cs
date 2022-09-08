@@ -1,5 +1,6 @@
 ﻿using OpenConnector.CommandParser.Command.DML;
 using OpenConnector.CommandParser.Segment.Generic.Table;
+using OpenConnector.CommandParserBinder.MetaData;
 using OpenConnector.CommandParserBinder.MetaData.Schema;
 using OpenConnector.CommandParserBinder.Segment.Insert.Keygen;
 using OpenConnector.CommandParserBinder.Segment.Insert.Keygen.Engine;
@@ -26,12 +27,12 @@ namespace OpenConnector.CommandParserBinder.Command.DML
 
         private readonly GeneratedKeyContext _generatedKeyContext;
 
-        public InsertCommandContext(SchemaMetaData schemaMetaData, ParameterContext parameterContext, InsertCommand insertCommand) : base(insertCommand)
+        public InsertCommandContext(ITableMetadataManager tableMetadataManager, ParameterContext parameterContext, InsertCommand insertCommand) : base(insertCommand)
         {
             _tablesContext = new TablesContext(insertCommand.Table);
-            _columnNames = insertCommand.UseDefaultColumns() ? schemaMetaData.GetAllColumnNames(insertCommand.Table.GetTableName().GetIdentifier().GetValue()) : insertCommand.GetColumnNames();
+            _columnNames = insertCommand.UseDefaultColumns() ? tableMetadataManager.GetAllColumnNames(insertCommand.Table.GetTableName().GetIdentifier().GetValue()).ToList() : insertCommand.GetColumnNames();
             _insertValueContexts = GetInsertValueContexts(parameterContext);
-            _generatedKeyContext = new GeneratedKeyContextEngine(schemaMetaData).CreateGenerateKeyContext(parameterContext, insertCommand);
+            _generatedKeyContext = new GeneratedKeyContextEngine(tableMetadataManager).CreateGenerateKeyContext(parameterContext, insertCommand);
         }
 
         private List<InsertValueContext> GetInsertValueContexts(ParameterContext parameterContext)

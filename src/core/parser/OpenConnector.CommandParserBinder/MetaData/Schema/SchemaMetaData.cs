@@ -38,7 +38,7 @@ namespace OpenConnector.CommandParserBinder.MetaData.Schema
          * @param tableName tableName table name
          * @return table mata data
          */
-        public TableMetaData Get(string tableName)
+        public TableMetaData? Get(string tableName)
         {
             if (_tables.TryGetValue(tableName.ToLower(), out var result))
             {

@@ -3,6 +3,7 @@ using OpenConnector.CommandParser.Command;
 using OpenConnector.CommandParser.Command.DML;
 using OpenConnector.CommandParserBinder.Command;
 using OpenConnector.CommandParserBinder.Command.DML;
+using OpenConnector.CommandParserBinder.MetaData;
 using OpenConnector.CommandParserBinder.MetaData.Schema;
 using OpenConnector.ShardingAdoNet;
 
@@ -16,10 +17,10 @@ namespace OpenConnector.CommandParserBinder
 */
     public static class SqlCommandContextFactory
     {
-        public static ISqlCommandContext<ISqlCommand> Create(SchemaMetaData schemaMetaData, string sql, ParameterContext parameterContext, ISqlCommand sqlCommand) {
+        public static ISqlCommandContext<ISqlCommand> Create(ITableMetadataManager tableMetadataManager, string sql, ParameterContext parameterContext, ISqlCommand sqlCommand) {
             if(sqlCommand is DMLCommand dmlCommand)
             {
-                return GetDMLCommandContext(schemaMetaData, sql, parameterContext, dmlCommand);
+                return GetDMLCommandContext(tableMetadataManager, sql, parameterContext, dmlCommand);
             }
            
             //if (sqlCommand is DMLStatement) {
@@ -37,11 +38,11 @@ namespace OpenConnector.CommandParserBinder
             return new GenericSqlCommandContext<ISqlCommand>(sqlCommand);
         }
 
-        private static ISqlCommandContext<ISqlCommand> GetDMLCommandContext(SchemaMetaData schemaMetaData, string sql, ParameterContext parameterContext, DMLCommand sqlCommand)
+        private static ISqlCommandContext<ISqlCommand> GetDMLCommandContext(ITableMetadataManager tableMetadataManager, string sql, ParameterContext parameterContext, DMLCommand sqlCommand)
         {
             if (sqlCommand is SelectCommand selectCommand)
             {
-                return new SelectCommandContext(schemaMetaData, sql, parameterContext, selectCommand);
+                return new SelectCommandContext(tableMetadataManager, sql, parameterContext, selectCommand);
             }
             if (sqlCommand is UpdateCommand updateCommand)
             {
@@ -52,7 +53,7 @@ namespace OpenConnector.CommandParserBinder
                 return new DeleteCommandContext(deleteCommand);
             }
             if (sqlCommand is InsertCommand insertCommand) {
-                return new InsertCommandContext(schemaMetaData, parameterContext, insertCommand);
+                return new InsertCommandContext(tableMetadataManager, parameterContext, insertCommand);
             }
             throw new NotSupportedException($"Unsupported SQL statement `{sqlCommand.GetType().Name}`");
         }

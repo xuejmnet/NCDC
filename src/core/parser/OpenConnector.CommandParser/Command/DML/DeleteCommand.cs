@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
+using OpenConnector.CommandParser.Segment.DML.Predicate;
 using OpenConnector.CommandParser.Segment.Generic.Table;
-using OpenConnector.CommandParser.Segment.Predicate;
 
 namespace OpenConnector.CommandParser.Command.DML
 {

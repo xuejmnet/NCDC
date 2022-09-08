@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using OpenConnector.CommandParser.Segment.DML.Column;
+using OpenConnector.CommandParser.Segment.DML.Predicate;
 using OpenConnector.CommandParser.Segment.Generic;
 using OpenConnector.CommandParser.Segment.Generic.Table;
-using OpenConnector.CommandParser.Segment.Predicate;
 using OpenConnector.Exceptions;
 
 namespace OpenConnector.CommandParser.Predicate

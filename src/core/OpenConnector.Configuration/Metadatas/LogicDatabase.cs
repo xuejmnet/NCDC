@@ -1,6 +1,7 @@
 using System.Collections.Concurrent;
 using System.Data.Common;
 using Microsoft.Extensions.Logging;
+using OpenConnector.CommandParserBinder.MetaData.Schema;
 using OpenConnector.DataSource;
 using OpenConnector.Exceptions;
 using OpenConnector.Logger;
@@ -79,6 +80,8 @@ public class LogicDatabase:ILogicDatabase
             return CreateServerDbConnections(transactionType, dataSourceName, proxyDatabase, connectionSize);
         // }
     }
+
+    public SchemaMetaData SchemaMetaData { get; }
 
     private List<IServerDbConnection> CreateServerDbConnections(TransactionTypeEnum transactionType,string dataSourceName,IProxyDatabase proxyDatabase,int connectionSize)
     {

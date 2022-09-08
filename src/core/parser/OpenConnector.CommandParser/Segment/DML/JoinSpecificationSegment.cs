@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using OpenConnector.CommandParser.Segment.DML.Column;
-using OpenConnector.CommandParser.Segment.Predicate;
+using OpenConnector.CommandParser.Segment.DML.Predicate;
 
 namespace OpenConnector.CommandParser.Segment.DML
 {

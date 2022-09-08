@@ -1,6 +1,7 @@
 using OpenConnector.CommandParser.Constant;
 using OpenConnector.CommandParser.Segment.DML.Item;
 using OpenConnector.CommandParser.Segment.Generic.Table;
+using OpenConnector.CommandParserBinder.MetaData;
 using OpenConnector.CommandParserBinder.MetaData.Schema;
 using OpenConnector.CommandParserBinder.Segment.Select.Projection.Impl;
 using OpenConnector.Extensions;
@@ -15,16 +16,16 @@ namespace OpenConnector.CommandParserBinder.Segment.Select.Projection.Engine
     */
     public sealed class ProjectionEngine
     {
+        private readonly ITableMetadataManager _tableMetadataManager;
 
-        private readonly SchemaMetaData _schemaMetaData;
 
         private int aggregationAverageDerivedColumnCount;
 
         private int aggregationDistinctDerivedColumnCount;
 
-        public ProjectionEngine(SchemaMetaData schemaMetaData)
+        public ProjectionEngine(ITableMetadataManager tableMetadataManager)
         {
-            _schemaMetaData = schemaMetaData;
+            _tableMetadataManager = tableMetadataManager;
         }
 
         /**
@@ -114,8 +115,9 @@ namespace OpenConnector.CommandParserBinder.Segment.Select.Projection.Engine
             List<ColumnProjection> result =
                 tables.SelectMany(table =>
                 {
-                    return _schemaMetaData.GetAllColumnNames(table.GetTableName().GetIdentifier().GetValue())
-                        .Select(columnName => new ColumnProjection(null, columnName, null)).ToList();
+                    var tableName = table.GetTableName().GetIdentifier().GetValue();
+                    return _tableMetadataManager.GetAllColumnNames(tableName).Select(columnName => new ColumnProjection(null, columnName, null));
+                        
                 }).ToList();
             return result;
         }
@@ -128,7 +130,7 @@ namespace OpenConnector.CommandParserBinder.Segment.Select.Projection.Engine
                 string tableName = table.GetTableName().GetIdentifier().GetValue();
                 if (owner.Equals(table.GetAlias() ?? tableName))
                 {
-                    return _schemaMetaData.GetAllColumnNames(tableName).Select(columnName => new ColumnProjection(owner, columnName, null)).ToList();
+                    return _tableMetadataManager.GetAllColumnNames(tableName).Select(columnName => new ColumnProjection(owner, columnName, null)).ToList();
                 }
             }
             return new List<ColumnProjection>(0);

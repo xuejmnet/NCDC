@@ -1,6 +1,7 @@
 ﻿using OpenConnector.CommandParser.Command.DML;
 using OpenConnector.CommandParser.Segment.DML.Expr;
 using OpenConnector.CommandParser.Segment.DML.Expr.Simple;
+using OpenConnector.CommandParserBinder.MetaData;
 using OpenConnector.CommandParserBinder.MetaData.Schema;
 using OpenConnector.Exceptions;
 using OpenConnector.ShardingAdoNet;
@@ -16,11 +17,11 @@ namespace OpenConnector.CommandParserBinder.Segment.Insert.Keygen.Engine
     */
     public sealed class GeneratedKeyContextEngine
     {
-        private readonly SchemaMetaData _schemaMetaData;
+        private readonly ITableMetadataManager _tableMetadataManager;
 
-        public GeneratedKeyContextEngine(SchemaMetaData schemaMetaData)
+        public GeneratedKeyContextEngine(ITableMetadataManager tableMetadataManager)
         {
-            _schemaMetaData = schemaMetaData;
+            _tableMetadataManager = tableMetadataManager;
         }
 
         /**
@@ -47,13 +48,14 @@ namespace OpenConnector.CommandParserBinder.Segment.Insert.Keygen.Engine
             return null;
         }
 
-        private string FindGenerateKeyColumn(string tableName)
+        private string? FindGenerateKeyColumn(string tableName)
         {
-            if (!_schemaMetaData.ContainsTable(tableName))
+            var tableMetadata = _tableMetadataManager.TryGet(tableName);
+            if (tableMetadata==null)
             {
                 return null;
             }
-            foreach (var columnKv in _schemaMetaData.Get(tableName).GetColumns())
+            foreach (var columnKv in tableMetadata.Columns)
             {
                 if (columnKv.Value.Generated)
                 {
@@ -67,7 +69,7 @@ namespace OpenConnector.CommandParserBinder.Segment.Insert.Keygen.Engine
         {
             if (!insertCommand.GetColumnNames().Any())
             {
-                return _schemaMetaData.GetAllColumnNames(insertCommand.Table.GetTableName().GetIdentifier().GetValue())
+                return _tableMetadataManager.GetAllColumnNames(insertCommand.Table.GetTableName().GetIdentifier().GetValue())
                     .Count == insertCommand.GetValueCountForPerGroup();
             }
             return insertCommand.GetColumnNames().Contains(generateKeyColumnName);
@@ -119,8 +121,8 @@ namespace OpenConnector.CommandParserBinder.Segment.Insert.Keygen.Engine
         {
             if (!insertCommand.GetColumnNames().Any())
             {
-                return _schemaMetaData
-                    .GetAllColumnNames(insertCommand.Table.GetTableName().GetIdentifier().GetValue())
+                return _tableMetadataManager
+                    .GetAllColumnNames(insertCommand.Table.GetTableName().GetIdentifier().GetValue()).ToList()
                     .IndexOf(generateKeyColumnName);
             }
             return insertCommand.GetColumnNames().IndexOf(generateKeyColumnName);

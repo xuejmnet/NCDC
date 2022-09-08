@@ -3,8 +3,8 @@ using OpenConnector.CommandParser.Segment.DML.Expr.Simple;
 using OpenConnector.CommandParser.Segment.DML.Pagination;
 using OpenConnector.CommandParser.Segment.DML.Pagination.RowNumber;
 using OpenConnector.CommandParser.Segment.DML.Pagination.Top;
+using OpenConnector.CommandParser.Segment.DML.Predicate;
 using OpenConnector.CommandParser.Segment.DML.Predicate.Value;
-using OpenConnector.CommandParser.Segment.Predicate;
 using OpenConnector.Extensions;
 using OpenConnector.ShardingAdoNet;
 

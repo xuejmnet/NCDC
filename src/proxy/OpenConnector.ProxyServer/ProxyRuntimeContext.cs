@@ -5,8 +5,6 @@ using OpenConnector.Configuration.Metadatas;
 using OpenConnector.Configuration.User;
 using OpenConnector.Extensions;
 using OpenConnector.Logger;
-using OpenConnector.ProxyServer.Commons;
-using OpenConnector.ProxyServer.DatabaseInfo;
 using OpenConnector.ProxyServer.Options;
 
 namespace OpenConnector.ProxyServer;
@@ -66,23 +64,23 @@ public sealed class ProxyRuntimeContext
 
     private void InitDatabase(DatabaseOption databaseOption)
     {
-        var logicDatabase = new LogicDatabase(databaseOption.Name);
-        if (!_logicDatabase.TryAdd(logicDatabase.Database, logicDatabase))
-        {
-            throw new ArgumentException("database repeat");
-        }
-
-        var defaultCount = databaseOption.DataSources.Where(o=>o.IsDefault).Take(2).Count();
-        ShardingAssert.If(defaultCount == 0,$"database:{logicDatabase.Database},not found default data source");
-        ShardingAssert.If(defaultCount == 2,$"database:{logicDatabase.Database},default data source repeat");
-        if (databaseOption.DataSources.IsNotEmpty())
-        {
-            foreach (var dataSource in databaseOption.DataSources)
-            {
-                logicDatabase.AddDataSource(dataSource.DataSourceName, dataSource.ConnectionString,
-                    dataSource.IsDefault);
-            }
-        }
+        // var logicDatabase = new LogicDatabase(databaseOption.Name);
+        // if (!_logicDatabase.TryAdd(logicDatabase.Database, logicDatabase))
+        // {
+        //     throw new ArgumentException("database repeat");
+        // }
+        //
+        // var defaultCount = databaseOption.DataSources.Where(o=>o.IsDefault).Take(2).Count();
+        // ShardingAssert.If(defaultCount == 0,$"database:{logicDatabase.Database},not found default data source");
+        // ShardingAssert.If(defaultCount == 2,$"database:{logicDatabase.Database},default data source repeat");
+        // if (databaseOption.DataSources.IsNotEmpty())
+        // {
+        //     foreach (var dataSource in databaseOption.DataSources)
+        //     {
+        //         logicDatabase.AddDataSource(dataSource.DataSourceName, dataSource.ConnectionString,
+        //             dataSource.IsDefault);
+        //     }
+        // }
     }
     
     public bool DatabaseExists(string? database)

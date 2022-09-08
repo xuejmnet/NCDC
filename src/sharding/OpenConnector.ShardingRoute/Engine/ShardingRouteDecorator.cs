@@ -73,8 +73,11 @@ namespace OpenConnector.ShardingRoute.Engine
                                                          ISqlCommandContext<ISqlCommand> sqlStatementContext, SchemaMetaData schemaMetaData, ShardingRule shardingRule)
         {
             if (sqlStatementContext.GetSqlCommand() is DMLCommand) {
-                if (sqlStatementContext is InsertCommandContext insertCommandContext) {
-                    return new ShardingConditions(new InsertClauseShardingConditionEngine(shardingRule).CreateShardingConditions(insertCommandContext, parameterContext));
+                if (sqlStatementContext is InsertCommandContext insertCommandContext)
+                {
+                    throw new NotImplementedException();
+                    //修改
+                    // return new ShardingConditions(new InsertClauseShardingConditionEngine(shardingRule).CreateShardingConditions(insertCommandContext, parameterContext));
                 }
                 return new ShardingConditions(new WhereClauseShardingConditionEngine(shardingRule, schemaMetaData).CreateShardingConditions(sqlStatementContext, parameterContext));
             }

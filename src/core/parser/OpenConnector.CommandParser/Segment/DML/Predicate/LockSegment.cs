@@ -1,4 +1,4 @@
-namespace OpenConnector.CommandParser.Segment.Predicate
+namespace OpenConnector.CommandParser.Segment.DML.Predicate
 {
 /*
 * @Author: xjm

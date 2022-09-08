@@ -1,6 +1,6 @@
 ﻿using OpenConnector.CommandParser.Command.DML;
 using OpenConnector.CommandParser.Segment.DML.Pagination.Top;
-using OpenConnector.CommandParser.Segment.Predicate;
+using OpenConnector.CommandParser.Segment.DML.Predicate;
 using OpenConnector.CommandParserBinder.Segment.Select.Projection;
 using OpenConnector.ShardingAdoNet;
 

@@ -1,7 +1,9 @@
 using OpenConnector.CommandParser.Segment.DML.Column;
 using OpenConnector.CommandParser.Segment.Generic.Table;
+using OpenConnector.CommandParserBinder.MetaData;
 using OpenConnector.CommandParserBinder.MetaData.Schema;
 using OpenConnector.Exceptions;
+using OpenConnector.Extensions;
 
 namespace OpenConnector.CommandParserBinder.Segment.Table
 {
@@ -42,7 +44,7 @@ namespace OpenConnector.CommandParserBinder.Segment.Table
             return new HashSet<string>(result);
         }
 
-        public string FindTableName(ColumnSegment column, SchemaMetaData schemaMetaData)
+        public string? FindTableName(ColumnSegment column, TableMetadata tableMetadata)
         {
             if (1 == _tables.Count)
             {
@@ -51,10 +53,10 @@ namespace OpenConnector.CommandParserBinder.Segment.Table
 
             if (null != column.GetOwner())
             {
-                return FindTableNameFromSQL(column.GetOwner().GetIdentifier().GetValue());
+                return FindTableNameFromSql(column.GetOwner()!.GetIdentifier().GetValue());
             }
 
-            return FindTableNameFromMetaData(column.GetIdentifier().GetValue(), schemaMetaData);
+            return FindTableNameFromMetaData(column.GetIdentifier().GetValue(), tableMetadata);
         }
 
         /// <summary>
@@ -63,14 +65,15 @@ namespace OpenConnector.CommandParserBinder.Segment.Table
         /// <param name="tableNameOrAlias">表名或者表别名</param>
         /// <returns></returns>
         /// <exception cref="ShardingException"></exception>
-        private string FindTableNameFromSQL(string tableNameOrAlias)
+        private string FindTableNameFromSql(string tableNameOrAlias)
         {
             foreach (var table in _tables)
             {
-                if (tableNameOrAlias.Equals(table.GetTableName().GetIdentifier().GetValue(), StringComparison.OrdinalIgnoreCase)
-                    || tableNameOrAlias.Equals(table.GetAlias(), StringComparison.OrdinalIgnoreCase))
+                var tableName = table.GetTableName().GetIdentifier().GetValue();
+                if (tableNameOrAlias.EqualsIgnoreCase(tableName)
+                    || tableNameOrAlias.EqualsIgnoreCase(table.GetAlias()))
                 {
-                    return table.GetTableName().GetIdentifier().GetValue();
+                    return tableName;
                 }
             }
 
@@ -82,13 +85,13 @@ namespace OpenConnector.CommandParserBinder.Segment.Table
         /// 通过元信息获取表名
         /// </summary>
         /// <param name="columnName"></param>
-        /// <param name="schemaMetaData"></param>
+        /// <param name="TableMetadata"></param>
         /// <returns></returns>
-        private string FindTableNameFromMetaData(string columnName, SchemaMetaData schemaMetaData)
+        private string? FindTableNameFromMetaData(string columnName, TableMetadata tableMetadata)
         {
             foreach (var table in _tables)
             {
-                if (schemaMetaData.ContainsColumn(table.GetTableName().GetIdentifier().GetValue(), columnName))
+                if (tableMetadata.ContainsColumn(columnName))
                 {
                     return table.GetTableName().GetIdentifier().GetValue();
                 }

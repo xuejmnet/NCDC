@@ -77,14 +77,15 @@ namespace OpenConnector.Route
             // try
             // {
             //     
-                ISqlCommandContext<ISqlCommand> sqlCommandContext = SqlCommandContextFactory.Create(_metaData.Schema, sql, parameterContext, sqlCommand);
-                return new RouteContext(sqlCommandContext, parameterContext, new RouteResult());
-            //     // TODO should pass parameters for master-slave
-            // }
-            // catch (IndexOutOfRangeException ex)
-            // {
-            //     return new RouteContext(new GenericSqlCommandContext<ISqlCommand>(sqlCommand), parameterContext, new RouteResult());
-            // }
+                // ISqlCommandContext<ISqlCommand> sqlCommandContext = SqlCommandContextFactory.Create(_metaData.Schema, sql, parameterContext, sqlCommand);
+                // return new RouteContext(sqlCommandContext, parameterContext, new RouteResult());
+                throw new NotImplementedException();
+                //     // TODO should pass parameters for master-slave
+                // }
+                // catch (IndexOutOfRangeException ex)
+                // {
+                //     return new RouteContext(new GenericSqlCommandContext<ISqlCommand>(sqlCommand), parameterContext, new RouteResult());
+                // }
         }
     }
 }

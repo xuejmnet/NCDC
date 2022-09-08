@@ -2,6 +2,7 @@
 using OpenConnector.CommandParser.Segment.DML.Item;
 using OpenConnector.CommandParser.Segment.DML.Order.Item;
 using OpenConnector.CommandParser.Segment.Generic.Table;
+using OpenConnector.CommandParserBinder.MetaData;
 using OpenConnector.CommandParserBinder.MetaData.Schema;
 using OpenConnector.CommandParserBinder.Segment.Select.Groupby;
 using OpenConnector.CommandParserBinder.Segment.Select.OrderBy;
@@ -20,14 +21,14 @@ namespace OpenConnector.CommandParserBinder.Segment.Select.Projection.Engine
     */
     public sealed class ProjectionsContextEngine
     {
-        private readonly SchemaMetaData _schemaMetaData;
+        private readonly ITableMetadataManager _tableMetadataManager;
 
         private readonly ProjectionEngine _projectionEngine;
 
-        public ProjectionsContextEngine(SchemaMetaData schemaMetaData)
+        public ProjectionsContextEngine(ITableMetadataManager tableMetadataManager)
         {
-            this._schemaMetaData = schemaMetaData;
-            _projectionEngine = new ProjectionEngine(schemaMetaData);
+            _tableMetadataManager = tableMetadataManager;
+            _projectionEngine = new ProjectionEngine(tableMetadataManager);
         }
         /// <summary>
         /// Create projections context.
@@ -172,6 +173,13 @@ namespace OpenConnector.CommandParserBinder.Segment.Select.Projection.Engine
             }
             throw new ShardingException("can not find owner from table.");
         }
+        /// <summary>
+        /// 判断order by的字段是否存在于select的projection里面
+        /// </summary>
+        /// <param name="projections"></param>
+        /// <param name="orderItem"></param>
+        /// <param name="selectCommand"></param>
+        /// <returns></returns>
         private bool ContainsItemWithoutOwnerInShorthandProjections(ICollection<IProjection> projections, OrderByItemSegment orderItem, SelectCommand selectCommand)
         {
             if (orderItem is ColumnOrderByItemSegment columnOrderByItemSegment)
@@ -196,7 +204,8 @@ namespace OpenConnector.CommandParserBinder.Segment.Select.Projection.Engine
             if (shorthandProjection.GetOwner() == null)
                 throw new ShardingException("shorthandProjection can not found owner");
             SimpleTableSegment tableSegment = Find(shorthandProjection.GetOwner(), selectCommand);
-            return _schemaMetaData.ContainsColumn(tableSegment.GetTableName().GetIdentifier().GetValue(), orderItem.GetColumn().GetIdentifier().GetValue());
+            return _tableMetadataManager.ContainsColumn(tableSegment.GetTableName().GetIdentifier().GetValue(),
+                orderItem.GetColumn().GetIdentifier().GetValue());
         }
 
         private ICollection<ShorthandProjection> GetQualifiedShorthandProjections(ICollection<IProjection> projections)

@@ -9,6 +9,7 @@ using OpenConnector.CommandParser.Segment.DML.Expr.Simple;
 using OpenConnector.Exceptions;
 using OpenConnector.Extensions;
 using OpenConnector.CommandParserBinder.Command.DML;
+using OpenConnector.CommandParserBinder.MetaData;
 using OpenConnector.CommandParserBinder.Segment.Insert.Keygen;
 using OpenConnector.CommandParserBinder.Segment.Insert.Values;
 using OpenConnector.ShardingAdoNet;
@@ -27,11 +28,11 @@ namespace OpenConnector.ShardingRoute.Engine.Condition.Engine
     */
     public sealed class InsertClauseShardingConditionEngine
     {
-        private readonly ShardingRule _shardingRule;
+        private readonly ITableMetadataManager _tableMetadataManager;
 
-        public InsertClauseShardingConditionEngine(ShardingRule shardingRule)
+        public InsertClauseShardingConditionEngine(ITableMetadataManager tableMetadataManager)
         {
-            this._shardingRule = shardingRule;
+            _tableMetadataManager = tableMetadataManager;
         }
 
         /**
@@ -58,7 +59,7 @@ namespace OpenConnector.ShardingRoute.Engine.Condition.Engine
             {
                 generatedKey.GetGeneratedValues().AddAll(GetGeneratedKeys(tableName,
                     insertCommandContext.GetSqlCommand().GetValueListCount()));
-                if (_shardingRule.IsShardingColumn(generatedKey.GetColumnName(), tableName))
+                if (_tableMetadataManager.IsShardingColumn(tableName,generatedKey.GetColumnName()))
                 {
                     AppendGeneratedKeyCondition(generatedKey, tableName, result);
                 }
@@ -90,7 +91,7 @@ namespace OpenConnector.ShardingRoute.Engine.Condition.Engine
             foreach (var valueExpression in insertValueContext.GetValueExpressions())
             {
                 string columnName = columnNames.Next();
-                if (_shardingRule.IsShardingColumn(columnName, tableName))
+                if (_tableMetadataManager.IsShardingColumn(tableName,columnName))
                 {
                     if (valueExpression is ISimpleExpressionSegment simpleExpressionSegment)
                     {
@@ -130,7 +131,7 @@ namespace OpenConnector.ShardingRoute.Engine.Condition.Engine
 
         private ICollection<IComparable> GetGeneratedKeys(string tableName, int valueListCount)
         {
-            return Enumerable.Range(0, valueListCount).Select(o => _shardingRule.GenerateKey(tableName)).ToList();
+            return Enumerable.Range(0, valueListCount).Select(o => _tableMetadataManager.GetGenerateKey(tableName)).ToList();
         }
 
         private void AppendGeneratedKeyCondition(GeneratedKeyContext generatedKey, string tableName,

@@ -2,10 +2,11 @@
 using OpenConnector.CommandParser.Predicate;
 using OpenConnector.CommandParser.Segment.DML.Item;
 using OpenConnector.CommandParser.Segment.DML.Order.Item;
+using OpenConnector.CommandParser.Segment.DML.Predicate;
 using OpenConnector.CommandParser.Segment.Generic;
 using OpenConnector.CommandParser.Segment.Generic.Table;
-using OpenConnector.CommandParser.Segment.Predicate;
 using OpenConnector.CommandParser.Util;
+using OpenConnector.CommandParserBinder.MetaData;
 using OpenConnector.CommandParserBinder.MetaData.Schema;
 using OpenConnector.CommandParserBinder.Segment.Select.Groupby;
 using OpenConnector.CommandParserBinder.Segment.Select.Groupby.Engine;
@@ -43,12 +44,12 @@ namespace OpenConnector.CommandParserBinder.Command.DML
 
         private readonly bool _containsSubQuery;
 
-        public SelectCommandContext(SchemaMetaData schemaMetaData, string sql, ParameterContext parameterContext, SelectCommand sqlCommand) : base(sqlCommand)
+        public SelectCommandContext(ITableMetadataManager tableMetadataManager, string sql, ParameterContext parameterContext, SelectCommand sqlCommand) : base(sqlCommand)
         {
             _tablesContext = new TablesContext(sqlCommand.GetSimpleTableSegments());
             _groupByContext = new GroupByContextEngine().CreateGroupByContext(sqlCommand);
             _orderByContext = new OrderByContextEngine().CreateOrderBy(sqlCommand, _groupByContext);
-            _projectionsContext = new ProjectionsContextEngine(schemaMetaData).CreateProjectionsContext(sql, sqlCommand, _groupByContext, _orderByContext);
+            _projectionsContext = new ProjectionsContextEngine(tableMetadataManager).CreateProjectionsContext(sql, sqlCommand, _groupByContext, _orderByContext);
             _paginationContext = new PaginationContextEngine().CreatePaginationContext(sqlCommand, _projectionsContext, parameterContext);
             _containsSubQuery = ContainsSubQuery();
         }
