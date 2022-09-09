@@ -1,8 +1,9 @@
 using OpenConnector.CommandParser.Abstractions;
 using OpenConnector.CommandParserBinder.Command;
-using OpenConnector.Sharding.Abstractions;
+using OpenConnector.CommandParserBinder.MetaData;
 using OpenConnector.Sharding.Extensions;
 using OpenConnector.Sharding.Helpers;
+using OpenConnector.Sharding.Routes.Abstractions;
 using OpenConnector.ShardingAdoNet;
 using OpenConnector.Shardings;
 
@@ -10,9 +11,13 @@ namespace OpenConnector.Sharding.Routes.DataSourceRoutes;
 
 public abstract class AbstractOperatorDataSourceRoute:AbstractFilterDataSourceRoute
 {
-    protected override ICollection<string> Route0(ICollection<string> dataSources, ISqlCommandContext<ISqlCommand> sqlCommandContext,ParameterContext parameterContext)
+
+    protected AbstractOperatorDataSourceRoute(ITableMetadataManager tableMetadataManager) : base(tableMetadataManager)
     {
-        var routePredicateExpression = ShardingHelper.GetRoutePredicateExpression(sqlCommandContext,parameterContext,TableMetadata,GetRouteFilter,false);
+    }
+    protected override ICollection<string> Route0(ICollection<string> dataSources, SqlParserResult sqlParserResult)
+    {
+        var routePredicateExpression = ShardingHelper.GetRoutePredicateExpression(sqlParserResult,GetTableMetadata(),GetRouteFilter,false);
         var filter = routePredicateExpression.GetRoutePredicate();
         return dataSources.Where(o => filter(o)).ToList();
     }
@@ -20,7 +25,7 @@ public abstract class AbstractOperatorDataSourceRoute:AbstractFilterDataSourceRo
     protected virtual Func<string, bool> GetRouteFilter(IComparable shardingValue,
         ShardingOperatorEnum shardingOperator, string columnName)
     {
-        if (TableMetadata.IsMainShardingDataSourceColumn(columnName))
+        if (GetTableMetadata().IsMainShardingDataSourceColumn(columnName))
         {
             return GetRouteToFilter(shardingValue, shardingOperator);
         }
@@ -31,8 +36,8 @@ public abstract class AbstractOperatorDataSourceRoute:AbstractFilterDataSourceRo
         ShardingOperatorEnum shardingOperator);
 
     public virtual Func<string, bool> GetExtraRouteFilter(IComparable shardingValue,
-        ShardingOperatorEnum shardingOperator, string shardingPropertyName)
+        ShardingOperatorEnum shardingOperator, string columnName)
     {
-        throw new NotImplementedException(shardingPropertyName);
+        throw new NotImplementedException(columnName);
     }
 }

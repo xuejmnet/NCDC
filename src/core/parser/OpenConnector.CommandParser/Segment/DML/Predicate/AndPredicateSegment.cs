@@ -13,6 +13,7 @@ namespace OpenConnector.CommandParser.Segment.DML.Predicate
         private readonly int _stopIndex = 0;
     
         private readonly ICollection<PredicateSegment> _predicates = new LinkedList<PredicateSegment>();
+
         public int GetStartIndex()
         {
             return _startIndex;

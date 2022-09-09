@@ -26,6 +26,26 @@ public class TableMetadata
     public ICollection<string> DataSources { get; }
     public ICollection<string> TableNames { get; }
 
+    public void AddActualTableWithDataSource(string dataSource, string actualTableName)
+    {
+        Check.NotNull(actualTableName, nameof(actualTableName));
+        if (actualTableName.Contains("."))
+        {
+            throw new ShardingInvalidOperationException(
+                $"{nameof(TableMetadata)}.{nameof(AddActualTableWithDataSource)} {nameof(actualTableName)}:{actualTableName} contains '.'");
+        }
+        if (!DataSources.Contains(dataSource))
+        {
+            DataSources.Add(dataSource);
+        }
+
+        var tableName = $"{dataSource}.{actualTableName}";
+        if (!TableNames.Contains(tableName))
+        {
+            TableNames.Add(tableName);
+        }
+    }
+
     /// <summary>
     /// 是否多数据源
     /// </summary>
@@ -94,7 +114,7 @@ public class TableMetadata
     /// </summary>
     /// <param name="column"></param>
     /// <exception cref="ShardingConfigException"></exception>
-    public void SetShardingTableProperty(string column)
+    public void SetShardingTableColumn(string column)
     {
         Check.NotNull(column, column);
         if (ShardingTableColumns.Contains(column))
@@ -108,7 +128,7 @@ public class TableMetadata
     /// </summary>
     /// <param name="column"></param>
     /// <exception cref="ShardingConfigException"></exception>
-    public void AddExtraSharingTableProperty(string column)
+    public void AddExtraSharingTableColumn(string column)
     {
         Check.NotNull(column, column);
         if (ShardingTableColumns.Contains(column))

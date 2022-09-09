@@ -75,6 +75,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenConnector.CommandAccess
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenConnector.ShardingRouteTest", "src\sharding\OpenConnector.ShardingRouteTest\OpenConnector.ShardingRouteTest.csproj", "{CE29E005-A9F4-4835-88B1-F056BA703AF2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NCDC.ShardingTest", "test\NCDC.ShardingTest\NCDC.ShardingTest.csproj", "{C6E66498-5BB9-485B-AB29-FC7F790C6893}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -185,6 +187,10 @@ Global
 		{CE29E005-A9F4-4835-88B1-F056BA703AF2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CE29E005-A9F4-4835-88B1-F056BA703AF2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CE29E005-A9F4-4835-88B1-F056BA703AF2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C6E66498-5BB9-485B-AB29-FC7F790C6893}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C6E66498-5BB9-485B-AB29-FC7F790C6893}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C6E66498-5BB9-485B-AB29-FC7F790C6893}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C6E66498-5BB9-485B-AB29-FC7F790C6893}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -224,6 +230,7 @@ Global
 		{A04D548B-7D4A-4381-80E6-0A89A23FE004} = {13416211-E7FD-42AB-9728-E17F58F306CA}
 		{15762B75-E033-40AA-B7C3-53A568FD7DCA} = {ABFF6635-BAA5-4E98-B9FA-FEE39FCDC12C}
 		{CE29E005-A9F4-4835-88B1-F056BA703AF2} = {396DB147-8FBA-4C69-B72F-BEF4E62B2076}
+		{C6E66498-5BB9-485B-AB29-FC7F790C6893} = {C37A1D9B-9BAA-435C-857B-0BB3E2C010B2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FE6C7648-4D94-4A48-B67D-3161C6FE3BC0}

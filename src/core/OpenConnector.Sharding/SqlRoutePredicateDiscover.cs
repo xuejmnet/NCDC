@@ -6,7 +6,9 @@ using OpenConnector.CommandParserBinder.Command;
 using OpenConnector.CommandParserBinder.Command.DML;
 using OpenConnector.CommandParserBinder.MetaData;
 using OpenConnector.Exceptions;
+using OpenConnector.Extensions;
 using OpenConnector.Sharding.Expressions;
+using OpenConnector.Sharding.Routes.Abstractions;
 using OpenConnector.ShardingAdoNet;
 using OpenConnector.Shardings;
 
@@ -14,12 +16,11 @@ namespace OpenConnector.Sharding;
 
 public class SqlRoutePredicateDiscover
 {
-
     private readonly TableMetadata _tableMetadata;
     private readonly Func<IComparable, ShardingOperatorEnum, string, Func<string, bool>> _keyTranslateFilter;
     private readonly bool _shardingTableRoute;
 
-    private RoutePredicateExpression _where = RoutePredicateExpression.Default;
+    private RoutePredicateExpression _where = RoutePredicateExpression.DefaultFalse;
 
     public SqlRoutePredicateDiscover(TableMetadata tableMetadata,
         Func<IComparable, ShardingOperatorEnum, string, Func<string, bool>> keyTranslateFilter, bool shardingTableRoute)
@@ -29,15 +30,16 @@ public class SqlRoutePredicateDiscover
         _shardingTableRoute = shardingTableRoute;
     }
 
-    public RoutePredicateExpression GetRouteParseExpression(ISqlCommandContext<ISqlCommand> sqlCommandContext,
-        ParameterContext parameterContext)
+    public RoutePredicateExpression GetRouteParseExpression(SqlParserResult sqlParserResult)
     {
-        DoResolve(sqlCommandContext, parameterContext);
+        DoResolve(sqlParserResult);
         return _where;
     }
 
-    private void DoResolve(ISqlCommandContext<ISqlCommand> sqlCommandContext, ParameterContext parameterContext)
+    private void DoResolve(SqlParserResult sqlParserResult)
     {
+        var sqlCommandContext = sqlParserResult.SqlCommandContext;
+        var parameterContext = sqlParserResult.ParameterContext;
         if (!(sqlCommandContext.GetSqlCommand() is DMLCommand))
         {
             throw new ShardingException($"sql command not {nameof(DMLCommand)} cant resolve route");
@@ -78,37 +80,48 @@ public class SqlRoutePredicateDiscover
         ISqlCommandContext<ISqlCommand> sqlCommandContext, ICollection<AndPredicateSegment> andPredicates,
         ParameterContext parameterContext)
     {
-        foreach (var andPredicate in andPredicates)
+        if (andPredicates.IsNotEmpty())
         {
-            foreach (var predicate in andPredicate.GetPredicates())
+            foreach (var andPredicate in andPredicates)
             {
-                var columnName = predicate.GetColumn().GetIdentifier().GetValue();
-                if (_tableMetadata.IsShardingColumn(columnName, _shardingTableRoute))
+                var where = RoutePredicateExpression.Default;
+                foreach (var predicate in andPredicate.GetPredicates())
                 {
-                    continue;
+                    var columnName = predicate.GetColumn().GetIdentifier().GetValue();
+                    if (!_tableMetadata.IsShardingColumn(columnName, _shardingTableRoute))
+                    {
+                        continue;
+                    }
+
+                    if (predicate.GetPredicateRightValue() is PredicateCompareRightValue predicateCompareRightValue)
+                    {
+                        var routePredicateExpression = CompareOperatorPredicateGenerator.Instance.Get(
+                            _keyTranslateFilter,
+                            columnName, predicateCompareRightValue, parameterContext);
+                        where = where.And(routePredicateExpression);
+                    }
+                    else if (predicate.GetPredicateRightValue() is PredicateInRightValue predicateInRightValue)
+                    {
+                        var routePredicateExpression = InOperatorPredicateGenerator.Instance.Get(_keyTranslateFilter,
+                            columnName, predicateInRightValue, parameterContext);
+                        where = where.And(routePredicateExpression);
+                    }
+                    else if
+                        (predicate.GetPredicateRightValue() is PredicateBetweenRightValue predicateBetweenRightValue)
+                    {
+                        var routePredicateExpression = BetweenOperatorPredicateGenerator.Instance.Get(
+                            _keyTranslateFilter,
+                            columnName, predicateBetweenRightValue, parameterContext);
+                        where = where.And(routePredicateExpression);
+                    }
                 }
 
-                if (predicate.GetPredicateRightValue() is PredicateCompareRightValue predicateCompareRightValue)
-                {
-                    var routePredicateExpression = CompareOperatorPredicateGenerator.Instance.Get(_keyTranslateFilter,
-                        columnName, predicateCompareRightValue, parameterContext);
-                    _where = _where.And(routePredicateExpression);
-                }
-
-                if (predicate.GetPredicateRightValue() is PredicateInRightValue predicateInRightValue)
-                {
-                    var routePredicateExpression = InOperatorPredicateGenerator.Instance.Get(_keyTranslateFilter,
-                        columnName, predicateInRightValue, parameterContext);
-                    _where = _where.And(routePredicateExpression);
-                }
-
-                if (predicate.GetPredicateRightValue() is PredicateBetweenRightValue predicateBetweenRightValue)
-                {
-                    var routePredicateExpression = BetweenOperatorPredicateGenerator.Instance.Get(_keyTranslateFilter,
-                        columnName, predicateBetweenRightValue, parameterContext);
-                    _where = _where.And(routePredicateExpression);
-                }
+                _where = _where.Or(where);
             }
+        }
+        else
+        {
+            _where = _where.Or(RoutePredicateExpression.Default);
         }
     }
 }

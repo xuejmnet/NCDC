@@ -13,6 +13,7 @@ namespace OpenConnector.ShardingAdoNet
 {
     public sealed class ParameterContext
     {
+        public static ParameterContext Empty { get; } = new ParameterContext();
         private readonly IDictionary<string, DbParameter> _parameters;
         public ParameterContext(DbParameter[] dbParameters, int capacity)
         {

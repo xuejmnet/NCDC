@@ -1,21 +1,26 @@
 using OpenConnector.CommandParser.Abstractions;
 using OpenConnector.CommandParserBinder.Command;
+using OpenConnector.CommandParserBinder.MetaData;
 using OpenConnector.Sharding.Abstractions;
+using OpenConnector.Sharding.Routes.Abstractions;
 using OpenConnector.ShardingAdoNet;
 
 namespace OpenConnector.Sharding.Routes.DataSourceRoutes;
 
 public abstract class AbstractFilterDataSourceRoute:AbstractDataSourceRoute
 {
-    public override ICollection<string> Route(ISqlCommandContext<ISqlCommand> sqlCommandContext,ParameterContext parameterContext)
+    protected AbstractFilterDataSourceRoute(ITableMetadataManager tableMetadataManager) : base(tableMetadataManager)
     {
-        var dataSourceNames = TableMetadata.DataSources;
+    }
+    public override ICollection<string> Route(SqlParserResult sqlParserResult)
+    {
+        var dataSourceNames = GetTableMetadata().DataSources;
         var beforeDataSources = BeforeFilterDataSource(dataSourceNames);
-        var routeDataSource = Route0(beforeDataSources,sqlCommandContext,parameterContext);
+        var routeDataSource = Route0(beforeDataSources,sqlParserResult);
         return AfterFilterDataSource(dataSourceNames, beforeDataSources, routeDataSource);
     }
 
-    protected abstract ICollection<string> Route0(ICollection<string> beforeDataSources,ISqlCommandContext<ISqlCommand> sqlCommandContext,ParameterContext parameterContext);
+    protected abstract ICollection<string> Route0(ICollection<string> beforeDataSources,SqlParserResult sqlParserResult);
 
     protected virtual ICollection<string> BeforeFilterDataSource(ICollection<string> allDataSource)
     {

@@ -1,11 +1,11 @@
-using OpenConnector.CommandParser.Abstractions;
-using OpenConnector.CommandParserBinder.Command;
-using OpenConnector.ShardingAdoNet;
+using OpenConnector.CommandParserBinder.MetaData;
+using OpenConnector.Sharding.Routes.Abstractions;
 
 namespace OpenConnector.Sharding.Routes.DataSourceRoutes;
 
 public interface IDataSourceRoute
 {
     string TableName { get; }
-    ICollection<string> Route(ISqlCommandContext<ISqlCommand> sqlCommandContext,ParameterContext parameterContext);
+    TableMetadata GetTableMetadata();
+    ICollection<string> Route(SqlParserResult sqlParserResult);
 }

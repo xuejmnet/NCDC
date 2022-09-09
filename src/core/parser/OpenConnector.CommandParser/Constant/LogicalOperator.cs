@@ -19,7 +19,7 @@ namespace OpenConnector.CommandParser.Constant
             _logicalOperators.Add(LogicalOperatorEnum.AND, new LogicalOperator("AND", "&&"));
             _logicalOperators.Add(LogicalOperatorEnum.OR, new LogicalOperator("OR", "||"));
         }
-        private readonly ICollection<string> _texts = new SortedSet<string>();
+        private readonly ICollection<string> _texts = new SortedSet<string>(StringComparer.OrdinalIgnoreCase);
 
         private LogicalOperator(params string[] texts)
         {

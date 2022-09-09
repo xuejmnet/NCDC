@@ -591,12 +591,12 @@ namespace OpenConnector.MySqlParser.Visitor.Impl
             IASTNode segment = Visit(ctx.expr());
             if (segment is OrPredicateSegment orPredicateSegment)
             {
-                result.GetAndPredicates().AddAll(((OrPredicateSegment)segment).GetAndPredicates());
+                result.GetAndPredicates().AddAll(orPredicateSegment.GetAndPredicates());
             }
-            else if (segment is PredicateSegment)
+            else if (segment is PredicateSegment predicateSegment)
             {
                 AndPredicateSegment andPredicate = new AndPredicateSegment();
-                andPredicate.GetPredicates().Add((PredicateSegment)segment);
+                andPredicate.GetPredicates().Add(predicateSegment);
                 result.GetAndPredicates().Add(andPredicate);
             }
             return result;
