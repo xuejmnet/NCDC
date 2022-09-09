@@ -6,13 +6,14 @@ namespace OpenConnector.Sharding.Routes;
 
 public sealed class RouteContext
 {
-    
+    private readonly string _sql;
     private readonly ISqlCommandContext<ISqlCommand> _sqlCommandContext;
     private readonly ParameterContext _parameterContext;
     private readonly RouteResult _routeResult;
 
-    public RouteContext(ISqlCommandContext<ISqlCommand> sqlCommandContext, ParameterContext parameterContext, RouteResult routeResult)
+    public RouteContext(string sql,ISqlCommandContext<ISqlCommand> sqlCommandContext, ParameterContext parameterContext, RouteResult routeResult)
     {
+        _sql = sql;
         _sqlCommandContext = sqlCommandContext;
         _parameterContext = parameterContext;
         _routeResult = routeResult;
@@ -31,5 +32,10 @@ public sealed class RouteContext
     public RouteResult GetRouteResult()
     {
         return _routeResult;
+    }
+
+    public string GetSql()
+    {
+        return _sql;
     }
 }
