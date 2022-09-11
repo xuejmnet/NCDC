@@ -104,14 +104,4 @@ public class TableMetadataManager:ITableMetadataManager
         }
         return false;
     }
-
-    public IComparable GetGenerateKey(string tableName)
-    {
-        var tableMetadata = TryGet(tableName);
-        if (tableMetadata != null)
-        {
-            return tableMetadata.ShardingKeyGenerator.GenerateKey();
-        }
-        throw new ShardingException($"cant get generate key, table :{tableName}");
-    }
 }

@@ -1,6 +1,6 @@
 using NCDC.CommandParser.Abstractions;
-using NCDC.CommandParserBinder.Command;
-using NCDC.CommandParserBinder.MetaData;
+using NCDC.Basic.Parser.Command;
+using NCDC.Basic.Parser.MetaData;
 using NCDC.Sharding.Rewrites.Abstractions;
 using NCDC.Sharding.Rewrites.ParameterRewriters.Parameters;
 using NCDC.Sharding.Routes;

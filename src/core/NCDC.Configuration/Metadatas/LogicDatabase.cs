@@ -1,7 +1,7 @@
 using System.Collections.Concurrent;
 using System.Data.Common;
 using Microsoft.Extensions.Logging;
-using NCDC.CommandParserBinder.MetaData.Schema;
+using NCDC.Basic.Parser.MetaData.Schema;
 using OpenConnector.DataSource;
 using OpenConnector.Exceptions;
 using OpenConnector.Logger;

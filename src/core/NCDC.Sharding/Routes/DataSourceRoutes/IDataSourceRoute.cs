@@ -1,4 +1,5 @@
-using NCDC.CommandParserBinder.MetaData;
+using NCDC.Basic.Parser.MetaData;
+using NCDC.Basic.TableMetadataManagers;
 using NCDC.Sharding.Routes.Abstractions;
 
 namespace NCDC.Sharding.Routes.DataSourceRoutes;

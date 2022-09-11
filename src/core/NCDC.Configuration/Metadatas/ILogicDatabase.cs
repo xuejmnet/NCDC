@@ -1,5 +1,5 @@
 using System.Data.Common;
-using NCDC.CommandParserBinder.MetaData.Schema;
+using NCDC.Basic.Parser.MetaData.Schema;
 using OpenConnector.ProxyServer.Session.Connection.Abstractions;
 using OpenConnector.Transaction;
 

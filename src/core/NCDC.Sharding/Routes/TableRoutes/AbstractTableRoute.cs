@@ -1,11 +1,7 @@
-using NCDC.CommandParser.Abstractions;
-using NCDC.CommandParserBinder.Command;
-using NCDC.CommandParserBinder.MetaData;
+using NCDC.Basic.Parser.MetaData;
+using NCDC.Basic.TableMetadataManagers;
 using OpenConnector.Exceptions;
-using NCDC.Sharding.Abstractions;
-using NCDC.Sharding.Routes.Abstractions;
 using NCDC.Sharding.Routes.DataSourceRoutes;
-using NCDC.ShardingAdoNet;
 
 namespace NCDC.Sharding.Routes.TableRoutes;
 

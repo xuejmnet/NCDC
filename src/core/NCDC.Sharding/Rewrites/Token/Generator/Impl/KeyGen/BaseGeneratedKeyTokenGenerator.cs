@@ -1,7 +1,7 @@
 using NCDC.CommandParser.Abstractions;
 using NCDC.CommandParser.Command.DML;
-using NCDC.CommandParserBinder.Command;
-using NCDC.CommandParserBinder.Command.DML;
+using NCDC.Basic.Parser.Command;
+using NCDC.Basic.Parser.Command.DML;
 using NCDC.Sharding.Rewrites.Sql.Token.Generator;
 using NCDC.Sharding.Rewrites.Sql.Token.SimpleObject;
 

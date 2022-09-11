@@ -13,5 +13,4 @@ public interface ITableMetadataManager
     IReadOnlyList<string> GetAllColumnNames(string tableName);
     bool ContainsColumn(string tableName, string columnName);
     bool IsShardingColumn(string tableName, string columnName);
-    IComparable GetGenerateKey(string tableName);
 }

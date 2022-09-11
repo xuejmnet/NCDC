@@ -1,6 +1,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Immutable;
-using NCDC.CommandParserBinder.MetaData;
+using NCDC.Basic.Parser.MetaData;
+using NCDC.Basic.TableMetadataManagers;
 using NCDC.Configuration.Metadatas;
 using NCDC.Sharding.Routes.Abstractions;
 using NCDC.Sharding.Routes.DataSourceRoutes;

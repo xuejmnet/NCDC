@@ -1,6 +1,5 @@
 using NCDC.CommandParser.Segment.DML.Predicate.Value;
-using NCDC.CommandParserBinder;
-using NCDC.Sharding.Configurations;
+using NCDC.Basic.Parser;
 using NCDC.Sharding.Expressions;
 using NCDC.Sharding.Helpers;
 using NCDC.ShardingAdoNet;

@@ -1,6 +1,7 @@
 ﻿using NCDC.CommandParser.Abstractions;
-using NCDC.CommandParserBinder.Command;
-using NCDC.CommandParserBinder.MetaData;
+using NCDC.Basic.Parser.Command;
+using NCDC.Basic.Parser.MetaData;
+using NCDC.Basic.TableMetadataManagers;
 using NCDC.Sharding.Rewrites.Sql.Token.Generator;
 using NCDC.Sharding.Rewrites.Sql.Token.SimpleObject;
 using NCDC.Sharding.Rewrites.Token.SimpleObject;

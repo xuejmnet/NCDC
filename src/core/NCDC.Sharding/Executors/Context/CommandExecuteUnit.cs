@@ -1,4 +1,3 @@
-using NCDC.Sharding.Configurations;
 using NCDC.Configuration;
 using NCDC.Configuration.Connection.Abstractions;
 using OpenConnector.ProxyServer.Session.Connection.Abstractions;

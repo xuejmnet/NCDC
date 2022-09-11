@@ -2,8 +2,8 @@
 using NCDC.CommandParser.Abstractions;
 using NCDC.CommandParser.Command;
 using NCDC.Common.Rule;
-using NCDC.CommandParserBinder.Command;
-using NCDC.CommandParserBinder.MetaData.Schema;
+using NCDC.Basic.Parser.Command;
+using NCDC.Basic.Parser.MetaData.Schema;
 using OpenConnector.StreamDataReaders;
 
 

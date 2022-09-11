@@ -1,5 +1,5 @@
 using NCDC.CommandParser.Abstractions;
-using NCDC.CommandParserBinder.Command;
+using NCDC.Basic.Parser.Command;
 using NCDC.Sharding.Routes;
 
 namespace NCDC.Sharding.Rewrites.Abstractions;

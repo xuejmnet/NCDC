@@ -1,6 +1,6 @@
 using NCDC.CommandParser.Abstractions;
 using NCDC.CommandParser.Command.DAL.Dialect.MySql;
-using NCDC.CommandParserBinder.Command;
+using NCDC.Basic.Parser.Command;
 using NCDC.Sharding.Rewrites.Sql.Token.SimpleObject;
 using NCDC.Sharding.Rewrites.Sql.Token.SimpleObject.Generic;
 

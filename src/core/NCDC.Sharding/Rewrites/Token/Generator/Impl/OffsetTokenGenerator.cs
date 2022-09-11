@@ -1,8 +1,8 @@
 using OpenConnector.Base;
 using NCDC.CommandParser.Abstractions;
 using NCDC.CommandParser.Segment.DML.Pagination;
-using NCDC.CommandParserBinder.Command;
-using NCDC.CommandParserBinder.Command.DML;
+using NCDC.Basic.Parser.Command;
+using NCDC.Basic.Parser.Command.DML;
 using NCDC.Sharding.Rewrites.Sql.Token.Generator;
 using NCDC.Sharding.Rewrites.Sql.Token.SimpleObject;
 using NCDC.Sharding.Rewrites.Token.SimpleObject;

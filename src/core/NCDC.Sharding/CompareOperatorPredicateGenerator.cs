@@ -1,7 +1,6 @@
 using Microsoft.Extensions.Logging;
 using NCDC.CommandParser.Segment.DML.Predicate.Value;
-using NCDC.CommandParserBinder;
-using NCDC.Sharding.Configurations;
+using NCDC.Basic.Parser;
 using OpenConnector.Exceptions;
 using OpenConnector.Logger;
 using NCDC.Sharding.Expressions;

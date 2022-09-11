@@ -11,7 +11,6 @@ public class TableMetadata
     /// </summary>
     public Dictionary<string, ColumnMetadata> Columns { get; }
 
-    public IShardingKeyGenerator ShardingKeyGenerator { get; private set; }
 
     public TableMetadata(string logicTableName, Dictionary<string, ColumnMetadata> columns)
     {
@@ -19,7 +18,6 @@ public class TableMetadata
         Columns = columns.ToDictionary(o => o.Key, o => o.Value, StringComparer.OrdinalIgnoreCase);
         ShardingTableColumns = new HashSet<string>();
         ShardingDataSourceColumns = new HashSet<string>();
-        ShardingKeyGenerator = new NotSupportShardingKeyGenerator();
         DataSources = new List<string>();
         TableNames = new List<string>();
     }

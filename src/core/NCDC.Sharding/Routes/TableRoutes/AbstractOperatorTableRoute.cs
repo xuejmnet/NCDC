@@ -1,9 +1,8 @@
-using NCDC.CommandParserBinder.MetaData;
-using NCDC.Sharding.Configurations;
+using NCDC.Basic.Parser.MetaData;
+using NCDC.Basic.TableMetadataManagers;
 using OpenConnector.Exceptions;
 using NCDC.Sharding.Extensions;
 using NCDC.Sharding.Helpers;
-using NCDC.Sharding.Routes.Abstractions;
 using NCDC.Sharding.Routes.DataSourceRoutes;
 using NCDC.Configuration;
 

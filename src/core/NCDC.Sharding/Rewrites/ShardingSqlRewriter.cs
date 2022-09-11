@@ -1,4 +1,5 @@
-using NCDC.CommandParserBinder.MetaData;
+using NCDC.Basic.Parser.MetaData;
+using NCDC.Basic.TableMetadataManagers;
 using NCDC.Sharding.Rewrites.Abstractions;
 using NCDC.Sharding.Rewrites.Token.SimpleObject;
 using NCDC.Sharding.Routes;

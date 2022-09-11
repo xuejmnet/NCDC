@@ -1,5 +1,5 @@
-using NCDC.CommandParserBinder.MetaData;
-using NCDC.Sharding.Configurations;
+using NCDC.Basic.Parser.MetaData;
+using NCDC.Basic.TableMetadataManagers;
 using NCDC.Sharding.Expressions;
 using NCDC.Sharding.Routes.Abstractions;
 using NCDC.Configuration;

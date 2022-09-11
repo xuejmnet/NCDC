@@ -1,4 +1,5 @@
-﻿using NCDC.CommandParserBinder.MetaData;
+﻿using NCDC.Basic.Parser.MetaData;
+using NCDC.Basic.TableMetadataManagers;
 using OpenConnector.Extensions;
 using NCDC.Sharding.Rewrites.Sql.Token.Generator;
 using NCDC.Sharding.Rewrites.Sql.Token.Generator.Builder;
