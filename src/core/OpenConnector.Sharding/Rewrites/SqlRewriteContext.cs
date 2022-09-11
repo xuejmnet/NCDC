@@ -7,7 +7,9 @@ using OpenConnector.Sharding.Rewrites.Abstractions;
 using OpenConnector.Sharding.Rewrites.ParameterRewriters.ParameterBuilders;
 using OpenConnector.Sharding.Rewrites.Sql.Token.Generator;
 using OpenConnector.Sharding.Rewrites.Sql.Token.Generator.Builder;
+using OpenConnector.Sharding.Rewrites.Sql.Token.Generator.Generic;
 using OpenConnector.Sharding.Rewrites.Sql.Token.SimpleObject;
+using OpenConnector.Sharding.Routes;
 using OpenConnector.ShardingAdoNet;
 
 namespace OpenConnector.Sharding.Rewrites;
@@ -15,6 +17,7 @@ namespace OpenConnector.Sharding.Rewrites;
 public sealed class SqlRewriteContext
 {
     private readonly ITableMetadataManager _tableMetadataManager;
+    private readonly RouteContext _routeContext;
     private readonly ISqlCommandContext<ISqlCommand> _sqlCommandContext;
 
     private readonly string _sql;
@@ -27,30 +30,23 @@ public sealed class SqlRewriteContext
 
     private readonly SqlTokenGenerators _sqlTokenGenerators = new SqlTokenGenerators();
 
-    public SqlRewriteContext(ITableMetadataManager tableMetadataManager,
-        ISqlCommandContext<ISqlCommand> sqlCommandContext, string sql, ParameterContext parameterContext)
+    public SqlRewriteContext(ITableMetadataManager tableMetadataManager,RouteContext routeContext)
     {
         _tableMetadataManager = tableMetadataManager;
-        this._sqlCommandContext = sqlCommandContext;
-        this._sql = sql;
-        this._parameterContext = parameterContext;
-        AddSqlTokenGenerators(new DefaultTokenGeneratorBuilder().GetSqlTokenGenerators());
-        if (sqlCommandContext is InsertCommandContext insertCommandContext)
+        _routeContext = routeContext;
+        this._sqlCommandContext = routeContext.GetSqlCommandContext();
+        this._sql = routeContext.GetSql();
+        this._parameterContext = routeContext.GetParameterContext();
+        if (_sqlCommandContext is InsertCommandContext insertCommandContext)
         {
             _parameterBuilder = new GroupedParameterBuilder(insertCommandContext.GetGroupedParameters());
         }
         else
         {
-            _parameterBuilder = new StandardParameterBuilder(parameterContext);
+            _parameterBuilder = new StandardParameterBuilder(_parameterContext);
         }
     }
 
-
-    /**
-         * Add SQL token generators.
-         * 
-         * @param sqlTokenGenerators SQL token generators
-         */
     public void AddSqlTokenGenerators(ICollection<ISqlTokenGenerator> sqlTokenGenerators)
     {
         this._sqlTokenGenerators.AddAll(sqlTokenGenerators);
@@ -62,7 +58,7 @@ public sealed class SqlRewriteContext
     public void GenerateSqlTokens()
     {
         _sqlTokens.AddRange(
-            _sqlTokenGenerators.GenerateSqlTokens(_sqlCommandContext, _parameterContext, _tableMetadataManager));
+            _sqlTokenGenerators.GenerateSqlTokens(_sqlCommandContext));
     }
 
     public List<SqlToken> GetSqlTokens()
@@ -80,11 +76,6 @@ public sealed class SqlRewriteContext
         return _parameterBuilder;
     }
 
-    public SchemaMetaData GetSchemaMetaData()
-    {
-        return _schemaMetaData;
-    }
-
     public ParameterContext GetParameterContext()
     {
         return _parameterContext;
@@ -93,5 +84,10 @@ public sealed class SqlRewriteContext
     public ISqlCommandContext<ISqlCommand> GetSqlCommandContext()
     {
         return _sqlCommandContext;
+    }
+
+    public RouteContext GetRouteContext()
+    {
+        return _routeContext;
     }
 }

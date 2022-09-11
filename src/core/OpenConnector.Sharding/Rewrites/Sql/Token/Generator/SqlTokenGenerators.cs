@@ -1,10 +1,6 @@
 ﻿using OpenConnector.CommandParser.Abstractions;
 using OpenConnector.CommandParserBinder.Command;
-using OpenConnector.CommandParserBinder.MetaData.Schema;
 using OpenConnector.Extensions;
-using OpenConnector.RewriteEngine.Sql.Token.Generator;
-using OpenConnector.RewriteEngine.Sql.Token.Generator.Aware;
-using OpenConnector.Sharding.Rewrites.Sql.Token.Generator.Aware;
 using OpenConnector.Sharding.Rewrites.Sql.Token.SimpleObject;
 using OpenConnector.ShardingAdoNet;
 
@@ -56,13 +52,12 @@ namespace OpenConnector.Sharding.Rewrites.Sql.Token.Generator
          * @param schemaMetaData schema meta data
          * @return SQL tokens
          */
-        public ICollection<SqlToken> GenerateSqlTokens(ISqlCommandContext<ISqlCommand> sqlCommandContext, ParameterContext parameterContext, SchemaMetaData schemaMetaData)
+        public ICollection<SqlToken> GenerateSqlTokens(ISqlCommandContext<ISqlCommand> sqlCommandContext)
         {
             ICollection<SqlToken> result = new LinkedList<SqlToken>();
 
             foreach (var sqlTokenGenerator in _sqlTokenGenerators)
             {
-                SetUpSqlTokenGenerator(sqlTokenGenerator, parameterContext, schemaMetaData, result);
                 if (!sqlTokenGenerator.IsGenerateSqlToken(sqlCommandContext))
                 {
                     continue;
@@ -85,22 +80,5 @@ namespace OpenConnector.Sharding.Rewrites.Sql.Token.Generator
             return result;
         }
 
-        private void SetUpSqlTokenGenerator(ISqlTokenGenerator sqlTokenGenerator, ParameterContext parameterContext, SchemaMetaData schemaMetaData, ICollection<SqlToken> previousSqlTokens)
-        {
-            if (sqlTokenGenerator is IParametersAware parametersAware)
-            {
-                parametersAware.SetParameterContext(parameterContext);
-            }
-
-            if (sqlTokenGenerator is ISchemaMetaDataAware schemaMetaDataAware)
-            {
-                schemaMetaDataAware.SetSchemaMetaData(schemaMetaData);
-            }
-
-            if (sqlTokenGenerator is IPreviousSqlTokensAware previousSqlTokensAware)
-            {
-                previousSqlTokensAware.SetPreviousSqlTokens(previousSqlTokens);
-            }
-        }
     }
 }

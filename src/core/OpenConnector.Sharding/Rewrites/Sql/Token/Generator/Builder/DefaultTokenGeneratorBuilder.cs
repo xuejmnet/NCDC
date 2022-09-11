@@ -1,4 +1,5 @@
 using OpenConnector.Sharding.Rewrites.Sql.Token.Generator.Generic;
+using OpenConnector.Sharding.Routes;
 
 namespace OpenConnector.Sharding.Rewrites.Sql.Token.Generator.Builder
 {
@@ -10,7 +11,7 @@ namespace OpenConnector.Sharding.Rewrites.Sql.Token.Generator.Builder
 */
     public class DefaultTokenGeneratorBuilder:ISqlTokenGeneratorBuilder
     {
-        public ICollection<ISqlTokenGenerator> GetSqlTokenGenerators()
+        public ICollection<ISqlTokenGenerator> GetSqlTokenGenerators(RouteContext routeContext)
         {
             ICollection<ISqlTokenGenerator> result = new LinkedList<ISqlTokenGenerator>();
             result.Add(new RemoveTokenGenerator());

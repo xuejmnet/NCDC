@@ -17,5 +17,10 @@ namespace OpenConnector.Sharding.Rewrites.Sql.Token.Generator
     public interface IOptionalSqlTokenGenerator<in T> : IOptionalSqlTokenGenerator where T : ISqlCommandContext<ISqlCommand>
     {
         SqlToken GenerateSqlToken(T sqlCommandContext);
+
+        SqlToken IOptionalSqlTokenGenerator.GenerateSqlToken(ISqlCommandContext<ISqlCommand> sqlCommandContext)
+        {
+            return GenerateSqlToken((T)sqlCommandContext);
+        }
     }
 }

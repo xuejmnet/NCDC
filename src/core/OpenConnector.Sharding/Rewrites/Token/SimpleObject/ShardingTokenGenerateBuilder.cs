@@ -1,6 +1,8 @@
 ﻿using OpenConnector.CommandParserBinder.MetaData;
+using OpenConnector.Extensions;
 using OpenConnector.Sharding.Rewrites.Sql.Token.Generator;
 using OpenConnector.Sharding.Rewrites.Sql.Token.Generator.Builder;
+using OpenConnector.Sharding.Rewrites.Sql.Token.Generator.Generic;
 using OpenConnector.Sharding.Rewrites.Token.Generator;
 using OpenConnector.Sharding.Rewrites.Token.Generator.Impl;
 using OpenConnector.Sharding.Rewrites.Token.Generator.Impl.KeyGen;
@@ -19,8 +21,6 @@ namespace OpenConnector.Sharding.Rewrites.Token.SimpleObject
     {
         private readonly ITableMetadataManager _tableMetadataManager;
 
-        private readonly RouteContext _routeContext;
-
         public ShardingTokenGenerateBuilder(ITableMetadataManager tableMetadataManager)
         {
             _tableMetadataManager = tableMetadataManager;
@@ -28,7 +28,7 @@ namespace OpenConnector.Sharding.Rewrites.Token.SimpleObject
 
         public ICollection<ISqlTokenGenerator> GetSqlTokenGenerators(RouteContext routeContext)
         {
-            ICollection<ISqlTokenGenerator> result = BuildSqlTokenGenerators();
+            ICollection<ISqlTokenGenerator> result = BuildSqlTokenGenerators(routeContext);
             // foreach (var sqlTokenGenerator in result)
             // {
             //     if (sqlTokenGenerator is IShardingRuleAware shardingRuleAware)
@@ -43,40 +43,25 @@ namespace OpenConnector.Sharding.Rewrites.Token.SimpleObject
             return result;
         }
 
-        private ICollection<ISqlTokenGenerator> BuildSqlTokenGenerators()
+        private ICollection<ISqlTokenGenerator> BuildSqlTokenGenerators(RouteContext routeContext)
         {
+            var isSingleRouting = routeContext.GetRouteResult().IsSingleRouting();
             ICollection<ISqlTokenGenerator> result = new LinkedList<ISqlTokenGenerator>();
-            AddSqlTokenGenerator(result, new TableTokenGenerator());
-            AddSqlTokenGenerator(result, new DistinctProjectionPrefixTokenGenerator());
-            AddSqlTokenGenerator(result, new ProjectionsTokenGenerator());
-            AddSqlTokenGenerator(result, new OrderByTokenGenerator());
-            AddSqlTokenGenerator(result, new AggregationDistinctTokenGenerator());
-            AddSqlTokenGenerator(result, new IndexTokenGenerator());
-            AddSqlTokenGenerator(result, new OffsetTokenGenerator());
-            AddSqlTokenGenerator(result, new RowCountTokenGenerator());
-            AddSqlTokenGenerator(result, new GeneratedKeyInsertColumnTokenGenerator());
-            AddSqlTokenGenerator(result, new GeneratedKeyForUseDefaultInsertColumnsTokenGenerator());
-            AddSqlTokenGenerator(result, new GeneratedKeyAssignmentTokenGenerator());
-            AddSqlTokenGenerator(result, new ShardingInsertValuesTokenGenerator());
-            AddSqlTokenGenerator(result, new GeneratedKeyInsertValuesTokenGenerator());
+            result.Add(new RemoveTokenGenerator());
+            result.Add(new TableTokenGenerator(_tableMetadataManager));
+            result.AddIf(!isSingleRouting,new DistinctProjectionPrefixTokenGenerator());
+            result.AddIf(!isSingleRouting,new ProjectionsTokenGenerator());
+            result.AddIf(!isSingleRouting,new OrderByTokenGenerator());
+            result.AddIf(!isSingleRouting,new AggregationDistinctTokenGenerator());
+            result.Add(new IndexTokenGenerator(_tableMetadataManager));
+            result.AddIf(!isSingleRouting,new OffsetTokenGenerator());
+            result.AddIf(!isSingleRouting,new RowCountTokenGenerator());
+            result.Add(new GeneratedKeyInsertColumnTokenGenerator());
+            result.Add(new GeneratedKeyForUseDefaultInsertColumnsTokenGenerator());
+            result.Add(new GeneratedKeyAssignmentTokenGenerator(routeContext.GetParameterContext()));
+            result.Add(new ShardingInsertValuesTokenGenerator(routeContext));
+            // result.Add(new GeneratedKeyInsertValuesTokenGenerator());
             return result;
-        }
-
-        private void AddSqlTokenGenerator(ICollection<ISqlTokenGenerator> sqlTokenGenerators, ISqlTokenGenerator toBeAddedSqlTokenGenerator)
-        {
-            if (toBeAddedSqlTokenGenerator is IIgnoreForSingleRoute ignoreForSingleRoute && _routeContext.GetRouteResult().IsSingleRouting()) {
-                return;
-            }
-            
-            if (toBeAddedSqlTokenGenerator is IShardingRuleAware shardingRuleAware)
-            {
-                shardingRuleAware.SetShardingRule(_shardingRule);
-            }
-            if (toBeAddedSqlTokenGenerator is IRouteContextAware routeContextAware)
-            {
-                routeContextAware.SetRouteContext(_routeContext);
-            }
-            sqlTokenGenerators.Add(toBeAddedSqlTokenGenerator);
         }
     }
 }

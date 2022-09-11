@@ -32,7 +32,9 @@ namespace OpenConnector.RewriteEngine.Engine
             IDictionary<RouteUnit, SqlRewriteResult> result = new Dictionary<RouteUnit, SqlRewriteResult>();
             foreach (var routeUnit in routeResult.GetRouteUnits())
             {
-                result.Add(routeUnit,new SqlRewriteResult(new RouteSqlBuilder(sqlRewriteContext,routeUnit).ToSql(),GetParameterContext(sqlRewriteContext.GetParameterBuilder(), routeResult, routeUnit)));
+                var sql = new RouteSqlBuilder(sqlRewriteContext,routeUnit).ToSql();
+                var parameterContext = GetParameterContext(sqlRewriteContext.GetParameterBuilder(), routeResult, routeUnit);
+                result.Add(routeUnit,new SqlRewriteResult(sql,parameterContext));
             }
             return result;
         }

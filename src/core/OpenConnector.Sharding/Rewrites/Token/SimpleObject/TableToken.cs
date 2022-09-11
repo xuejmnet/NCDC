@@ -46,7 +46,7 @@ namespace OpenConnector.Sharding.Rewrites.Token.SimpleObject
             foreach (var tableMapper in routeUnit.TableMappers)
             {
                 result.Add(tableMapper.LogicName.ToLower(), tableMapper.ActualName);
-                result.AddAll(shardingRule.GetLogicAndActualTablesFromBindingTable(routeUnit.DataSourceMapper.LogicName, tableMapper.LogicName, tableMapper.ActualName, tableNames));
+                // result.AddAll(shardingRule.GetLogicAndActualTablesFromBindingTable(routeUnit.DataSourceMapper.LogicName, tableMapper.LogicName, tableMapper.ActualName, tableNames));
             }
             return result;
         }

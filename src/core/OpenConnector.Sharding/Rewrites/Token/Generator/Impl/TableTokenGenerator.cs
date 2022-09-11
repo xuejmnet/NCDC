@@ -44,9 +44,10 @@ namespace OpenConnector.Sharding.Rewrites.Token.Generator.Impl
             ICollection<SqlToken> result = new LinkedList<SqlToken>();
             foreach (var simpleTableSegment in sqlStatementContext.GetAllTables())
             {
-                if (_tableMetadataManager.FindTableRule(simpleTableSegment.GetTableName().GetIdentifier().GetValue())!=null)
+                var tableMetadata = _tableMetadataManager.TryGet(simpleTableSegment.GetTableName().GetIdentifier().GetValue());
+                if (tableMetadata!=null&&tableMetadata.IsMultiTableMapping)
                 {
-                    result.Add(new TableToken(simpleTableSegment.GetStartIndex(), simpleTableSegment.GetStopIndex(), simpleTableSegment.GetTableName().GetIdentifier(), (ISqlCommandContext<ISqlCommand>)sqlStatementContext, shardingRule));
+                    result.Add(new TableToken(simpleTableSegment.GetStartIndex(), simpleTableSegment.GetStopIndex(), simpleTableSegment.GetTableName().GetIdentifier(), (ISqlCommandContext<ISqlCommand>)sqlStatementContext, _tableMetadataManager));
                 }
             }
             return result;

@@ -3,6 +3,7 @@ using OpenConnector.CommandParser.Segment.DML.Assignment;
 using OpenConnector.CommandParser.Segment.DML.Expr;
 using OpenConnector.CommandParserBinder.Command;
 using OpenConnector.CommandParserBinder.Command.DML;
+using OpenConnector.Extensions;
 using OpenConnector.Sharding.Rewrites.Sql.Token.Generator;
 using OpenConnector.Sharding.Rewrites.Sql.Token.SimpleObject;
 using OpenConnector.Sharding.Rewrites.Sql.Token.SimpleObject.Generic;

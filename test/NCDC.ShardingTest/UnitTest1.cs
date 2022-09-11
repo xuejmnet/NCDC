@@ -3,7 +3,11 @@ using OpenConnector.CommandParser.Abstractions;
 using OpenConnector.CommandParser.SqlParseEngines;
 using OpenConnector.CommandParserBinder;
 using OpenConnector.CommandParserBinder.MetaData;
+using OpenConnector.Extensions;
 using OpenConnector.MySqlParser;
+using OpenConnector.Sharding.Rewrites;
+using OpenConnector.Sharding.Rewrites.Abstractions;
+using OpenConnector.Sharding.Rewrites.ParameterRewriters;
 using OpenConnector.Sharding.Routes;
 using OpenConnector.Sharding.Routes.Abstractions;
 using OpenConnector.Sharding.Routes.DataSourceRoutes;
@@ -18,6 +22,9 @@ public class Tests
     private ISqlCommandParser _sqlCommandParser;
     private ITableMetadataManager _tableMetadataManager;
     private ITableRoute _testModTableRoute;
+    private IParameterRewriterBuilder _parameterRewriterBuilder;
+    private IShardingSqlRewriter _shardingSqlRewriter;
+    private IShardingExecutionContextFactory _shardingExecutionContextFactory;
 
     [SetUp]
     public void Setup()
@@ -36,6 +43,9 @@ public class Tests
         tableMetadata.AddActualTableWithDataSource("ds0","test_02");
         _tableMetadataManager.AddTableMetadata(tableMetadata);
         _testModTableRoute=new TestModTableRoute(_tableMetadataManager);
+        _parameterRewriterBuilder = new ShardingParameterRewriterBuilder();
+        _shardingSqlRewriter = new ShardingSqlRewriter(_tableMetadataManager, _parameterRewriterBuilder);
+        _shardingExecutionContextFactory = new ShardingExecutionContextFactory();
     }
 
     [Test]
@@ -48,10 +58,13 @@ public class Tests
         var dataSourceRouteResult = new DataSourceRouteResult("ds0");
 
         var tableRouteUnits = _testModTableRoute.Route(dataSourceRouteResult,sqlParserResult);
-        // tableRouteUnits.GroupBy(o=>o.DataSourceName).se
-        // var routeResult = new RouteResult();
-        // new RouteContext(sqlCommandContext,ParameterContext.Empty,)
-        
+
+        var routeUnits = tableRouteUnits.GroupBy(o=>o.DataSourceName).SelectMany(g=>g.Select(o=>new RouteUnit(g.Key,new List<RouteMapper>(){new RouteMapper(o.LogicTableName,o.ActualTableName)})).ToHashSet()).ToList();
+        var routeResult = new RouteResult();
+        routeResult.GetRouteUnits().AddAll(routeUnits);
+        var routeContext = new RouteContext(sql,sqlCommandContext,ParameterContext.Empty,routeResult);
+        var sqlRewriteContext = _shardingSqlRewriter.Rewrite(sqlParserResult,routeContext);
+        var shardingExecutionContext = _shardingExecutionContextFactory.Create(routeContext,sqlRewriteContext);
     }
 
     public class TestModTableRoute : AbstractOperatorTableRoute

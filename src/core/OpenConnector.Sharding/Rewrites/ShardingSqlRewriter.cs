@@ -1,5 +1,6 @@
 using OpenConnector.CommandParserBinder.MetaData;
 using OpenConnector.Sharding.Rewrites.Abstractions;
+using OpenConnector.Sharding.Rewrites.Token.SimpleObject;
 using OpenConnector.Sharding.Routes;
 using OpenConnector.Sharding.Routes.Abstractions;
 
@@ -17,7 +18,7 @@ public sealed class ShardingSqlRewriter:IShardingSqlRewriter
     }
     public SqlRewriteContext Rewrite(SqlParserResult sqlParserResult, RouteContext routeContext)
     {
-        var sqlRewriteContext = new SqlRewriteContext(_tableMetadataManager,routeContext.GetSqlCommandContext(),routeContext.GetSql(),routeContext.GetParameterContext());
+        var sqlRewriteContext = new SqlRewriteContext(_tableMetadataManager,routeContext);
         var parameterRewriters = _parameterRewriterBuilder.GetParameterRewriters(routeContext);
         foreach (var parameterRewriter in parameterRewriters)
         {
@@ -26,6 +27,8 @@ public sealed class ShardingSqlRewriter:IShardingSqlRewriter
                 parameterRewriter.Rewrite(sqlRewriteContext.GetParameterBuilder(), sqlRewriteContext.GetSqlCommandContext(), sqlRewriteContext.GetParameterContext());
             }
         }
-        sqlRewriteContext.AddSqlTokenGenerators(new ShardingTokenGenerateBuilder(rule, routeContext).GetSqlTokenGenerators());
+        sqlRewriteContext.AddSqlTokenGenerators(new ShardingTokenGenerateBuilder(_tableMetadataManager).GetSqlTokenGenerators(routeContext));
+        sqlRewriteContext.GenerateSqlTokens();
+        return sqlRewriteContext;
     }
 }

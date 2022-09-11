@@ -24,12 +24,6 @@ namespace OpenConnector.Sharding.Rewrites.Token.Generator.Impl
             return new OffsetToken(pagination.GetOffsetSegment().GetStartIndex(), pagination.GetOffsetSegment().GetStopIndex(), pagination.GetRevisedOffset());
         }
 
-        public SqlToken GenerateSqlToken(ISqlCommandContext<ISqlCommand>  sqlCommandContext)
-        {
-            return GenerateSqlToken((SelectCommandContext)sqlCommandContext);
-
-        }
-
         public bool IsGenerateSqlToken(ISqlCommandContext<ISqlCommand> sqlCommandContext)
         { return sqlCommandContext is SelectCommandContext selectCommandContext
                 && selectCommandContext.GetPaginationContext().GetOffsetSegment()!=null

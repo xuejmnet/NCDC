@@ -13,6 +13,13 @@ namespace OpenConnector.Extensions
     */
     public static class CollectionExtension
     {
+        public static void AddIf<T>(this ICollection<T> source, bool @if, T target)
+        {
+            if (@if)
+            {
+                source.Add(target);
+            }
+        }
         public static void AddAll<T>(this ICollection<T> source,ICollection<T> target)
         {
             if (target.Count == 0)

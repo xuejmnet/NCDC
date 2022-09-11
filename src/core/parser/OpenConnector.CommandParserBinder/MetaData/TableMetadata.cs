@@ -56,6 +56,8 @@ public class TableMetadata
     /// </summary>
     public bool IsMultiTableMapping => null != ShardingTableColumn;
 
+    public bool IsSharding => IsMultiDataSourceMapping || IsMultiTableMapping;
+
     /// <summary>
     /// 分库字段
     /// </summary>
