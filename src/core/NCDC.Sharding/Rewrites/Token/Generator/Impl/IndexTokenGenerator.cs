@@ -1,12 +1,12 @@
 using NCDC.CommandParser.Abstractions;
-using NCDC.Basic.Parser.Command;
-using NCDC.Basic.Parser.MetaData;
+using NCDC.ShardingParser.Command;
+using NCDC.ShardingParser.MetaData;
 using NCDC.Basic.TableMetadataManagers;
 using NCDC.Sharding.Rewrites.Sql.Token.Generator;
 using NCDC.Sharding.Rewrites.Sql.Token.SimpleObject;
 using NCDC.Sharding.Rewrites.Token.SimpleObject;
 
-namespace NCDC.Sharding.Rewrites.Token.Generator.Impl
+namespace NCDC.ShardingRewrite.Token.Generator.Impl
 {
 /*
 * @Author: xjm

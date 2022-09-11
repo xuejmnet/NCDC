@@ -1,6 +1,6 @@
 ﻿using NCDC.CommandParser.Abstractions;
-using NCDC.Basic.Parser.Command;
-using NCDC.Basic.Parser.Command.DML;
+using NCDC.ShardingParser.Command;
+using NCDC.ShardingParser.Command.DML;
 
 namespace NCDC.Sharding.Executors.Context
 {

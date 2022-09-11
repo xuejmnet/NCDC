@@ -1,11 +1,11 @@
 using NCDC.CommandParser.Abstractions;
-using NCDC.Basic.Parser.Command;
-using NCDC.Basic.Parser.MetaData;
+using NCDC.ShardingParser.Command;
+using NCDC.ShardingParser.MetaData;
 using NCDC.Sharding.Rewrites.Abstractions;
 using NCDC.Sharding.Rewrites.ParameterRewriters.Parameters;
 using NCDC.Sharding.Routes;
 
-namespace NCDC.Sharding.Rewrites.ParameterRewriters;
+namespace NCDC.ShardingRewrite.ParameterRewriters;
 
 public sealed class ShardingParameterRewriterBuilder:IParameterRewriterBuilder
 {

@@ -19,7 +19,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\src\antlr4\NCDC.MySqlParser\NCDC.MySqlParser.csproj" />
-      <ProjectReference Include="..\..\src\core\NCDC.Sharding\NCDC.Sharding.csproj" />
+      <ProjectReference Include="..\..\src\sharding\NCDC.ShardingRewrite\NCDC.ShardingRewrite.csproj" />
     </ItemGroup>
 
 </Project>

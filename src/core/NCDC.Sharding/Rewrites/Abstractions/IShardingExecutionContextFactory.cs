@@ -1,7 +1,7 @@
 using NCDC.Sharding.Executors.Context;
 using NCDC.Sharding.Routes;
 
-namespace NCDC.Sharding.Rewrites.Abstractions;
+namespace NCDC.ShardingRewrite.Abstractions;
 
 public interface IShardingExecutionContextFactory
 {

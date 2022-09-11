@@ -7,7 +7,7 @@ using NCDC.Sharding.Rewrites.Sql.Impl;
 using NCDC.Sharding.Routes;
 using NCDC.ShardingAdoNet;
 
-namespace NCDC.Sharding.Rewrites;
+namespace NCDC.ShardingRewrite;
 
 public sealed class ShardingExecutionContextFactory:IShardingExecutionContextFactory
 {

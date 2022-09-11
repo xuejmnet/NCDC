@@ -1,7 +1,7 @@
 ﻿using NCDC.Sharding.Rewrites.Abstractions;
 using NCDC.ShardingAdoNet;
 
-namespace NCDC.Sharding.Rewrites.ParameterRewriters.ParameterBuilders
+namespace NCDC.ShardingRewrite.ParameterRewriters.ParameterBuilders
 {
     /*
     * @Author: xjm

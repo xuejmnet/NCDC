@@ -1,8 +1,8 @@
 using NCDC.CommandParser.Abstractions;
-using NCDC.Basic.Parser.Command;
-using NCDC.Basic.Parser.Command.DML;
-using NCDC.Basic.Parser.MetaData;
-using NCDC.Basic.Parser.MetaData.Schema;
+using NCDC.ShardingParser.Command;
+using NCDC.ShardingParser.Command.DML;
+using NCDC.ShardingParser.MetaData;
+using NCDC.ShardingParser.MetaData.Schema;
 using NCDC.Basic.TableMetadataManagers;
 using NCDC.Sharding.Rewrites.Abstractions;
 using NCDC.Sharding.Rewrites.ParameterRewriters.ParameterBuilders;
@@ -13,7 +13,7 @@ using NCDC.Sharding.Rewrites.Sql.Token.SimpleObject;
 using NCDC.Sharding.Routes;
 using NCDC.ShardingAdoNet;
 
-namespace NCDC.Sharding.Rewrites;
+namespace NCDC.ShardingRewrite;
 
 public sealed class SqlRewriteContext
 {

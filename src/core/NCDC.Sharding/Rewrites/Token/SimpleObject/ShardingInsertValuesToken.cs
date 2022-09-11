@@ -4,7 +4,7 @@ using NCDC.Sharding.Rewrites.Sql.Token.SimpleObject;
 using NCDC.Sharding.Rewrites.Sql.Token.SimpleObject.Generic;
 using NCDC.Sharding.Routes;
 
-namespace NCDC.Sharding.Rewrites.Token.SimpleObject
+namespace NCDC.ShardingRewrite.Token.SimpleObject
 {
 /*
 * @Author: xjm

@@ -1,6 +1,6 @@
 using NCDC.Sharding.Routes;
 
-namespace NCDC.Sharding.Rewrites.Sql.Token.SimpleObject
+namespace NCDC.ShardingRewrite.Sql.Token.SimpleObject
 {
 /*
 * @Author: xjm

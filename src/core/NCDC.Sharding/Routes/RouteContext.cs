@@ -1,5 +1,5 @@
 using NCDC.CommandParser.Abstractions;
-using NCDC.Basic.Parser.Command;
+using NCDC.ShardingParser.Command;
 using NCDC.ShardingAdoNet;
 
 namespace NCDC.Sharding.Routes;

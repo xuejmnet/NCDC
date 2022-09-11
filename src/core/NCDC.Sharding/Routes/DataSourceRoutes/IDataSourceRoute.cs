@@ -1,4 +1,4 @@
-using NCDC.Basic.Parser.MetaData;
+using NCDC.ShardingParser.MetaData;
 using NCDC.Basic.TableMetadataManagers;
 using NCDC.Sharding.Routes.Abstractions;
 

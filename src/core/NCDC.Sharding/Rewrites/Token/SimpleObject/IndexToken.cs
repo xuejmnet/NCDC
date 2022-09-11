@@ -2,14 +2,14 @@
 using NCDC.CommandParser.Abstractions;
 using NCDC.CommandParser.Constant;
 using NCDC.CommandParser.Value.Identifier;
-using NCDC.Basic.Parser.Command;
-using NCDC.Basic.Parser.MetaData;
+using NCDC.ShardingParser.Command;
+using NCDC.ShardingParser.MetaData;
 using NCDC.Basic.TableMetadataManagers;
 using OpenConnector.Extensions;
 using NCDC.Sharding.Rewrites.Sql.Token.SimpleObject;
 using NCDC.Sharding.Routes;
 
-namespace NCDC.Sharding.Rewrites.Token.SimpleObject
+namespace NCDC.ShardingRewrite.Token.SimpleObject
 {
     /*
     * @Author: xjm

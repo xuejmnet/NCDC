@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using NCDC.CommandParser.Abstractions;
 using NCDC.CommandParser.Command;
-using NCDC.Basic.Parser.Command;
+using NCDC.ShardingParser.Command;
 using NCDC.Common.Config.Properties;
 using NCDC.Common.Rule;
 using OpenConnector.Spi.DataBase.DataBaseType;

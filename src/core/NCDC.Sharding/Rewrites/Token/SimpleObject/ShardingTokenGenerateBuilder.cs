@@ -1,4 +1,4 @@
-﻿using NCDC.Basic.Parser.MetaData;
+﻿using NCDC.ShardingParser.MetaData;
 using NCDC.Basic.TableMetadataManagers;
 using OpenConnector.Extensions;
 using NCDC.Sharding.Rewrites.Sql.Token.Generator;
@@ -9,7 +9,7 @@ using NCDC.Sharding.Rewrites.Token.Generator.Impl;
 using NCDC.Sharding.Rewrites.Token.Generator.Impl.KeyGen;
 using NCDC.Sharding.Routes;
 
-namespace NCDC.Sharding.Rewrites.Token.SimpleObject
+namespace NCDC.ShardingRewrite.Token.SimpleObject
 {
     /*
     * @Author: xjm

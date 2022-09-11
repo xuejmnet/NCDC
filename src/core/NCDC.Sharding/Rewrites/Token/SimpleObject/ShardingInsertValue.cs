@@ -1,7 +1,7 @@
 using NCDC.CommandParser.Segment.DML.Expr;
 using NCDC.Sharding.Rewrites.Sql.Token.SimpleObject.Generic;
 
-namespace NCDC.Sharding.Rewrites.Token.SimpleObject
+namespace NCDC.ShardingRewrite.Token.SimpleObject
 {
 /*
 * @Author: xjm

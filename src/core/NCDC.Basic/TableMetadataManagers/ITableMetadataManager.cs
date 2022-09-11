@@ -1,4 +1,3 @@
-using NCDC.Basic.Parser.MetaData;
 
 namespace NCDC.Basic.TableMetadataManagers;
 

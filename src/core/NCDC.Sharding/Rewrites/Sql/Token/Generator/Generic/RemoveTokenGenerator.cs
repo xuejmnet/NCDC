@@ -1,10 +1,10 @@
 using NCDC.CommandParser.Abstractions;
 using NCDC.CommandParser.Command.DAL.Dialect.MySql;
-using NCDC.Basic.Parser.Command;
+using NCDC.ShardingParser.Command;
 using NCDC.Sharding.Rewrites.Sql.Token.SimpleObject;
 using NCDC.Sharding.Rewrites.Sql.Token.SimpleObject.Generic;
 
-namespace NCDC.Sharding.Rewrites.Sql.Token.Generator.Generic
+namespace NCDC.ShardingRewrite.Sql.Token.Generator.Generic
 {
 /*
 * @Author: xjm

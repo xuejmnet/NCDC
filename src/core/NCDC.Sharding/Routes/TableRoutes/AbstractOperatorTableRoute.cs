@@ -1,4 +1,4 @@
-using NCDC.Basic.Parser.MetaData;
+using NCDC.ShardingParser.MetaData;
 using NCDC.Basic.TableMetadataManagers;
 using OpenConnector.Exceptions;
 using NCDC.Sharding.Extensions;

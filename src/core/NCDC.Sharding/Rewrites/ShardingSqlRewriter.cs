@@ -1,11 +1,11 @@
-using NCDC.Basic.Parser.MetaData;
+using NCDC.ShardingParser.MetaData;
 using NCDC.Basic.TableMetadataManagers;
 using NCDC.Sharding.Rewrites.Abstractions;
 using NCDC.Sharding.Rewrites.Token.SimpleObject;
 using NCDC.Sharding.Routes;
 using NCDC.Sharding.Routes.Abstractions;
 
-namespace NCDC.Sharding.Rewrites;
+namespace NCDC.ShardingRewrite;
 
 public sealed class ShardingSqlRewriter:IShardingSqlRewriter
 {

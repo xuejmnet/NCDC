@@ -1,8 +1,8 @@
 using NCDC.CommandParser.Abstractions;
-using NCDC.Basic.Parser.Command;
+using NCDC.ShardingParser.Command;
 using NCDC.Sharding.Rewrites.Sql.Token.SimpleObject;
 
-namespace NCDC.Sharding.Rewrites.Sql.Token.Generator
+namespace NCDC.ShardingRewrite.Sql.Token.Generator
 {
     /*
     * @Author: xjm

@@ -1,7 +1,7 @@
 using NCDC.Sharding.Routes;
 using NCDC.Sharding.Routes.Abstractions;
 
-namespace NCDC.Sharding.Rewrites.Abstractions;
+namespace NCDC.ShardingRewrite.Abstractions;
 
 public interface IShardingSqlRewriter
 {

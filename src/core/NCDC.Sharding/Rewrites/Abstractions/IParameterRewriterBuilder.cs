@@ -1,8 +1,8 @@
 using NCDC.CommandParser.Abstractions;
-using NCDC.Basic.Parser.Command;
+using NCDC.ShardingParser.Command;
 using NCDC.Sharding.Routes;
 
-namespace NCDC.Sharding.Rewrites.Abstractions;
+namespace NCDC.ShardingRewrite.Abstractions;
 
 public interface IParameterRewriterBuilder
 {

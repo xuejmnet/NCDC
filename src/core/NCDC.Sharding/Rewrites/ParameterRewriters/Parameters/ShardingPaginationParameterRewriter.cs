@@ -1,14 +1,14 @@
 using NCDC.CommandParser.Abstractions;
-using NCDC.Basic.Parser.Command;
-using NCDC.Basic.Parser.Command.DML;
-using NCDC.Basic.Parser.Segment.Select.Pagination;
+using NCDC.ShardingParser.Command;
+using NCDC.ShardingParser.Command.DML;
+using NCDC.ShardingParser.Segment.Select.Pagination;
 using OpenConnector.Extensions;
 using NCDC.Sharding.Rewrites.Abstractions;
 using NCDC.Sharding.Rewrites.ParameterRewriters.ParameterBuilders;
 using NCDC.Sharding.Routes;
 using NCDC.ShardingAdoNet;
 
-namespace NCDC.Sharding.Rewrites.ParameterRewriters.Parameters
+namespace NCDC.ShardingRewrite.ParameterRewriters.Parameters
 {
 /*
 * @Author: xjm

@@ -1,7 +1,7 @@
 using NCDC.Sharding.Rewrites.Sql.Token.Generator.Generic;
 using NCDC.Sharding.Routes;
 
-namespace NCDC.Sharding.Rewrites.Sql.Token.Generator.Builder
+namespace NCDC.ShardingRewrite.Sql.Token.Generator.Builder
 {
 /*
 * @Author: xjm

@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using NCDC.CommandParser.Abstractions;
-using NCDC.Basic.Parser.Command;
+using NCDC.ShardingParser.Command;
 using OpenConnector.Logger;
 using NCDC.Sharding.Executors.Context;
 

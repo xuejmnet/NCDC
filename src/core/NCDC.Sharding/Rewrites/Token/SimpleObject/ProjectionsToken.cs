@@ -1,7 +1,7 @@
 ﻿using System.Text;
 using NCDC.Sharding.Rewrites.Sql.Token.SimpleObject;
 
-namespace NCDC.Sharding.Rewrites.Token.SimpleObject
+namespace NCDC.ShardingRewrite.Token.SimpleObject
 {
     /*
     * @Author: xjm

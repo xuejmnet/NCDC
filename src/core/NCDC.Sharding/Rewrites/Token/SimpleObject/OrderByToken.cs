@@ -2,7 +2,7 @@
 using NCDC.CommandParser.Constant;
 using NCDC.Sharding.Rewrites.Sql.Token.SimpleObject;
 
-namespace NCDC.Sharding.Rewrites.Token.SimpleObject
+namespace NCDC.ShardingRewrite.Token.SimpleObject
 {
     /*
     * @Author: xjm
