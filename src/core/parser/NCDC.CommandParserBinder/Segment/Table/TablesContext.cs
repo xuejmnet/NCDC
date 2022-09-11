@@ -33,15 +33,17 @@ namespace NCDC.CommandParserBinder.Segment.Table
         /// ��ȡ���еı�����
         /// </summary>
         /// <returns></returns>
-        public ICollection<string> GetTableNames()
+        public IEnumerable<string> GetTableNames()
         {
-            ICollection<string> result = new LinkedList<string>();
             foreach (var table in _tables)
             {
-                result.Add(table.GetTableName().GetIdentifier().GetValue());
+                yield return table.GetTableName().GetIdentifier().GetValue();
             }
+        }
 
-            return new HashSet<string>(result);
+        public int GetTableNameCount()
+        {
+            return _tables.Count;
         }
 
         public string? FindTableName(ColumnSegment column, TableMetadata tableMetadata)

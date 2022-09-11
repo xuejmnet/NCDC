@@ -1,9 +1,11 @@
+using MySqlConnector;
 using OpenConnector;
 using NCDC.CommandParser.Abstractions;
 using NCDC.CommandParser.SqlParseEngines;
 using NCDC.CommandParserBinder;
 using NCDC.CommandParserBinder.MetaData;
 using NCDC.Configuration;
+using NCDC.Configuration.Metadatas;
 using OpenConnector.Extensions;
 using OpenConnector.MySqlParser;
 using NCDC.Sharding.Rewrites;
@@ -14,6 +16,7 @@ using NCDC.Sharding.Routes.Abstractions;
 using NCDC.Sharding.Routes.DataSourceRoutes;
 using NCDC.Sharding.Routes.TableRoutes;
 using NCDC.ShardingAdoNet;
+using ITableRouteManager = NCDC.Sharding.Routes.Abstractions.ITableRouteManager;
 
 namespace NCDC.ShardingTest;
 
@@ -25,10 +28,18 @@ public class Tests
     private IParameterRewriterBuilder _parameterRewriterBuilder;
     private IShardingSqlRewriter _shardingSqlRewriter;
     private IShardingExecutionContextFactory _shardingExecutionContextFactory;
+    private IRouteContextFactory _routeContextFactory;
+    private IDataSourceRouteRuleEngine _dataSourceRouteRuleEngine;
+    private ITableRouteRuleEngine _tableRouteRuleEngine;
+    private IDataSourceRouteManager _dataSourceRouteManager;
+    private ILogicDatabase _logicDatabase;
+    private ITableRouteManager _tableRouteManager;
 
     [SetUp]
     public void Setup()
     {
+        _logicDatabase = new LogicDatabase("a");
+        _logicDatabase.AddDataSource("ds0", "123", MySqlConnectorFactory.Instance, true);
         _sqlCommandParser = new SqlCommandParser(new MySqlParserConfiguration());
         _tableMetadataManager = new TableMetadataManager();
         var tableMetadata = new TableMetadata("test", new Dictionary<string, ColumnMetadata>()
@@ -46,6 +57,13 @@ public class Tests
         _parameterRewriterBuilder = new ShardingParameterRewriterBuilder();
         _shardingSqlRewriter = new ShardingSqlRewriter(_tableMetadataManager, _parameterRewriterBuilder);
         _shardingExecutionContextFactory = new ShardingExecutionContextFactory();
+        _dataSourceRouteManager = new DataSourceRouteManager(_tableMetadataManager, _logicDatabase);
+        _dataSourceRouteRuleEngine =
+            new DataSourceRouteRuleEngine(_tableMetadataManager, _logicDatabase, _dataSourceRouteManager);
+        _tableRouteManager = new TableRouteManager(_tableMetadataManager, _logicDatabase);
+        _tableRouteManager.AddRoute(_testModTableRoute);
+        _tableRouteRuleEngine = new TableRouteRuleEngine(_tableMetadataManager, _logicDatabase, _tableRouteManager);
+        _routeContextFactory = new RouteContextFactory(_dataSourceRouteRuleEngine, _tableRouteRuleEngine);
     }
 
     [Test]
@@ -55,14 +73,7 @@ public class Tests
         var sqlCommand = _sqlCommandParser.Parse(sql,false);
         var sqlCommandContext = SqlCommandContextFactory.Create(_tableMetadataManager, sql, ParameterContext.Empty, sqlCommand);
         var sqlParserResult = new SqlParserResult(sql,sqlCommandContext,ParameterContext.Empty);
-        var dataSourceRouteResult = new DataSourceRouteResult("ds0");
-
-        var tableRouteUnits = _testModTableRoute.Route(dataSourceRouteResult,sqlParserResult);
-
-        var routeUnits = tableRouteUnits.GroupBy(o=>o.DataSourceName).SelectMany(g=>g.Select(o=>new RouteUnit(g.Key,new List<RouteMapper>(){new RouteMapper(o.LogicTableName,o.ActualTableName)})).ToHashSet()).ToList();
-        var routeResult = new RouteResult();
-        routeResult.GetRouteUnits().AddAll(routeUnits);
-        var routeContext = new RouteContext(sql,sqlCommandContext,ParameterContext.Empty,routeResult);
+        var routeContext = _routeContextFactory.Create(sqlParserResult);
         var sqlRewriteContext = _shardingSqlRewriter.Rewrite(sqlParserResult,routeContext);
         var shardingExecutionContext = _shardingExecutionContextFactory.Create(routeContext,sqlRewriteContext);
     }

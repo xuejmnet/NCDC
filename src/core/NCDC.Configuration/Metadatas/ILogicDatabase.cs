@@ -1,3 +1,4 @@
+using System.Data.Common;
 using NCDC.CommandParserBinder.MetaData.Schema;
 using OpenConnector.ProxyServer.Session.Connection.Abstractions;
 using OpenConnector.Transaction;
@@ -21,7 +22,10 @@ public interface ILogicDatabase
 
       bool UserNameAuthorize(string username);
 
+      bool AddDataSource(string dataSourceName, string connectionString, DbProviderFactory dbProviderFactory,
+          bool isDefault);
+
      List<IServerDbConnection> GetServerDbConnections(ConnectionModeEnum connectionMode, string dataSourceName,
          int connectionSize, TransactionTypeEnum transactionType);
-     SchemaMetaData SchemaMetaData { get; }
+     // SchemaMetaData SchemaMetaData { get; }
 }

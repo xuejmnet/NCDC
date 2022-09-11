@@ -7,6 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\NCDC.Configuration\NCDC.Configuration.csproj" />
       <ProjectReference Include="..\parser\NCDC.CommandParserBinder\NCDC.CommandParserBinder.csproj" />
     </ItemGroup>
 

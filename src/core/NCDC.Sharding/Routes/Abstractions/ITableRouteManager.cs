@@ -7,7 +7,7 @@ public interface ITableRouteManager
 {
     bool HasRoute(string tableName);
     ITableRoute GetRoute(string tableName);
-    ICollection<ITableRoute> GetRoutes();
+    IReadOnlyCollection<ITableRoute> GetRoutes();
     bool AddRoute(ITableRoute route);
 
     ICollection<TableRouteUnit> RouteTo(string tableName, DataSourceRouteResult dataSourceRouteResult,

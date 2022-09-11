@@ -81,7 +81,7 @@ public class LogicDatabase:ILogicDatabase
         // }
     }
 
-    public SchemaMetaData SchemaMetaData { get; }
+    // public SchemaMetaData SchemaMetaData { get; }
 
     private List<IServerDbConnection> CreateServerDbConnections(TransactionTypeEnum transactionType,string dataSourceName,IProxyDatabase proxyDatabase,int connectionSize)
     {

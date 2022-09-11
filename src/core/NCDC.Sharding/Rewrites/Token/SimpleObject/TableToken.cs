@@ -41,8 +41,8 @@ namespace NCDC.Sharding.Rewrites.Token.SimpleObject
 
         private IDictionary<string, string> GetLogicAndActualTables(RouteUnit routeUnit)
         {
-            ICollection<string> tableNames = sqlCommandContext.GetTablesContext().GetTableNames();
-            IDictionary<string, string> result = new Dictionary<string, string>(tableNames.Count);
+            int tableNameCount = sqlCommandContext.GetTablesContext().GetTableNameCount();
+            IDictionary<string, string> result = new Dictionary<string, string>(tableNameCount);
             foreach (var tableMapper in routeUnit.TableMappers)
             {
                 result.Add(tableMapper.LogicName.ToLower(), tableMapper.ActualName);

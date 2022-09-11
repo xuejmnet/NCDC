@@ -2,17 +2,17 @@ namespace NCDC.Sharding.Routes.DataSourceRoutes;
 
 public class DataSourceRouteResult
 {
-    public DataSourceRouteResult(ISet<string> intersectDataSources)
+    public DataSourceRouteResult(ICollection<string> intersectDataSources)
     {
         IntersectDataSources = intersectDataSources;
     }
-    public DataSourceRouteResult(string dataSource):this(new HashSet<string>(){dataSource})
+    public DataSourceRouteResult(string dataSource):this(new List<string>(){dataSource})
     {
     }
     /// <summary>
     /// 交集
     /// </summary>
-    public ISet<string> IntersectDataSources { get; }
+    public ICollection<string> IntersectDataSources { get; }
 
     public override string ToString()
     {
