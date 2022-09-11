@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using OpenConnector.Base;
 using OpenConnector.Extensions;
 using OpenConnector.Merge.Reader.Memory;
-using OpenConnector.CommandParserBinder.Command.DML;
-using OpenConnector.CommandParserBinder.Segment.Select.OrderBy;
+using NCDC.CommandParserBinder.Command.DML;
+using NCDC.CommandParserBinder.Segment.Select.OrderBy;
 using OpenConnector.ShardingMerge.DQL.OrderBy;
 
 namespace OpenConnector.ShardingMerge.DQL.GroupBy

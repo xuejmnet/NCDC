@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Text;
-using OpenConnector.CommandParser.Abstractions;
-using OpenConnector.CommandParser.Command;
+using NCDC.CommandParser.Abstractions;
+using NCDC.CommandParser.Command;
 using OpenConnector.ShardingAdoNet;
 using OpenConnector.ShardingCommon.Core.Rule;
 

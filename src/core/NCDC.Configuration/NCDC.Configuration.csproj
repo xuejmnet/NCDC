@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="DotNetty.Common" Version="0.7.2" />
+      <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Nito.AsyncEx" Version="5.1.2" />
+<!--      <ProjectReference Include="..\..\sharding\OpenConnector.ShardingCommon\OpenConnector.ShardingCommon.csproj" />-->
+      <ProjectReference Include="..\NCDC\NCDC.csproj" />
+      <ProjectReference Include="..\parser\NCDC.CommandParserBinder\NCDC.CommandParserBinder.csproj" />
+    </ItemGroup>
+
+</Project>

@@ -1,26 +1,26 @@
-// using OpenConnector.Api.Database.DatabaseType.Dialect;
-// using OpenConnector.CommandParser.Abstractions;
-// using OpenConnector.CommandParser.SqlParseEngines;
-// using OpenConnector.CommandParserBinder;
-// using OpenConnector.CommandParserBinder.Command;
-// using OpenConnector.CommandParserBinder.MetaData.Column;
-// using OpenConnector.CommandParserBinder.MetaData.Index;
-// using OpenConnector.CommandParserBinder.MetaData.Schema;
-// using OpenConnector.CommandParserBinder.MetaData.Table;
-// using OpenConnector.Common.Config;
-// using OpenConnector.Common.Config.Properties;
-// using OpenConnector.Common.MetaData;
-// using OpenConnector.Common.MetaData.DataSource;
-// using OpenConnector.MySqlParser;
-// using OpenConnector.Route.Context;
-// using OpenConnector.ShardingAdoNet;
-// using OpenConnector.ShardingApi.Api.Config.Sharding;
-// using OpenConnector.ShardingApi.Api.Config.Sharding.Strategy;
-// using OpenConnector.ShardingApi.Api.Sharding.Standard;
-// using OpenConnector.ShardingCommon.Core.Rule;
-// using OpenConnector.ShardingRoute.Engine;
+// using NCDC.Api.Database.DatabaseType.Dialect;
+// using NCDC.CommandParser.Abstractions;
+// using NCDC.CommandParser.SqlParseEngines;
+// using NCDC.CommandParserBinder;
+// using NCDC.CommandParserBinder.Command;
+// using NCDC.CommandParserBinder.MetaData.Column;
+// using NCDC.CommandParserBinder.MetaData.Index;
+// using NCDC.CommandParserBinder.MetaData.Schema;
+// using NCDC.CommandParserBinder.MetaData.Table;
+// using NCDC.Common.Config;
+// using NCDC.Common.Config.Properties;
+// using NCDC.Common.MetaData;
+// using NCDC.Common.MetaData.DataSource;
+// using NCDC.MySqlParser;
+// using NCDC.Route.Context;
+// using NCDC.ShardingAdoNet;
+// using NCDC.ShardingApi.Api.Config.Sharding;
+// using NCDC.ShardingApi.Api.Config.Sharding.Strategy;
+// using NCDC.ShardingApi.Api.Sharding.Standard;
+// using NCDC.ShardingCommon.Core.Rule;
+// using NCDC.ShardingRoute.Engine;
 //
-// namespace OpenConnector.ShardingRouteTest;
+// namespace NCDC.ShardingRouteTest;
 //
 // public class Tests
 // {

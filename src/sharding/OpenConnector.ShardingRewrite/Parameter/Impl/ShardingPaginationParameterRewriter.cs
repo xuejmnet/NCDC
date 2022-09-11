@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Data.Common;
-using OpenConnector.CommandParser.Abstractions;
-using OpenConnector.CommandParser.Command;
+using NCDC.CommandParser.Abstractions;
+using NCDC.CommandParser.Command;
 using OpenConnector.Extensions;
-using OpenConnector.CommandParserBinder.Command;
-using OpenConnector.CommandParserBinder.Command.DML;
-using OpenConnector.CommandParserBinder.Segment.Select.Pagination;
+using NCDC.CommandParserBinder.Command;
+using NCDC.CommandParserBinder.Command.DML;
+using NCDC.CommandParserBinder.Segment.Select.Pagination;
 using OpenConnector.RewriteEngine.Parameter.Builder;
 using OpenConnector.RewriteEngine.Parameter.Builder.Impl;
 using OpenConnector.RewriteEngine.Parameter.Rewrite;

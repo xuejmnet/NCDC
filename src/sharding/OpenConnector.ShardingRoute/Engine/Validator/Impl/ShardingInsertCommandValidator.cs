@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Text;
-using OpenConnector.CommandParser.Abstractions;
-using OpenConnector.CommandParser.Command;
-using OpenConnector.CommandParser.Command.DML;
-using OpenConnector.CommandParser.Segment.DML.Assignment;
-using OpenConnector.CommandParser.Segment.DML.Column;
+using NCDC.CommandParser.Abstractions;
+using NCDC.CommandParser.Command;
+using NCDC.CommandParser.Command.DML;
+using NCDC.CommandParser.Segment.DML.Assignment;
+using NCDC.CommandParser.Segment.DML.Column;
 using OpenConnector.Exceptions;
 using OpenConnector.ShardingAdoNet;
 using OpenConnector.ShardingCommon.Core.Rule;

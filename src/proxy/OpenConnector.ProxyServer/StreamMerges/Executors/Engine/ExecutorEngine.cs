@@ -2,10 +2,10 @@
 // using System.Collections.Generic;
 // using System.Linq;
 // using System.Threading.Tasks;
-// using OpenConnector.Exceptions;
-// using OpenConnector.Extensions;
+// using NCDC.Exceptions;
+// using NCDC.Extensions;
 //
-// namespace OpenConnector.Executor.Engine
+// namespace NCDC.Executor.Engine
 // {
 //     /*
 //     * @Author: xjm

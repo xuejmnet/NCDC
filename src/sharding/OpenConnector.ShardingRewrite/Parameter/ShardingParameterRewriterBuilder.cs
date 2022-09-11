@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using OpenConnector.CommandParser.Abstractions;
-using OpenConnector.CommandParser.Command;
-using OpenConnector.CommandParserBinder.Command;
-using OpenConnector.CommandParserBinder.MetaData.Schema;
+using NCDC.CommandParser.Abstractions;
+using NCDC.CommandParser.Command;
+using NCDC.CommandParserBinder.Command;
+using NCDC.CommandParserBinder.MetaData.Schema;
 using OpenConnector.RewriteEngine.Parameter.Rewrite;
 using OpenConnector.RewriteEngine.Sql.Token.Generator.Aware;
 using OpenConnector.Route.Context;

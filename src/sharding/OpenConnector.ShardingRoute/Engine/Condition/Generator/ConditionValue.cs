@@ -4,9 +4,9 @@ using System.Data.Common;
 using System.Linq;
 using System.Text;
 using OpenConnector.Base;
-using OpenConnector.CommandParser.Extensions;
-using OpenConnector.CommandParser.Segment.DML.Expr;
-using OpenConnector.CommandParser.Segment.DML.Expr.Simple;
+using NCDC.CommandParser.Extensions;
+using NCDC.CommandParser.Segment.DML.Expr;
+using NCDC.CommandParser.Segment.DML.Expr.Simple;
 using OpenConnector.ShardingAdoNet;
 
 namespace OpenConnector.ShardingRoute.Engine.Condition.Generator

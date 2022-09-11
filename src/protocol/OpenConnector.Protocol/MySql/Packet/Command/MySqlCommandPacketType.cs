@@ -1,7 +1,7 @@
 // using System.Collections.Immutable;
-// using OpenConnector.ProtocolCore.Packets;
+// using NCDC.ProtocolCore.Packets;
 //
-// namespace OpenConnector.ProtocolMysql.Packet.Command;
+// namespace NCDC.ProtocolMysql.Packet.Command;
 //
 // public class MySqlCommandPacketType : ICommandPacketType
 // {

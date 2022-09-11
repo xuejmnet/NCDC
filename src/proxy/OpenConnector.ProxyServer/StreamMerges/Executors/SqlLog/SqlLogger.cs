@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.Logging;
-using OpenConnector.CommandParser.Abstractions;
-using OpenConnector.CommandParser.Command;
-using OpenConnector.CommandParserBinder.Command;
+using NCDC.CommandParser.Abstractions;
+using NCDC.CommandParser.Command;
+using NCDC.CommandParserBinder.Command;
 using OpenConnector.Logger;
 using OpenConnector.ProxyServer.StreamMerges.Executors.Context;
 

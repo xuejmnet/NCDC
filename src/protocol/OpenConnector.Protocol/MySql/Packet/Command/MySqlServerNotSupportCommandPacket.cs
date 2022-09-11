@@ -1,7 +1,7 @@
-// using OpenConnector.Protocol.MySql.Payload;
-// using OpenConnector.ProtocolMysql.Packet.ServerCommand;
+// using NCDC.Protocol.MySql.Payload;
+// using NCDC.ProtocolMysql.Packet.ServerCommand;
 //
-// namespace OpenConnector.Protocol.MySql.Packet.Command;
+// namespace NCDC.Protocol.MySql.Packet.Command;
 //
 // public class MySqlServerNotSupportCommandPacket:AbstractMySqlServerCommandPacket
 // {

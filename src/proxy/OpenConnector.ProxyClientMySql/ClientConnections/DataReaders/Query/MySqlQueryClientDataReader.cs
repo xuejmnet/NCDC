@@ -1,9 +1,9 @@
 using System.Data.Common;
 using MySqlConnector;
-using OpenConnector.CommandParser.Abstractions;
-using OpenConnector.CommandParser.Command;
-using OpenConnector.CommandParser.Command.DML;
-using OpenConnector.Common;
+using NCDC.CommandParser.Abstractions;
+using NCDC.CommandParser.Command;
+using NCDC.CommandParser.Command.DML;
+using NCDC.Common;
 using OpenConnector.Configuration.Session;
 using OpenConnector.Enums;
 using OpenConnector.ParserEngine;

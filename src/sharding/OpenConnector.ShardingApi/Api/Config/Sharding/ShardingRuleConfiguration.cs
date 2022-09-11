@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using OpenConnector.Common.Config;
+using NCDC.Common.Config;
 using OpenConnector.ShardingApi.Api.Config.MasterSlave;
 using OpenConnector.ShardingApi.Api.Config.Sharding.Strategy;
 

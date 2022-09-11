@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using OpenConnector.Common.Config.Properties;
+using NCDC.Common.Config.Properties;
 using OpenConnector.ShardingCommon.Core.Strategy.Route.Value;
 
 namespace OpenConnector.ShardingCommon.Core.Strategy.Route.None

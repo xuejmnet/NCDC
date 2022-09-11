@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Text;
 using OpenConnector.Base.PriorityQueues;
 using OpenConnector.Merge.Reader.Stream;
-using OpenConnector.CommandParserBinder.Command.DML;
-using OpenConnector.CommandParserBinder.MetaData.Schema;
-using OpenConnector.CommandParserBinder.Segment.Select.OrderBy;
+using NCDC.CommandParserBinder.Command.DML;
+using NCDC.CommandParserBinder.MetaData.Schema;
+using NCDC.CommandParserBinder.Segment.Select.OrderBy;
 using OpenConnector.StreamDataReaders;
 
 namespace OpenConnector.ShardingMerge.DQL.OrderBy

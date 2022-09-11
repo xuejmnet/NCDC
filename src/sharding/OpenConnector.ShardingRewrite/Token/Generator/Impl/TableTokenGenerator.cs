@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using OpenConnector.CommandParser.Abstractions;
-using OpenConnector.CommandParser.Command;
-using OpenConnector.CommandParser.Segment.Generic.Table;
-using OpenConnector.CommandParserBinder.Command;
+using NCDC.CommandParser.Abstractions;
+using NCDC.CommandParser.Command;
+using NCDC.CommandParser.Segment.Generic.Table;
+using NCDC.CommandParserBinder.Command;
 using OpenConnector.RewriteEngine.Sql.Token.Generator;
 using OpenConnector.RewriteEngine.Sql.Token.SimpleObject;
 using OpenConnector.ShardingCommon.Core.Rule;

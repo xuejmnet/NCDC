@@ -1,9 +1,9 @@
-// using OpenConnector.Executor.Context;
-// using OpenConnector.Pluggable.Merge;
-// using OpenConnector.ProxyServer.Options.Context;
-// using OpenConnector.StreamDataReaders;
+// using NCDC.Executor.Context;
+// using NCDC.Pluggable.Merge;
+// using NCDC.ProxyServer.Options.Context;
+// using NCDC.StreamDataReaders;
 //
-// namespace OpenConnector.ProxyServer.StreamMerges;
+// namespace NCDC.ProxyServer.StreamMerges;
 //
 // public sealed class StreamDataReaderShardingMerger:IShardingMerger<IStreamDataReader>
 // {

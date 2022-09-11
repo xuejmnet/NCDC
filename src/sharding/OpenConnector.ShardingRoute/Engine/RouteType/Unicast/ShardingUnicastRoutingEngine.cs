@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Antlr4.Runtime.Misc;
-using OpenConnector.Common.Rule;
+using NCDC.Common.Rule;
 using OpenConnector.Exceptions;
 using OpenConnector.Extensions;
 using OpenConnector.Route.Context;

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using OpenConnector.Common.Config;
+using NCDC.Common.Config;
 
 namespace OpenConnector.ShardingApi.Api.Config.MasterSlave
 {

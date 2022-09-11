@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using OpenConnector.Base;
-using OpenConnector.Common.Config.Properties;
+using NCDC.Common.Config.Properties;
 using OpenConnector.Extensions;
 using OpenConnector.ShardingApi.Api.Config.Sharding.Strategy;
 using OpenConnector.ShardingApi.Api.Sharding.Standard;

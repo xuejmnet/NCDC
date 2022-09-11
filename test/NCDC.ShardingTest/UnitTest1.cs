@@ -1,19 +1,19 @@
 using OpenConnector;
-using OpenConnector.CommandParser.Abstractions;
-using OpenConnector.CommandParser.SqlParseEngines;
-using OpenConnector.CommandParserBinder;
-using OpenConnector.CommandParserBinder.MetaData;
+using NCDC.CommandParser.Abstractions;
+using NCDC.CommandParser.SqlParseEngines;
+using NCDC.CommandParserBinder;
+using NCDC.CommandParserBinder.MetaData;
+using NCDC.Configuration;
 using OpenConnector.Extensions;
 using OpenConnector.MySqlParser;
-using OpenConnector.Sharding.Rewrites;
-using OpenConnector.Sharding.Rewrites.Abstractions;
-using OpenConnector.Sharding.Rewrites.ParameterRewriters;
-using OpenConnector.Sharding.Routes;
-using OpenConnector.Sharding.Routes.Abstractions;
-using OpenConnector.Sharding.Routes.DataSourceRoutes;
-using OpenConnector.Sharding.Routes.TableRoutes;
-using OpenConnector.ShardingAdoNet;
-using OpenConnector.Shardings;
+using NCDC.Sharding.Rewrites;
+using NCDC.Sharding.Rewrites.Abstractions;
+using NCDC.Sharding.Rewrites.ParameterRewriters;
+using NCDC.Sharding.Routes;
+using NCDC.Sharding.Routes.Abstractions;
+using NCDC.Sharding.Routes.DataSourceRoutes;
+using NCDC.Sharding.Routes.TableRoutes;
+using NCDC.ShardingAdoNet;
 
 namespace NCDC.ShardingTest;
 

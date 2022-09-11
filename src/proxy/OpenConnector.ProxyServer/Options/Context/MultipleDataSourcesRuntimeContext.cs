@@ -1,10 +1,10 @@
 ﻿using Microsoft.Extensions.Logging;
-using OpenConnector.CommandParser.Abstractions;
-using OpenConnector.CommandParserBinder.MetaData.Schema;
-using OpenConnector.Common.Config;
-using OpenConnector.Common.MetaData;
-using OpenConnector.Common.MetaData.DataSource;
-using OpenConnector.Common.Rule;
+using NCDC.CommandParser.Abstractions;
+using NCDC.CommandParserBinder.MetaData.Schema;
+using NCDC.Common.Config;
+using NCDC.Common.MetaData;
+using NCDC.Common.MetaData.DataSource;
+using NCDC.Common.Rule;
 using OpenConnector.DataSource;
 using OpenConnector.Logger;
 using OpenConnector.Spi.DataBase.DataBaseType;

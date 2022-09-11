@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\core\OpenConnector.Route\OpenConnector.Route.csproj" />
+    <ProjectReference Include="..\..\core\NCDC.Route\NCDC.Route.csproj" />
     <ProjectReference Include="..\OpenConnector.ShardingCommon\OpenConnector.ShardingCommon.csproj" />
   </ItemGroup>
 

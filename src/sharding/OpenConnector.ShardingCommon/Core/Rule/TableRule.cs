@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using OpenConnector.Common.Rule;
+using NCDC.Common.Rule;
 using OpenConnector.Exceptions;
 using OpenConnector.Extensions;
 using OpenConnector.ShardingApi.Api.Config.Sharding;

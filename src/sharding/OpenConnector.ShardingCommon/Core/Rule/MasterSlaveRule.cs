@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using OpenConnector.Common.Config;
-using OpenConnector.Common.Rule;
+using NCDC.Common.Config;
+using NCDC.Common.Rule;
 using OpenConnector.ShardingApi.Api.Config.MasterSlave;
 using OpenConnector.ShardingApi.Spi.MasterSlave;
 using OpenConnector.ShardingCommon.Spi.Algorithm.MasterSlave;

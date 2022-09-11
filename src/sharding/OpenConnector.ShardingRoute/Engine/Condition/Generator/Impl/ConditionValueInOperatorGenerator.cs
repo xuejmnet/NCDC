@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Text;
-using OpenConnector.CommandParser.Segment.DML.Predicate.Value;
+using NCDC.CommandParser.Segment.DML.Predicate.Value;
 using OpenConnector.Extensions;
 using OpenConnector.ShardingAdoNet;
 using OpenConnector.ShardingCommon.Core.Strategy.Route.Value;

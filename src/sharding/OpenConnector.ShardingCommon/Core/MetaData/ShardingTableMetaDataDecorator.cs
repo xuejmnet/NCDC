@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using OpenConnector.CommandParserBinder.MetaData.Column;
-using OpenConnector.CommandParserBinder.MetaData.Index;
-using OpenConnector.CommandParserBinder.MetaData.Table;
-using OpenConnector.Common.MetaData.Decorator;
+using NCDC.CommandParserBinder.MetaData.Column;
+using NCDC.CommandParserBinder.MetaData.Index;
+using NCDC.CommandParserBinder.MetaData.Table;
+using NCDC.Common.MetaData.Decorator;
 using OpenConnector.Extensions;
 using OpenConnector.ShardingCommon.Core.Rule;
 

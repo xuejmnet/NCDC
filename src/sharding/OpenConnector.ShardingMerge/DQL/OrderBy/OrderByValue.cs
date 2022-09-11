@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Text;
 using OpenConnector.Base;
-using OpenConnector.CommandParser.Segment.DML.Order.Item;
-using OpenConnector.CommandParserBinder.Command.DML;
-using OpenConnector.CommandParserBinder.MetaData.Column;
-using OpenConnector.CommandParserBinder.MetaData.Schema;
-using OpenConnector.CommandParserBinder.Segment.Select.OrderBy;
+using NCDC.CommandParser.Segment.DML.Order.Item;
+using NCDC.CommandParserBinder.Command.DML;
+using NCDC.CommandParserBinder.MetaData.Column;
+using NCDC.CommandParserBinder.MetaData.Schema;
+using NCDC.CommandParserBinder.Segment.Select.OrderBy;
 using OpenConnector.StreamDataReaders;
 
 namespace OpenConnector.ShardingMerge.DQL.OrderBy

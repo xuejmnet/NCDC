@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using OpenConnector.CommandParser.Constant;
+using NCDC.CommandParser.Constant;
 using OpenConnector.RewriteEngine.Sql.Token.SimpleObject;
 
 namespace OpenConnector.ShardingRewrite.Token.SimpleObject

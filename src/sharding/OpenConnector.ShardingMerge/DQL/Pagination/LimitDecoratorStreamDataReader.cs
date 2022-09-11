@@ -1,7 +1,7 @@
 using System;
 using OpenConnector.Merge.Reader;
 using OpenConnector.Merge.Reader.Decorator;
-using OpenConnector.CommandParserBinder.Segment.Select.Pagination;
+using NCDC.CommandParserBinder.Segment.Select.Pagination;
 using OpenConnector.StreamDataReaders;
 
 namespace OpenConnector.ShardingMerge.DQL.Pagination

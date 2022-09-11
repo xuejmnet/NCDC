@@ -1,8 +1,8 @@
 // using System.Data.Common;
-// using OpenConnector.Executor.Constant;
-// using OpenConnector.StreamDataReaders;
+// using NCDC.Executor.Constant;
+// using NCDC.StreamDataReaders;
 //
-// namespace OpenConnector.ProxyServer.StreamMerges;
+// namespace NCDC.ProxyServer.StreamMerges;
 //
 // public sealed class StreamDataReaderExecutor:AbstractStreamMergeExecutor<IStreamDataReader>
 // {

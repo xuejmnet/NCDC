@@ -17,8 +17,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\src\antlr4\OpenConnector.MySqlParser\OpenConnector.MySqlParser.csproj" />
-      <ProjectReference Include="..\..\src\core\OpenConnector.Sharding\OpenConnector.Sharding.csproj" />
+      <ProjectReference Include="..\..\src\antlr4\NCDC.MySqlParser\NCDC.MySqlParser.csproj" />
+      <ProjectReference Include="..\..\src\core\NCDC.Sharding\NCDC.Sharding.csproj" />
     </ItemGroup>
 
 </Project>

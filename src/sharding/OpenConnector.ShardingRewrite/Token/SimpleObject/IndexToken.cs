@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using OpenConnector.CommandParser.Abstractions;
-using OpenConnector.CommandParser.Command;
-using OpenConnector.CommandParser.Constant;
-using OpenConnector.CommandParser.Value.Identifier;
+using NCDC.CommandParser.Abstractions;
+using NCDC.CommandParser.Command;
+using NCDC.CommandParser.Constant;
+using NCDC.CommandParser.Value.Identifier;
 using OpenConnector.Extensions;
-using OpenConnector.CommandParserBinder.Command;
+using NCDC.CommandParserBinder.Command;
 using OpenConnector.RewriteEngine.Sql.Token.SimpleObject;
 using OpenConnector.Route.Context;
 using OpenConnector.ShardingCommon.Core.Rule;

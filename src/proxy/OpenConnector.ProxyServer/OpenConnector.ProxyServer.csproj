@@ -13,7 +13,7 @@
     <ItemGroup>
       <ProjectReference Include="..\..\antlr4\OpenConnector.MySqlParser\OpenConnector.MySqlParser.csproj" />
       <ProjectReference Include="..\..\antlr4\OpenConnector.SqlServerParser\OpenConnector.SqlServerParser.csproj" />
-      <ProjectReference Include="..\..\core\OpenConnector.Configuration\OpenConnector.Configuration.csproj" />
+      <ProjectReference Include="..\..\core\NCDC.Configuration\NCDC.Configuration.csproj" />
       <ProjectReference Include="..\..\protocol\OpenConnector.Protocol\OpenConnector.Protocol.csproj" />
       <ProjectReference Include="..\..\sharding\OpenConnector.ShardingMerge\OpenConnector.ShardingMerge.csproj" />
       <ProjectReference Include="..\..\sharding\OpenConnector.ShardingRewrite\OpenConnector.ShardingRewrite.csproj" />

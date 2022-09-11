@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using OpenConnector.CommandParser.Abstractions;
-using OpenConnector.CommandParser.Command;
-using OpenConnector.CommandParser.Command.DML;
+using NCDC.CommandParser.Abstractions;
+using NCDC.CommandParser.Command;
+using NCDC.CommandParser.Command.DML;
 using OpenConnector.ShardingRoute.Engine.Validator.Impl;
 
 namespace OpenConnector.ShardingRoute.Engine.Validator

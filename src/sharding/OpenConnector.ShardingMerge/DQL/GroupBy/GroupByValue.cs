@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using OpenConnector.CommandParserBinder.Segment.Select.OrderBy;
+using NCDC.CommandParserBinder.Segment.Select.OrderBy;
 using OpenConnector.StreamDataReaders;
 
 namespace OpenConnector.ShardingMerge.DQL.GroupBy

@@ -1,8 +1,8 @@
-﻿using OpenConnector.CommandParser.Abstractions;
-using OpenConnector.CommandParser.SqlParseEngines;
-using OpenConnector.Common.Config.Properties;
-using OpenConnector.Common.MetaData;
-using OpenConnector.Common.Rule;
+﻿using NCDC.CommandParser.Abstractions;
+using NCDC.CommandParser.SqlParseEngines;
+using NCDC.Common.Config.Properties;
+using NCDC.Common.MetaData;
+using NCDC.Common.Rule;
 using OpenConnector.Route;
 using OpenConnector.Route.Context;
 using OpenConnector.ShardingAdoNet;

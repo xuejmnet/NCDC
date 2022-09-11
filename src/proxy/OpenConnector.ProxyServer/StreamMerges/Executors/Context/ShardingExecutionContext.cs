@@ -1,7 +1,7 @@
-﻿using OpenConnector.CommandParser.Abstractions;
-using OpenConnector.CommandParser.Command;
-using OpenConnector.CommandParserBinder.Command;
-using OpenConnector.CommandParserBinder.Command.DML;
+﻿using NCDC.CommandParser.Abstractions;
+using NCDC.CommandParser.Command;
+using NCDC.CommandParserBinder.Command;
+using NCDC.CommandParserBinder.Command.DML;
 
 namespace OpenConnector.ProxyServer.StreamMerges.Executors.Context
 {

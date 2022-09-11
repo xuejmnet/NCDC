@@ -1,6 +1,6 @@
 using System;
 using System.Text;
-using OpenConnector.Common.Rule;
+using NCDC.Common.Rule;
 using OpenConnector.Extensions;
 using OpenConnector.RewriteEngine.Sql.Token.SimpleObject;
 using OpenConnector.RewriteEngine.Sql.Token.SimpleObject.Generic;

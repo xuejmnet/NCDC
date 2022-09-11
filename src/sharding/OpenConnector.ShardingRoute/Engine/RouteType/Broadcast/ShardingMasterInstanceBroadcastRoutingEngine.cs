@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using OpenConnector.Common.MetaData.DataSource;
+using NCDC.Common.MetaData.DataSource;
 using OpenConnector.Route.Context;
 using OpenConnector.ShardingCommon.Core.Rule;
 

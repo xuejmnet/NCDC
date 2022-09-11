@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using OpenConnector.CommandParser.Abstractions;
-using OpenConnector.CommandParser.Command;
-using OpenConnector.CommandParserBinder.Command;
-using OpenConnector.CommandParserBinder.MetaData.Schema;
+using NCDC.CommandParser.Abstractions;
+using NCDC.CommandParser.Command;
+using NCDC.CommandParserBinder.Command;
+using NCDC.CommandParserBinder.MetaData.Schema;
 using OpenConnector.Extensions;
 using OpenConnector.Merge.Reader.Memory;
 using OpenConnector.ShardingCommon.Core.Rule;

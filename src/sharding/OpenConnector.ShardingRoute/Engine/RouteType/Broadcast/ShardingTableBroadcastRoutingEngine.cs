@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 
 using OpenConnector.Base;
-using OpenConnector.CommandParser.Abstractions;
-using OpenConnector.CommandParser.Command;
-using OpenConnector.CommandParser.Command.DDL;
-using OpenConnector.CommandParser.Segment.DDL.Index;
-using OpenConnector.Common.Rule;
+using NCDC.CommandParser.Abstractions;
+using NCDC.CommandParser.Command;
+using NCDC.CommandParser.Command.DDL;
+using NCDC.CommandParser.Segment.DDL.Index;
+using NCDC.Common.Rule;
 using OpenConnector.Extensions;
-using OpenConnector.CommandParserBinder.Command;
-using OpenConnector.CommandParserBinder.MetaData.Schema;
+using NCDC.CommandParserBinder.Command;
+using NCDC.CommandParserBinder.MetaData.Schema;
 using OpenConnector.Route.Context;
 using OpenConnector.ShardingCommon.Core.Rule;
 

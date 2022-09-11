@@ -1,12 +1,12 @@
 using System;
 using System.Linq;
 using OpenConnector.Base;
-using OpenConnector.CommandParser.Command;
-using OpenConnector.CommandParser.Command.DML;
-using OpenConnector.CommandParser.Segment.DML.Column;
-using OpenConnector.CommandParserBinder.Command;
-using OpenConnector.CommandParserBinder.Command.DML;
-using OpenConnector.CommandParserBinder.Segment.Insert.Keygen;
+using NCDC.CommandParser.Command;
+using NCDC.CommandParser.Command.DML;
+using NCDC.CommandParser.Segment.DML.Column;
+using NCDC.CommandParserBinder.Command;
+using NCDC.CommandParserBinder.Command.DML;
+using NCDC.CommandParserBinder.Segment.Insert.Keygen;
 using OpenConnector.RewriteEngine.Sql.Token.SimpleObject;
 using OpenConnector.ShardingRewrite.Token.SimpleObject;
 

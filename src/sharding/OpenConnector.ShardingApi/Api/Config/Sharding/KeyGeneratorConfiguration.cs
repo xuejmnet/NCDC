@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using OpenConnector.Common.Config;
+using NCDC.Common.Config;
 
 namespace OpenConnector.ShardingApi.Api.Config.Sharding
 {

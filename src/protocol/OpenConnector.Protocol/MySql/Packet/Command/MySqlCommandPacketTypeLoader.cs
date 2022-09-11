@@ -1,7 +1,7 @@
-// using OpenConnector.Exceptions;
-// using OpenConnector.ProtocolMysql.Payload;
+// using NCDC.Exceptions;
+// using NCDC.ProtocolMysql.Payload;
 //
-// namespace OpenConnector.ProtocolMysql.Packet.Command;
+// namespace NCDC.ProtocolMysql.Packet.Command;
 //
 // public sealed class MySqlCommandPacketTypeLoader
 // {

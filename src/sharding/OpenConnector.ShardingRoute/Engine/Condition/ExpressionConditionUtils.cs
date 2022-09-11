@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using OpenConnector.CommandParser.Segment.DML.Expr;
-using OpenConnector.CommandParser.Segment.DML.Expr.Complex;
+using NCDC.CommandParser.Segment.DML.Expr;
+using NCDC.CommandParser.Segment.DML.Expr.Complex;
 using OpenConnector.Extensions;
 
 namespace OpenConnector.ShardingRoute.Engine.Condition

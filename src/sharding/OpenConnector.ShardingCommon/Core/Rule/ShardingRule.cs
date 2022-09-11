@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using OpenConnector.Common.Config;
-using OpenConnector.Common.Rule;
+using NCDC.Common.Config;
+using NCDC.Common.Rule;
 using OpenConnector.Exceptions;
 using OpenConnector.Extensions;
 using OpenConnector.ShardingApi.Api.Config.MasterSlave;

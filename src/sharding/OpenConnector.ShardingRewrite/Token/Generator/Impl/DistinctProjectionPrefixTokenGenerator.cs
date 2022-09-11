@@ -1,9 +1,9 @@
 using System;
 using System.Linq;
-using OpenConnector.CommandParser.Abstractions;
-using OpenConnector.CommandParser.Command;
-using OpenConnector.CommandParserBinder.Command;
-using OpenConnector.CommandParserBinder.Command.DML;
+using NCDC.CommandParser.Abstractions;
+using NCDC.CommandParser.Command;
+using NCDC.CommandParserBinder.Command;
+using NCDC.CommandParserBinder.Command.DML;
 using OpenConnector.RewriteEngine.Sql.Token.Generator;
 using OpenConnector.RewriteEngine.Sql.Token.SimpleObject;
 using OpenConnector.ShardingRewrite.Token.SimpleObject;

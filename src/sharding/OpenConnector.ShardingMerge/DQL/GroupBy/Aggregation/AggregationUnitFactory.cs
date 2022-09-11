@@ -1,5 +1,5 @@
 using System;
-using OpenConnector.CommandParser.Constant;
+using NCDC.CommandParser.Constant;
 
 namespace OpenConnector.ShardingMerge.DQL.GroupBy.Aggregation
 {

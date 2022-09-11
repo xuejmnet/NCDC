@@ -52,8 +52,8 @@ namespace OpenConnector.Proxy.Starter
 -------------------------------------------------------------------
 Author           :  xuejiaming
 Version          :  0.0.1
-Github Repository:  https://github.com/xuejmnet/OpenConnector
-Gitee Repository :  https://gitee.com/xuejm/OpenConnector
+Github Repository:  https://github.com/xuejmnet/NCDC
+Gitee Repository :  https://gitee.com/xuejm/NCDC
 -------------------------------------------------------------------
 Start Time:{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}");
 

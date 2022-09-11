@@ -1,0 +1,28 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<RootNamespace>OpenConnector.SqlServerParser</RootNamespace>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Antlr4 Include="Antlr4\SqlServerCommand.g4">
+			<Package>OpenConnector.SqlServerParser</Package>
+		</Antlr4>
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Antlr4.Runtime.Standard" Version="4.9.2" />
+		<PackageReference Include="Antlr4BuildTasks" Version="8.14" PrivateAssets="all" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\..\core\parser\NCDC.CommandParser\NCDC.CommandParser.csproj" />
+	</ItemGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+		<NoWarn>3021;1701;1702</NoWarn>
+	</PropertyGroup>
+</Project>

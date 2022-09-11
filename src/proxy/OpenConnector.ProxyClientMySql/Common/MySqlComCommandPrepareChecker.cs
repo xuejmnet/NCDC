@@ -1,11 +1,11 @@
-using OpenConnector.CommandParser.Abstractions;
-using OpenConnector.CommandParser.Command.DAL.Dialect;
-using OpenConnector.CommandParser.Command.DAL.Dialect.MySql;
-using OpenConnector.CommandParser.Command.DCL;
-using OpenConnector.CommandParser.Command.DDL;
-using OpenConnector.CommandParser.Command.DML;
-using OpenConnector.CommandParser.Command.RL;
-using OpenConnector.CommandParser.Command.TCL;
+using NCDC.CommandParser.Abstractions;
+using NCDC.CommandParser.Command.DAL.Dialect;
+using NCDC.CommandParser.Command.DAL.Dialect.MySql;
+using NCDC.CommandParser.Command.DCL;
+using NCDC.CommandParser.Command.DDL;
+using NCDC.CommandParser.Command.DML;
+using NCDC.CommandParser.Command.RL;
+using NCDC.CommandParser.Command.TCL;
 
 namespace OpenConnector.ProxyClientMySql.Common;
 

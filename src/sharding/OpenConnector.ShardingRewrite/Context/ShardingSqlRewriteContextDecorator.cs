@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using OpenConnector.Common.Config.Properties;
-using OpenConnector.Common.Rule;
+using NCDC.Common.Config.Properties;
+using NCDC.Common.Rule;
 using OpenConnector.Extensions;
 using OpenConnector.RewriteEngine.Context;
 using OpenConnector.RewriteEngine.Sql.Token.Generator.Aware;

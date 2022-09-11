@@ -1,9 +1,9 @@
-﻿using OpenConnector.CommandParser.Abstractions;
-using OpenConnector.CommandParser.Command;
-using OpenConnector.CommandParserBinder.Command;
-using OpenConnector.CommandParserBinder.MetaData.Schema;
-using OpenConnector.Common.Config.Properties;
-using OpenConnector.Common.Rule;
+﻿using NCDC.CommandParser.Abstractions;
+using NCDC.CommandParser.Command;
+using NCDC.CommandParserBinder.Command;
+using NCDC.CommandParserBinder.MetaData.Schema;
+using NCDC.Common.Config.Properties;
+using NCDC.Common.Rule;
 using OpenConnector.Exceptions;
 using OpenConnector.Merge;
 using OpenConnector.Merge.Engine;

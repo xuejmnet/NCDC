@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using OpenConnector.Base;
-using OpenConnector.Common.Config.Properties;
+using NCDC.Common.Config.Properties;
 using OpenConnector.DataStructure.RangeStructure;
 using OpenConnector.Extensions;
 using OpenConnector.ShardingApi.Api.Config.Sharding.Strategy;

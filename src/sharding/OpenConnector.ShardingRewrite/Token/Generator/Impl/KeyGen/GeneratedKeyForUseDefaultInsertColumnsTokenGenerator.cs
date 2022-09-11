@@ -2,11 +2,11 @@ using System;
 using System.Collections.Generic;
 using Antlr4.Runtime.Misc;
 using OpenConnector.Base;
-using OpenConnector.CommandParser.Command;
-using OpenConnector.CommandParser.Command.DML;
-using OpenConnector.CommandParserBinder.Command;
-using OpenConnector.CommandParserBinder.Command.DML;
-using OpenConnector.CommandParserBinder.Segment.Insert.Keygen;
+using NCDC.CommandParser.Command;
+using NCDC.CommandParser.Command.DML;
+using NCDC.CommandParserBinder.Command;
+using NCDC.CommandParserBinder.Command.DML;
+using NCDC.CommandParserBinder.Segment.Insert.Keygen;
 using OpenConnector.RewriteEngine.Sql.Token.SimpleObject;
 using OpenConnector.RewriteEngine.Sql.Token.SimpleObject.Generic;
 

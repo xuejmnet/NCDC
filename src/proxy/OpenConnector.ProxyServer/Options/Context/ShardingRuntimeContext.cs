@@ -1,6 +1,6 @@
-﻿using OpenConnector.CommandParser.Abstractions;
-using OpenConnector.CommandParserBinder.MetaData.Schema;
-using OpenConnector.Common.MetaData.Decorator;
+﻿using NCDC.CommandParser.Abstractions;
+using NCDC.CommandParserBinder.MetaData.Schema;
+using NCDC.Common.MetaData.Decorator;
 using OpenConnector.DataSource;
 using OpenConnector.ShardingCommon.Core.MetaData;
 using OpenConnector.ShardingCommon.Core.Rule;

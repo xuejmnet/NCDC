@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Text;
 
 using OpenConnector.Api.Database;
-using OpenConnector.CommandParser.Abstractions;
-using OpenConnector.CommandParser.Command;
-using OpenConnector.CommandParser.Command.DAL.Dialect.MySql;
+using NCDC.CommandParser.Abstractions;
+using NCDC.CommandParser.Command;
+using NCDC.CommandParser.Command.DAL.Dialect.MySql;
 using OpenConnector.Merge.Engine.Merger;
 using OpenConnector.Merge.Reader.Transparent;
-using OpenConnector.CommandParserBinder.Command;
-using OpenConnector.CommandParserBinder.MetaData.Schema;
+using NCDC.CommandParserBinder.Command;
+using NCDC.CommandParserBinder.MetaData.Schema;
 using OpenConnector.ShardingCommon.Core.Rule;
 using OpenConnector.ShardingMerge.DAL.Common;
 using OpenConnector.ShardingMerge.DAL.Show;

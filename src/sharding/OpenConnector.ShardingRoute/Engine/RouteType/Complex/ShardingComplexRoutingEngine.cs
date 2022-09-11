@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using OpenConnector.CommandParser.Abstractions;
-using OpenConnector.CommandParser.Command;
-using OpenConnector.Common.Config.Properties;
+using NCDC.CommandParser.Abstractions;
+using NCDC.CommandParser.Command;
+using NCDC.Common.Config.Properties;
 using OpenConnector.Exceptions;
 using OpenConnector.Extensions;
-using OpenConnector.CommandParserBinder.Command;
+using NCDC.CommandParserBinder.Command;
 using OpenConnector.Route.Context;
 using OpenConnector.ShardingCommon.Core.Rule;
 using OpenConnector.ShardingRoute.Engine.Condition;

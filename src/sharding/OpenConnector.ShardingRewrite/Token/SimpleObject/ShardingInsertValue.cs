@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
-using OpenConnector.CommandParser.Segment.DML.Expr;
-using OpenConnector.Common.Rule;
+using NCDC.CommandParser.Segment.DML.Expr;
+using NCDC.Common.Rule;
 using OpenConnector.RewriteEngine.Sql.Token.SimpleObject.Generic;
 
 namespace OpenConnector.ShardingRewrite.Token.SimpleObject

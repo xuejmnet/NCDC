@@ -1,8 +1,8 @@
-// using OpenConnector.Executor.Context;
-// using OpenConnector.ProxyServer.Commons;
-// using OpenConnector.ProxyServer.Session.Connection.Abstractions;
+// using NCDC.Executor.Context;
+// using NCDC.ProxyServer.Commons;
+// using NCDC.ProxyServer.Session.Connection.Abstractions;
 //
-// namespace OpenConnector.ProxyServer.StreamMerges.Executors.Context;
+// namespace NCDC.ProxyServer.StreamMerges.Executors.Context;
 //
 // public class ConnectionExecuteUnit
 // {
