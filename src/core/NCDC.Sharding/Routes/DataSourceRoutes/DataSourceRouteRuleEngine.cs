@@ -1,5 +1,6 @@
 using NCDC.CommandParserBinder.MetaData;
 using NCDC.Configuration.Metadatas;
+using NCDC.Sharding.Routes.Abstractions;
 using OpenConnector.Exceptions;
 using OpenConnector.Extensions;
 

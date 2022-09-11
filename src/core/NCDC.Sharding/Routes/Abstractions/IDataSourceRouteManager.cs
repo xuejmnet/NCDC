@@ -1,6 +1,6 @@
-using NCDC.Sharding.Routes.Abstractions;
+using NCDC.Sharding.Routes.DataSourceRoutes;
 
-namespace NCDC.Sharding.Routes.DataSourceRoutes;
+namespace NCDC.Sharding.Routes.Abstractions;
 
 public interface IDataSourceRouteManager
 {

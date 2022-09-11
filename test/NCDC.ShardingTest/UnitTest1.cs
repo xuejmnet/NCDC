@@ -6,6 +6,7 @@ using NCDC.CommandParserBinder;
 using NCDC.CommandParserBinder.MetaData;
 using NCDC.Configuration;
 using NCDC.Configuration.Metadatas;
+using NCDC.Sharding;
 using OpenConnector.Extensions;
 using OpenConnector.MySqlParser;
 using NCDC.Sharding.Rewrites;

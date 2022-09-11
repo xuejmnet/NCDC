@@ -182,16 +182,16 @@ namespace NCDC.CommandParserBinder.Command.DML
             ICollection<SimpleTableSegment> result = new LinkedList<SimpleTableSegment>(GetSqlCommand().GetSimpleTableSegments());
             if (GetSqlCommand().Where != null)
             {
-                result.AddAll(GetAllTablesFromWhere(GetSqlCommand().Where));
+                result.AddAll(GetAllTablesFromWhere(GetSqlCommand().Where!));
             }
             result.AddAll(GetAllTablesFromProjections(GetSqlCommand().Projections));
             if (GetSqlCommand().GroupBy!=null)
             {
-                result.AddAll(GetAllTablesFromOrderByItems(GetSqlCommand().GroupBy.GetGroupByItems()));
+                result.AddAll(GetAllTablesFromOrderByItems(GetSqlCommand().GroupBy!.GetGroupByItems()));
             }
             if (GetSqlCommand().OrderBy!=null)
             {
-                result.AddAll(GetAllTablesFromOrderByItems(GetSqlCommand().OrderBy.GetOrderByItems()));
+                result.AddAll(GetAllTablesFromOrderByItems(GetSqlCommand().OrderBy!.GetOrderByItems()));
             }
             return result;
         }

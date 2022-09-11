@@ -2,7 +2,7 @@ using NCDC.CommandParser.Abstractions;
 using NCDC.CommandParserBinder.Command;
 using NCDC.ShardingAdoNet;
 
-namespace NCDC.Sharding.Routes.Abstractions;
+namespace NCDC.Sharding;
 
 public sealed class SqlParserResult
 {

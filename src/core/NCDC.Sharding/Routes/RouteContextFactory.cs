@@ -18,7 +18,7 @@ public sealed class RouteContextFactory:IRouteContextFactory
     public RouteContext Create(SqlParserResult sqlParserResult)
     {
         var dataSourceRouteResult = _dataSourceRouteRuleEngine.Route(new DataSourceRouteRuleContext(sqlParserResult));
-        var shardingRouteResult = _tableRouteRuleEngine.Route(new TableRouteRuleContext(dataSourceRouteResult,sqlParserResult));
+        var shardingRouteResult = _tableRouteRuleEngine.Route(new TableRouteContext(dataSourceRouteResult,sqlParserResult));
         var routeResult = new RouteResult();
         routeResult.GetRouteUnits().AddAll(shardingRouteResult.RouteUnits);
         return new RouteContext(sqlParserResult.Sql, sqlParserResult.SqlCommandContext,

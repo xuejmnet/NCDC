@@ -33,7 +33,7 @@ public sealed class TableRouteRuleEngine:ITableRouteRuleEngine
         }
         return _tableRouteManager.RouteTo(tableName,dataSourceRouteResult,sqlParserResult);
     }
-    public ShardingRouteResult Route(TableRouteRuleContext context)
+    public ShardingRouteResult Route(TableRouteContext context)
     {
             Dictionary<string /*dataSourceName*/, Dictionary<string /*tableName*/, ISet<TableRouteUnit>>> routeMaps =
                 new Dictionary<string, Dictionary<string, ISet<TableRouteUnit>>>();
@@ -47,25 +47,24 @@ public sealed class TableRouteRuleEngine:ITableRouteRuleEngine
                 {
                     var dataSourceName = shardingRouteUnit.DataSourceName;
 
+                    if (!routeMaps.TryGetValue(dataSourceName, out var tableNameMaps))
+                    {
+                        tableNameMaps = new Dictionary<string, ISet<TableRouteUnit>>();
+                        routeMaps.TryAdd(dataSourceName, tableNameMaps);
+                    }
 
-                    if (!routeMaps.ContainsKey(dataSourceName))
+                    if (shardingRouteUnit.LogicTableName == shardingRouteUnit.ActualTableName)
                     {
-                        routeMaps.Add(dataSourceName,
-                            new Dictionary<string, ISet<TableRouteUnit>>()
-                                { { tableName, new HashSet<TableRouteUnit>() { shardingRouteUnit } } });
+                        continue;
                     }
-                    else
+
+                    if (!tableNameMaps.TryGetValue(tableName, out var tableNameMapping))
                     {
-                        var routeMap = routeMaps[dataSourceName];
-                        if (!routeMap.ContainsKey(tableName))
-                        {
-                            routeMap.Add(tableName, new HashSet<TableRouteUnit>() { shardingRouteUnit });
-                        }
-                        else
-                        {
-                            routeMap[tableName].Add(shardingRouteUnit);
-                        }
+                        tableNameMapping = new HashSet<TableRouteUnit>();
+                        tableNameMaps.TryAdd(tableName, tableNameMapping);
                     }
+
+                    tableNameMapping.Add(shardingRouteUnit);
                 }
             }
 

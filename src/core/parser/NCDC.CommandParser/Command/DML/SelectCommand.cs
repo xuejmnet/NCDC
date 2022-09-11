@@ -23,10 +23,10 @@ namespace NCDC.CommandParser.Command.DML
         /// 
         /// </summary>
         public readonly ICollection<TableReferenceSegment> TableReferences = new LinkedList<TableReferenceSegment>();
-        public WhereSegment Where { get; set; }
-        public GroupBySegment GroupBy { get; set; }
-        public OrderBySegment OrderBy { get; set; }
-        public LimitSegment Limit { get; set; }
+        public WhereSegment? Where { get; set; }
+        public GroupBySegment? GroupBy { get; set; }
+        public OrderBySegment? OrderBy { get; set; }
+        public LimitSegment? Limit { get; set; }
         public SelectCommand ParentCommand { get; set; }
         public LockSegment Lock { get; set; }
 

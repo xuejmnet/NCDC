@@ -13,7 +13,6 @@ public sealed class ShardingExecutionContextFactory:IShardingExecutionContextFac
 {
     public ShardingExecutionContext Create(RouteContext routeContext, SqlRewriteContext sqlRewriteContext)
     {
-  
         ICollection<ExecutionUnit> executionUnits = new LinkedList<ExecutionUnit>();
         var sqlRewriteResults = GetRewriteResults(sqlRewriteContext, routeContext.GetRouteResult());
         foreach (var sqlRewriteResult in sqlRewriteResults)
