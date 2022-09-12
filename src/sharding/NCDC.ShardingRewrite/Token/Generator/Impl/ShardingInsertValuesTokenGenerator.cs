@@ -1,4 +1,5 @@
-﻿using NCDC.CommandParser.Abstractions;
+﻿using NCDC.Basic.Parsers;
+using NCDC.CommandParser.Abstractions;
 using NCDC.CommandParser.Segment.DML.Assignment;
 using NCDC.CommandParser.Segment.DML.Expr;
 using NCDC.ShardingParser.Command;

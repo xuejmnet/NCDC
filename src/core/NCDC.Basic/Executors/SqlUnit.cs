@@ -1,6 +1,6 @@
 using NCDC.ShardingAdoNet;
 
-namespace NCDC.ShardingRewrite.Executors.Context
+namespace NCDC.Basic.Executors
 {
 /*
 * @Author: xjm

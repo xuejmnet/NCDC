@@ -6,12 +6,12 @@ using NCDC.ShardingRoute;
 
 namespace NCDC.ShardingRewrite;
 
-public sealed class ShardingSqlRewriter:IShardingSqlRewriter
+public sealed class SqlRewriterContextFactory:ISqlRewriterContextFactory
 {
     private readonly ITableMetadataManager _tableMetadataManager;
     private readonly IParameterRewriterBuilder _parameterRewriterBuilder;
 
-    public ShardingSqlRewriter(ITableMetadataManager tableMetadataManager,IParameterRewriterBuilder parameterRewriterBuilder)
+    public SqlRewriterContextFactory(ITableMetadataManager tableMetadataManager,IParameterRewriterBuilder parameterRewriterBuilder)
     {
         _tableMetadataManager = tableMetadataManager;
         _parameterRewriterBuilder = parameterRewriterBuilder;

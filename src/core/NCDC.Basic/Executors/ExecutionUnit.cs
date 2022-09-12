@@ -1,4 +1,4 @@
-namespace NCDC.ShardingRewrite.Executors.Context
+namespace NCDC.Basic.Executors
 {
 /*
 * @Author: xjm

@@ -1,3 +1,4 @@
+using NCDC.Basic.Parsers;
 using OpenConnector.Base;
 using NCDC.CommandParser.Abstractions;
 using NCDC.CommandParser.Segment.DML.Pagination;

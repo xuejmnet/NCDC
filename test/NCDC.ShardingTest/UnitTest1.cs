@@ -26,7 +26,7 @@ public class Tests
     private ITableMetadataManager _tableMetadataManager;
     private ITableRoute _testModTableRoute;
     private IParameterRewriterBuilder _parameterRewriterBuilder;
-    private IShardingSqlRewriter _shardingSqlRewriter;
+    private ISqlRewriterContextFactory _sqlRewriterContextFactory;
     private IShardingExecutionContextFactory _shardingExecutionContextFactory;
     private IRouteContextFactory _routeContextFactory;
     private IDataSourceRouteRuleEngine _dataSourceRouteRuleEngine;
@@ -55,7 +55,7 @@ public class Tests
         _tableMetadataManager.AddTableMetadata(tableMetadata);
         _testModTableRoute=new TestModTableRoute(_tableMetadataManager);
         _parameterRewriterBuilder = new ShardingParameterRewriterBuilder();
-        _shardingSqlRewriter = new ShardingSqlRewriter(_tableMetadataManager, _parameterRewriterBuilder);
+        _sqlRewriterContextFactory = new SqlRewriterContextFactory(_tableMetadataManager, _parameterRewriterBuilder);
         _shardingExecutionContextFactory = new ShardingExecutionContextFactory();
         _dataSourceRouteManager = new DataSourceRouteManager(_tableMetadataManager, _logicDatabase);
         _dataSourceRouteRuleEngine =
@@ -74,7 +74,7 @@ public class Tests
         var sqlCommandContext = SqlCommandContextFactory.Create(_tableMetadataManager, sql, ParameterContext.Empty, sqlCommand);
         var sqlParserResult = new SqlParserResult(sql,sqlCommandContext,ParameterContext.Empty);
         var routeContext = _routeContextFactory.Create(sqlParserResult);
-        var sqlRewriteContext = _shardingSqlRewriter.Rewrite(sqlParserResult,routeContext);
+        var sqlRewriteContext = _sqlRewriterContextFactory.Rewrite(sqlParserResult,routeContext);
         var shardingExecutionContext = _shardingExecutionContextFactory.Create(routeContext,sqlRewriteContext);
     }
 

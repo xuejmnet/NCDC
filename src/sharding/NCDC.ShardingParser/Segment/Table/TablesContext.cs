@@ -1,7 +1,6 @@
+using NCDC.Basic.Parsers;
 using NCDC.CommandParser.Segment.DML.Column;
 using NCDC.CommandParser.Segment.Generic.Table;
-using NCDC.ShardingParser.MetaData;
-using NCDC.ShardingParser.MetaData.Schema;
 using NCDC.Basic.TableMetadataManagers;
 using OpenConnector.Exceptions;
 using OpenConnector.Extensions;
@@ -17,7 +16,7 @@ namespace NCDC.ShardingParser.Segment.Table
     /// <summary>
     /// 当前表上下文
     /// </summary>
-    public class TablesContext
+    public class TablesContext:ITablesContext
     {
         private readonly ICollection<SimpleTableSegment> _tables;
 

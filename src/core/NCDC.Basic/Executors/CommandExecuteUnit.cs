@@ -1,7 +1,7 @@
 using NCDC.Basic.Connection.Abstractions;
 using NCDC.Enums;
 
-namespace NCDC.ShardingRewrite.Executors.Context;
+namespace NCDC.Basic.Executors;
 
 
 public sealed class CommandExecuteUnit

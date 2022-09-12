@@ -4,7 +4,7 @@ using NCDC.ShardingRoute;
 
 namespace NCDC.ShardingRewrite.Abstractions;
 
-public interface IShardingSqlRewriter
+public interface ISqlRewriterContextFactory
 {
     SqlRewriteContext Rewrite(SqlParserResult sqlParserResult, RouteContext routeContext);
 }

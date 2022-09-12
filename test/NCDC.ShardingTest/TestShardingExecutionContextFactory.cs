@@ -1,18 +1,41 @@
-using OpenConnector.Extensions;
-using NCDC.Sharding.Executors.SqlLog;
+using NCDC.Basic.Executors;
+using NCDC.CommandParser.Abstractions;
 using NCDC.ShardingAdoNet;
+using NCDC.ShardingParser;
+using NCDC.ShardingParser.Abstractions;
+using NCDC.ShardingRewrite;
 using NCDC.ShardingRewrite.Abstractions;
-using NCDC.ShardingRewrite.Executors.Context;
 using NCDC.ShardingRewrite.ParameterRewriters.ParameterBuilders;
 using NCDC.ShardingRewrite.Sql.Impl;
+using NCDC.ShardingRewrite.SqlLog;
 using NCDC.ShardingRoute;
+using NCDC.ShardingRoute.Abstractions;
+using OpenConnector.Extensions;
 
-namespace NCDC.ShardingRewrite;
+namespace NCDC.ShardingTest;
 
-public sealed class ShardingExecutionContextFactory:IShardingExecutionContextFactory
+public class TestShardingExecutionContextFactory:IShardingExecutionContextFactory
 {
-    public ShardingExecutionContext Create(RouteContext routeContext, SqlRewriteContext sqlRewriteContext)
+    private readonly ISqlCommandParser _sqlCommandParser;
+    private readonly ISqlCommandContextFactory _sqlCommandContextFactory;
+    private readonly IRouteContextFactory _routeContextFactory;
+    private readonly ISqlRewriterContextFactory _sqlRewriterContextFactory;
+
+    public TestShardingExecutionContextFactory(ISqlCommandParser sqlCommandParser,ISqlCommandContextFactory sqlCommandContextFactory,IRouteContextFactory routeContextFactory,ISqlRewriterContextFactory sqlRewriterContextFactory)
     {
+        _sqlCommandParser = sqlCommandParser;
+        _sqlCommandContextFactory = sqlCommandContextFactory;
+        _routeContextFactory = routeContextFactory;
+        _sqlRewriterContextFactory = sqlRewriterContextFactory;
+    }
+    public ShardingExecutionContext Create(string sql)
+    {
+        var sqlCommand = _sqlCommandParser.Parse(sql,false);
+        var sqlCommandContext = _sqlCommandContextFactory.Create(sql,ParameterContext.Empty, sqlCommand);
+        var sqlParserResult = new SqlParserResult(sql,sqlCommandContext,ParameterContext.Empty);
+        var routeContext = _routeContextFactory.Create(sqlParserResult);
+        var sqlRewriteContext = _sqlRewriterContextFactory.Rewrite(sqlParserResult,routeContext);
+      
         ICollection<ExecutionUnit> executionUnits = new LinkedList<ExecutionUnit>();
         var sqlRewriteResults = GetRewriteResults(sqlRewriteContext, routeContext.GetRouteResult());
         foreach (var sqlRewriteResult in sqlRewriteResults)
@@ -73,5 +96,4 @@ public sealed class ShardingExecutionContextFactory:IShardingExecutionContextFac
         }
         return false;
     }
-    
 }

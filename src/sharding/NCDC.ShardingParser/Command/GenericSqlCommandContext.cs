@@ -1,4 +1,5 @@
-﻿using NCDC.CommandParser.Abstractions;
+﻿using NCDC.Basic.Parsers;
+using NCDC.CommandParser.Abstractions;
 using NCDC.CommandParser.Command;
 using NCDC.CommandParser.Segment.Generic.Table;
 using NCDC.ShardingParser.Segment.Table;
@@ -16,7 +17,7 @@ namespace NCDC.ShardingParser.Command
     {
         private readonly T _sqlCommand;
 
-        private readonly TablesContext _tablesContext;
+        private readonly ITablesContext _tablesContext;
         public GenericSqlCommandContext(T sqlCommand)
         {
             this._sqlCommand = sqlCommand;
@@ -32,7 +33,7 @@ namespace NCDC.ShardingParser.Command
             return $"{nameof(_sqlCommand)}: {_sqlCommand}, {nameof(_tablesContext)}: {_tablesContext}";
         }
 
-        public virtual TablesContext GetTablesContext()
+        public virtual ITablesContext GetTablesContext()
         {
             return _tablesContext;
         }

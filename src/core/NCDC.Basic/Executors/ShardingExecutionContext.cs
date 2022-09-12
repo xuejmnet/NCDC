@@ -1,8 +1,7 @@
-﻿using NCDC.CommandParser.Abstractions;
-using NCDC.ShardingParser.Command;
-using NCDC.ShardingParser.Command.DML;
+﻿using NCDC.Basic.Parsers;
+using NCDC.CommandParser.Abstractions;
 
-namespace NCDC.ShardingRewrite.Executors.Context
+namespace NCDC.Basic.Executors
 {
     /*
     * @Author: xjm
@@ -17,14 +16,10 @@ namespace NCDC.ShardingRewrite.Executors.Context
     
         private readonly ICollection<ExecutionUnit> _executionUnits = new HashSet<ExecutionUnit>();
         public int MaxQueryConnectionsLimit { get; }
-        public bool IsSerialExecute { get; }
-        public bool IsSelect => !IsSerialExecute;
-
         public ShardingExecutionContext(ISqlCommandContext<ISqlCommand> sqlCommandContext)
         {
             _sqlCommandContext = sqlCommandContext;
             MaxQueryConnectionsLimit = 10;
-            IsSerialExecute = !(sqlCommandContext is SelectCommandContext);
         }
 
         public ISqlCommandContext<ISqlCommand> GetSqlCommandContext()

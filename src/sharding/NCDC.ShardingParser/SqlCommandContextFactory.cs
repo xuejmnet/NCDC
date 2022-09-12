@@ -1,9 +1,11 @@
+using NCDC.Basic.Parsers;
 using NCDC.CommandParser.Abstractions;
 using NCDC.CommandParser.Command.DML;
 using NCDC.ShardingParser.Command;
 using NCDC.ShardingParser.Command.DML;
 using NCDC.Basic.TableMetadataManagers;
 using NCDC.ShardingAdoNet;
+using NCDC.ShardingParser.Abstractions;
 
 namespace NCDC.ShardingParser
 {
@@ -13,12 +15,18 @@ namespace NCDC.ShardingParser
 * @Date: Thursday, 08 April 2021 21:51:28
 * @Email: 326308290@qq.com
 */
-    public static class SqlCommandContextFactory
+    public  class SqlCommandContextFactory:ISqlCommandContextFactory
     {
-        public static ISqlCommandContext<ISqlCommand> Create(ITableMetadataManager tableMetadataManager, string sql, ParameterContext parameterContext, ISqlCommand sqlCommand) {
+        private readonly ITableMetadataManager _tableMetadataManager;
+
+        public SqlCommandContextFactory(ITableMetadataManager tableMetadataManager)
+        {
+            _tableMetadataManager = tableMetadataManager;
+        }
+        public  ISqlCommandContext<ISqlCommand> Create(string sql, ParameterContext parameterContext, ISqlCommand sqlCommand) {
             if(sqlCommand is DMLCommand dmlCommand)
             {
-                return GetDMLCommandContext(tableMetadataManager, sql, parameterContext, dmlCommand);
+                return GetDMLCommandContext(sql, parameterContext, dmlCommand);
             }
            
             //if (sqlCommand is DMLStatement) {
@@ -36,11 +44,11 @@ namespace NCDC.ShardingParser
             return new GenericSqlCommandContext<ISqlCommand>(sqlCommand);
         }
 
-        private static ISqlCommandContext<ISqlCommand> GetDMLCommandContext(ITableMetadataManager tableMetadataManager, string sql, ParameterContext parameterContext, DMLCommand sqlCommand)
+        private  ISqlCommandContext<ISqlCommand> GetDMLCommandContext(string sql, ParameterContext parameterContext, DMLCommand sqlCommand)
         {
             if (sqlCommand is SelectCommand selectCommand)
             {
-                return new SelectCommandContext(tableMetadataManager, sql, parameterContext, selectCommand);
+                return new SelectCommandContext(_tableMetadataManager, sql, parameterContext, selectCommand);
             }
             if (sqlCommand is UpdateCommand updateCommand)
             {
@@ -51,7 +59,7 @@ namespace NCDC.ShardingParser
                 return new DeleteCommandContext(deleteCommand);
             }
             if (sqlCommand is InsertCommand insertCommand) {
-                return new InsertCommandContext(tableMetadataManager, parameterContext, insertCommand);
+                return new InsertCommandContext(_tableMetadataManager, parameterContext, insertCommand);
             }
             throw new NotSupportedException($"Unsupported SQL statement `{sqlCommand.GetType().Name}`");
         }

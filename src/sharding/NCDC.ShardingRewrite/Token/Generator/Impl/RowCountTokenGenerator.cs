@@ -1,4 +1,5 @@
-﻿using OpenConnector.Base;
+﻿using NCDC.Basic.Parsers;
+using OpenConnector.Base;
 using NCDC.CommandParser.Abstractions;
 using NCDC.CommandParser.Segment.DML.Pagination;
 using NCDC.ShardingParser.Command;

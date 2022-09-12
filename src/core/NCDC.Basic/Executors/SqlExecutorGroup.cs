@@ -1,6 +1,6 @@
 using NCDC.Enums;
 
-namespace NCDC.ShardingRewrite.Executors.Context
+namespace NCDC.Basic.Executors
 {
     public sealed class SqlExecutorGroup<T>
     {

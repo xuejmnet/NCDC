@@ -1,10 +1,11 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
+using NCDC.Basic.Executors;
+using NCDC.Basic.Parsers;
 using NCDC.CommandParser.Abstractions;
 using NCDC.ShardingParser.Command;
 using OpenConnector.Logger;
-using NCDC.ShardingRewrite.Executors.Context;
 
-namespace NCDC.Sharding.Executors.SqlLog
+namespace NCDC.ShardingRewrite.SqlLog
 {
     /*
     * @Author: xjm
