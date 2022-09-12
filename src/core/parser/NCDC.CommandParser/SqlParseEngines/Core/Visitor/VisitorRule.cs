@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Antlr4.Runtime.Tree;
+﻿using Antlr4.Runtime.Tree;
 using NCDC.CommandParser.Command;
 using NCDC.Exceptions;
 
-namespace NCDC.ParserEngine.Core.Visitor
+namespace NCDC.CommandParser.SqlParseEngines.Core.Visitor
 {
     /*
     * @Author: xjm

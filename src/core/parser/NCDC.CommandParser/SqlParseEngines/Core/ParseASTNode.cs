@@ -1,7 +1,7 @@
 ﻿using Antlr4.Runtime.Tree;
 using NCDC.CommandParser.Abstractions;
 
-namespace NCDC.ParserEngine.Core
+namespace NCDC.CommandParser.SqlParseEngines.Core
 {
     /*
     * @Author: xjm

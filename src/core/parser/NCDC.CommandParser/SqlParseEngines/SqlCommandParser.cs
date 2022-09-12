@@ -4,9 +4,9 @@ using NCDC.CommandParser.Abstractions;
 using NCDC.CommandParser.Abstractions.Visitor;
 using NCDC.CommandParser.Command;
 using NCDC.CommandParser.SqlParseEngines.Core.Parser;
+using NCDC.CommandParser.SqlParseEngines.Core.Visitor;
+using NCDC.CommandParser.SqlParseEngines.Hook;
 using NCDC.Exceptions;
-using NCDC.ParserEngine.Core.Visitor;
-using NCDC.ParserEngine.Hook;
 
 
 namespace NCDC.CommandParser.SqlParseEngines

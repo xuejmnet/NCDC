@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using NCDC.CommandParser.Abstractions;
-using NCDC.CommandParser.Command;
+﻿using NCDC.CommandParser.Abstractions;
 
-namespace NCDC.ParserEngine.Hook
+namespace NCDC.CommandParser.SqlParseEngines.Hook
 {
     /*
     * @Author: xjm
