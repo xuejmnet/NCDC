@@ -13,7 +13,7 @@ namespace OpenConnector.Merge.Reader.Decorator
     * @Email: 326308290@qq.com
     */
     /// <summary>
-    /// 笛卡尔积的合并
+    /// 增强合并
     /// </summary>
     public abstract class DecoratorStreamDataReader:IStreamDataReader
     {

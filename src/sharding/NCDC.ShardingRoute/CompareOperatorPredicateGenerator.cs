@@ -13,7 +13,7 @@ namespace NCDC.ShardingRoute;
 public sealed class CompareOperatorPredicateGenerator
 {
     private static readonly ILogger<CompareOperatorPredicateGenerator> _logger =
-        InternalLoggerFactory.CreateLogger<CompareOperatorPredicateGenerator>();
+        InternalNCDCLoggerFactory.CreateLogger<CompareOperatorPredicateGenerator>();
     
     private  const string EQUAL = "=";
     private const string GREATER_THAN = ">";

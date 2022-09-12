@@ -1,21 +1,18 @@
 using MySqlConnector;
-using OpenConnector.Configuration.Session;
-using OpenConnector.Extensions;
+using NCDC.Basic.Connection.Abstractions;
 using NCDC.ProxyServer.Abstractions;
 using NCDC.ProxyServer.Binaries;
 
-using NCDC.ProxyServer.Session;
-using OpenConnector.ShardingMerge.DAL.Common;
-using OpenConnector.StreamDataReaders;
+using NCDC.StreamDataReaders;
 
 namespace NCDC.ProxyServer.ServerHandlers;
 
 public sealed class ShowDatabasesServerHandler:IServerHandler
 {
-    private readonly ConnectionSession _connectionSession;
+    private readonly IConnectionSession _connectionSession;
     private IStreamDataReader _streamDataReader;
 
-    public ShowDatabasesServerHandler(ConnectionSession connectionSession)
+    public ShowDatabasesServerHandler(IConnectionSession connectionSession)
     {
         _connectionSession = connectionSession;
     }

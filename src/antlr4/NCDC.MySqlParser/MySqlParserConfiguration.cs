@@ -2,6 +2,7 @@
 using NCDC.CommandParser.Abstractions;
 using NCDC.CommandParser.Abstractions.SqlParser;
 using NCDC.CommandParser.Abstractions.Visitor;
+using NCDC.Enums;
 using NCDC.MySqlParser.SqlLexer;
 using NCDC.MySqlParser.Visitor;
 
@@ -33,5 +34,9 @@ namespace NCDC.MySqlParser
             return _sqlVisitorCreator;
         }
 
+        public DatabaseTypeEnum GetDatabaseType()
+        {
+            return DatabaseTypeEnum.MySql;
+        }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using NCDC.CommandParser.Abstractions;
 using NCDC.ShardingParser.Command;
+using NCDC.ShardingParser.Command.DML;
 
 namespace NCDC.ProxyServer.Executors
 {
@@ -16,10 +17,14 @@ namespace NCDC.ProxyServer.Executors
     
         private readonly ICollection<ExecutionUnit> _executionUnits = new HashSet<ExecutionUnit>();
         public int MaxQueryConnectionsLimit { get; }
+        public bool IsSerialExecute { get; }
+        public bool IsSelect => !IsSerialExecute;
+
         public ShardingExecutionContext(ISqlCommandContext<ISqlCommand> sqlCommandContext)
         {
             _sqlCommandContext = sqlCommandContext;
             MaxQueryConnectionsLimit = 10;
+            IsSerialExecute = !(sqlCommandContext is SelectCommandContext);
         }
 
         public ISqlCommandContext<ISqlCommand> GetSqlCommandContext()

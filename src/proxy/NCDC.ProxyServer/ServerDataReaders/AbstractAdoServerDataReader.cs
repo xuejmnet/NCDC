@@ -1,15 +1,14 @@
-using OpenConnector.Configuration;
-using OpenConnector.Configuration.Session;
-using NCDC.ProxyServer.Session.Connection.Abstractions;
-using NCDC.ProxyServer.StreamMerges.Executors.Context;
+using NCDC.Basic.Connection.Abstractions;
+using NCDC.Enums;
+using NCDC.ProxyServer.Executors;
 
 namespace NCDC.ProxyServer.ServerDataReaders;
 
 public abstract class AbstractAdoServerDataReader:AbstractExecuteServerDataReader
 {
-    protected ConnectionSession ConnectionSession { get; }
+    protected IConnectionSession ConnectionSession { get; }
 
-    public AbstractAdoServerDataReader(ShardingExecutionContext shardingExecutionContext,ConnectionSession connectionSession) : base(shardingExecutionContext)
+    public AbstractAdoServerDataReader(ShardingExecutionContext shardingExecutionContext,IConnectionSession connectionSession) : base(shardingExecutionContext)
     {
         ConnectionSession = connectionSession;
     }

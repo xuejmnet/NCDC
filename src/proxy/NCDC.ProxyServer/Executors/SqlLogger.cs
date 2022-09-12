@@ -1,7 +1,7 @@
 using Microsoft.Extensions.Logging;
 using NCDC.CommandParser.Abstractions;
+using NCDC.Logger;
 using NCDC.ShardingParser.Command;
-using OpenConnector.Logger;
 
 namespace NCDC.ProxyServer.Executors
 {
@@ -16,7 +16,7 @@ namespace NCDC.ProxyServer.Executors
     public delegate void Log(string msg);
     public class SqlLogger
     {
-        private static readonly ILogger<SqlLogger> _logger = InternalLoggerFactory.CreateLogger<SqlLogger>();
+        private static readonly ILogger<SqlLogger> _logger = InternalNCDCLoggerFactory.CreateLogger<SqlLogger>();
 
         private SqlLogger()
         {

@@ -7,7 +7,7 @@ namespace NCDC.Basic.Metadatas;
 
 public sealed partial class LogicDbServer:ILogicDbServer
 {
-    private static readonly ILogger<LogicDbServer> _logger = InternalLoggerFactory.CreateLogger<LogicDbServer>();
+    private static readonly ILogger<LogicDbServer> _logger = InternalNCDCLoggerFactory.CreateLogger<LogicDbServer>();
     private readonly IDictionary<string, ILogicDatabase> _logicDatabases = new ConcurrentDictionary<string, ILogicDatabase>();
     private readonly ConcurrentDictionary<string/*user name*/,OpenConnectorUser> _connectorUsers=new ();
     

@@ -1,12 +1,11 @@
-using OpenConnector.Configuration.Session;
+using NCDC.Basic.Connection.Abstractions;
 using NCDC.ProxyServer.Abstractions;
 using NCDC.ProxyServer.Binaries;
+using NCDC.ProxyServer.Executors;
 using NCDC.ProxyServer.ServerHandlers.Results;
-using NCDC.ProxyServer.Session;
 using NCDC.ProxyServer.StreamMerges;
-using NCDC.ProxyServer.StreamMerges.Executors.Context;
 using NCDC.ProxyServer.StreamMerges.Results;
-using OpenConnector.StreamDataReaders;
+using NCDC.StreamDataReaders;
 
 namespace NCDC.ProxyServer.ServerDataReaders;
 
@@ -15,7 +14,7 @@ public sealed class QueryServerDataReader:AbstractAdoServerDataReader
 
     protected IStreamDataReader StreamDataReader { get; private set; }
     protected QueryServerResult? QueryServerResult { get; private set; }
-    public QueryServerDataReader(ShardingExecutionContext shardingExecutionContext, ConnectionSession connectionSession) : base(shardingExecutionContext, connectionSession)
+    public QueryServerDataReader(ShardingExecutionContext shardingExecutionContext, IConnectionSession connectionSession) : base(shardingExecutionContext, connectionSession)
     {
     }
 

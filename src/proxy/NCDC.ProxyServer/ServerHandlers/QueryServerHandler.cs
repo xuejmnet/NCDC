@@ -1,10 +1,7 @@
-using System.Data.Common;
-using MySqlConnector;
-using OpenConnector.Configuration.Session;
-using OpenConnector.Exceptions;
+using NCDC.Basic.Connection.Abstractions;
+using NCDC.Exceptions;
 using NCDC.ProxyServer.Abstractions;
 using NCDC.ProxyServer.Binaries;
-using NCDC.ProxyServer.Session;
 
 namespace NCDC.ProxyServer.ServerHandlers;
 
@@ -12,10 +9,10 @@ public sealed class QueryServerHandler:IServerHandler
 {
     private readonly IServerDataReaderFactory _serverDataReaderFactory;
     public string Sql { get; }
-    public ConnectionSession ConnectionSession { get; }
+    public IConnectionSession ConnectionSession { get; }
     public IServerDataReader ServerDataReader { get; private set; }
 
-    public QueryServerHandler(string sql,ConnectionSession connectionSession,IServerDataReaderFactory serverDataReaderFactory)
+    public QueryServerHandler(string sql,IConnectionSession connectionSession,IServerDataReaderFactory serverDataReaderFactory)
     {
         _serverDataReaderFactory = serverDataReaderFactory;
         Sql = sql;

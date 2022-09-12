@@ -5,6 +5,7 @@ namespace NCDC.Basic.Connection.Abstractions;
 
 public interface IConnectionSession
 {
+    string? DatabaseName { get; }
     IServerConnection ServerConnection { get; }
     // IAttributeMap AttributeMap { get; }
     ILogicDatabase? LogicDatabase { get; }

@@ -123,7 +123,7 @@ namespace OpenConnector.ShardingMerge.DQL
                 return mergedStreamDataReader;
             }
             String trunkDatabaseName = DatabaseTypes.GetTrunkDatabaseType(_databaseType.GetName()).GetName();
-            if ("MySql".Equals(trunkDatabaseName) || "PostgreSQL".Equals(trunkDatabaseName))
+            if ("MySql".Equals(trunkDatabaseName) || "PostgreSql".Equals(trunkDatabaseName))
             {
                 return new LimitDecoratorStreamDataReader(mergedStreamDataReader, paginationContext);
             }
@@ -131,7 +131,7 @@ namespace OpenConnector.ShardingMerge.DQL
             {
                 return new RowNumberDecoratorStreamDataReader(mergedStreamDataReader, paginationContext);
             }
-            if ("SQLServer".Equals(trunkDatabaseName))
+            if ("SqlServer".Equals(trunkDatabaseName))
             {
                 return new TopAndRowNumberDecoratorStreamDataReader(mergedStreamDataReader, paginationContext);
             }

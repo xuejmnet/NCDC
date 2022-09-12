@@ -2,7 +2,7 @@ namespace NCDC.Enums;
 
 public enum DatabaseTypeEnum
 {
-    SQLServer=1,
-    MySQL=2,
-    PostgreSQL=3
+    SqlServer=1,
+    MySql=2,
+    PostgreSql=3
 }

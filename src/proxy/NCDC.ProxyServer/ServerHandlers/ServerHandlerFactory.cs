@@ -1,23 +1,21 @@
 using Microsoft.Extensions.Logging;
+using NCDC.Basic.Connection.Abstractions;
+using NCDC.Basic.Session;
 using NCDC.CommandParser.Abstractions;
-using NCDC.CommandParser.Command;
 using NCDC.CommandParser.Command.DAL.Dialect;
 using NCDC.CommandParser.Command.DAL.Dialect.MySql;
 using NCDC.CommandParser.Command.DCL;
 using NCDC.CommandParser.Command.TCL;
 using NCDC.CommandParser.Util;
-using NCDC.Common;
-using OpenConnector.Configuration.Session;
-using OpenConnector.Enums;
-using OpenConnector.Logger;
+using NCDC.Enums;
+using NCDC.Logger;
 using NCDC.ProxyServer.Abstractions;
-using NCDC.ProxyServer.Session;
 
 namespace NCDC.ProxyServer.ServerHandlers;
 
 public sealed class ServerHandlerFactory:IServerHandlerFactory
 {
-    private static readonly ILogger<ServerHandlerFactory> _logger = InternalLoggerFactory.CreateLogger<ServerHandlerFactory>();
+    private static readonly ILogger<ServerHandlerFactory> _logger = InternalNCDCLoggerFactory.CreateLogger<ServerHandlerFactory>();
     private readonly IServerDataReaderFactory _serverDataReaderFactory;
 
     public ServerHandlerFactory(IServerDataReaderFactory serverDataReaderFactory)
@@ -25,7 +23,7 @@ public sealed class ServerHandlerFactory:IServerHandlerFactory
         _serverDataReaderFactory = serverDataReaderFactory;
     }
     public IServerHandler Create(DatabaseTypeEnum databaseType, string sql, ISqlCommand sqlCommand,
-        ConnectionSession connectionSession)
+        IConnectionSession connectionSession)
     {
         _logger.LogDebug($"database type:{databaseType},sql:{sql},sql command:{sqlCommand}");
         //取消sql的注释信息
@@ -64,7 +62,7 @@ public sealed class ServerHandlerFactory:IServerHandlerFactory
     }
 
     private IServerHandler CreateTCLCommandServerHandler(TCLCommand tclCommand, string sql,
-        ConnectionSession connectionSession)
+        IConnectionSession connectionSession)
     {
         if (tclCommand is BeginTransactionCommand beginTransactionCommand)
         {

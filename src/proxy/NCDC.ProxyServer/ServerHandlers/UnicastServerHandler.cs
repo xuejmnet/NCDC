@@ -1,3 +1,5 @@
+using NCDC.Basic.Connection.Abstractions;
+using NCDC.Exceptions;
 using OpenConnector.Configuration.Session;
 using OpenConnector.Exceptions;
 using OpenConnector.Extensions;
@@ -14,11 +16,11 @@ namespace NCDC.ProxyServer.ServerHandlers;
 public sealed class UnicastServerHandler : IServerHandler
 {
     private readonly string _sql;
-    private readonly ConnectionSession _connectionSession;
+    private readonly IConnectionSession _connectionSession;
     private readonly IServerDataReaderFactory _serverDataReaderFactory;
     private IServerDataReader? _serverDataReader;
 
-    public UnicastServerHandler(string sql, ConnectionSession connectionSession,IServerDataReaderFactory serverDataReaderFactory)
+    public UnicastServerHandler(string sql, IConnectionSession connectionSession,IServerDataReaderFactory serverDataReaderFactory)
     {
         _sql = sql;
         _connectionSession = connectionSession;

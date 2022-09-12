@@ -11,7 +11,7 @@ namespace NCDC.Basic.Metadatas;
 
 public class LogicDatabase:ILogicDatabase
 {
-    private static ILogger<LogicDatabase> _logger = InternalLoggerFactory.CreateLogger<LogicDatabase>();
+    private static ILogger<LogicDatabase> _logger = InternalNCDCLoggerFactory.CreateLogger<LogicDatabase>();
     public string Name { get; }
     private readonly ConcurrentDictionary<string /*data source name*/, IProxyDatabase> _proxyDatabases = new();
 

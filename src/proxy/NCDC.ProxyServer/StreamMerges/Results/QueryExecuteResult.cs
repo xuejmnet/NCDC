@@ -1,5 +1,5 @@
 using System.Data.Common;
-using OpenConnector.StreamDataReaders;
+using NCDC.StreamDataReaders;
 
 namespace NCDC.ProxyServer.StreamMerges.Results;
 

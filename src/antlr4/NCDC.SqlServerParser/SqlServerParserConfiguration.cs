@@ -5,6 +5,7 @@ using Antlr4.Runtime;
 using NCDC.CommandParser.Abstractions;
 using NCDC.CommandParser.Abstractions.SqlParser;
 using NCDC.CommandParser.Abstractions.Visitor;
+using NCDC.Enums;
 using NCDC.SqlServerParser.SqlLexer;
 using NCDC.SqlServerParser.Visitor;
 
@@ -37,5 +38,9 @@ namespace NCDC.SqlServerParser
             return _sqlVisitorCreator;
         }
 
+        public DatabaseTypeEnum GetDatabaseType()
+        {
+            return DatabaseTypeEnum.SqlServer;
+        }
     }
 }

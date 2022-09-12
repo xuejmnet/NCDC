@@ -1,5 +1,6 @@
 ﻿using NCDC.CommandParser.Abstractions.SqlParser;
 using NCDC.CommandParser.Abstractions.Visitor;
+using NCDC.Enums;
 
 namespace NCDC.CommandParser.Abstractions
 {
@@ -23,6 +24,8 @@ namespace NCDC.CommandParser.Abstractions
         /// </summary>
         /// <returns></returns>
         ISqlVisitorCreator CreateVisitorCreator();
+
+        DatabaseTypeEnum GetDatabaseType();
 
     }
 }

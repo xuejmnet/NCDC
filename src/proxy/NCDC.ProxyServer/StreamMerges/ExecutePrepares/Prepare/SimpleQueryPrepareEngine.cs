@@ -24,7 +24,7 @@ namespace NCDC.ProxyServer.StreamMerges.ExecutePrepares.Prepare
  *     Simple query:  
  *       for ADONET is Command; 
  *       for MyQL is COM_QUERY; 
- *       for PostgreSQL is Simple Query;
+ *       for PostgreSql is Simple Query;
  * </pre>
  */
     public sealed class SimpleQueryPrepareEngine: BasePrepareEngine
