@@ -21,7 +21,7 @@ using NCDC.CommandParser.Value.Collection;
 using NCDC.CommandParser.Value.Identifier;
 using NCDC.CommandParser.Value.Literal.Impl;
 using NCDC.Extensions;
-using OpenConnector.Extensions;
+using NCDC.Extensions;
 
 
 namespace NCDC.SqlServerParser.Visitor.Impl

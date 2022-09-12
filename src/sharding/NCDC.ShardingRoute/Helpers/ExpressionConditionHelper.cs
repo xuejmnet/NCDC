@@ -1,6 +1,6 @@
 using NCDC.CommandParser.Segment.DML.Expr;
 using NCDC.CommandParser.Segment.DML.Expr.Complex;
-using OpenConnector.Extensions;
+using NCDC.Extensions;
 
 namespace NCDC.ShardingRoute.Helpers;
 

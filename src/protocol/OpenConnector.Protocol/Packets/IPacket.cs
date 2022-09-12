@@ -1,4 +1,4 @@
-namespace OpenConnector.Protocol.Packets;
+namespace NCDC.Protocol.Packets;
 
 public interface IPacket
 {

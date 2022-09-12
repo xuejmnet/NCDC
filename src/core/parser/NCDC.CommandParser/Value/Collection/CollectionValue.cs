@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using NCDC.Extensions;
-using OpenConnector.Extensions;
+using NCDC.Extensions;
 
 namespace NCDC.CommandParser.Value.Collection
 {

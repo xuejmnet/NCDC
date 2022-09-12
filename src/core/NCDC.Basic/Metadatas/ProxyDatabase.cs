@@ -1,6 +1,6 @@
 using NCDC.Basic.Connection;
 using NCDC.Basic.Connection.Abstractions;
-using OpenConnector.DataSource;
+using NCDC.DataSource;
 
 namespace NCDC.Basic.Metadatas;
 

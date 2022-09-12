@@ -2,7 +2,7 @@
 using NCDC.CommandParser.Segment.DML.Expr.Simple;
 using NCDC.Exceptions;
 using NCDC.Extensions;
-using OpenConnector.Extensions;
+using NCDC.Extensions;
 using NCDC.ShardingAdoNet;
 
 namespace NCDC.ShardingParser.Segment.Insert.Values

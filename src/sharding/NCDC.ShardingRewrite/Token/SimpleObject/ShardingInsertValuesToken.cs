@@ -1,5 +1,5 @@
 using System.Text;
-using OpenConnector.Extensions;
+using NCDC.Extensions;
 using NCDC.ShardingRewrite.Sql.Token.SimpleObject;
 using NCDC.ShardingRewrite.Sql.Token.SimpleObject.Generic;
 using NCDC.ShardingRoute;

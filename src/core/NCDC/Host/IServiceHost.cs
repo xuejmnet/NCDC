@@ -1,4 +1,4 @@
-namespace OpenConnector.Host;
+namespace NCDC.Host;
 
 public interface IServiceHost
 {

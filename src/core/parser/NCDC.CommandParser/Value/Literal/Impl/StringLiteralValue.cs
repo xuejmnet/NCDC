@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using OpenConnector.Extensions;
+using NCDC.Extensions;
 
 namespace NCDC.CommandParser.Value.Literal.Impl
 {

@@ -10,7 +10,7 @@ using NCDC.ShardingParser.Segment.Select.Projection.Impl;
 using NCDC.Basic.TableMetadataManagers;
 using NCDC.Exceptions;
 using NCDC.Extensions;
-using OpenConnector.Extensions;
+using NCDC.Extensions;
 
 namespace NCDC.ShardingParser.Segment.Select.Projection.Engine
 {

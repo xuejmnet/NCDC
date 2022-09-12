@@ -1,7 +1,7 @@
 using System.Collections.Immutable;
 using System.Text;
 
-namespace OpenConnector.Protocol.MySql.Constant;
+namespace NCDC.Protocol.MySql.Constant;
 
 public class MySqlCharacterSet
 {

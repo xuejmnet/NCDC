@@ -3,7 +3,7 @@ using NCDC.Basic.TableMetadataManagers;
 using NCDC.Exceptions;
 using NCDC.ShardingRoute.Abstractions;
 using NCDC.ShardingRoute.DataSourceRoutes.Abstractions;
-using OpenConnector.Extensions;
+using NCDC.Extensions;
 
 namespace NCDC.ShardingRoute.DataSourceRoutes;
 

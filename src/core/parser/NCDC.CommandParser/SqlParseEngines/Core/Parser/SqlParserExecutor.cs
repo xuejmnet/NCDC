@@ -5,7 +5,7 @@ using Antlr4.Runtime.Tree;
 using NCDC.CommandParser.Abstractions;
 using NCDC.CommandParser.Abstractions.SqlParser;
 using NCDC.Exceptions;
-using OpenConnector.ParserEngine.Core;
+using NCDC.ParserEngine.Core;
 
 namespace NCDC.CommandParser.SqlParseEngines.Core.Parser
 {

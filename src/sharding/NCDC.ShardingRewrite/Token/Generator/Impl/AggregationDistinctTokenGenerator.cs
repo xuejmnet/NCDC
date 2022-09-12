@@ -1,5 +1,4 @@
-using NCDC.Basic.Parsers;
-using OpenConnector.Base;
+using NCDC.Base;
 using NCDC.CommandParser.Abstractions;
 using NCDC.ShardingParser.Command;
 using NCDC.ShardingParser.Command.DML;

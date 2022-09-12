@@ -1,8 +1,8 @@
-using OpenConnector.Protocol.Errors;
-using OpenConnector.Protocol.MySql.Payload;
-using OpenConnector.Protocol.Packets;
+using NCDC.Protocol.Errors;
+using NCDC.Protocol.MySql.Payload;
+using NCDC.Protocol.Packets;
 
-namespace OpenConnector.Protocol.MySql.Packet.Generic;
+namespace NCDC.Protocol.MySql.Packet.Generic;
 
 public class MySqlErrPacket: IMysqlPacket
 {

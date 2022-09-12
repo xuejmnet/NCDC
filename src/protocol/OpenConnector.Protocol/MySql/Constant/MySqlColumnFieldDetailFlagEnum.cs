@@ -1,4 +1,4 @@
-namespace OpenConnector.Protocol.MySql.Constant;
+namespace NCDC.Protocol.MySql.Constant;
 
 public enum MySqlColumnFieldDetailFlagEnum
 {

@@ -1,4 +1,4 @@
-﻿using OpenConnector.Extensions;
+﻿using NCDC.Extensions;
 
 namespace NCDC.ShardingRewrite.Sql.Token.SimpleObject.Generic
 {

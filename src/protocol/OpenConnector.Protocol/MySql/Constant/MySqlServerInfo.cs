@@ -1,6 +1,6 @@
 using System.Collections.Concurrent;
 
-namespace OpenConnector.Protocol.MySql.Constant;
+namespace NCDC.Protocol.MySql.Constant;
 
 public static class MySqlServerInfo
 {

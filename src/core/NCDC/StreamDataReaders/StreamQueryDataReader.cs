@@ -1,6 +1,6 @@
 using System.Data.Common;
 
-namespace OpenConnector.StreamDataReaders
+namespace NCDC.StreamDataReaders
 {
 /*
 * @Author: xjm

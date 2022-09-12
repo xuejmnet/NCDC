@@ -1,6 +1,6 @@
 ﻿using NCDC.ShardingParser.MetaData.Column;
 using NCDC.ShardingParser.MetaData.Index;
-using OpenConnector.DataSource;
+using NCDC.DataSource;
 
 namespace NCDC.ShardingParser.MetaData.Table
 {

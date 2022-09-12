@@ -20,7 +20,7 @@ using NCDC.ShardingParser.Segment.Table;
 using NCDC.Basic.TableMetadataManagers;
 using NCDC.Exceptions;
 using NCDC.Extensions;
-using OpenConnector.Extensions;
+using NCDC.Extensions;
 using NCDC.ShardingAdoNet;
 
 namespace NCDC.ShardingParser.Command.DML

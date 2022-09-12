@@ -9,7 +9,7 @@ using System.Linq;
 * @Date: DATE
 * @Email: 326308290@qq.com
 */
-namespace OpenConnector.DataStructure
+namespace NCDC.DataStructure
 {
     public class LinkedDictionary<K, V> : IDictionary<K, V>, ICollection<KeyValuePair<K, V>>, IEnumerable<KeyValuePair<K, V>>
     {

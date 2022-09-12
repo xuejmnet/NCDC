@@ -1,4 +1,4 @@
-namespace OpenConnector.Metadatas;
+namespace NCDC.Metadatas;
 
 public interface IDatabaseMetadata
 {

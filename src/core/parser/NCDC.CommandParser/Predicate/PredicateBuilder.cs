@@ -4,7 +4,7 @@ using NCDC.CommandParser.Constant;
 using NCDC.CommandParser.Segment.DML.Predicate;
 using NCDC.Exceptions;
 using NCDC.Extensions;
-using OpenConnector.Extensions;
+using NCDC.Extensions;
 
 
 namespace NCDC.CommandParser.Predicate

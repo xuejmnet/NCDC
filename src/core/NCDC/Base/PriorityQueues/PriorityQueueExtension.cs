@@ -1,4 +1,4 @@
-namespace OpenConnector.Base.PriorityQueues
+namespace NCDC.Base.PriorityQueues
 {
 /*
 * @Author: xjm

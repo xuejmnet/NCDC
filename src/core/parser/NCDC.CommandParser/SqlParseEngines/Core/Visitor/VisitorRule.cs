@@ -5,7 +5,7 @@ using Antlr4.Runtime.Tree;
 using NCDC.CommandParser.Command;
 using NCDC.Exceptions;
 
-namespace OpenConnector.ParserEngine.Core.Visitor
+namespace NCDC.ParserEngine.Core.Visitor
 {
     /*
     * @Author: xjm

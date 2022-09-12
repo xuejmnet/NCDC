@@ -1,4 +1,4 @@
-namespace OpenConnector.Protocol.Errors;
+namespace NCDC.Protocol.Errors;
 
 public interface ISqlErrorCode
 {

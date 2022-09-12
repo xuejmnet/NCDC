@@ -5,8 +5,8 @@ using NCDC.CommandParser.Abstractions.Visitor;
 using NCDC.CommandParser.Command;
 using NCDC.CommandParser.SqlParseEngines.Core.Parser;
 using NCDC.Exceptions;
-using OpenConnector.ParserEngine.Core.Visitor;
-using OpenConnector.ParserEngine.Hook;
+using NCDC.ParserEngine.Core.Visitor;
+using NCDC.ParserEngine.Hook;
 
 
 namespace NCDC.CommandParser.SqlParseEngines

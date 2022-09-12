@@ -1,4 +1,3 @@
-using NCDC.Basic.Parsers;
 using NCDC.Basic.TableMetadataManagers;
 using NCDC.CommandParser.Abstractions;
 using NCDC.CommandParser.Command.DML;
@@ -11,7 +10,7 @@ using NCDC.ShardingParser;
 using NCDC.ShardingParser.Command;
 using NCDC.ShardingParser.Command.DML;
 using NCDC.ShardingRoute.Expressions;
-using OpenConnector.Extensions;
+using NCDC.Extensions;
 
 namespace NCDC.ShardingRoute;
 

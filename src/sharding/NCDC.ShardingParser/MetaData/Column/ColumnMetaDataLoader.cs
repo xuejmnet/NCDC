@@ -1,6 +1,6 @@
 ﻿using System.Data;
 using System.Data.Common;
-using OpenConnector.Extensions;
+using NCDC.Extensions;
 
 namespace NCDC.ShardingParser.MetaData.Column
 {

@@ -1,8 +1,8 @@
-using OpenConnector.Protocol.MySql.Constant;
-using OpenConnector.Protocol.MySql.Payload;
-using OpenConnector.Protocol.Packets;
+using NCDC.Protocol.MySql.Constant;
+using NCDC.Protocol.MySql.Payload;
+using NCDC.Protocol.Packets;
 
-namespace OpenConnector.Protocol.MySql.Packet.Generic;
+namespace NCDC.Protocol.MySql.Packet.Generic;
 
 public class MySqlEofPacket:IMysqlPacket
 {

@@ -5,7 +5,7 @@ using NCDC.ShardingParser.MetaData;
 using NCDC.ShardingParser.MetaData.Schema;
 using NCDC.ShardingParser.Segment.Select.Projection.Impl;
 using NCDC.Basic.TableMetadataManagers;
-using OpenConnector.Extensions;
+using NCDC.Extensions;
 
 namespace NCDC.ShardingParser.Segment.Select.Projection.Engine
 {

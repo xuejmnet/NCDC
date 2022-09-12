@@ -2,7 +2,7 @@
 using System.Runtime.CompilerServices;
 using System.Text;
 
-namespace OpenConnector.DataStructure.RangeStructure
+namespace NCDC.DataStructure.RangeStructure
 {
     /*
     * @Author: xjm

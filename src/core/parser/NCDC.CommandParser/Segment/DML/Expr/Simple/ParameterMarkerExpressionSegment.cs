@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
-using OpenConnector.Base;
+using NCDC.Base;
 
 namespace NCDC.CommandParser.Segment.DML.Expr.Simple
 {

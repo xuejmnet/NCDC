@@ -2,7 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace OpenConnector.Helpers
+namespace NCDC.Helpers
 {
     public static class TaskHelper
     {

@@ -1,4 +1,4 @@
-namespace OpenConnector.Enums;
+namespace NCDC.Enums;
 
 public enum DatabaseTypeEnum
 {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace OpenConnector.DataStructure.RangeStructure
+namespace NCDC.DataStructure.RangeStructure
 {
     /*
     * @Author: xjm

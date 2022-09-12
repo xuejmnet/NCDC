@@ -25,7 +25,7 @@ using NCDC.CommandParser.Value.Identifier;
 using NCDC.CommandParser.Value.Literal.Impl;
 using NCDC.CommandParser.Value.ParameterMaker;
 using NCDC.Extensions;
-using OpenConnector.Extensions;
+using NCDC.Extensions;
 
 
 namespace NCDC.MySqlParser.Visitor.Impl

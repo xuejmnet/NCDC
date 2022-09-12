@@ -1,6 +1,6 @@
 using System.Collections.Immutable;
 
-namespace OpenConnector.Protocol.MySql.Constant;
+namespace NCDC.Protocol.MySql.Constant;
 
 public enum MySqlColumnTypeEnum
 {

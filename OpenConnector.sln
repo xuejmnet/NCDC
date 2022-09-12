@@ -49,7 +49,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenConnector.Proxy.Starter
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "protocol", "protocol", "{956A16CB-0A7F-44EC-AD72-9A2C693C09B0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenConnector.ProxyServer", "src\proxy\OpenConnector.ProxyServer\OpenConnector.ProxyServer.csproj", "{D27A5095-10AA-44E2-B7E4-DFFC775A83F4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NCDC.ProxyServer", "src\proxy\NCDC.ProxyServer\NCDC.ProxyServer.csproj", "{D27A5095-10AA-44E2-B7E4-DFFC775A83F4}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenConnector.ProxyClient", "src\proxy\OpenConnector.ProxyClient\OpenConnector.ProxyClient.csproj", "{C3750B32-000A-4214-A9F3-BDA6A1298D1C}"
 EndProject

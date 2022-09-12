@@ -1,4 +1,4 @@
-namespace OpenConnector.Base;
+namespace NCDC.Base;
 
 public sealed class DoOnlyOnce
 {

@@ -1,7 +1,6 @@
 using System.Data.Common;
 using NCDC.Basic.Connection.Abstractions;
 using NCDC.Enums;
-using OpenConnector.Transaction;
 
 namespace NCDC.Basic.Metadatas;
 

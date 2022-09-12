@@ -1,4 +1,4 @@
-namespace OpenConnector.Protocol.MySql.Constant;
+namespace NCDC.Protocol.MySql.Constant;
 
 /// <summary>
 /// https://dev.mysql.com/doc/internals/en/authentication-method.html

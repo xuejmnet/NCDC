@@ -4,7 +4,7 @@ using System.Text;
 using NCDC.CommandParser.Abstractions;
 using NCDC.CommandParser.Command;
 
-namespace OpenConnector.ParserEngine.Hook
+namespace NCDC.ParserEngine.Hook
 {
     /*
     * @Author: xjm
@@ -16,11 +16,11 @@ namespace OpenConnector.ParserEngine.Hook
     public sealed class ParsingHookManager
     {
         private static readonly ParsingHookManager Instance;
-        private readonly ICollection<IParsingHook> _parsingHooks = NewInstanceServiceLoader.NewServiceInstances<IParsingHook>();
+        private readonly ICollection<IParsingHook> _parsingHooks = new List<IParsingHook>();
 
         static ParsingHookManager()
         {
-            NewInstanceServiceLoader.Register<IParsingHook>();
+            // NewInstanceServiceLoader.Register<IParsingHook>();
             Instance = new ParsingHookManager();
         }
 

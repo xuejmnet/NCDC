@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text.RegularExpressions;
 using NCDC.CommandParser.Constant;
-using OpenConnector.Extensions;
+using NCDC.Extensions;
 
 namespace NCDC.CommandParser.Util
 {

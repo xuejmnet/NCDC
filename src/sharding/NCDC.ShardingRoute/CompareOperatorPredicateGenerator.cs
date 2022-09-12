@@ -6,7 +6,7 @@ using NCDC.ShardingAdoNet;
 using NCDC.ShardingParser;
 using NCDC.ShardingRoute.Expressions;
 using NCDC.ShardingRoute.Helpers;
-using OpenConnector.Logger;
+using NCDC.Logger;
 
 namespace NCDC.ShardingRoute;
 

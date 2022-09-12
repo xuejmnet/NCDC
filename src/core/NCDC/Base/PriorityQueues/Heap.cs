@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace OpenConnector.Base.PriorityQueues {
+﻿namespace NCDC.Base.PriorityQueues {
     /// <summary>
     /// 大顶堆
     /// </summary>

@@ -1,5 +1,4 @@
-﻿using NCDC.Basic.Parsers;
-using NCDC.CommandParser.Abstractions;
+﻿using NCDC.CommandParser.Abstractions;
 using NCDC.CommandParser.Segment.DML.Assignment;
 using NCDC.CommandParser.Segment.DML.Expr;
 using NCDC.ShardingParser.Command;
@@ -9,7 +8,7 @@ using NCDC.ShardingRewrite.Sql.Token.SimpleObject;
 using NCDC.ShardingRewrite.Sql.Token.SimpleObject.Generic;
 using NCDC.ShardingRewrite.Token.SimpleObject;
 using NCDC.ShardingRoute;
-using OpenConnector.Extensions;
+using NCDC.Extensions;
 
 namespace NCDC.ShardingRewrite.Token.Generator.Impl
 {

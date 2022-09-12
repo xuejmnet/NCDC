@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using NCDC.Exceptions;
 
-namespace OpenConnector.Base
+namespace NCDC.Base
 {
     /*
     * @Author: xjm

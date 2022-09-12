@@ -1,8 +1,8 @@
 using System.Text;
 using DotNetty.Buffers;
-using OpenConnector.Protocol.Packets;
+using NCDC.Protocol.Packets;
 
-namespace OpenConnector.Protocol.MySql.Payload;
+namespace NCDC.Protocol.MySql.Payload;
 
 public sealed class MySqlPacketPayload:IPacketPayload
 {

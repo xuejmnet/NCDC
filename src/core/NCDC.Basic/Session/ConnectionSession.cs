@@ -2,7 +2,7 @@ using NCDC.Basic.Connection;
 using NCDC.Basic.Connection.Abstractions;
 using NCDC.Basic.Connection.User;
 using NCDC.Basic.Metadatas;
-using OpenConnector.Transaction;
+using NCDC.Enums;
 
 namespace NCDC.Basic.Session;
 

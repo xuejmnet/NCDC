@@ -5,7 +5,7 @@ using NCDC.ShardingRoute.DataSourceRoutes;
 using NCDC.ShardingRoute.DataSourceRoutes.Abstractions;
 using NCDC.ShardingRoute.TableRoutes;
 using NCDC.ShardingRoute.TableRoutes.Abstractions;
-using OpenConnector.Extensions;
+using NCDC.Extensions;
 
 namespace NCDC.ShardingRoute;
 

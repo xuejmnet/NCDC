@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="MySqlConnector" Version="2.1.13" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\antlr4\NCDC.MySqlParser\NCDC.MySqlParser.csproj" />
+      <ProjectReference Include="..\..\antlr4\NCDC.SqlServerParser\NCDC.SqlServerParser.csproj" />
+      <ProjectReference Include="..\..\protocol\OpenConnector.Protocol\OpenConnector.Protocol.csproj" />
+      <ProjectReference Include="..\..\sharding\NCDC.ShardingRewrite\NCDC.ShardingRewrite.csproj" />
+    </ItemGroup>
+
+</Project>

@@ -5,7 +5,7 @@ using NCDC.CommandParser.Segment.DML.Assignment;
 using NCDC.CommandParser.Segment.DML.Column;
 using NCDC.CommandParser.Segment.DML.Expr;
 using NCDC.CommandParser.Segment.Generic.Table;
-using OpenConnector.Extensions;
+using NCDC.Extensions;
 
 namespace NCDC.CommandParser.Command.DML
 {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace OpenConnector.Extensions
+namespace NCDC.Extensions
 {
     /*
     * @Author: xjm

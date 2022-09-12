@@ -1,10 +1,10 @@
-using OpenConnector.Base;
+using NCDC.Base;
 using NCDC.CommandParser.Command.DML;
 using NCDC.ShardingParser.Command.DML;
 using NCDC.ShardingParser.Segment.Insert.Values.Expression;
 using NCDC.ShardingRewrite.Sql.Token.SimpleObject;
 using NCDC.ShardingRewrite.Sql.Token.SimpleObject.Generic;
-using OpenConnector.Extensions;
+using NCDC.Extensions;
 
 namespace NCDC.ShardingRewrite.Token.Generator.Impl.KeyGen
 {

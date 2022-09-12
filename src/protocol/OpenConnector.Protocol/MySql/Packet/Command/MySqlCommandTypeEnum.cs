@@ -1,6 +1,6 @@
-using OpenConnector.Protocol.MySql.Payload;
+using NCDC.Protocol.MySql.Payload;
 
-namespace OpenConnector.Protocol.MySql.Packet.Command;
+namespace NCDC.Protocol.MySql.Packet.Command;
 
 public enum MySqlCommandTypeEnum
 {

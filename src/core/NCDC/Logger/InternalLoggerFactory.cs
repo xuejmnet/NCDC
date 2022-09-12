@@ -6,7 +6,7 @@ using System.Threading;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
-namespace OpenConnector.Logger
+namespace NCDC.Logger
 {
     /// <summary>
     /// 

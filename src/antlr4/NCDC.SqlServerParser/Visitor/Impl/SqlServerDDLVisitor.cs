@@ -14,7 +14,7 @@ using NCDC.CommandParser.Segment.Generic;
 using NCDC.CommandParser.Segment.Generic.Table;
 using NCDC.CommandParser.Value.Collection;
 using NCDC.Extensions;
-using OpenConnector.Extensions;
+using NCDC.Extensions;
 
 
 namespace NCDC.SqlServerParser.Visitor.Impl

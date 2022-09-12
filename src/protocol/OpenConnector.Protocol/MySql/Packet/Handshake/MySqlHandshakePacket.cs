@@ -1,9 +1,9 @@
 using System.Text;
-using OpenConnector.Protocol.MySql.Constant;
-using OpenConnector.Protocol.MySql.Payload;
-using OpenConnector.Protocol.Packets;
+using NCDC.Protocol.MySql.Constant;
+using NCDC.Protocol.MySql.Payload;
+using NCDC.Protocol.Packets;
 
-namespace OpenConnector.Protocol.MySql.Packet.Handshake;
+namespace NCDC.Protocol.MySql.Packet.Handshake;
 
 /// <summary>
 /// https://dev.mysql.com/doc/internals/en/connection-phase-packets.html#packet-Protocol::Handshake

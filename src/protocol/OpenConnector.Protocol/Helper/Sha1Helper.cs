@@ -1,7 +1,7 @@
 using System.Security.Cryptography;
 using System.Text;
 
-namespace OpenConnector.Protocol.Helper;
+namespace NCDC.Protocol.Helper;
 
 public class Sha1Helper
 {

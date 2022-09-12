@@ -1,7 +1,6 @@
-using System.Threading;
 using NCDC.Exceptions;
 
-namespace OpenConnector.Base;
+namespace NCDC.Base;
 
 public class OneByOneChecker
 {

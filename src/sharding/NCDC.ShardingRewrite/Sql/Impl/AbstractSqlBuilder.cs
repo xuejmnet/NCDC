@@ -1,6 +1,6 @@
 using System.Text;
 using NCDC.ShardingRewrite.Sql.Token.SimpleObject;
-using OpenConnector.Extensions;
+using NCDC.Extensions;
 
 namespace NCDC.ShardingRewrite.Sql.Impl
 {

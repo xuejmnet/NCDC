@@ -4,7 +4,7 @@ using NCDC.CommandParser.Segment.DML.Pagination.RowNumber;
 using NCDC.CommandParser.Segment.DML.Predicate;
 using NCDC.CommandParser.Segment.DML.Predicate.Value;
 using NCDC.ShardingParser.Segment.Select.Projection;
-using OpenConnector.Extensions;
+using NCDC.Extensions;
 using NCDC.ShardingAdoNet;
 
 namespace NCDC.ShardingParser.Segment.Select.Pagination.Engine

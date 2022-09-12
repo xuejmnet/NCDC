@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using NCDC.Extensions;
-using OpenConnector.Extensions;
+using NCDC.Extensions;
 
 namespace NCDC.CommandParser.Constant
 {

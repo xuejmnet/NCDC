@@ -1,7 +1,7 @@
 using System.Globalization;
-using OpenConnector.Protocol.MySql.Payload;
+using NCDC.Protocol.MySql.Payload;
 
-namespace OpenConnector.Protocol.MySql.Packet;
+namespace NCDC.Protocol.MySql.Packet;
 
 public sealed class MySqlTextResultSetRowPacket:IMysqlPacket
 {

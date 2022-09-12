@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
 
-namespace OpenConnector.Extensions
+namespace NCDC.Extensions
 {
 /*
 * @Author: xjm

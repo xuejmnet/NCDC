@@ -1,4 +1,4 @@
-﻿namespace OpenConnector.Protocol.Helper
+﻿namespace NCDC.Protocol.Helper
 {
     /*
     * @Author: xjm

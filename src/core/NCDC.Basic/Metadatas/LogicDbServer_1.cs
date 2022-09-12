@@ -2,8 +2,8 @@ using System.Data.Common;
 using Microsoft.Extensions.Logging;
 using NCDC.Basic.Configurations;
 using NCDC.Basic.Connection.User;
-using OpenConnector.Base;
-using OpenConnector.Extensions;
+using NCDC.Base;
+using NCDC.Extensions;
 
 namespace NCDC.Basic.Metadatas;
 

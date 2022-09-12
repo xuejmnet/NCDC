@@ -1,7 +1,7 @@
 using System.Collections.Concurrent;
 using Microsoft.Extensions.Logging;
 using NCDC.Basic.Connection.User;
-using OpenConnector.Logger;
+using NCDC.Logger;
 
 namespace NCDC.Basic.Metadatas;
 

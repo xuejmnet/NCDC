@@ -1,6 +1,6 @@
 using DotNetty.Buffers;
 
-namespace OpenConnector.Protocol.Packets;
+namespace NCDC.Protocol.Packets;
 
 public interface IPacketPayload:IDisposable
 {

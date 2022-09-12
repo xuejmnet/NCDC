@@ -1,6 +1,6 @@
-using OpenConnector.Protocol.Errors;
+using NCDC.Protocol.Errors;
 
-namespace OpenConnector.Protocol.MySql.Constant;
+namespace NCDC.Protocol.MySql.Constant;
 
 public sealed class MySqlServerErrorCode
 {

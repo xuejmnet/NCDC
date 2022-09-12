@@ -7,7 +7,7 @@ using NCDC.ShardingRewrite.Sql.Token.Generator.Generic;
 using NCDC.ShardingRewrite.Token.Generator.Impl;
 using NCDC.ShardingRewrite.Token.Generator.Impl.KeyGen;
 using NCDC.ShardingRoute;
-using OpenConnector.Extensions;
+using NCDC.Extensions;
 
 namespace NCDC.ShardingRewrite.Token.SimpleObject
 {

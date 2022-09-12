@@ -1,9 +1,8 @@
-﻿using NCDC.Basic.Parsers;
-using OpenConnector.Base;
+﻿using NCDC.Base;
 using NCDC.CommandParser.Abstractions;
 using NCDC.ShardingParser.Command;
 using NCDC.ShardingParser.Command.DML;
-using OpenConnector.Extensions;
+using NCDC.Extensions;
 using NCDC.ShardingAdoNet;
 using NCDC.ShardingRewrite.Abstractions;
 using NCDC.ShardingRewrite.ParameterRewriters.ParameterBuilders;

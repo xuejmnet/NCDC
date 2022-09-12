@@ -4,7 +4,7 @@ using System.Text;
 using NCDC.CommandParser.Abstractions;
 using NCDC.CommandParser.Abstractions.Visitor.Commands;
 using NCDC.CommandParser.Command.TCL;
-using OpenConnector.Extensions;
+using NCDC.Extensions;
 
 
 namespace NCDC.SqlServerParser.Visitor.Impl

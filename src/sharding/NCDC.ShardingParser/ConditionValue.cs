@@ -1,7 +1,7 @@
 using NCDC.CommandParser.Segment.DML.Expr;
 using NCDC.CommandParser.Segment.DML.Expr.Simple;
 using NCDC.ShardingAdoNet;
-using OpenConnector.Base;
+using NCDC.Base;
 
 namespace NCDC.ShardingParser;
 

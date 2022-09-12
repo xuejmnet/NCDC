@@ -4,7 +4,7 @@ using System.Text;
 using NCDC.CommandParser.Abstractions;
 using NCDC.CommandParser.Command;
 
-namespace OpenConnector.ParserEngine.Hook
+namespace NCDC.ParserEngine.Hook
 {
     /*
     * @Author: xjm

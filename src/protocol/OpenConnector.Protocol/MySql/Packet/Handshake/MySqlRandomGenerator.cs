@@ -1,6 +1,6 @@
-using OpenConnector.Protocol.Helper;
+using NCDC.Protocol.Helper;
 
-namespace OpenConnector.Protocol.MySql.Packet.Handshake;
+namespace NCDC.Protocol.MySql.Packet.Handshake;
 
 public sealed class MySqlRandomGenerator
 {

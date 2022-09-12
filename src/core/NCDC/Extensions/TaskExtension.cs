@@ -3,7 +3,7 @@ using System.Runtime.ExceptionServices;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace OpenConnector.Extensions
+namespace NCDC.Extensions
 {
     public static class TaskExtension
     {

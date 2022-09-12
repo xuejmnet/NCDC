@@ -4,9 +4,8 @@ using Microsoft.Extensions.Logging;
 using NCDC.Basic.Connection.Abstractions;
 using NCDC.Enums;
 using NCDC.Exceptions;
-using OpenConnector.DataSource;
-using OpenConnector.Logger;
-using OpenConnector.Transaction;
+using NCDC.DataSource;
+using NCDC.Logger;
 
 namespace NCDC.Basic.Metadatas;
 
