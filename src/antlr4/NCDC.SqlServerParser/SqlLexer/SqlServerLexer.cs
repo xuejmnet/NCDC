@@ -2,7 +2,7 @@
 using Antlr4.Runtime;
 using NCDC.CommandParser.Abstractions.SqlLexer;
 
-namespace OpenConnector.SqlServerParser.SqlLexer
+namespace NCDC.SqlServerParser.SqlLexer
 {
     /*
     * @Author: xjm

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using OpenConnector.Exceptions;
+using NCDC.Exceptions;
 
 namespace OpenConnector.Base
 {

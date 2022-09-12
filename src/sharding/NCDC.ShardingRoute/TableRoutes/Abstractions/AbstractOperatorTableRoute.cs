@@ -1,10 +1,10 @@
 using NCDC.Basic.TableMetadataManagers;
 using NCDC.Enums;
+using NCDC.Exceptions;
 using NCDC.ShardingParser;
 using NCDC.ShardingRoute.DataSourceRoutes;
 using NCDC.ShardingRoute.Extensions;
 using NCDC.ShardingRoute.Helpers;
-using OpenConnector.Exceptions;
 
 namespace NCDC.ShardingRoute.TableRoutes.Abstractions;
 

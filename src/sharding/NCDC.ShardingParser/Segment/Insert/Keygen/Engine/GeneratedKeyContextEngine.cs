@@ -4,7 +4,7 @@ using NCDC.CommandParser.Segment.DML.Expr.Simple;
 using NCDC.ShardingParser.MetaData;
 using NCDC.ShardingParser.MetaData.Schema;
 using NCDC.Basic.TableMetadataManagers;
-using OpenConnector.Exceptions;
+using NCDC.Exceptions;
 using NCDC.ShardingAdoNet;
 
 namespace NCDC.ShardingParser.Segment.Insert.Keygen.Engine

@@ -8,7 +8,7 @@
 
 	<ItemGroup>
 		<Antlr4 Include="Antlr4\SqlServerCommand.g4">
-			<Package>OpenConnector.SqlServerParser</Package>
+			<Package>NCDC.SqlServerParser</Package>
 		</Antlr4>
 	</ItemGroup>
 

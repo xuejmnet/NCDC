@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using NCDC.Extensions;
 using OpenConnector.Extensions;
 
 namespace NCDC.CommandParser.Constant

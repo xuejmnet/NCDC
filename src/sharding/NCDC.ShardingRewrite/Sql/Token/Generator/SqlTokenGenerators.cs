@@ -1,5 +1,6 @@
 ﻿using NCDC.Basic.Parsers;
 using NCDC.CommandParser.Abstractions;
+using NCDC.Extensions;
 using NCDC.ShardingParser.Command;
 using NCDC.ShardingRewrite.Sql.Token.SimpleObject;
 using OpenConnector.Extensions;

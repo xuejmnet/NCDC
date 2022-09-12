@@ -1,5 +1,5 @@
 using System.Threading;
-using OpenConnector.Exceptions;
+using NCDC.Exceptions;
 
 namespace OpenConnector.Base;
 

@@ -1,5 +1,4 @@
 ﻿using System.Text.RegularExpressions;
-using OpenConnector.Exceptions;
 using OpenConnector.Spi.DataBase.MetaData;
 
 namespace OpenConnector.Api.Database.MetaData.Dialect

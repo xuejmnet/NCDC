@@ -7,7 +7,7 @@ using NCDC.CommandParser.Command.TCL;
 using OpenConnector.Extensions;
 
 
-namespace OpenConnector.SqlServerParser.Visitor.Impl
+namespace NCDC.SqlServerParser.Visitor.Impl
 {
     /*
     * @Author: xjm

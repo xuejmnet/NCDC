@@ -1,7 +1,6 @@
-using System;
 using System.Runtime.Serialization;
 
-namespace OpenConnector.Exceptions;
+namespace NCDC.Exceptions;
 
 public class ShardingInvalidOperationException:ShardingException
 {

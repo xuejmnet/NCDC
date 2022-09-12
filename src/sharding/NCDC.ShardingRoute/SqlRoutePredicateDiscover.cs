@@ -5,12 +5,12 @@ using NCDC.CommandParser.Command.DML;
 using NCDC.CommandParser.Segment.DML.Predicate;
 using NCDC.CommandParser.Segment.DML.Predicate.Value;
 using NCDC.Enums;
+using NCDC.Exceptions;
 using NCDC.ShardingAdoNet;
 using NCDC.ShardingParser;
 using NCDC.ShardingParser.Command;
 using NCDC.ShardingParser.Command.DML;
 using NCDC.ShardingRoute.Expressions;
-using OpenConnector.Exceptions;
 using OpenConnector.Extensions;
 
 namespace NCDC.ShardingRoute;

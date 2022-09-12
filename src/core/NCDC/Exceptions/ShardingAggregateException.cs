@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Runtime.Serialization;
+﻿using System.Runtime.Serialization;
 
-namespace OpenConnector.Exceptions
+namespace NCDC.Exceptions
 {
     /*
     * @Author: xjm

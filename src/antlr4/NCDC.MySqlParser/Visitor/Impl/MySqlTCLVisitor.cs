@@ -4,7 +4,7 @@ using NCDC.CommandParser.Command.TCL;
 using NCDC.CommandParser.Segment.TCL;
 
 
-namespace OpenConnector.MySqlParser.Visitor.Impl
+namespace NCDC.MySqlParser.Visitor.Impl
 {
     /// <summary>
     /// 

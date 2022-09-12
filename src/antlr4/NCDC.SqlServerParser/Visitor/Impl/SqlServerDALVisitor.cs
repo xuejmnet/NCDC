@@ -1,7 +1,7 @@
 using System;
 using NCDC.CommandParser.Abstractions.Visitor.Commands;
 
-namespace OpenConnector.SqlServerParser.Visitor.Impl
+namespace NCDC.SqlServerParser.Visitor.Impl
 {
 /*
 * @Author: xjm

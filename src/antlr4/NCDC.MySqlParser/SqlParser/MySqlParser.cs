@@ -8,7 +8,7 @@ using NCDC.CommandParser.Abstractions.SqlParser;
 using OpenConnector.ParserEngine.Core;
 
 
-namespace OpenConnector.MySqlParser.SqlParser
+namespace NCDC.MySqlParser.SqlParser
 {
     /// <summary>
     /// 

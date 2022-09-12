@@ -1,6 +1,4 @@
 using Microsoft.Extensions.DependencyInjection;
-using NCDC.CommandParser.Abstractions;
-using NCDC.CommandParser.SqlParseEngines;
 using NCDC.ShardingParser.Abstractions;
 
 namespace NCDC.ShardingParser;

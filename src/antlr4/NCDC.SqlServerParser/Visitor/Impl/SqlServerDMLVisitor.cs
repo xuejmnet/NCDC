@@ -20,10 +20,11 @@ using NCDC.CommandParser.Segment.Generic.Table;
 using NCDC.CommandParser.Value.Collection;
 using NCDC.CommandParser.Value.Identifier;
 using NCDC.CommandParser.Value.Literal.Impl;
+using NCDC.Extensions;
 using OpenConnector.Extensions;
 
 
-namespace OpenConnector.SqlServerParser.Visitor.Impl
+namespace NCDC.SqlServerParser.Visitor.Impl
 {
     /*
     * @Author: xjm

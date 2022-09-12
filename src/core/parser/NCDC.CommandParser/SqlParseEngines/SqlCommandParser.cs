@@ -4,7 +4,7 @@ using NCDC.CommandParser.Abstractions;
 using NCDC.CommandParser.Abstractions.Visitor;
 using NCDC.CommandParser.Command;
 using NCDC.CommandParser.SqlParseEngines.Core.Parser;
-using OpenConnector.Exceptions;
+using NCDC.Exceptions;
 using OpenConnector.ParserEngine.Core.Visitor;
 using OpenConnector.ParserEngine.Hook;
 

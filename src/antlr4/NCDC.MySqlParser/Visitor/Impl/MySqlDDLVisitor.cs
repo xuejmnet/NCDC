@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using NCDC.CommandParser.Abstractions.Visitor.Commands;
 
-namespace OpenConnector.MySqlParser.Visitor.Impl
+namespace NCDC.MySqlParser.Visitor.Impl
 {
     /// <summary>
     /// 

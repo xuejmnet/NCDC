@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
-using OpenConnector.Exceptions;
+using NCDC.Exceptions;
 using OpenConnector.Spi.DataBase.DataBaseType;
 using OpenConnector.Spi.DataBase.DataBaseType.DataBaseDiscover;
 

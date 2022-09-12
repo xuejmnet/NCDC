@@ -1,11 +1,11 @@
 using Microsoft.Extensions.Logging;
 using NCDC.CommandParser.Segment.DML.Predicate.Value;
 using NCDC.Enums;
+using NCDC.Exceptions;
 using NCDC.ShardingAdoNet;
 using NCDC.ShardingParser;
 using NCDC.ShardingRoute.Expressions;
 using NCDC.ShardingRoute.Helpers;
-using OpenConnector.Exceptions;
 using OpenConnector.Logger;
 
 namespace NCDC.ShardingRoute;

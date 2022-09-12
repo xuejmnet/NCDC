@@ -1,4 +1,3 @@
-using DotNetty.Common.Utilities;
 using NCDC.Basic.Connection.User;
 using NCDC.Basic.Metadatas;
 
@@ -7,7 +6,7 @@ namespace NCDC.Basic.Connection.Abstractions;
 public interface IConnectionSession
 {
     IServerConnection ServerConnection { get; }
-    IAttributeMap AttributeMap { get; }
+    // IAttributeMap AttributeMap { get; }
     ILogicDatabase? LogicDatabase { get; }
 
     bool GetIsAutoCommit();

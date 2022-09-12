@@ -3,8 +3,8 @@ using System.Data.Common;
 using Microsoft.Extensions.Logging;
 using NCDC.Basic.Connection.Abstractions;
 using NCDC.Enums;
+using NCDC.Exceptions;
 using OpenConnector.DataSource;
-using OpenConnector.Exceptions;
 using OpenConnector.Logger;
 using OpenConnector.Transaction;
 

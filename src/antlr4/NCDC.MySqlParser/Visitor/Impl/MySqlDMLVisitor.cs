@@ -24,10 +24,11 @@ using NCDC.CommandParser.Value.Collection;
 using NCDC.CommandParser.Value.Identifier;
 using NCDC.CommandParser.Value.Literal.Impl;
 using NCDC.CommandParser.Value.ParameterMaker;
+using NCDC.Extensions;
 using OpenConnector.Extensions;
 
 
-namespace OpenConnector.MySqlParser.Visitor.Impl
+namespace NCDC.MySqlParser.Visitor.Impl
 {
     /// <summary>
     /// 

@@ -27,10 +27,10 @@ using NCDC.CommandParser.Value.Identifier;
 using NCDC.CommandParser.Value.KeyWord;
 using NCDC.CommandParser.Value.Literal.Impl;
 using NCDC.CommandParser.Value.ParameterMaker;
-using OpenConnector.Exceptions;
+using NCDC.Exceptions;
 
 
-namespace OpenConnector.MySqlParser.Visitor
+namespace NCDC.MySqlParser.Visitor
 {
     /// <summary>
     /// 

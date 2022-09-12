@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using NCDC.Extensions;
 using OpenConnector.Extensions;
 
 namespace NCDC.CommandParser.Value.Collection

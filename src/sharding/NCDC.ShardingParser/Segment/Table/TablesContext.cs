@@ -2,7 +2,7 @@ using NCDC.Basic.Parsers;
 using NCDC.CommandParser.Segment.DML.Column;
 using NCDC.CommandParser.Segment.Generic.Table;
 using NCDC.Basic.TableMetadataManagers;
-using OpenConnector.Exceptions;
+using NCDC.Exceptions;
 using OpenConnector.Extensions;
 
 namespace NCDC.ShardingParser.Segment.Table

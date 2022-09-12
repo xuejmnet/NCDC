@@ -1,6 +1,7 @@
 ﻿using NCDC.Basic.Parsers;
 using OpenConnector.Base;
 using NCDC.CommandParser.Abstractions;
+using NCDC.Extensions;
 using NCDC.ShardingParser.Command;
 using NCDC.ShardingParser.Command.DML;
 using NCDC.ShardingParser.Segment.Select.Projection;

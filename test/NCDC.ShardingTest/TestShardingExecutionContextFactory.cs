@@ -1,5 +1,6 @@
 using NCDC.Basic.Executors;
 using NCDC.CommandParser.Abstractions;
+using NCDC.Extensions;
 using NCDC.ShardingAdoNet;
 using NCDC.ShardingParser;
 using NCDC.ShardingParser.Abstractions;

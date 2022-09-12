@@ -1,6 +1,7 @@
 ﻿using NCDC.CommandParser.Segment.DML.Expr;
 using NCDC.CommandParser.Segment.DML.Expr.Simple;
-using OpenConnector.Exceptions;
+using NCDC.Exceptions;
+using NCDC.Extensions;
 using OpenConnector.Extensions;
 using NCDC.ShardingAdoNet;
 

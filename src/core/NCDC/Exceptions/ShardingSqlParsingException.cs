@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Runtime.Serialization;
-using System.Text;
+﻿using System.Runtime.Serialization;
 
-namespace OpenConnector.Exceptions
+namespace NCDC.Exceptions
 {
     /*
     * @Author: xjm
@@ -12,7 +9,7 @@ namespace OpenConnector.Exceptions
     * @Ver: 1.0
     * @Email: 326308290@qq.com
     */
-    public class ShardingSqlParsingException : Exception
+    public class ShardingSqlParsingException : ShardingException
     {
         public ShardingSqlParsingException()
         {

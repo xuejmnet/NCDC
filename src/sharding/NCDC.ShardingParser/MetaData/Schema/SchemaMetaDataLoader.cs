@@ -1,10 +1,10 @@
 ﻿using System.Collections.Concurrent;
 using System.Data.Common;
+using NCDC.Exceptions;
 using NCDC.ShardingParser.MetaData.Column;
 using NCDC.ShardingParser.MetaData.Index;
 using NCDC.ShardingParser.MetaData.Table;
 using OpenConnector.DataSource;
-using OpenConnector.Exceptions;
 
 namespace NCDC.ShardingParser.MetaData.Schema
 {

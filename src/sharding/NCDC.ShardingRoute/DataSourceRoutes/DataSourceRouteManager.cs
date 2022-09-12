@@ -2,10 +2,10 @@ using System.Collections.Concurrent;
 using System.Collections.Immutable;
 using NCDC.Basic.Metadatas;
 using NCDC.Basic.TableMetadataManagers;
+using NCDC.Exceptions;
 using NCDC.ShardingParser;
 using NCDC.ShardingRoute.Abstractions;
 using NCDC.ShardingRoute.DataSourceRoutes.Abstractions;
-using OpenConnector.Exceptions;
 
 namespace NCDC.ShardingRoute.DataSourceRoutes;
 

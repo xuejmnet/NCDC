@@ -6,7 +6,7 @@ using NCDC.CommandParser.Command.DCL;
 using NCDC.CommandParser.Segment.Generic.Table;
 
 
-namespace OpenConnector.SqlServerParser.Visitor.Impl
+namespace NCDC.SqlServerParser.Visitor.Impl
 {
 /*
 * @Author: xjm

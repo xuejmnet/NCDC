@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Antlr4.Runtime;
+﻿using Antlr4.Runtime;
 using NCDC.CommandParser.Abstractions;
 using NCDC.CommandParser.Abstractions.SqlParser;
 using NCDC.CommandParser.Abstractions.Visitor;
-using OpenConnector.MySqlParser.SqlLexer;
-using OpenConnector.MySqlParser.Visitor;
+using NCDC.MySqlParser.SqlLexer;
+using NCDC.MySqlParser.Visitor;
 
-
-namespace OpenConnector.MySqlParser
+namespace NCDC.MySqlParser
 {
     /// <summary>
     /// 

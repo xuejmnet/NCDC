@@ -1,4 +1,3 @@
-using DotNetty.Common.Utilities;
 using NCDC.Basic.Connection;
 using NCDC.Basic.Connection.Abstractions;
 using NCDC.Basic.Connection.User;
@@ -13,7 +12,7 @@ public class ConnectionSession:IConnectionSession,IDisposable
     private volatile int _connectionId;
     private volatile Grantee _grantee;
     public IServerConnection ServerConnection { get; }
-    public  IAttributeMap AttributeMap{ get; }
+    // public  IAttributeMap AttributeMap{ get; }
     private volatile bool autoCommit = true;
     private volatile string? _databaseName;
     public string? DatabaseName => _databaseName;
@@ -22,9 +21,9 @@ public class ConnectionSession:IConnectionSession,IDisposable
 
     private readonly ChannelIsWritableListener _channelWaitWriteableListener;
  
-    public ConnectionSession(TransactionTypeEnum transactionType,IAttributeMap attributeMap)
+    public ConnectionSession(TransactionTypeEnum transactionType)
     {
-        AttributeMap = attributeMap;
+        // AttributeMap = attributeMap;
         _transactionStatus=new TransactionStatus(transactionType);
         ServerConnection = new ServerConnection(this);
         _channelWaitWriteableListener = new ChannelIsWritableListener();

@@ -1,5 +1,5 @@
 using NCDC.Enums;
-using OpenConnector.Exceptions;
+using NCDC.Exceptions;
 
 namespace NCDC.Basic.Configurations;
 

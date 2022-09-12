@@ -2,7 +2,8 @@
 using NCDC.CommandParser.Abstractions;
 using NCDC.CommandParser.Constant;
 using NCDC.CommandParser.Segment.DML.Predicate;
-using OpenConnector.Exceptions;
+using NCDC.Exceptions;
+using NCDC.Extensions;
 using OpenConnector.Extensions;
 
 

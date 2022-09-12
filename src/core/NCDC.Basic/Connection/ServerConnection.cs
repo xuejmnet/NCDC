@@ -1,7 +1,7 @@
 using NCDC.Basic.Connection.Abstractions;
 using NCDC.Enums;
+using NCDC.Exceptions;
 using OpenConnector.Base;
-using OpenConnector.Exceptions;
 using OpenConnector.Transaction;
 
 namespace NCDC.Basic.Connection;

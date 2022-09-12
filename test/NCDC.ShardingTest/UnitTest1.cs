@@ -1,47 +1,40 @@
+using Microsoft.Extensions.DependencyInjection;
 using MySqlConnector;
+using NCDC.Basic.Contexts;
+using NCDC.Basic.Executors;
 using NCDC.Basic.Metadatas;
-using OpenConnector;
-using NCDC.CommandParser.Abstractions;
-using NCDC.CommandParser.SqlParseEngines;
 using NCDC.Basic.TableMetadataManagers;
 using NCDC.Enums;
-using OpenConnector.MySqlParser;
-using NCDC.ShardingAdoNet;
+using NCDC.MySqlParser;
 using NCDC.ShardingParser;
 using NCDC.ShardingRewrite;
-using NCDC.ShardingRewrite.Abstractions;
-using NCDC.ShardingRewrite.ParameterRewriters;
 using NCDC.ShardingRoute;
 using NCDC.ShardingRoute.Abstractions;
-using NCDC.ShardingRoute.DataSourceRoutes;
-using NCDC.ShardingRoute.DataSourceRoutes.Abstractions;
-using NCDC.ShardingRoute.TableRoutes;
 using NCDC.ShardingRoute.TableRoutes.Abstractions;
 
 namespace NCDC.ShardingTest;
 
 public class Tests
 {
-    private ISqlCommandParser _sqlCommandParser;
-    private ITableMetadataManager _tableMetadataManager;
-    private ITableRoute _testModTableRoute;
-    private IParameterRewriterBuilder _parameterRewriterBuilder;
-    private ISqlRewriterContextFactory _sqlRewriterContextFactory;
-    private IShardingExecutionContextFactory _shardingExecutionContextFactory;
-    private IRouteContextFactory _routeContextFactory;
-    private IDataSourceRouteRuleEngine _dataSourceRouteRuleEngine;
-    private ITableRouteRuleEngine _tableRouteRuleEngine;
-    private IDataSourceRouteManager _dataSourceRouteManager;
-    private ILogicDatabase _logicDatabase;
-    private ITableRouteManager _tableRouteManager;
+    private IRuntimeContext _runtimeContext;
 
     [SetUp]
     public void Setup()
     {
-        _logicDatabase = new LogicDatabase("a");
-        _logicDatabase.AddDataSource("ds0", "123", MySqlConnectorFactory.Instance, true);
-        _sqlCommandParser = new SqlCommandParser(new MySqlParserConfiguration());
-        _tableMetadataManager = new TableMetadataManager();
+        var logicDatabase = new LogicDatabase("a");
+        logicDatabase.AddDataSource("ds0", "123", MySqlConnectorFactory.Instance, true);
+        var shardingRuntimeContext = new ShardingRuntimeContext("a");
+        shardingRuntimeContext.Services.AddSingleton<ILogicDatabase>(logicDatabase);
+        shardingRuntimeContext.Services.AddSingleton<ITableMetadataManager,TableMetadataManager>();
+        shardingRuntimeContext.Services.AddSingleton<IShardingExecutionContextFactory,TestShardingExecutionContextFactory>();
+        shardingRuntimeContext.Services.AddShardingParser();
+        shardingRuntimeContext.Services.AddMySqlParser();
+        shardingRuntimeContext.Services.AddShardingRoute();
+        shardingRuntimeContext.Services.AddShardingRewrite();
+        _runtimeContext = shardingRuntimeContext;
+        _runtimeContext.Build();
+        
+        
         var tableMetadata = new TableMetadata("test", new Dictionary<string, ColumnMetadata>()
         {
             { "id", new ColumnMetadata("id", 0, "varchar", true, false, true) },
@@ -52,30 +45,19 @@ public class Tests
         tableMetadata.AddActualTableWithDataSource("ds0","test_00");
         tableMetadata.AddActualTableWithDataSource("ds0","test_01");
         tableMetadata.AddActualTableWithDataSource("ds0","test_02");
-        _tableMetadataManager.AddTableMetadata(tableMetadata);
-        _testModTableRoute=new TestModTableRoute(_tableMetadataManager);
-        _parameterRewriterBuilder = new ShardingParameterRewriterBuilder();
-        _sqlRewriterContextFactory = new SqlRewriterContextFactory(_tableMetadataManager, _parameterRewriterBuilder);
-        _shardingExecutionContextFactory = new ShardingExecutionContextFactory();
-        _dataSourceRouteManager = new DataSourceRouteManager(_tableMetadataManager, _logicDatabase);
-        _dataSourceRouteRuleEngine =
-            new DataSourceRouteRuleEngine(_tableMetadataManager, _logicDatabase, _dataSourceRouteManager);
-        _tableRouteManager = new TableRouteManager(_tableMetadataManager, _logicDatabase);
-        _tableRouteManager.AddRoute(_testModTableRoute);
-        _tableRouteRuleEngine = new TableRouteRuleEngine(_tableMetadataManager, _logicDatabase, _tableRouteManager);
-        _routeContextFactory = new RouteContextFactory(_dataSourceRouteRuleEngine, _tableRouteRuleEngine);
+        var tableMetadataManager = _runtimeContext.GetTableMetadataManager();
+        tableMetadataManager.AddTableMetadata(tableMetadata);
+        var testModTableRoute = _runtimeContext.CreateInstance<TestModTableRoute>();
+        var tableRouteManager = _runtimeContext.GetRequiredService<ITableRouteManager>();
+        tableRouteManager.AddRoute(testModTableRoute);
     }
 
     [Test]
     public void Test1()
     {
         var sql = "select * from test where (id='12' or id='13') and (name='1' or name='2' or name='3')";
-        var sqlCommand = _sqlCommandParser.Parse(sql,false);
-        var sqlCommandContext = SqlCommandContextFactory.Create(_tableMetadataManager, sql, ParameterContext.Empty, sqlCommand);
-        var sqlParserResult = new SqlParserResult(sql,sqlCommandContext,ParameterContext.Empty);
-        var routeContext = _routeContextFactory.Create(sqlParserResult);
-        var sqlRewriteContext = _sqlRewriterContextFactory.Rewrite(sqlParserResult,routeContext);
-        var shardingExecutionContext = _shardingExecutionContextFactory.Create(routeContext,sqlRewriteContext);
+        var shardingExecutionContextFactory = _runtimeContext.GetShardingExecutionContextFactory();
+        var shardingExecutionContext = shardingExecutionContextFactory.Create(sql);
     }
 
     public class TestModTableRoute : AbstractOperatorTableRoute

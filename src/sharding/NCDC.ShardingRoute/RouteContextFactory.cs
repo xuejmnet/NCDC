@@ -1,3 +1,4 @@
+using NCDC.Extensions;
 using NCDC.ShardingParser;
 using NCDC.ShardingRoute.Abstractions;
 using NCDC.ShardingRoute.DataSourceRoutes;

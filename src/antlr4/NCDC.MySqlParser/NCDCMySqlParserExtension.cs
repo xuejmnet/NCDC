@@ -1,7 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using NCDC.CommandParser;
 using NCDC.CommandParser.Abstractions;
-using OpenConnector.MySqlParser;
+using NCDC.MySqlParser;
 
 namespace NCDC.MySqlParser;
 

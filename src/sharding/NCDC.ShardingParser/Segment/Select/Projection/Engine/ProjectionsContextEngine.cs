@@ -8,7 +8,8 @@ using NCDC.ShardingParser.Segment.Select.Groupby;
 using NCDC.ShardingParser.Segment.Select.OrderBy;
 using NCDC.ShardingParser.Segment.Select.Projection.Impl;
 using NCDC.Basic.TableMetadataManagers;
-using OpenConnector.Exceptions;
+using NCDC.Exceptions;
+using NCDC.Extensions;
 using OpenConnector.Extensions;
 
 namespace NCDC.ShardingParser.Segment.Select.Projection.Engine

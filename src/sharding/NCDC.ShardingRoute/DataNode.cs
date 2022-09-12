@@ -1,4 +1,4 @@
-using OpenConnector.Exceptions;
+using NCDC.Exceptions;
 
 namespace NCDC.ShardingRoute;
 

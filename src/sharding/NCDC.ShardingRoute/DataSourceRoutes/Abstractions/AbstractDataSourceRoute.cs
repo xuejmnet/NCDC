@@ -1,6 +1,6 @@
 using NCDC.Basic.TableMetadataManagers;
+using NCDC.Exceptions;
 using NCDC.ShardingParser;
-using OpenConnector.Exceptions;
 
 namespace NCDC.ShardingRoute.DataSourceRoutes.Abstractions;
 

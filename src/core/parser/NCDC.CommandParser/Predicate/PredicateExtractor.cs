@@ -4,7 +4,7 @@ using NCDC.CommandParser.Segment.DML.Column;
 using NCDC.CommandParser.Segment.DML.Predicate;
 using NCDC.CommandParser.Segment.Generic;
 using NCDC.CommandParser.Segment.Generic.Table;
-using OpenConnector.Exceptions;
+using NCDC.Exceptions;
 
 namespace NCDC.CommandParser.Predicate
 {

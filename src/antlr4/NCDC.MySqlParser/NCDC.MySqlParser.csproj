@@ -9,7 +9,7 @@
 
 	<ItemGroup>
 		<Antlr4 Include="Antlr4\MySqlCommand.g4">
-			<Package>OpenConnector.MySqlParser</Package>
+			<Package>NCDC.MySqlParser</Package>
 		</Antlr4>
 	</ItemGroup>
 

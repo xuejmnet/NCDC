@@ -1,4 +1,4 @@
-using OpenConnector.Exceptions;
+using NCDC.Exceptions;
 using OpenConnector.Transaction;
 
 namespace NCDC.Basic.Connection;

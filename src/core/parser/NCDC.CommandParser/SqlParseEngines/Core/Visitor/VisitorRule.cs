@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Antlr4.Runtime.Tree;
 using NCDC.CommandParser.Command;
-using OpenConnector.Exceptions;
+using NCDC.Exceptions;
 
 namespace OpenConnector.ParserEngine.Core.Visitor
 {

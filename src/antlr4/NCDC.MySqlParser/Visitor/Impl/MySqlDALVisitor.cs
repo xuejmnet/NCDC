@@ -12,7 +12,7 @@ using NCDC.CommandParser.Value.Identifier;
 using NCDC.CommandParser.Value.Literal.Impl;
 
 
-namespace OpenConnector.MySqlParser.Visitor.Impl
+namespace NCDC.MySqlParser.Visitor.Impl
 {
     /// <summary>
     /// 

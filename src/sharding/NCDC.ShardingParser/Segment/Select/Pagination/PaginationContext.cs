@@ -1,7 +1,7 @@
 using NCDC.CommandParser.Segment.DML.Pagination;
 using NCDC.CommandParser.Segment.DML.Pagination.limit;
+using NCDC.Exceptions;
 using NCDC.ShardingParser.Command.DML;
-using OpenConnector.Exceptions;
 using NCDC.ShardingAdoNet;
 
 namespace NCDC.ShardingParser.Segment.Select.Pagination

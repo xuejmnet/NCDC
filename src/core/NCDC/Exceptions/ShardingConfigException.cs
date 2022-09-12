@@ -1,8 +1,8 @@
 using System.Runtime.Serialization;
 
-namespace OpenConnector.Exceptions;
+namespace NCDC.Exceptions;
 
-public class ShardingConfigException:Exception
+public class ShardingConfigException:ShardingException
 {
     public ShardingConfigException()
     {

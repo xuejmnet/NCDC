@@ -5,7 +5,7 @@ using System.Text;
 using Antlr4.Runtime;
 using NCDC.CommandParser.Abstractions.SqlLexer;
 
-namespace OpenConnector.MySqlParser.SqlLexer
+namespace NCDC.MySqlParser.SqlLexer
 {
     /// <summary>
     /// 

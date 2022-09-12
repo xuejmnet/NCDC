@@ -2,6 +2,7 @@
 using NCDC.CommandParser.Predicate;
 using NCDC.CommandParser.Segment.DML.Predicate;
 using NCDC.CommandParser.Segment.Generic.Table;
+using NCDC.Extensions;
 using NCDC.ShardingParser.Segment.Table;
 using OpenConnector.Extensions;
 

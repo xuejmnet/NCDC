@@ -6,7 +6,7 @@ using NCDC.CommandParser.Abstractions.SqlParser;
 using OpenConnector.ParserEngine.Core;
 
 
-namespace OpenConnector.SqlServerParser.SqlParser
+namespace NCDC.SqlServerParser.SqlParser
 {
     /*
     * @Author: xjm
