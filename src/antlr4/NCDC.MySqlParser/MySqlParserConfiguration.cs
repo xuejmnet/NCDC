@@ -33,10 +33,5 @@ namespace NCDC.MySqlParser
         {
             return _sqlVisitorCreator;
         }
-
-        public DatabaseTypeEnum GetDatabaseType()
-        {
-            return DatabaseTypeEnum.MySql;
-        }
     }
 }

@@ -1,7 +1,7 @@
 ﻿using NCDC.Base.PriorityQueues;
+using NCDC.Basic.TableMetadataManagers;
 using NCDC.ShardingMerge.DataReaders.Stream;
 using NCDC.ShardingParser.Command.DML;
-using NCDC.ShardingParser.MetaData.Schema;
 using NCDC.ShardingParser.Segment.Select.OrderBy;
 using NCDC.StreamDataReaders;
 
@@ -22,19 +22,19 @@ namespace NCDC.ShardingMerge.DataReaderMergers.DQL.OrderBy
 
         protected bool IsFirstNext { get; set; }
 
-        public OrderByStreamMergedDataReader(List<IStreamDataReader> streamDataReaders, SelectCommandContext selectCommandContext, SchemaMetaData schemaMetaData)
+        public OrderByStreamMergedDataReader(List<IStreamDataReader> streamDataReaders, SelectCommandContext selectCommandContext, ITableMetadataManager tableMetadataManager)
         {
             this.OrderByItems = selectCommandContext.GetOrderByContext().GetItems();
             this.OrderByValuesQueue = new Base.PriorityQueues.PriorityQueue<OrderByValue>(streamDataReaders.Count);
-            OrderResultSetsToQueue(streamDataReaders, selectCommandContext, schemaMetaData);
+            OrderResultSetsToQueue(streamDataReaders, selectCommandContext, tableMetadataManager);
             IsFirstNext = true;
         }
 
-        private void OrderResultSetsToQueue(List<IStreamDataReader> streamDataReaders, SelectCommandContext selectCommandContext, SchemaMetaData schemaMetaData)
+        private void OrderResultSetsToQueue(List<IStreamDataReader> streamDataReaders, SelectCommandContext selectCommandContext, ITableMetadataManager tableMetadataManager)
         {
             foreach (var queryResult in streamDataReaders)
             {
-                OrderByValue orderByValue = new OrderByValue(queryResult, OrderByItems, selectCommandContext, schemaMetaData);
+                OrderByValue orderByValue = new OrderByValue(queryResult, OrderByItems, selectCommandContext, tableMetadataManager);
                 if (orderByValue.MoveNext())
                 {
                     OrderByValuesQueue.Offer(orderByValue);

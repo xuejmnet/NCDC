@@ -4,14 +4,17 @@ namespace NCDC.Basic.TableMetadataManagers;
 public interface ITableMetadataManager
 {
     bool AddTableMetadata(TableMetadata tableMetadata);
-    bool IsShardingTable(string tableName);
-    bool IsOnlyShardingTable(string tableName);
-    bool IsShardingDataSource(string tableName);
-    bool IsShardingOnlyDataSource(string tableName);
-    TableMetadata? TryGet(string tableName);
-    bool IsSharding(string tableName);
+    bool IsShardingTable(string logicTableName);
+    bool IsOnlyShardingTable(string logicTableName);
+    bool IsShardingDataSource(string logicTableName);
+    bool IsShardingOnlyDataSource(string logicTableName);
+    TableMetadata? TryGet(string logicTableName);
+    TableMetadata? TryGetByActualTableName(string actualTableName);
+    TableMetadata Get(string logicTableName);
+    bool Contains(string logicTableName);
+    bool IsSharding(string logicTableName);
     IReadOnlyList<string> GetAllShardingTableNames();
-    IReadOnlyList<string> GetAllColumnNames(string tableName);
-    bool ContainsColumn(string tableName, string columnName);
-    bool IsShardingColumn(string tableName, string columnName);
+    IReadOnlyList<string> GetAllColumnNames(string logicTableName);
+    bool ContainsColumn(string logicTableName, string columnName);
+    bool IsShardingColumn(string logicTableName, string columnName);
 }

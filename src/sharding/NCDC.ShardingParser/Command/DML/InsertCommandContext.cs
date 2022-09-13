@@ -1,7 +1,5 @@
 ﻿using NCDC.CommandParser.Command.DML;
 using NCDC.CommandParser.Segment.Generic.Table;
-using NCDC.ShardingParser.MetaData;
-using NCDC.ShardingParser.MetaData.Schema;
 using NCDC.ShardingParser.Segment.Insert.Keygen;
 using NCDC.ShardingParser.Segment.Insert.Keygen.Engine;
 using NCDC.ShardingParser.Segment.Insert.Values;

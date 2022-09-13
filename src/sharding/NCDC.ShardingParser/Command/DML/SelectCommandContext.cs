@@ -6,8 +6,6 @@ using NCDC.CommandParser.Segment.DML.Predicate;
 using NCDC.CommandParser.Segment.Generic;
 using NCDC.CommandParser.Segment.Generic.Table;
 using NCDC.CommandParser.Util;
-using NCDC.ShardingParser.MetaData;
-using NCDC.ShardingParser.MetaData.Schema;
 using NCDC.ShardingParser.Segment.Select.Groupby;
 using NCDC.ShardingParser.Segment.Select.Groupby.Engine;
 using NCDC.ShardingParser.Segment.Select.OrderBy;

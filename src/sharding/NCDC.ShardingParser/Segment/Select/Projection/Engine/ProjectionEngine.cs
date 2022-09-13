@@ -1,8 +1,6 @@
 using NCDC.CommandParser.Constant;
 using NCDC.CommandParser.Segment.DML.Item;
 using NCDC.CommandParser.Segment.Generic.Table;
-using NCDC.ShardingParser.MetaData;
-using NCDC.ShardingParser.MetaData.Schema;
 using NCDC.ShardingParser.Segment.Select.Projection.Impl;
 using NCDC.Basic.TableMetadataManagers;
 using NCDC.Extensions;

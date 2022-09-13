@@ -1,8 +1,7 @@
 ﻿using NCDC.Base;
+using NCDC.Basic.TableMetadataManagers;
 using NCDC.CommandParser.Segment.DML.Order.Item;
 using NCDC.ShardingParser.Command.DML;
-using NCDC.ShardingParser.MetaData.Column;
-using NCDC.ShardingParser.MetaData.Schema;
 using NCDC.ShardingParser.Segment.Select.OrderBy;
 using NCDC.StreamDataReaders;
 
@@ -25,31 +24,31 @@ namespace NCDC.ShardingMerge.DataReaderMergers.DQL.OrderBy
 
         private List<IComparable> orderValues;
 
-        public OrderByValue(IStreamDataReader streamDataReader, ICollection<OrderByItem> orderByItems, SelectCommandContext selectCommandContext, SchemaMetaData schemaMetaData)
+        public OrderByValue(IStreamDataReader streamDataReader, ICollection<OrderByItem> orderByItems, SelectCommandContext selectCommandContext, ITableMetadataManager tableMetadataManager)
         {
             this._streamDataReader = streamDataReader;
             this.orderByItems = orderByItems;
-            this.orderValuesCaseSensitive = GetOrderValuesCaseSensitive(selectCommandContext, schemaMetaData);
+            this.orderValuesCaseSensitive = GetOrderValuesCaseSensitive(selectCommandContext, tableMetadataManager);
         }
 
-        private List<bool> GetOrderValuesCaseSensitive(SelectCommandContext selectCommandContext, SchemaMetaData schemaMetaData)
+        private List<bool> GetOrderValuesCaseSensitive(SelectCommandContext selectCommandContext, ITableMetadataManager tableMetadataManager)
         {
             List<bool> result = new List<bool>(orderByItems.Count);
             foreach (var orderByItem in orderByItems)
             {
-                result.Add(GetOrderValuesCaseSensitiveFromTables(selectCommandContext, schemaMetaData, orderByItem));
+                result.Add(GetOrderValuesCaseSensitiveFromTables(selectCommandContext, tableMetadataManager, orderByItem));
             }
 
             return result;
         }
 
-        private bool GetOrderValuesCaseSensitiveFromTables(SelectCommandContext selectCommandContext, SchemaMetaData schemaMetaData, OrderByItem eachOrderByItem)
+        private bool GetOrderValuesCaseSensitiveFromTables(SelectCommandContext selectCommandContext, ITableMetadataManager tableMetadataManager, OrderByItem eachOrderByItem)
         {
             foreach (var simpleTableSegment in selectCommandContext.GetAllTables())
             {
                 var tableName = simpleTableSegment.GetTableName().GetIdentifier().GetValue();
-                var tableMetaData = schemaMetaData.Get(tableName);
-                IDictionary<String, ColumnMetaData> columns = tableMetaData.GetColumns();
+                var tableMetaData = tableMetadataManager.Get(tableName);
+                IDictionary<String, ColumnMetadata> columns = tableMetaData.Columns;
                 var orderByItemSegment = eachOrderByItem.GetSegment();
                 if (orderByItemSegment is ColumnOrderByItemSegment columnOrderByItemSegment)
                 {

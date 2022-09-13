@@ -1,13 +1,11 @@
 using NCDC.Base;
+using NCDC.Basic.TableMetadataManagers;
 using NCDC.CommandParser.Abstractions;
 using NCDC.Extensions;
 using NCDC.ShardingMerge.DataReaderMergers.DQL.GroupBy.Aggregation;
 using NCDC.ShardingMerge.DataReaders.Memory;
 using NCDC.ShardingParser.Command;
 using NCDC.ShardingParser.Command.DML;
-using NCDC.ShardingParser.MetaData.Column;
-using NCDC.ShardingParser.MetaData.Schema;
-using NCDC.ShardingParser.MetaData.Table;
 using NCDC.ShardingParser.Segment.Select.Projection.Impl;
 using NCDC.StreamDataReaders;
 
@@ -21,11 +19,11 @@ namespace NCDC.ShardingMerge.DataReaderMergers.DQL.GroupBy
     */
     public sealed class GroupByMemoryMergedDataReader : MemoryMergedDataReader
     {
-        public GroupByMemoryMergedDataReader(List<IStreamDataReader> queryDataReaders, SelectCommandContext sqlCommandContext, SchemaMetaData schemaMetaData) : base(schemaMetaData, sqlCommandContext, queryDataReaders)
+        public GroupByMemoryMergedDataReader(List<IStreamDataReader> queryDataReaders, SelectCommandContext sqlCommandContext, ITableMetadataManager tableMetadataManager) : base(tableMetadataManager, sqlCommandContext, queryDataReaders)
         {
         }
 
-        protected override List<MemoryQueryResultRow> Init(SchemaMetaData schemaMetaData, ISqlCommandContext<ISqlCommand> sqlCommandContext, List<IStreamDataReader> streamDataReaders)
+        protected override List<MemoryQueryResultRow> Init(ITableMetadataManager tableMetadataManager, ISqlCommandContext<ISqlCommand> sqlCommandContext, List<IStreamDataReader> streamDataReaders)
         {
             var selectCommandContext = (SelectCommandContext)sqlCommandContext;
             IDictionary<GroupByValue, MemoryQueryResultRow> dataMap = new Dictionary<GroupByValue, MemoryQueryResultRow>(1024);
@@ -42,7 +40,7 @@ namespace NCDC.ShardingMerge.DataReaderMergers.DQL.GroupBy
                 }
             }
             SetAggregationValueToMemoryRow(selectCommandContext, dataMap, aggregationMap);
-            List<bool> valueCaseSensitive = streamDataReaders.IsEmpty() ? new List<bool>(0) : GetValueCaseSensitive(streamDataReaders.First(), selectCommandContext, schemaMetaData);
+            List<bool> valueCaseSensitive = streamDataReaders.IsEmpty() ? new List<bool>(0) : GetValueCaseSensitive(streamDataReaders.First(), selectCommandContext, tableMetadataManager);
             return GetMemoryResultSetRows(selectCommandContext, dataMap, valueCaseSensitive);
         }
 
@@ -108,7 +106,7 @@ namespace NCDC.ShardingMerge.DataReaderMergers.DQL.GroupBy
             }
         }
 
-        private List<bool> GetValueCaseSensitive(IStreamDataReader streamDataReader, SelectCommandContext selectCommandContext, SchemaMetaData schemaMetaData)
+        private List<bool> GetValueCaseSensitive(IStreamDataReader streamDataReader, SelectCommandContext selectCommandContext, ITableMetadataManager tableMetadataManager)
         {
             List<bool> result = new List<bool>(streamDataReader.ColumnCount + 1)
             {
@@ -116,20 +114,20 @@ namespace NCDC.ShardingMerge.DataReaderMergers.DQL.GroupBy
             };
             for (int columnIndex = 0; columnIndex < streamDataReader.ColumnCount; columnIndex++)
             {
-                result.Add(GetValueCaseSensitiveFromTables(streamDataReader, selectCommandContext, schemaMetaData, columnIndex));
+                result.Add(GetValueCaseSensitiveFromTables(streamDataReader, selectCommandContext, tableMetadataManager, columnIndex));
             }
 
             return result;
         }
 
         private bool GetValueCaseSensitiveFromTables(IStreamDataReader streamDataReader, SelectCommandContext selectCommandContext,
-            SchemaMetaData schemaMetaData, int columnIndex)
+            ITableMetadataManager tableMetadataManager, int columnIndex)
         {
             foreach (var simpleTableSegment in selectCommandContext.GetAllTables())
             {
                 String tableName = simpleTableSegment.GetTableName().GetIdentifier().GetValue();
-                TableMetaData tableMetaData = schemaMetaData.Get(tableName);
-                IDictionary<String, ColumnMetaData> columns = tableMetaData.GetColumns();
+                TableMetadata tableMetaData = tableMetadataManager.Get(tableName);
+                IDictionary<String, ColumnMetadata> columns = tableMetaData.Columns;
                 String columnName = streamDataReader.GetColumnName(columnIndex);
                 if (columns.ContainsKey(columnName))
                 {

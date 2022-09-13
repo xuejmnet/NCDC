@@ -1,9 +1,9 @@
 using NCDC.Base;
+using NCDC.Basic.TableMetadataManagers;
 using NCDC.Extensions;
 using NCDC.ShardingMerge.DataReaderMergers.DQL.GroupBy.Aggregation;
 using NCDC.ShardingMerge.DataReaderMergers.DQL.OrderBy;
 using NCDC.ShardingParser.Command.DML;
-using NCDC.ShardingParser.MetaData.Schema;
 using NCDC.ShardingParser.Segment.Select.Projection.Impl;
 using NCDC.StreamDataReaders;
 
@@ -22,7 +22,7 @@ namespace NCDC.ShardingMerge.DataReaderMergers.DQL.GroupBy
         private readonly List<object> _currentRow;
 
         private List<object> _currentGroupByValues;
-        public GroupByStreamMergedDataReader(IDictionary<string, int> labelAndIndexMap, List<IStreamDataReader> streamDataReaders, SelectCommandContext selectCommandContext, SchemaMetaData schemaMetaData) : base(streamDataReaders, selectCommandContext, schemaMetaData)
+        public GroupByStreamMergedDataReader(IDictionary<string, int> labelAndIndexMap, List<IStreamDataReader> streamDataReaders, SelectCommandContext selectCommandContext, ITableMetadataManager tableMetadataManager) : base(streamDataReaders, selectCommandContext, tableMetadataManager)
         {
             this._selectCommandContext = selectCommandContext;
             _currentRow = new List<object>(labelAndIndexMap.Count);

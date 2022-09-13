@@ -1,19 +1,31 @@
 using System.Collections.Concurrent;
 using System.Collections.Immutable;
+using NCDC.Exceptions;
 
 namespace NCDC.Basic.TableMetadataManagers;
 
 public class TableMetadataManager:ITableMetadataManager
 {
     private readonly ConcurrentDictionary<string, TableMetadata> _caches = new();
+    private readonly ConcurrentDictionary<string/*actual table name*/, string/*logic table name*/> _cacheIndex = new();
     public bool AddTableMetadata(TableMetadata tableMetadata)
     {
-        return _caches.TryAdd(tableMetadata.LogicTableName, tableMetadata);
+        if (_caches.TryAdd(tableMetadata.LogicTableName, tableMetadata))
+        {
+            var tableNames = tableMetadata.TableNames;
+            foreach (var tableName in tableNames)
+            {
+                _cacheIndex.TryAdd(tableName, tableMetadata.LogicTableName);
+            }
+            return true;
+        }
+
+        return false;
     }
 
-    public bool IsShardingTable(string tableName)
+    public bool IsShardingTable(string logicTableName)
     {
-        if (!_caches.TryGetValue(tableName, out var tableMetadata))
+        if (!_caches.TryGetValue(logicTableName, out var tableMetadata))
         {
             return false;
         }
@@ -21,9 +33,9 @@ public class TableMetadataManager:ITableMetadataManager
         return tableMetadata.IsMultiTableMapping;
     }
 
-    public bool IsOnlyShardingTable(string tableName)
+    public bool IsOnlyShardingTable(string logicTableName)
     {
-        if (!_caches.TryGetValue(tableName, out var tableMetadata))
+        if (!_caches.TryGetValue(logicTableName, out var tableMetadata))
         {
             return false;
         }
@@ -31,9 +43,9 @@ public class TableMetadataManager:ITableMetadataManager
         return tableMetadata.IsMultiTableMapping&&!tableMetadata.IsMultiDataSourceMapping;
     }
 
-    public bool IsShardingDataSource(string tableName)
+    public bool IsShardingDataSource(string logicTableName)
     {
-        if (!_caches.TryGetValue(tableName, out var tableMetadata))
+        if (!_caches.TryGetValue(logicTableName, out var tableMetadata))
         {
             return false;
         }
@@ -41,9 +53,9 @@ public class TableMetadataManager:ITableMetadataManager
         return tableMetadata.IsMultiDataSourceMapping;
     }
 
-    public bool IsShardingOnlyDataSource(string tableName)
+    public bool IsShardingOnlyDataSource(string logicTableName)
     {
-        if (!_caches.TryGetValue(tableName, out var tableMetadata))
+        if (!_caches.TryGetValue(logicTableName, out var tableMetadata))
         {
             return false;
         }
@@ -51,9 +63,9 @@ public class TableMetadataManager:ITableMetadataManager
         return tableMetadata.IsMultiDataSourceMapping&&!tableMetadata.IsMultiTableMapping;
     }
 
-    public TableMetadata? TryGet(string tableName)
+    public TableMetadata? TryGet(string logicTableName)
     {
-        if (!_caches.TryGetValue(tableName, out var tableMetadata))
+        if (!_caches.TryGetValue(logicTableName, out var tableMetadata))
         {
             return null;
         }
@@ -61,9 +73,34 @@ public class TableMetadataManager:ITableMetadataManager
         return tableMetadata;
     }
 
-    public bool IsSharding(string tableName)
+    public TableMetadata? TryGetByActualTableName(string actualTableName)
     {
-        if (!_caches.TryGetValue(tableName, out var tableMetadata))
+        if (!_cacheIndex.TryGetValue(actualTableName, out var logicTableName))
+        {
+            return null;
+        }
+
+        return TryGet(logicTableName);
+    }
+
+    public TableMetadata Get(string logicTableName)
+    {
+        if (!_caches.TryGetValue(logicTableName, out var tableMetadata))
+        {
+            throw new ShardingException($"not found table metadata:[{logicTableName}]");
+        }
+
+        return tableMetadata;
+    }
+
+    public bool Contains(string logicTableName)
+    {
+        return _caches.ContainsKey(logicTableName);
+    }
+
+    public bool IsSharding(string logicTableName)
+    {
+        if (!_caches.TryGetValue(logicTableName, out var tableMetadata))
         {
             return false;
         }
@@ -77,15 +114,15 @@ public class TableMetadataManager:ITableMetadataManager
             .ToImmutableList();
     }
 
-    public IReadOnlyList<string> GetAllColumnNames(string tableName)
+    public IReadOnlyList<string> GetAllColumnNames(string logicTableName)
     {
-        var tableMetadata = TryGet(tableName);
+        var tableMetadata = TryGet(logicTableName);
         return tableMetadata?.Columns.Keys.ToList() ?? new List<string>(0);
     }
 
-    public bool ContainsColumn(string tableName, string columnName)
+    public bool ContainsColumn(string logicTableName, string columnName)
     {
-        var tableMetadata = TryGet(tableName);
+        var tableMetadata = TryGet(logicTableName);
         if (tableMetadata == null)
         {
             return false;
@@ -94,9 +131,9 @@ public class TableMetadataManager:ITableMetadataManager
         return tableMetadata.Columns.ContainsKey(columnName);
     }
 
-    public bool IsShardingColumn(string tableName, string columnName)
+    public bool IsShardingColumn(string logicTableName, string columnName)
     {
-        var tableMetadata = TryGet(tableName);
+        var tableMetadata = TryGet(logicTableName);
         if (tableMetadata != null&&tableMetadata.Columns.ContainsKey(columnName))
         {
             return tableMetadata.IsShardingColumn(columnName);

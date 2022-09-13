@@ -1,8 +1,6 @@
 ﻿using NCDC.CommandParser.Command.DML;
 using NCDC.CommandParser.Segment.DML.Expr;
 using NCDC.CommandParser.Segment.DML.Expr.Simple;
-using NCDC.ShardingParser.MetaData;
-using NCDC.ShardingParser.MetaData.Schema;
 using NCDC.Basic.TableMetadataManagers;
 using NCDC.Exceptions;
 using NCDC.ShardingAdoNet;

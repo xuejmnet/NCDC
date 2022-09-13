@@ -9,7 +9,7 @@ public class TableMetadata
     /// <summary>
     /// ignore case key
     /// </summary>
-    public Dictionary<string, ColumnMetadata> Columns { get; }
+    public IDictionary<string, ColumnMetadata> Columns { get; }
 
 
     public TableMetadata(string logicTableName, Dictionary<string, ColumnMetadata> columns)

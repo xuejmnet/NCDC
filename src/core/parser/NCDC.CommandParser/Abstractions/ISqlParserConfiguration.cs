@@ -25,7 +25,6 @@ namespace NCDC.CommandParser.Abstractions
         /// <returns></returns>
         ISqlVisitorCreator CreateVisitorCreator();
 
-        DatabaseTypeEnum GetDatabaseType();
 
     }
 }

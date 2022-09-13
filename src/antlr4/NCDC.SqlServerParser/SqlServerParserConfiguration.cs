@@ -38,9 +38,5 @@ namespace NCDC.SqlServerParser
             return _sqlVisitorCreator;
         }
 
-        public DatabaseTypeEnum GetDatabaseType()
-        {
-            return DatabaseTypeEnum.SqlServer;
-        }
     }
 }

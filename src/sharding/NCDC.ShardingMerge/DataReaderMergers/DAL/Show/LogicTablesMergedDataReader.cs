@@ -1,7 +1,7 @@
-﻿using NCDC.CommandParser.Abstractions;
+﻿using NCDC.Basic.TableMetadataManagers;
+using NCDC.CommandParser.Abstractions;
 using NCDC.ShardingMerge.DataReaders.Memory;
 using NCDC.ShardingParser.Command;
-using NCDC.ShardingParser.MetaData.Schema;
 using NCDC.StreamDataReaders;
 
 namespace NCDC.ShardingMerge.DataReaderMergers.DAL.Show
@@ -15,11 +15,11 @@ namespace NCDC.ShardingMerge.DataReaderMergers.DAL.Show
     */
     public class LogicTablesMergedDataReader:MemoryMergedDataReader
     {
-        public LogicTablesMergedDataReader(SchemaMetaData schemaMetaData, ISqlCommandContext<ISqlCommand> sqlCommandContext, List<IStreamDataReader> streamDataReaders) : base(schemaMetaData, sqlCommandContext, streamDataReaders)
+        public LogicTablesMergedDataReader(ITableMetadataManager tableMetadataManager, ISqlCommandContext<ISqlCommand> sqlCommandContext, List<IStreamDataReader> streamDataReaders) : base(tableMetadataManager, sqlCommandContext, streamDataReaders)
         {
         }
 
-        protected override List<MemoryQueryResultRow> Init(SchemaMetaData schemaMetaData, ISqlCommandContext<ISqlCommand> sqlCommandContext,
+        protected override List<MemoryQueryResultRow> Init(ITableMetadataManager tableMetadataManager, ISqlCommandContext<ISqlCommand> sqlCommandContext,
             List<IStreamDataReader> streamDataReaders)
         {
             ICollection<MemoryQueryResultRow> result = new LinkedList<MemoryQueryResultRow>();
@@ -29,15 +29,18 @@ namespace NCDC.ShardingMerge.DataReaderMergers.DAL.Show
                 while (streamDataReader.Read()) {
                     MemoryQueryResultRow memoryResultSetRow = new MemoryQueryResultRow(streamDataReader);
                     var actualTableName = memoryResultSetRow.GetCell(0).ToString();
-                    var tableRule = rule.FindTableRuleByActualTable(actualTableName);
-                    if (tableRule==null) {
-                        if (rule.TableRules.IsEmpty() || schemaMetaData.ContainsTable(actualTableName) && tableNames.Add(actualTableName)) {
+                    if (actualTableName != null)
+                    { 
+                        var tableMetadata = tableMetadataManager.TryGetByActualTableName(actualTableName);
+                        if (tableMetadata==null||!tableMetadata.IsSharding) {
+                            if (tableMetadataManager.Contains(actualTableName) && tableNames.Add(actualTableName)) {
+                                result.Add(memoryResultSetRow);
+                            }
+                        } else if (tableNames.Add(tableMetadata.LogicTableName)) {
+                            memoryResultSetRow.SetCell(1, tableMetadata.LogicTableName);
+                            SetCellValue(memoryResultSetRow, tableMetadata.LogicTableName, actualTableName);
                             result.Add(memoryResultSetRow);
                         }
-                    } else if (tableNames.Add(tableRule.LogicTable)) {
-                        memoryResultSetRow.SetCell(1, tableRule.LogicTable);
-                        SetCellValue(memoryResultSetRow, tableRule.LogicTable, actualTableName);
-                        result.Add(memoryResultSetRow);
                     }
                 }
             }

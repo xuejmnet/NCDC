@@ -10,8 +10,4 @@
       <ProjectReference Include="..\NCDC.ShardingParser\NCDC.ShardingParser.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="DataReaderMergers" />
-    </ItemGroup>
-
 </Project>

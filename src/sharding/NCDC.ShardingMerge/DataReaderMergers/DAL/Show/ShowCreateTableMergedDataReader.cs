@@ -1,8 +1,8 @@
+using NCDC.Basic.TableMetadataManagers;
 using NCDC.CommandParser.Abstractions;
 using NCDC.Extensions;
 using NCDC.ShardingMerge.DataReaders.Memory;
 using NCDC.ShardingParser.Command;
-using NCDC.ShardingParser.MetaData.Schema;
 using NCDC.StreamDataReaders;
 
 namespace NCDC.ShardingMerge.DataReaderMergers.DAL.Show
@@ -15,7 +15,7 @@ namespace NCDC.ShardingMerge.DataReaderMergers.DAL.Show
 */
     public sealed class ShowCreateTableMergedDataReader:LogicTablesMergedDataReader
     {
-        public ShowCreateTableMergedDataReader(SchemaMetaData schemaMetaData, ISqlCommandContext<ISqlCommand> sqlCommandContext, List<IStreamDataReader> streamDataReaders) : base(schemaMetaData, sqlCommandContext, streamDataReaders)
+        public ShowCreateTableMergedDataReader(ITableMetadataManager tableMetadataManager, ISqlCommandContext<ISqlCommand> sqlCommandContext, List<IStreamDataReader> streamDataReaders) : base(tableMetadataManager, sqlCommandContext, streamDataReaders)
         {
         }
 

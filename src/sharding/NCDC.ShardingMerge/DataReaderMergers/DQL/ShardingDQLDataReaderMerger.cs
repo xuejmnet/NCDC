@@ -12,10 +12,8 @@ using NCDC.ShardingMerge.DataReaderMergers.DQL.OrderBy;
 using NCDC.ShardingMerge.DataReaderMergers.DQL.Pagination;
 using NCDC.ShardingParser.Command;
 using NCDC.ShardingParser.Command.DML;
-using NCDC.ShardingParser.MetaData.Schema;
 using NCDC.ShardingParser.Segment.Select.OrderBy;
 using NCDC.StreamDataReaders;
-using OpenConnector.ShardingMerge.DQL.GroupBy;
 
 namespace NCDC.ShardingMerge.DataReaderMergers.DQL
 {
@@ -45,7 +43,7 @@ namespace NCDC.ShardingMerge.DataReaderMergers.DQL
             IDictionary<string, int> columnLabelIndexMap = GetColumnLabelIndexMap(streamDataReaders[0]);
             var selectCommandContext = (SelectCommandContext)sqlCommandContext;
             selectCommandContext.SetIndexes(columnLabelIndexMap);
-            var mergedEnumerator = Build(streamDataReaders, selectCommandContext, columnLabelIndexMap, schemaMetaData);
+            var mergedEnumerator = Build(streamDataReaders, selectCommandContext, columnLabelIndexMap);
             return Decorate(streamDataReaders, selectCommandContext, mergedEnumerator);
         }
 
@@ -60,20 +58,20 @@ namespace NCDC.ShardingMerge.DataReaderMergers.DQL
         }
 
         private IStreamDataReader Build(List<IStreamDataReader> streamDataReaders, SelectCommandContext selectCommandContext,
-                                    IDictionary<string, int> columnLabelIndexMap, SchemaMetaData schemaMetaData)
+                                    IDictionary<string, int> columnLabelIndexMap)
         {
             if (IsNeedProcessGroupBy(selectCommandContext))
             {
-                return GetGroupByMergedResult(streamDataReaders, selectCommandContext, columnLabelIndexMap, schemaMetaData);
+                return GetGroupByMergedResult(streamDataReaders, selectCommandContext, columnLabelIndexMap);
             }
             if (IsNeedProcessDistinctRow(selectCommandContext))
             {
                 SetGroupByForDistinctRow(selectCommandContext);
-                return GetGroupByMergedResult(streamDataReaders, selectCommandContext, columnLabelIndexMap, schemaMetaData);
+                return GetGroupByMergedResult(streamDataReaders, selectCommandContext, columnLabelIndexMap);
             }
             if (IsNeedProcessOrderBy(selectCommandContext))
             {
-                return new OrderByStreamMergedDataReader(streamDataReaders, selectCommandContext, schemaMetaData);
+                return new OrderByStreamMergedDataReader(streamDataReaders, selectCommandContext, _tableMetadataManager);
             }
             return new IteratorStreamMergedDataReader(streamDataReaders);
         }
@@ -99,14 +97,14 @@ namespace NCDC.ShardingMerge.DataReaderMergers.DQL
         }
 
         private IStreamDataReader GetGroupByMergedResult(List<IStreamDataReader> streamDataReaders, SelectCommandContext selectCommandContext,
-                                                     IDictionary<string, int> columnLabelIndexMap, SchemaMetaData schemaMetaData)
+                                                     IDictionary<string, int> columnLabelIndexMap)
         {
             if (selectCommandContext.IsSameGroupByAndOrderByItems())
             {
                 return new GroupByStreamMergedDataReader(columnLabelIndexMap, streamDataReaders, selectCommandContext,
-                    schemaMetaData);
+                    _tableMetadataManager);
             }
-            return new GroupByMemoryMergedDataReader(streamDataReaders, selectCommandContext, schemaMetaData);
+            return new GroupByMemoryMergedDataReader(streamDataReaders, selectCommandContext, _tableMetadataManager);
         }
 
         private bool IsNeedProcessOrderBy(SelectCommandContext selectCommandContext)
@@ -117,24 +115,35 @@ namespace NCDC.ShardingMerge.DataReaderMergers.DQL
         private IStreamDataReader Decorate(List<IStreamDataReader> streamDataReaders, SelectCommandContext selectCommandContext, IStreamDataReader mergedStreamDataReader)
         {
             var paginationContext = selectCommandContext.GetPaginationContext();
-            if (!paginationContext.HasPagination() || 1 == streamDataReaders.Count)
+            if (1 == streamDataReaders.Count||!paginationContext.HasPagination())
             {
                 return mergedStreamDataReader;
             }
-            String trunkDatabaseName = DatabaseTypes.GetTrunkDatabaseType(_databaseType.GetName()).GetName();
-            if ("MySql".Equals(trunkDatabaseName) || "PostgreSQL".Equals(trunkDatabaseName))
+
+            switch (_databaseType)
             {
-                return new LimitDecoratorStreamDataReader(mergedStreamDataReader, paginationContext);
+                case DatabaseTypeEnum.MySql:
+                case DatabaseTypeEnum.PostgreSql:
+                    return  new LimitDecoratorStreamDataReader(mergedStreamDataReader, paginationContext);
+                case DatabaseTypeEnum.SqlServer:
+                    return new TopAndRowNumberDecoratorStreamDataReader(mergedStreamDataReader, paginationContext);
+                case DatabaseTypeEnum.Oracle:
+                    return new RowNumberDecoratorStreamDataReader(mergedStreamDataReader, paginationContext);
+                default:return mergedStreamDataReader;
             }
-            if ("Oracle".Equals(trunkDatabaseName))
-            {
-                return new RowNumberDecoratorStreamDataReader(mergedStreamDataReader, paginationContext);
-            }
-            if ("SQLServer".Equals(trunkDatabaseName))
-            {
-                return new TopAndRowNumberDecoratorStreamDataReader(mergedStreamDataReader, paginationContext);
-            }
-            return mergedStreamDataReader;
+            // if (DatabaseTypeEnum.MySql==_databaseType||DatabaseTypeEnum.PostgreSql==_databaseType)
+            // {
+            //     return new LimitDecoratorStreamDataReader(mergedStreamDataReader, paginationContext);
+            // }
+            // if (DatabaseTypeEnum.Oracle==_databaseType)
+            // {
+            //     return new RowNumberDecoratorStreamDataReader(mergedStreamDataReader, paginationContext);
+            // }
+            // if (DatabaseTypeEnum.SqlServer==_databaseType)
+            // {
+            //     return new TopAndRowNumberDecoratorStreamDataReader(mergedStreamDataReader, paginationContext);
+            // }
+            // return mergedStreamDataReader;
         }
     }
 }

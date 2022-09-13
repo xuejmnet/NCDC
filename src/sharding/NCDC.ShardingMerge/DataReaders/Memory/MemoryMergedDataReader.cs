@@ -1,6 +1,6 @@
-﻿using NCDC.CommandParser.Abstractions;
+﻿using NCDC.Basic.TableMetadataManagers;
+using NCDC.CommandParser.Abstractions;
 using NCDC.ShardingParser.Command;
-using NCDC.ShardingParser.MetaData.Schema;
 using NCDC.StreamDataReaders;
 
 namespace NCDC.ShardingMerge.DataReaders.Memory
@@ -22,11 +22,11 @@ namespace NCDC.ShardingMerge.DataReaders.Memory
         private MemoryQueryResultRow _currentSetResultRow;
 
 
-        protected MemoryMergedDataReader(SchemaMetaData schemaMetaData,
+        protected MemoryMergedDataReader(ITableMetadataManager tableMetadataManager,
             ISqlCommandContext<ISqlCommand> sqlCommandContext, List<IStreamDataReader> streamDataReaders)
         {
             // ReSharper disable once VirtualMemberCallInConstructor
-            var memoryQueryResultRowList = Init(schemaMetaData, sqlCommandContext, streamDataReaders);
+            var memoryQueryResultRowList = Init(tableMetadataManager, sqlCommandContext, streamDataReaders);
             _memoryResultSetRows = memoryQueryResultRowList.GetEnumerator();
             if (memoryQueryResultRowList.Any())
             {
@@ -34,7 +34,7 @@ namespace NCDC.ShardingMerge.DataReaders.Memory
             }
         }
 
-        protected abstract List<MemoryQueryResultRow> Init(SchemaMetaData schemaMetaData,
+        protected abstract List<MemoryQueryResultRow> Init(ITableMetadataManager tableMetadataManager,
             ISqlCommandContext<ISqlCommand> sqlCommandContext, List<IStreamDataReader> queryEnumerators);
 
 

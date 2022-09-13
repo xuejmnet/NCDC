@@ -2,14 +2,11 @@
 using NCDC.CommandParser.Segment.DML.Item;
 using NCDC.CommandParser.Segment.DML.Order.Item;
 using NCDC.CommandParser.Segment.Generic.Table;
-using NCDC.ShardingParser.MetaData;
-using NCDC.ShardingParser.MetaData.Schema;
 using NCDC.ShardingParser.Segment.Select.Groupby;
 using NCDC.ShardingParser.Segment.Select.OrderBy;
 using NCDC.ShardingParser.Segment.Select.Projection.Impl;
 using NCDC.Basic.TableMetadataManagers;
 using NCDC.Exceptions;
-using NCDC.Extensions;
 using NCDC.Extensions;
 
 namespace NCDC.ShardingParser.Segment.Select.Projection.Engine
