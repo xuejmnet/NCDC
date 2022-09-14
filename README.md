@@ -1,4 +1,4 @@
-# ShardingConnector
+# .Net Core Distributed Connector
 
 ## ShardingRuleConfiguration
 整个项目的分片规则配置
