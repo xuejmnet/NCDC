@@ -1,10 +1,10 @@
-using NCDC.Basic.Connection.Abstractions;
 using NCDC.Enums;
 using NCDC.Exceptions;
 using NCDC.Extensions;
 using NCDC.Helpers;
 using NCDC.ProxyServer.Abstractions;
 using NCDC.ProxyServer.Binaries;
+using NCDC.ProxyServer.Connection.Abstractions;
 using NCDC.ProxyServer.Executors;
 using NCDC.ProxyServer.StreamMerges;
 
@@ -13,9 +13,12 @@ namespace NCDC.ProxyServer.ServerDataReaders;
 public abstract class AbstractExecuteServerDataReader:IServerDataReader
 {
     protected ShardingExecutionContext ShardingExecutionContext { get; }
-    public AbstractExecuteServerDataReader(ShardingExecutionContext shardingExecutionContext)
+    protected IConnectionSession ConnectionSession { get; }
+
+    public AbstractExecuteServerDataReader(ShardingExecutionContext shardingExecutionContext,IConnectionSession connectionSession)
     {
         ShardingExecutionContext = shardingExecutionContext;
+        ConnectionSession = connectionSession;
     }
 
     public  IServerResult ExecuteDbDataReader(
@@ -41,14 +44,14 @@ public abstract class AbstractExecuteServerDataReader:IServerDataReader
             .ToList();
         if (results.IsEmpty())
             throw new ShardingException("sharding execute result empty");
-        return executor.GetShardingMerger().StreamMerge(ShardingExecutionContext,results);
+        return executor.GetShardingMerger().StreamMerge(ConnectionSession,ShardingExecutionContext,results);
     }
     protected Task<List<TResult>>[] ExecuteAsync0<TResult>(IExecutor<TResult> executor,
         CancellationToken cancellationToken = new CancellationToken())
     {
         var waitTaskQueue = ShardingExecutionContext.GetExecutionUnits()
             .GroupBy(o => o.GetDataSourceName())
-            .Select(o => GetSqlExecutorGroups(o))
+            .Select(GetSqlExecutorGroups)
             .Select(dataSourceSqlExecutorUnit =>
             {
                 return Task.Run(async () =>

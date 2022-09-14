@@ -1,6 +1,6 @@
 using Nito.AsyncEx;
 
-namespace NCDC.Basic.Session;
+namespace NCDC.ProxyServer.Connection;
 
 public sealed class ChannelIsWritableListener
 {

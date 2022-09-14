@@ -1,6 +1,6 @@
-using NCDC.Basic.Connection.Abstractions;
 using NCDC.Extensions;
 using NCDC.ProxyServer.Abstractions;
+using NCDC.ProxyServer.Connection.Abstractions;
 using NCDC.ProxyServer.Executors;
 
 namespace NCDC.ProxyServer.ServerDataReaders;

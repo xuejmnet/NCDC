@@ -1,9 +1,9 @@
 using NCDC.Base;
-using NCDC.Basic.Connection.Abstractions;
 using NCDC.Enums;
 using NCDC.Exceptions;
+using NCDC.ProxyServer.Connection.Abstractions;
 
-namespace NCDC.Basic.Connection;
+namespace NCDC.ProxyServer.Connection;
 
 public class ServerConnection : IServerConnection, IDisposable, IAdoMethodReplier<IServerDbConnection>
 {
@@ -34,7 +34,6 @@ public class ServerConnection : IServerConnection, IDisposable, IAdoMethodReplie
         OneByOneLock();
         try
         {
-
             if (!CachedConnections.TryGetValue(dataSourceName, out var cachedConnections))
             {
                 cachedConnections = new List<IServerDbConnection>(Math.Max(connectionSize * 2,
@@ -68,14 +67,16 @@ public class ServerConnection : IServerConnection, IDisposable, IAdoMethodReplie
     {
         if (ConnectionSession.LogicDatabase == null)
         {
-            throw new ArgumentException("current logic database is null");
+            throw new ArgumentException("current database is null");
         }
 
-        return ConnectionSession.LogicDatabase.GetServerDbConnections(connectionMode, dataSourceName, connectionSize,
+        return ConnectionSession.LogicDatabase.GetServerDbConnections(connectionMode, dataSourceName,
+            connectionSize,
             _transactionType);
     }
 
     public LinkedList<Action<IServerDbConnection>> Replier { get; }
+
     private void OneByOneLock()
     {
         //是否触发并发了
@@ -84,12 +85,13 @@ public class ServerConnection : IServerConnection, IDisposable, IAdoMethodReplie
         {
             throw new ShardingException($"{nameof(OneByOneLock)} cant parallel use in connection ");
         }
-
     }
+
     private void OneByOneUnLock()
     {
         _oneByOne.Stop();
     }
+
     public void Dispose()
     {
         CloseCurrentCommandReader();

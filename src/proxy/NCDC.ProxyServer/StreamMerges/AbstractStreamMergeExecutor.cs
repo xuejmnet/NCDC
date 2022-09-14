@@ -1,6 +1,6 @@
 using System.Data.Common;
-using OpenConnector.Extensions;
-using NCDC.ProxyServer.StreamMerges.Executors.Context;
+using NCDC.Extensions;
+using NCDC.ProxyServer.Executors;
 
 namespace NCDC.ProxyServer.StreamMerges;
 

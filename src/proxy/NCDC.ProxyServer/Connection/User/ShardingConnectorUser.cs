@@ -1,6 +1,6 @@
 using System.Collections.Concurrent;
 
-namespace NCDC.Basic.Connection.User
+namespace NCDC.ProxyServer.Connection.User
 {
     public class OpenConnectorUser
     {

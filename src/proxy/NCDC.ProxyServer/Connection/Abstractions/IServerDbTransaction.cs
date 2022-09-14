@@ -1,4 +1,4 @@
-namespace NCDC.Basic.Connection.Abstractions;
+namespace NCDC.ProxyServer.Connection.Abstractions;
 
 public interface IServerDbTransaction:IDisposable
 {

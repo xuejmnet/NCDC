@@ -1,6 +1,4 @@
 using Microsoft.Extensions.Logging;
-using NCDC.Basic.Connection.Abstractions;
-using NCDC.Basic.Session;
 using NCDC.CommandParser.Abstractions;
 using NCDC.CommandParser.Command.DAL.Dialect;
 using NCDC.CommandParser.Command.DAL.Dialect.MySql;
@@ -10,6 +8,7 @@ using NCDC.CommandParser.Util;
 using NCDC.Enums;
 using NCDC.Logger;
 using NCDC.ProxyServer.Abstractions;
+using NCDC.ProxyServer.Connection.Abstractions;
 
 namespace NCDC.ProxyServer.ServerHandlers;
 
@@ -46,7 +45,7 @@ public sealed class ServerHandlerFactory:IServerHandlerFactory
         return new QueryServerHandler(sql,connectionSession,_serverDataReaderFactory);
     }
     private IServerHandler CreateDALCommandServerHandler(DALCommand dalCommand, string sql,
-        ConnectionSession connectionSession)
+        IConnectionSession connectionSession)
     {
         if (dalCommand is UseCommand useCommand)
         {

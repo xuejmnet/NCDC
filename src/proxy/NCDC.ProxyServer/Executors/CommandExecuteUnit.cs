@@ -1,5 +1,5 @@
-using NCDC.Basic.Connection.Abstractions;
 using NCDC.Enums;
+using NCDC.ProxyServer.Connection.Abstractions;
 
 namespace NCDC.ProxyServer.Executors;
 

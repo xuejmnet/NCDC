@@ -1,7 +1,7 @@
 using System.Data;
 using System.Data.Common;
 
-namespace NCDC.Basic.Connection.Abstractions;
+namespace NCDC.ProxyServer.Connection.Abstractions;
 
 public interface IServerDbConnection:IDisposable
 {

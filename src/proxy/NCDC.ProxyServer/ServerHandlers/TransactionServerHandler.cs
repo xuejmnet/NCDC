@@ -1,16 +1,15 @@
-using OpenConnector.Configuration.Session;
 using NCDC.ProxyServer.Abstractions;
+using NCDC.ProxyServer.Connection.Abstractions;
 using NCDC.ProxyServer.ServerHandlers.Results;
-using NCDC.ProxyServer.Session;
 
 namespace NCDC.ProxyServer.ServerHandlers;
 
 public sealed class TransactionServerHandler:IServerHandler
 {
     private readonly TransactionOperationTypeEnum _txType;
-    private readonly ConnectionSession _connectionSession;
+    private readonly IConnectionSession _connectionSession;
 
-    public TransactionServerHandler(TransactionOperationTypeEnum txType,ConnectionSession connectionSession)
+    public TransactionServerHandler(TransactionOperationTypeEnum txType,IConnectionSession connectionSession)
     {
         _txType = txType;
         _connectionSession = connectionSession;

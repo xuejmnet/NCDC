@@ -1,5 +1,6 @@
 using System.Collections.Concurrent;
 using System.Collections.Immutable;
+using NCDC.Basic.Configurations;
 using NCDC.Basic.Metadatas;
 using NCDC.Basic.TableMetadataManagers;
 using NCDC.Exceptions;
@@ -13,13 +14,11 @@ namespace NCDC.ShardingRoute.TableRoutes;
 public sealed class TableRouteManager : ITableRouteManager
 {
     private readonly ITableMetadataManager _tableMetadataManager;
-    private readonly ILogicDatabase _logicDatabase;
     private readonly ConcurrentDictionary<string, ITableRoute> _tableRoutes = new();
 
-    public TableRouteManager(ITableMetadataManager tableMetadataManager, ILogicDatabase logicDatabase)
+    public TableRouteManager(ITableMetadataManager tableMetadataManager)
     {
         _tableMetadataManager = tableMetadataManager;
-        _logicDatabase = logicDatabase;
     }
 
     public bool HasRoute(string tableName)

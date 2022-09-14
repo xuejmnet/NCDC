@@ -1,7 +1,7 @@
 using NCDC.Enums;
 using NCDC.Exceptions;
 
-namespace NCDC.Basic.Connection;
+namespace NCDC.ProxyServer.Connection;
 
 /// <summary>
 /// 事务状态

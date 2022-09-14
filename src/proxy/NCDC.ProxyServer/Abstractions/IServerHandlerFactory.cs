@@ -1,6 +1,6 @@
-using NCDC.Basic.Connection.Abstractions;
 using NCDC.CommandParser.Abstractions;
 using NCDC.Enums;
+using NCDC.ProxyServer.Connection.Abstractions;
 
 namespace NCDC.ProxyServer.Abstractions;
 

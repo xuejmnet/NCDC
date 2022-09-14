@@ -1,6 +1,6 @@
-using NCDC.Basic.Connection.Abstractions;
 using NCDC.ProxyServer.Abstractions;
 using NCDC.ProxyServer.Binaries;
+using NCDC.ProxyServer.Connection.Abstractions;
 using NCDC.ProxyServer.Executors;
 using NCDC.ProxyServer.ServerHandlers.Results;
 using NCDC.ProxyServer.StreamMerges;

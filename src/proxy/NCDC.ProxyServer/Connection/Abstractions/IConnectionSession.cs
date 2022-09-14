@@ -1,15 +1,18 @@
-using NCDC.Basic.Connection.User;
+using DotNetty.Common.Utilities;
 using NCDC.Basic.Metadatas;
+using NCDC.ProxyServer.Connection.Metadatas;
+using NCDC.ProxyServer.Connection.User;
+using NCDC.ProxyServer.Contexts;
 
-namespace NCDC.Basic.Connection.Abstractions;
+namespace NCDC.ProxyServer.Connection.Abstractions;
 
 public interface IConnectionSession
 {
     string? DatabaseName { get; }
     IServerConnection ServerConnection { get; }
-    // IAttributeMap AttributeMap { get; }
-    ILogicDatabase? LogicDatabase { get; }
-
+     IAttributeMap AttributeMap { get; }
+     ILogicDatabase? LogicDatabase { get; }
+IRuntimeContext? RuntimeContext { get; }
     bool GetIsAutoCommit();
 
     TransactionStatus GetTransactionStatus();

@@ -1,6 +1,6 @@
 using NCDC.Enums;
 
-namespace NCDC.Basic.Connection.Abstractions;
+namespace NCDC.ProxyServer.Connection.Abstractions;
 
 public interface IServerConnection:IDisposable
 {

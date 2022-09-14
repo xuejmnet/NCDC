@@ -1,4 +1,4 @@
-using NCDC.Basic.Connection.Abstractions;
+using NCDC.ProxyServer.Connection.Abstractions;
 
 namespace NCDC.ProxyServer.Abstractions;
 

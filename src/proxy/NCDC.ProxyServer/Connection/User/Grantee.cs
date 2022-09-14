@@ -1,6 +1,6 @@
 using NCDC.Extensions;
 
-namespace NCDC.Basic.Connection.User
+namespace NCDC.ProxyServer.Connection.User
 {
     public sealed class Grantee
     {

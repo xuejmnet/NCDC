@@ -1,8 +1,8 @@
 using System.Data.Common;
-using NCDC.Basic.Connection.Abstractions;
 using NCDC.Enums;
+using NCDC.ProxyServer.Connection.Abstractions;
 
-namespace NCDC.Basic.Metadatas;
+namespace NCDC.ProxyServer.Connection.Metadatas;
 
 /// <summary>
 /// 逻辑数据库

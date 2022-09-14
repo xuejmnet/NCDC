@@ -1,19 +1,18 @@
 using NCDC.CommandParser.Command.DAL.Dialect.MySql;
 using NCDC.CommandParser.Util;
-using OpenConnector.Configuration.Session;
-using OpenConnector.Exceptions;
+using NCDC.Exceptions;
 using NCDC.ProxyServer.Abstractions;
+using NCDC.ProxyServer.Connection.Abstractions;
 using NCDC.ProxyServer.ServerHandlers.Results;
-using NCDC.ProxyServer.Session;
 
 namespace NCDC.ProxyServer.ServerHandlers;
 
 public sealed class UseDatabaseServerHandler:IServerHandler
 {
     private readonly UseCommand _useCommand;
-    private readonly ConnectionSession _connectionSession;
+    private readonly IConnectionSession _connectionSession;
 
-    public UseDatabaseServerHandler( UseCommand useCommand,ConnectionSession connectionSession)
+    public UseDatabaseServerHandler( UseCommand useCommand,IConnectionSession connectionSession)
     {
         _useCommand = useCommand;
         _connectionSession = connectionSession;

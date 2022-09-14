@@ -1,3 +1,4 @@
+using NCDC.Basic.Configurations;
 using NCDC.Basic.Metadatas;
 using NCDC.Basic.TableMetadataManagers;
 using NCDC.Exceptions;
@@ -10,13 +11,13 @@ namespace NCDC.ShardingRoute.DataSourceRoutes;
 public sealed class DataSourceRouteRuleEngine:IDataSourceRouteRuleEngine
 {
     private readonly ITableMetadataManager _tableMetadataManager;
-    private readonly ILogicDatabase _logicDatabase;
+    private readonly ShardingConfiguration _shardingConfiguration;
     private readonly IDataSourceRouteManager _dataSourceRouteManager;
 
-    public DataSourceRouteRuleEngine(ITableMetadataManager tableMetadataManager,ILogicDatabase logicDatabase,IDataSourceRouteManager dataSourceRouteManager)
+    public DataSourceRouteRuleEngine(ITableMetadataManager tableMetadataManager,ShardingConfiguration shardingConfiguration,IDataSourceRouteManager dataSourceRouteManager)
     {
         _tableMetadataManager = tableMetadataManager;
-        _logicDatabase = logicDatabase;
+        _shardingConfiguration = shardingConfiguration;
         _dataSourceRouteManager = dataSourceRouteManager;
     }
     public DataSourceRouteResult Route(DataSourceRouteRuleContext context)
@@ -28,7 +29,7 @@ public sealed class DataSourceRouteRuleEngine:IDataSourceRouteRuleEngine
         {
             if (!_tableMetadataManager.IsShardingDataSource(tableName))
             {
-                dataSourceMaps.Add(tableName, new HashSet<string>() { _logicDatabase.DefaultDataSourceName });
+                dataSourceMaps.Add(tableName, new HashSet<string>() { _shardingConfiguration.DefaultDataSourceName });
                 continue;
             }
             var dataSources = _dataSourceRouteManager.RouteTo(tableName, context.SqlParserResult);

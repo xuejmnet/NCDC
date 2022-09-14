@@ -14,6 +14,7 @@
       <ProjectReference Include="..\..\antlr4\NCDC.MySqlParser\NCDC.MySqlParser.csproj" />
       <ProjectReference Include="..\..\antlr4\NCDC.SqlServerParser\NCDC.SqlServerParser.csproj" />
       <ProjectReference Include="..\..\protocol\NCDC.Protocol\NCDC.Protocol.csproj" />
+      <ProjectReference Include="..\..\sharding\NCDC.ShardingMerge\NCDC.ShardingMerge.csproj" />
       <ProjectReference Include="..\..\sharding\NCDC.ShardingRewrite\NCDC.ShardingRewrite.csproj" />
     </ItemGroup>
 

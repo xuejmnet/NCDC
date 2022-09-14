@@ -1,7 +1,10 @@
 using Microsoft.Extensions.DependencyInjection;
 using NCDC.Basic.Metadatas;
 using NCDC.Basic.TableMetadataManagers;
+using NCDC.ProxyServer.Abstractions;
+using NCDC.ProxyServer.Connection.Metadatas;
 using NCDC.ProxyServer.Executors;
+using NCDC.ShardingMerge.Abstractions;
 
 namespace NCDC.ProxyServer.Contexts;
 
@@ -53,6 +56,12 @@ public sealed class ShardingRuntimeContext:IRuntimeContext
     public IShardingExecutionContextFactory GetShardingExecutionContextFactory()
     {
         return _shardingExecutionContextFactory??=GetRequiredService<IShardingExecutionContextFactory>();
+    }
+
+    private IDataReaderMergerFactory? _dataReaderMergerFactory;
+    public IDataReaderMergerFactory GetDataReaderMergerFactory()
+    {
+      return _dataReaderMergerFactory??=GetRequiredService<IDataReaderMergerFactory>();
     }
 
     public void Build()
@@ -110,5 +119,6 @@ public sealed class ShardingRuntimeContext:IRuntimeContext
         GetDatabase();
         GetTableMetadataManager();
         GetShardingExecutionContextFactory();
+        GetDataReaderMergerFactory();
     }
 }

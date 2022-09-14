@@ -1,6 +1,9 @@
 using NCDC.Basic.Metadatas;
 using NCDC.Basic.TableMetadataManagers;
+using NCDC.ProxyServer.Abstractions;
+using NCDC.ProxyServer.Connection.Metadatas;
 using NCDC.ProxyServer.Executors;
+using NCDC.ShardingMerge.Abstractions;
 
 namespace NCDC.ProxyServer.Contexts;
 
@@ -10,7 +13,7 @@ public interface IRuntimeContext
     ILogicDatabase GetDatabase();
     ITableMetadataManager GetTableMetadataManager();
     IShardingExecutionContextFactory GetShardingExecutionContextFactory();
-    
+    IDataReaderMergerFactory GetDataReaderMergerFactory();
     
     void Build();
     object? GetService(Type serviceType);

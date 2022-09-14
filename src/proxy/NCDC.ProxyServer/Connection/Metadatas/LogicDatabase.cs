@@ -1,13 +1,14 @@
 using System.Collections.Concurrent;
 using System.Data.Common;
 using Microsoft.Extensions.Logging;
-using NCDC.Basic.Connection.Abstractions;
+using NCDC.Basic.Metadatas;
+using NCDC.DataSource;
 using NCDC.Enums;
 using NCDC.Exceptions;
-using NCDC.DataSource;
 using NCDC.Logger;
+using NCDC.ProxyServer.Connection.Abstractions;
 
-namespace NCDC.Basic.Metadatas;
+namespace NCDC.ProxyServer.Connection.Metadatas;
 
 public class LogicDatabase:ILogicDatabase
 {

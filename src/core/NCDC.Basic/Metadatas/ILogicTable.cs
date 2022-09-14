@@ -1,6 +1,6 @@
-namespace NCDC.Basic.Metadatas;
-
-public interface ILogicTable
-{
-    
-}
+// namespace NCDC.Basic.Metadatas;
+//
+// public interface ILogicTable
+// {
+//     
+// }

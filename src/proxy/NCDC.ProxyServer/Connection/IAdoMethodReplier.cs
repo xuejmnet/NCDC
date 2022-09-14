@@ -1,4 +1,4 @@
-namespace NCDC.Basic.Connection;
+namespace NCDC.ProxyServer.Connection;
 
 public interface IAdoMethodReplier<T>
 {

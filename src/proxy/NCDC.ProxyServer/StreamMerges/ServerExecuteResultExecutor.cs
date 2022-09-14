@@ -1,9 +1,8 @@
 using System.Data.Common;
-using OpenConnector.Configuration;
-using NCDC.ProxyServer.Commons;
-using NCDC.ProxyServer.StreamMerges.Executors.Context;
+using NCDC.Enums;
+using NCDC.ProxyServer.Executors;
 using NCDC.ProxyServer.StreamMerges.Results;
-using OpenConnector.StreamDataReaders;
+using NCDC.StreamDataReaders;
 
 namespace NCDC.ProxyServer.StreamMerges;
 

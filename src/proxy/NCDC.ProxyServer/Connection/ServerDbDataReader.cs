@@ -1,7 +1,7 @@
 using System.Data.Common;
-using NCDC.Basic.Connection.Abstractions;
+using NCDC.ProxyServer.Connection.Abstractions;
 
-namespace NCDC.Basic.Connection;
+namespace NCDC.ProxyServer.Connection;
 
 public sealed class ServerDbDataReader:IServerDbDataReader
 {

@@ -11,13 +11,11 @@ namespace NCDC.ShardingRoute.TableRoutes;
 public sealed class TableRouteRuleEngine:ITableRouteRuleEngine
 {
     private readonly ITableMetadataManager _tableMetadataManager;
-    private readonly ILogicDatabase _logicDatabase;
     private readonly ITableRouteManager _tableRouteManager;
 
-    public TableRouteRuleEngine(ITableMetadataManager tableMetadataManager,ILogicDatabase logicDatabase,ITableRouteManager tableRouteManager)
+    public TableRouteRuleEngine(ITableMetadataManager tableMetadataManager,ITableRouteManager tableRouteManager)
     {
         _tableMetadataManager = tableMetadataManager;
-        _logicDatabase = logicDatabase;
         _tableRouteManager = tableRouteManager;
     }
     private ICollection<TableRouteUnit> GetEntityRouteUnit(DataSourceRouteResult dataSourceRouteResult,string tableName,SqlParserResult sqlParserResult)

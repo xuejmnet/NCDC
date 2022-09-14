@@ -1,5 +1,6 @@
 using System.Collections.Concurrent;
 using System.Collections.Immutable;
+using NCDC.Basic.Configurations;
 using NCDC.Basic.Metadatas;
 using NCDC.Basic.TableMetadataManagers;
 using NCDC.Exceptions;
@@ -12,14 +13,14 @@ namespace NCDC.ShardingRoute.DataSourceRoutes;
 public sealed class DataSourceRouteManager:IDataSourceRouteManager
 {
     private readonly ITableMetadataManager _tableMetadataManager;
-    private readonly ILogicDatabase _logicDatabase;
+    private readonly ShardingConfiguration _shardingConfiguration;
 
     private readonly ConcurrentDictionary<string, IDataSourceRoute> _dataSourceRoutes = new ();
 
-    public DataSourceRouteManager(ITableMetadataManager tableMetadataManager,ILogicDatabase logicDatabase)
+    public DataSourceRouteManager(ITableMetadataManager tableMetadataManager,ShardingConfiguration shardingConfiguration)
     {
         _tableMetadataManager = tableMetadataManager;
-        _logicDatabase = logicDatabase;
+        _shardingConfiguration = shardingConfiguration;
     }
     public bool HasRoute(string tableName)
     {
@@ -40,7 +41,7 @@ public sealed class DataSourceRouteManager:IDataSourceRouteManager
     {
         if (!_tableMetadataManager.IsShardingDataSource(tableName))
         {
-            return new List<string>() { _logicDatabase.DefaultDataSourceName };
+            return new List<string>() { _shardingConfiguration.DefaultDataSourceName };
         }
         var virtualDataSourceRoute = GetRoute(tableName);
 
