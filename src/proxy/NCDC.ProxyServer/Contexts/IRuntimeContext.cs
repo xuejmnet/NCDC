@@ -1,5 +1,6 @@
 using NCDC.Basic.Metadatas;
 using NCDC.Basic.TableMetadataManagers;
+using NCDC.CommandParser.Abstractions;
 using NCDC.ProxyServer.Abstractions;
 using NCDC.ProxyServer.Connection.Metadatas;
 using NCDC.ProxyServer.Executors;
@@ -14,7 +15,7 @@ public interface IRuntimeContext
     ITableMetadataManager GetTableMetadataManager();
     IShardingExecutionContextFactory GetShardingExecutionContextFactory();
     IDataReaderMergerFactory GetDataReaderMergerFactory();
-    
+    ISqlCommandParser GetSqlCommandParser();
     void Build();
     object? GetService(Type serviceType);
     TService? GetService<TService>();

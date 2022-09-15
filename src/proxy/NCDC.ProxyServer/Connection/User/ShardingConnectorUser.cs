@@ -2,18 +2,17 @@ using System.Collections.Concurrent;
 
 namespace NCDC.ProxyServer.Connection.User
 {
-    public class OpenConnectorUser
+    public class AuthUser
     {
         public string Password { get; }
         public Grantee Grantee { get; }
-        public ConcurrentDictionary<string /*database*/, object> AuthorizeDatabases { get; } = new ConcurrentDictionary<string /*database*/, object>();
-        public OpenConnectorUser(string username,string password,string hostname)
+        public AuthUser(string username,string password,string hostname)
         {
             Grantee = new Grantee(username, hostname);
             Password = password;
         }
 
-        protected bool Equals(OpenConnectorUser other)
+        protected bool Equals(AuthUser other)
         {
             return Equals(Grantee, other.Grantee);
         }
@@ -23,7 +22,7 @@ namespace NCDC.ProxyServer.Connection.User
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
             if (obj.GetType() != this.GetType()) return false;
-            return Equals((OpenConnectorUser)obj);
+            return Equals((AuthUser)obj);
         }
 
         public override int GetHashCode()

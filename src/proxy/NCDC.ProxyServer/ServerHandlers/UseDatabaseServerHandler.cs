@@ -30,10 +30,10 @@ public sealed class UseDatabaseServerHandler:IServerHandler
 
     private bool IsAuthorized(string database)
     {
-        if (ProxyRuntimeContext.Instance.DatabaseExists(database))
+        if (_connectionSession.DatabaseExists(database))
         {
-            var logicDatabase = ProxyRuntimeContext.Instance.GetDatabase(database);
-            return logicDatabase!.UserNameAuthorize(_connectionSession.GetGrantee().Username);
+            // var logicDatabase = ProxyRuntimeContext.Instance.GetDatabase(database);
+            // return logicDatabase!.UserNameAuthorize(_connectionSession.GetGrantee().Username);
         }
 
         return false;

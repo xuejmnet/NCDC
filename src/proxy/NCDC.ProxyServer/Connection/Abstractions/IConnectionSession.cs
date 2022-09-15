@@ -1,3 +1,4 @@
+using System.Collections.Immutable;
 using DotNetty.Common.Utilities;
 using NCDC.Basic.Metadatas;
 using NCDC.ProxyServer.Connection.Metadatas;
@@ -10,9 +11,14 @@ public interface IConnectionSession
 {
     string? DatabaseName { get; }
     IServerConnection ServerConnection { get; }
-     IAttributeMap AttributeMap { get; }
-     ILogicDatabase? LogicDatabase { get; }
-IRuntimeContext? RuntimeContext { get; }
+    IAttributeMap AttributeMap { get; }
+    ILogicDatabase? LogicDatabase { get; }
+    IRuntimeContext? RuntimeContext { get; }
+    IRuntimeContextManager RuntimeContextManager { get; }
+    IReadOnlyCollection<string> GetAllDatabaseNames();
+    IReadOnlyCollection<string> GetAuthorizeDatabases();
+    
+    bool DatabaseExists(string database);
     bool GetIsAutoCommit();
 
     TransactionStatus GetTransactionStatus();

@@ -40,7 +40,7 @@ public sealed class UnicastServerHandler : IServerHandler
 
     private string GetFirstDatabaseName()
     {
-        var allDatabaseNames = ProxyRuntimeContext.Instance.GetAllDatabaseNames();
+        var allDatabaseNames =_connectionSession.GetAllDatabaseNames();
 
         return allDatabaseNames.FirstOrDefault() ?? throw new ShardingException("no database can select");
     }

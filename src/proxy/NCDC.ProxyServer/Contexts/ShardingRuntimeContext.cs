@@ -1,6 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using NCDC.Basic.Metadatas;
 using NCDC.Basic.TableMetadataManagers;
+using NCDC.CommandParser.Abstractions;
 using NCDC.ProxyServer.Abstractions;
 using NCDC.ProxyServer.Connection.Metadatas;
 using NCDC.ProxyServer.Executors;
@@ -64,6 +65,12 @@ public sealed class ShardingRuntimeContext:IRuntimeContext
       return _dataReaderMergerFactory??=GetRequiredService<IDataReaderMergerFactory>();
     }
 
+    private ISqlCommandParser? _sqlCommandParser;
+    public ISqlCommandParser GetSqlCommandParser()
+    {
+        return _sqlCommandParser??=GetRequiredService<ISqlCommandParser>();
+    }
+
     public void Build()
     {
         if (isInited)
@@ -120,5 +127,6 @@ public sealed class ShardingRuntimeContext:IRuntimeContext
         GetTableMetadataManager();
         GetShardingExecutionContextFactory();
         GetDataReaderMergerFactory();
+        GetSqlCommandParser();
     }
 }

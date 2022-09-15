@@ -26,14 +26,9 @@ public sealed class ShowDatabasesServerHandler:IServerHandler
 
     private ICollection<string> GetDatabaseNames()
     {
-        var allDatabaseNames = ProxyRuntimeContext.Instance.GetAllDatabaseNames();
-        var OpenConnectorUser = ProxyRuntimeContext.Instance.GetUser(_connectionSession.GetGrantee().Username);
-        if (OpenConnectorUser!=null&&OpenConnectorUser.AuthorizeDatabases.IsNotEmpty())
-        {
-            return allDatabaseNames.Intersect(OpenConnectorUser.AuthorizeDatabases.Keys).ToList();
-        }
-
-        return allDatabaseNames;
+        var allDatabaseNames = _connectionSession.GetAllDatabaseNames();
+        var authorizeDatabases = _connectionSession.GetAuthorizeDatabases();
+        return allDatabaseNames.Intersect(authorizeDatabases).ToList();
     }
 
     bool IServerHandler.Read()
