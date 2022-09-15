@@ -4,7 +4,6 @@ using Antlr4.Runtime;
 using NCDC.CommandParser.Abstractions;
 using NCDC.CommandParser.Abstractions.SqlParser;
 using NCDC.CommandParser.SqlParseEngines.Core;
-using NCDC.ParserEngine.Core;
 
 
 namespace NCDC.SqlServerParser.SqlParser
