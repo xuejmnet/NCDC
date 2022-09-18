@@ -16,7 +16,7 @@ namespace NCDC.ProxyClientMySql.Authentication;
 
 public class MySqlAuthenticationEngine:IAuthenticationEngine
 {
-    private readonly IRuntimeContextManager _runtimeContextManager;
+    private readonly IContextManager _contextManager;
     private static readonly MySqlStatusFlagEnum DEFAULT_STATUS_FLAG = MySqlStatusFlagEnum.SERVER_STATUS_AUTOCOMMIT;
     private readonly MySqlAuthenticationHandler _authenticationHandler;
 
@@ -27,10 +27,10 @@ public class MySqlAuthenticationEngine:IAuthenticationEngine
     private string? _database;
     private AuthenticationResult? _currentAuthResult;
 
-    public MySqlAuthenticationEngine(IRuntimeContextManager runtimeContextManager)
+    public MySqlAuthenticationEngine(IContextManager contextManager)
     {
-        _runtimeContextManager = runtimeContextManager;
-        _authenticationHandler= new MySqlAuthenticationHandler(runtimeContextManager);
+        _contextManager = contextManager;
+        _authenticationHandler= new MySqlAuthenticationHandler1(contextManager);
     }
 
     public int Handshake(IChannelHandlerContext context)
@@ -55,7 +55,8 @@ public class MySqlAuthenticationEngine:IAuthenticationEngine
             Console.WriteLine("已重新切换认证方式");
         }
 
-        var sqlErrorCode = _authenticationHandler.Login(_currentAuthResult.Username,GetHostAddress(context),_authResponse,_database);
+        var hostAddress = GetHostAddress(context);
+        var sqlErrorCode = _authenticationHandler.Login(_currentAuthResult.Username,hostAddress,_authResponse,_database);
         if (sqlErrorCode != null)
         {
             //mysql error
@@ -66,7 +67,7 @@ public class MySqlAuthenticationEngine:IAuthenticationEngine
             context.WriteAndFlushAsync(new MySqlOkPacket(++_sequenceId,DEFAULT_STATUS_FLAG));
         }
 
-        return AuthenticationResultBuilder.Finished(_currentAuthResult.Username,GetHostAddress(context),_currentAuthResult.Database);
+        return AuthenticationResultBuilder.Finished(_currentAuthResult.Username,hostAddress,_currentAuthResult.Database);
     }
     private MySqlErrPacket CreateErrorPacket(ISqlErrorCode errorCode, IChannelHandlerContext context) {
         return MySqlServerErrorCode.ER_DBACCESS_DENIED_ERROR_ARG3 == errorCode
@@ -87,22 +88,24 @@ public class MySqlAuthenticationEngine:IAuthenticationEngine
         context.Channel.GetAttribute(MySqlConstants.MYSQL_CHARACTER_SET_ATTRIBUTE_KEY).Set(mySqlCharacterSet);
         //todo check database
         //packet.Database
-        var authenticator = _authenticationHandler.GetAuthenticator(packet.Username, GetHostAddress(context));
+        var hostAddress = GetHostAddress(context);
+        var authenticator = _authenticationHandler.GetAuthenticator(packet.Username, hostAddress);
         if (IsClientPluginAuth(packet) && !authenticator.GetAuthenticationMethodName().Equals(packet.AuthPluginName)) {
             Console.WriteLine("不支持当前认证请求请重新发起");
             // _connectionPhase = MySqlConnectionPhaseEnum.AUTHENTICATION_METHOD_MISMATCH;
             // context.WriteAndFlushAsync(new MySqlAuthSwitchRequestPacket(++sequenceId, authenticator.getAuthenticationMethodName(), authenticationHandler.getAuthPluginData()));
             // return AuthenticationResultBuilder.continued(packet.getUsername(), getHostAddress(context), packet.getDatabase());
-            return AuthenticationResultBuilder.Continued(packet.Username, GetHostAddress(context), packet.Database);
+            return AuthenticationResultBuilder.Continued(packet.Username, hostAddress, packet.Database);
         }
-        return AuthenticationResultBuilder.Finished(packet.Username, GetHostAddress(context), packet.Database);
+        return AuthenticationResultBuilder.Finished(packet.Username, hostAddress, packet.Database);
 
     }
     
-    private bool IsClientPluginAuth(MySqlHandshakeResponse41Packet packet) {
-        return 0 != (packet.CapabilityFlags & (int)MySqlCapabilityFlagEnum.CLIENT_PLUGIN_AUTH);
+    private bool IsClientPluginAuth(MySqlHandshakeResponse41Packet packet)
+    {
+        return packet.CapabilityFlagsEnum.HasFlag(MySqlCapabilityFlagEnum.CLIENT_PLUGIN_AUTH);
     }
-    private string GetHostAddress( IChannelHandlerContext context) {
+    private string GetHostAddress(IChannelHandlerContext context) {
         //获取Ip
         IPEndPoint iPEndPoint = (IPEndPoint)context.Channel.RemoteAddress;
             

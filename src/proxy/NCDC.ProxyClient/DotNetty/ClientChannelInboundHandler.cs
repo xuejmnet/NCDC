@@ -7,6 +7,7 @@ using NCDC.Enums;
 using NCDC.Logger;
 using NCDC.Protocol.MySql.Constant;
 using NCDC.Protocol.MySql.Packet.Generic;
+using NCDC.ProxyClient.Authentication;
 using NCDC.ProxyClient.Command;
 using NCDC.ProxyServer;
 using NCDC.ProxyServer.Abstractions;
@@ -24,26 +25,26 @@ public class ClientChannelInboundHandler : ChannelHandlerAdapter
 
     private readonly IDatabaseProtocolClientEngine _databaseProtocolClientEngine;
     private readonly ICommandListener _commandListener;
-    private readonly IRuntimeContextManager _runtimeContextManager;
+    private readonly IContextManager _contextManager;
+    private readonly IAuthenticator _authenticator;
 
     private readonly IConnectionSession _connectionSession;
-    // private readonly IAuthenticationEngine _authenticationEngine = new MySqlAuthenticationEngine();
 
     private bool _authenticated;
 
     public ClientChannelInboundHandler(IDatabaseProtocolClientEngine databaseProtocolClientEngine,
-        ISocketChannel channel, ICommandListener commandListener,IRuntimeContextManager runtimeContextManager)
+        ISocketChannel channel, ICommandListener commandListener,IContextManager contextManager,IAuthenticatorFactory authenticatorFactory)
     {
         _databaseProtocolClientEngine = databaseProtocolClientEngine;
         _commandListener = commandListener;
-        _runtimeContextManager = runtimeContextManager;
-        _connectionSession = new ConnectionSession(TransactionTypeEnum.LOCAL, channel,runtimeContextManager);
+        _contextManager = contextManager;
+        _authenticator = authenticatorFactory.Create();
+        _connectionSession = new ConnectionSession(TransactionTypeEnum.LOCAL, channel,contextManager);
     }
 
     public override void ChannelActive(IChannelHandlerContext context)
     {
         var connectionId = _databaseProtocolClientEngine.GetAuthenticationEngine().Handshake(context);
-        Console.WriteLine($"connectionId:{connectionId}");
         _connectionSession.SetConnectionId(connectionId);
     }
 

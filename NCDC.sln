@@ -27,7 +27,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NCDC.MySqlParser", "src\ant
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "proxy", "proxy", "{527EA305-8E22-4CDF-B41F-355C7599D340}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NCDC.Proxy.Starter", "src\proxy\NCDC.Proxy.Starter\NCDC.Proxy.Starter.csproj", "{4B20DE00-6EB8-4CBB-A0DA-C7ACA594BBA4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NCDC.ProxyStarter", "src\proxy\NCDC.ProxyStarter\NCDC.ProxyStarter.csproj", "{4B20DE00-6EB8-4CBB-A0DA-C7ACA594BBA4}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "protocol", "protocol", "{956A16CB-0A7F-44EC-AD72-9A2C693C09B0}"
 EndProject

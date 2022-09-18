@@ -13,6 +13,7 @@ public class MySqlHandshakeResponse41Packet:IMysqlPacket
     public  string Username { get; }
     public byte[] AuthResponse { get; }
     public int CapabilityFlags{ get; }
+    public MySqlCapabilityFlagEnum CapabilityFlagsEnum => (MySqlCapabilityFlagEnum)CapabilityFlags;
     public string? Database{ get; set; }
     public string? AuthPluginName{ get; }
 

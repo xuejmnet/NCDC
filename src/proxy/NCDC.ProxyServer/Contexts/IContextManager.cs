@@ -1,11 +1,10 @@
-using System.Collections.Immutable;
 using NCDC.ProxyServer.Connection.User;
 
 namespace NCDC.ProxyServer.Contexts;
 
-public interface IRuntimeContextManager
+public interface IContextManager
 {
-    bool AddRuntimeContext(string databaseName);
+    bool AddRuntimeContext(string databaseName,IRuntimeContext runtimeContext);
     IRuntimeContext GetRuntimeContext(string databaseName);
     bool HasRuntimeContext(string databaseName);
     IReadOnlyCollection<string> GetAllDatabaseNames();

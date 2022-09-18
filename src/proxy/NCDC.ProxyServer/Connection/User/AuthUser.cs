@@ -6,7 +6,7 @@ namespace NCDC.ProxyServer.Connection.User
     {
         public string Password { get; }
         public Grantee Grantee { get; }
-        public AuthUser(string username,string password,string hostname)
+        public AuthUser(string username,string password,string hostname="%")
         {
             Grantee = new Grantee(username, hostname);
             Password = password;

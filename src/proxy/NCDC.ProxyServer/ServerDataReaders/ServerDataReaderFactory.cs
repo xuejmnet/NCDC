@@ -2,21 +2,15 @@ using NCDC.CommandParser.Abstractions;
 using NCDC.Extensions;
 using NCDC.ProxyServer.Abstractions;
 using NCDC.ProxyServer.Connection.Abstractions;
-using NCDC.ProxyServer.Executors;
 
 namespace NCDC.ProxyServer.ServerDataReaders;
 
 public sealed class ServerDataReaderFactory:IServerDataReaderFactory
 {
-    private readonly IShardingExecutionContextFactory _shardingExecutionContextFactory;
-
-    public ServerDataReaderFactory(IShardingExecutionContextFactory shardingExecutionContextFactory)
-    {
-        _shardingExecutionContextFactory = shardingExecutionContextFactory;
-    }
     public IServerDataReader Create(string sql,ISqlCommand sqlCommand, IConnectionSession connectionSession)
     {
-        var shardingExecutionContext =_shardingExecutionContextFactory.Create(sql,sqlCommand);
+        var shardingExecutionContextFactory = connectionSession.RuntimeContext!.GetShardingExecutionContextFactory();
+        var shardingExecutionContext =shardingExecutionContextFactory.Create(sql,sqlCommand);
         if (shardingExecutionContext.GetExecutionUnits().IsEmpty())
         {
             return EmptyServerDataReader.Instance;
@@ -26,7 +20,8 @@ public sealed class ServerDataReaderFactory:IServerDataReaderFactory
 
     public IServerDataReader Create(string sql, IConnectionSession connectionSession)
     {
-        var shardingExecutionContext =_shardingExecutionContextFactory.Create(sql);
+        var shardingExecutionContextFactory = connectionSession.RuntimeContext!.GetShardingExecutionContextFactory();
+        var shardingExecutionContext =shardingExecutionContextFactory.Create(sql);
         if (shardingExecutionContext.GetExecutionUnits().IsEmpty())
         {
             return EmptyServerDataReader.Instance;

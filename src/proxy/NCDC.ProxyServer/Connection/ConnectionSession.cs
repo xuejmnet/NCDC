@@ -22,14 +22,14 @@ public class ConnectionSession:IConnectionSession,IDisposable
     private volatile string? _databaseName;
     public string? DatabaseName => _databaseName;
     public IRuntimeContext? RuntimeContext { get;private set; }
-    public IRuntimeContextManager RuntimeContextManager { get; }
+    public IContextManager ContextManager { get; }
     private readonly TimeSpan _channelWaitMillis = TimeSpan.FromMilliseconds(200);
 
     private readonly ChannelIsWritableListener _channelWaitWriteableListener;
  
-    public ConnectionSession(TransactionTypeEnum transactionType,IAttributeMap attributeMap,IRuntimeContextManager runtimeContextManager)
+    public ConnectionSession(TransactionTypeEnum transactionType,IAttributeMap attributeMap,IContextManager contextManager)
     {
-        RuntimeContextManager = runtimeContextManager;
+        ContextManager = contextManager;
         AttributeMap = attributeMap;
         _transactionStatus=new TransactionStatus(transactionType);
         ServerConnection = new ServerConnection(this);
@@ -38,17 +38,17 @@ public class ConnectionSession:IConnectionSession,IDisposable
 
     public IReadOnlyCollection<string> GetAllDatabaseNames()
     {
-        return RuntimeContextManager.GetAllDatabaseNames();
+        return ContextManager.GetAllDatabaseNames();
     }
 
     public IReadOnlyCollection<string> GetAuthorizeDatabases()
     {
-        return RuntimeContextManager.GetAuthorizedDatabases(_grantee.Username);
+        return ContextManager.GetAuthorizedDatabases(_grantee.Username);
     }
 
     public bool DatabaseExists(string database)
     {
-        return RuntimeContextManager.HasRuntimeContext(database);
+        return ContextManager.HasRuntimeContext(database);
     }
 
 
@@ -90,7 +90,7 @@ public class ConnectionSession:IConnectionSession,IDisposable
         }
         //todo 判断是否在事务中
         _databaseName = databaseName;
-        RuntimeContext =RuntimeContextManager.GetRuntimeContext(databaseName!);
+        RuntimeContext =ContextManager.GetRuntimeContext(databaseName!);
     }
     public  Task WaitChannelIsWritableAsync(CancellationToken cancellationToken=default)
     {

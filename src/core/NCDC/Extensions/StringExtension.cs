@@ -42,5 +42,14 @@ namespace NCDC.Extensions
             }
             return source.Substring(startIndex, length);
         }
+        
+        public static bool IsNullOrWhiteSpace(this string? value)
+        {
+            return string.IsNullOrWhiteSpace(value);
+        }
+        public static bool NotNullOrWhiteSpace(this string? value)
+        {
+            return !string.IsNullOrWhiteSpace(value);
+        }
     }
 }

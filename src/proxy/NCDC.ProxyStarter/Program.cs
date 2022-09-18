@@ -3,8 +3,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using MySqlConnector;
+using NCDC.Basic.TableMetadataManagers;
 using NCDC.Host;
 using NCDC.Logger;
+using NCDC.MySqlParser;
 using NCDC.ProxyClient;
 using NCDC.ProxyClient.Abstractions;
 using NCDC.ProxyClient.Codecs;
@@ -14,11 +17,16 @@ using NCDC.ProxyClientMySql.Codec;
 using NCDC.ProxyServer;
 using NCDC.ProxyServer.Abstractions;
 using NCDC.ProxyServer.Connection.Metadatas;
+using NCDC.ProxyServer.Contexts;
+using NCDC.ProxyServer.Executors;
 using NCDC.ProxyServer.Options;
 using NCDC.ProxyServer.ServerDataReaders;
 using NCDC.ProxyServer.ServerHandlers;
+using NCDC.ShardingParser;
+using NCDC.ShardingRewrite;
+using NCDC.ShardingRoute;
 
-namespace NCDC.Proxy.Starter
+namespace NCDC.ProxyStarter
 {
     class Program
     {
@@ -67,20 +75,30 @@ Start Time:{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}");
 
                 return proxyOption;
             });
-            // serivces.AddSingleton<ServerHandlerInitializer>();
-            // serivces.AddSingleton<PackDecoder>();
-            // serivces.AddSingleton<PackEncoder>();
-            // serivces.AddSingleton<ApplicationChannelInboundHandler>();
-            // serivces.AddSingleton<IShardingProxy,ShardingProxy>();
+            serivces.AddSingleton<IContextManager,DefaultContextManager>();
             serivces.AddSingleton<IServiceHost,DefaultServiceHost>();
             serivces.AddSingleton<IPacketCodec,MySqlPacketCodecEngine>();
             serivces.AddSingleton<IDatabaseProtocolClientEngine,MySqlClientEngine>();
             serivces.AddSingleton<IClientDbConnection,MySqlClientDbConnection>();
-            // serivces.AddSingleton<IClientDataReaderFactory,MySqlClientDataReaderFactory>();
-            // serivces.AddSingleton<IServerConnector,AdoNetSer>();
             serivces.AddSingleton<IServerHandlerFactory,ServerHandlerFactory>();
             serivces.AddSingleton<IServerDataReaderFactory,ServerDataReaderFactory>();
             serivces.Configure<ShardingProxyOption>(_configuration);
+            
+         var logicDatabase = new LogicDatabase("a");
+         logicDatabase.AddDataSource("ds0", "123", MySqlConnectorFactory.Instance, true);
+         var shardingRuntimeContext = new ShardingRuntimeContext("a");
+         shardingRuntimeContext.Services.AddSingleton<ILogicDatabase>(logicDatabase);
+         shardingRuntimeContext.Services.AddSingleton<ITableMetadataManager,TableMetadataManager>();
+         shardingRuntimeContext.Services.AddSingleton<IShardingExecutionContextFactory,ShardingExecutionContextFactory>();
+         shardingRuntimeContext.Services.AddShardingParser();
+         shardingRuntimeContext.Services.AddMySqlParser();
+         shardingRuntimeContext.Services.AddShardingRoute();
+         shardingRuntimeContext.Services.AddShardingRewrite();
+         serivces.AddSingleton(sp =>
+         {
+             shardingRuntimeContext.Build();
+             return shardingRuntimeContext;
+         });
             var buildServiceProvider = serivces.BuildServiceProvider();
             var shardingProxyOption = buildServiceProvider.GetRequiredService<ShardingProxyOption>();
             

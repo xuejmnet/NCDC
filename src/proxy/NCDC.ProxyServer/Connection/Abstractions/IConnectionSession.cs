@@ -14,7 +14,7 @@ public interface IConnectionSession
     IAttributeMap AttributeMap { get; }
     ILogicDatabase? LogicDatabase { get; }
     IRuntimeContext? RuntimeContext { get; }
-    IRuntimeContextManager RuntimeContextManager { get; }
+    IContextManager ContextManager { get; }
     IReadOnlyCollection<string> GetAllDatabaseNames();
     IReadOnlyCollection<string> GetAuthorizeDatabases();
     

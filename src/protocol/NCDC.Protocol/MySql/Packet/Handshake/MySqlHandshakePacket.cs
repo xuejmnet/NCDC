@@ -8,7 +8,7 @@ namespace NCDC.Protocol.MySql.Packet.Handshake;
 /// <summary>
 /// https://dev.mysql.com/doc/internals/en/connection-phase-packets.html#packet-Protocol::Handshake
 /// </summary>
-public class MySqlHandshakePacket:IMysqlPacket
+public sealed class MySqlHandshakePacket:IMysqlPacket
 {
     private readonly int protocolVersion = MySqlServerInfo.PROTOCOL_VERSION;
     private readonly string _serverVersion;

@@ -1,84 +1,138 @@
+using System.Reflection;
+using DotNetty.Transport.Channels;
+using MySqlConnector;
+using NCDC.Extensions;
 using NCDC.Protocol.Errors;
 using NCDC.Protocol.MySql.Constant;
+using NCDC.Protocol.MySql.Packet.Generic;
 using NCDC.Protocol.MySql.Packet.Handshake;
+using NCDC.Protocol.MySql.Payload;
+using NCDC.Protocol.Packets;
+using NCDC.ProxyClient;
+using NCDC.ProxyClient.Authentication;
 using NCDC.ProxyClientMySql.Authentication.Authenticator;
+using NCDC.ProxyClientMySql.Common;
+using NCDC.ProxyServer;
 using NCDC.ProxyServer.Contexts;
+using NCDC.ProxyServer.Helpers;
 
 namespace NCDC.ProxyClientMySql.Authentication;
 
-public class MySqlAuthenticationHandler
-{
-    private readonly IRuntimeContextManager _runtimeContextManager;
+public sealed class MySqlAuthenticationHandler:IAuthenticationHandler<MySqlPacketPayload,MySqlAuthContext>
+{ 
+    private static readonly MySqlStatusFlagEnum DEFAULT_STATUS_FLAG = MySqlStatusFlagEnum.SERVER_STATUS_AUTOCOMMIT;
+    private readonly IContextManager _contextManager;
 
-    public MySqlAuthPluginData AuthPluginData = new MySqlAuthPluginData();
-
-    public MySqlAuthenticationHandler(IRuntimeContextManager runtimeContextManager)
+    public MySqlAuthenticationHandler(IContextManager  contextManager)
     {
-        _runtimeContextManager = runtimeContextManager;
+        _contextManager = contextManager;
+    }
+    public int Handshake(IChannelHandlerContext context, MySqlAuthContext authContext)
+    { 
+        int connectionId = ConnectionIdGenerator.Instance.NextId();
+        authContext.Handshake();
+        context.WriteAndFlushAsync(new MySqlHandshakePacket(connectionId,authContext.AuthPluginData));
+        return connectionId;
     }
 
+    public AuthenticationResult Authenticate(IChannelHandlerContext context, MySqlPacketPayload payload, MySqlAuthContext authContext)
+    {
+        if (MySqlConnectionPhaseEnum.AUTH_PHASE_FAST_PATH == authContext.GetStatus())
+        {
+            var authPhaseFastPath = AuthPhaseFastPath(context,payload,authContext);
+            if (!authPhaseFastPath.Finished)
+            {
+                return authPhaseFastPath;
+            }
+        }else if (MySqlConnectionPhaseEnum.AUTHENTICATION_METHOD_MISMATCH == authContext.GetStatus())
+        {
+            MySqlAuthSwitchResponsePacket packet = new MySqlAuthSwitchResponsePacket(payload);
+            authContext.SequenceId =packet.SequenceId;
+            authContext.AuthResponse = packet.AuthPluginResponse;
+        }
+
+        var sqlErrorCode = Login(authContext);
+        if (sqlErrorCode != null)
+        {
+            //mysql error
+            context.WriteAndFlushAsync(CreateErrorPacket(sqlErrorCode, authContext));
+        }
+        else
+        {
+            context.WriteAndFlushAsync(new MySqlOkPacket(++authContext.SequenceId,DEFAULT_STATUS_FLAG));
+        }
+
+        return AuthenticationResultBuilder.Finished(authContext.Username??string.Empty,authContext.HostAddress??string.Empty,authContext.Database);
+
+        
+    }
+    private MySqlErrPacket CreateErrorPacket(ISqlErrorCode errorCode,MySqlAuthContext authContext) {
+        
+        return MySqlServerErrorCode.ER_DBACCESS_DENIED_ERROR_ARG3 == errorCode
+            ? new MySqlErrPacket(++authContext.SequenceId, MySqlServerErrorCode.ER_DBACCESS_DENIED_ERROR_ARG3, authContext.Username??string.Empty, authContext.HostAddress??"unknown", authContext.Database??string.Empty)
+            : new MySqlErrPacket(++authContext.SequenceId, MySqlServerErrorCode.ER_ACCESS_DENIED_ERROR_ARG3, authContext.Username??string.Empty, authContext.HostAddress??"unknown", GetErrorMessage(authContext));
+    }
+    private string GetErrorMessage(MySqlAuthContext authContext) {
+        return 0 == authContext.AuthResponse.Length ? "NO" : "YES";
+    }
+    private AuthenticationResult AuthPhaseFastPath(IChannelHandlerContext context, MySqlPacketPayload payload, MySqlAuthContext authContext)
+    {
+        var packet = new MySqlHandshakeResponse41Packet(payload);
+        authContext.AuthResponse = packet.AuthResponse;
+        authContext.SequenceId = packet.SequenceId;
+        authContext.Username = packet.Username;
+        authContext.Database = packet.Database;
+        authContext.HostAddress = RemotingHelper.GetHostAddress(context);
+        var mySqlCharacterSet = MySqlCharacterSet.FindById(packet.CharacterSet);
+        context.Channel.GetAttribute(CommonConstants.CHARSET_ATTRIBUTE_KEY).Set(mySqlCharacterSet.Charset);
+        context.Channel.GetAttribute(MySqlConstants.MYSQL_CHARACTER_SET_ATTRIBUTE_KEY).Set(mySqlCharacterSet);
+        if (packet.Database.NotNullOrWhiteSpace() && !_contextManager.HasRuntimeContext(packet.Database!))
+        {
+            context.WriteAndFlushAsync(
+                new MySqlErrPacket(++authContext.SequenceId, MySqlServerErrorCode.ER_NO_DB_ERROR));
+            return AuthenticationResult.DefaultContinued;
+        }
+        //packet.Database
+        var hostAddress =RemotingHelper.GetHostAddress(context);
+        if (IsClientPluginAuth(packet) && !MySqlAuthenticationMethod.NATIVE_PASSWORD_AUTHENTICATION.Equals(packet.AuthPluginName)) {
+           authContext.AuthenticationMethodMisMatchSwitch();
+            context.WriteAndFlushAsync(new MySqlAuthSwitchRequestPacket(++authContext.SequenceId, MySqlAuthenticationMethod.NATIVE_PASSWORD_AUTHENTICATION,authContext.AuthPluginData));
+            return AuthenticationResultBuilder.Continued(packet.Username, hostAddress, packet.Database);
+        }
+        return AuthenticationResultBuilder.Finished(packet.Username, hostAddress, packet.Database);
+
+    }
+    private bool IsClientPluginAuth(MySqlHandshakeResponse41Packet packet)
+    {
+        return packet.CapabilityFlagsEnum.HasFlag(MySqlCapabilityFlagEnum.CLIENT_PLUGIN_AUTH);
+    }
+    
     /// <summary>
     /// 用户登录
     /// </summary>
-    /// <param name="username"></param>
-    /// <param name="hostname"></param>
-    /// <param name="authResponse"></param>
-    /// <param name="databaseName"></param>
+    /// <param name="authContext"></param>
     /// <returns>返回null说明登录成功</returns>
-    public ISqlErrorCode? Login(string username,string hostname, byte[] authResponse, string? databaseName)
+    private ISqlErrorCode? Login(MySqlAuthContext authContext)
     {
-        var authUser = _runtimeContextManager.TryGetUser(username);
+        if (authContext.Username is null)
+        {
+            throw new InvalidOperationException("unknown username");
+        }
+        var authUser = _contextManager.TryGetUser(authContext.Username);
 
         if (authUser == null)
         {
             return MySqlServerErrorCode.ER_ACCESS_DENIED_ERROR_ARG3;
         }
-        var mySqlAuthenticator = GetAuthenticator(username,hostname);
-        if (!mySqlAuthenticator.Authenticate(authUser, authResponse))
+
+        var mySqlAuthenticator = new MySqlNativePasswordAuthenticator(authContext.AuthPluginData);
+        if (!mySqlAuthenticator.Authenticate(authUser, authContext.AuthResponse))
         {
             return MySqlServerErrorCode.ER_ACCESS_DENIED_ERROR_ARG3;
         }
 
         var databaseHasPerm = true;
-        return (null==databaseName || databaseHasPerm)?null:MySqlServerErrorCode.ER_ACCESS_DENIED_ERROR_ARG3;
-        // var proxyUser = GetUser(username);
-        // if (proxyUser == null || !IsPasswordRight(proxyUser.Password, authResponse))
-        // {
-        //     return MySqlServerErrorCodeProvider.Instance().ER_DBACCESS_DENIED_ERROR;
-        // }
-        //
-        // if (!IsAuthorizedSchema(proxyUser.AuthorizedSchemas, database))
-        // {
-        //     return MySqlServerErrorCodeProvider.Instance().ER_DBACCESS_DENIED_ERROR;
-        // }
-        //
-        // return null;
+        return (null==authContext.Database || databaseHasPerm)?null:MySqlServerErrorCode.ER_ACCESS_DENIED_ERROR_ARG3;
+      
     }
-
-    // private ProxyUser? GetUser(string username)
-    // {
-    //     if (SHARDING_PROXY_CONTEXT.Authentication.Users.TryGetValue(username, out var proxyUser))
-    //     {
-    //         return proxyUser;
-    //     }
-    //
-    //     return null;
-    // }
-
-    // public bool IsPasswordRight(string password, byte[] authResponse)
-    // {
-    //     var authCipherBytes = GetAuthCipherBytes(password);
-    //     return string.IsNullOrEmpty(password) || authCipherBytes.SequenceEqual(authResponse);
-    // }
-    //
-    // private bool IsAuthorizedSchema(ICollection<string> authorizedSchemas, string? schema)
-    // {
-    //     return string.IsNullOrEmpty(schema) || authorizedSchemas.Count == 0 || authorizedSchemas.Contains(schema);
-    // }
-
-    public IMySqlAuthenticator GetAuthenticator(string username, string hostname)
-    {
-        return new MySqlNativePasswordAuthenticator(AuthPluginData);
-    }
-    
 }
