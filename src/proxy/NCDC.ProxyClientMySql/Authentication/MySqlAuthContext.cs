@@ -10,7 +10,6 @@ public sealed class MySqlAuthContext:IAuthContext
     public  string? Username { get; set; }
     public  string? Database { get; set; }
     public  string? HostAddress { get; set; }
-    private  bool _isAuthenticate;
     public MySqlAuthPluginData AuthPluginData { get; }
     public byte[] AuthResponse { get; set; }
     public int SequenceId { get; set; }
@@ -21,10 +20,6 @@ public sealed class MySqlAuthContext:IAuthContext
         AuthPluginData=new MySqlAuthPluginData();
     }
 
-    public bool IsAuthenticate()
-    {
-        return _isAuthenticate;
-    }
 
     public void AuthenticationMethodMisMatchSwitch()
     {

@@ -1,6 +1,7 @@
 using DotNetty.Transport.Channels;
 using Microsoft.Extensions.Logging;
 using NCDC.Logger;
+using NCDC.ProxyServer.Helpers;
 
 namespace NCDC.ProxyClient.DotNetty;
 

@@ -10,7 +10,7 @@ namespace NCDC.ProxyServer.Connection.User
         private readonly bool _isUnLimitedHost;
         private readonly string _toString;
         
-        public Grantee(string username,string hostname)
+        public Grantee(string username,string? hostname)
         {
             Username = username;
             Hostname = string.IsNullOrEmpty(hostname)?"%":hostname;

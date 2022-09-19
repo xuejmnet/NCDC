@@ -9,7 +9,9 @@ public interface IDatabaseProtocolClientEngine
 {
     
     IPacketCodec GetPacketCodec();
-    IAuthenticationEngine GetAuthenticationEngine();
+    // IAuthenticationEngine GetAuthenticationEngine();
+    IAuthenticationHandler GetAuthenticationHandler();
+    IAuthContext GetAuthContext();
     IClientDbConnection GetClientDbConnection();
     void Release(IConnectionSession connectionSession);
     void HandleException(IConnectionSession connectionSession, Exception exception);

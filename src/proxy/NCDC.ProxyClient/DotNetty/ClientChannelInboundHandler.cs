@@ -26,25 +26,25 @@ public class ClientChannelInboundHandler : ChannelHandlerAdapter
     private readonly IDatabaseProtocolClientEngine _databaseProtocolClientEngine;
     private readonly ICommandListener _commandListener;
     private readonly IContextManager _contextManager;
-    private readonly IAuthenticator _authenticator;
 
     private readonly IConnectionSession _connectionSession;
+    private readonly IAuthContext _authContext;
 
     private bool _authenticated;
 
     public ClientChannelInboundHandler(IDatabaseProtocolClientEngine databaseProtocolClientEngine,
-        ISocketChannel channel, ICommandListener commandListener,IContextManager contextManager,IAuthenticatorFactory authenticatorFactory)
+        ISocketChannel channel, ICommandListener commandListener,IContextManager contextManager)
     {
         _databaseProtocolClientEngine = databaseProtocolClientEngine;
         _commandListener = commandListener;
         _contextManager = contextManager;
-        _authenticator = authenticatorFactory.Create();
         _connectionSession = new ConnectionSession(TransactionTypeEnum.LOCAL, channel,contextManager);
+        _authContext = databaseProtocolClientEngine.GetAuthContext();
     }
 
     public override void ChannelActive(IChannelHandlerContext context)
     {
-        var connectionId = _databaseProtocolClientEngine.GetAuthenticationEngine().Handshake(context);
+        var connectionId = _databaseProtocolClientEngine.GetAuthenticationHandler().Handshake(context,_authContext);
         _connectionSession.SetConnectionId(connectionId);
     }
 
@@ -70,11 +70,11 @@ public class ClientChannelInboundHandler : ChannelHandlerAdapter
         {
             try
             {
-                var authenticationResult = _databaseProtocolClientEngine.GetAuthenticationEngine()
-                    .Authenticate(context, payload);
+                var authenticationResult = _databaseProtocolClientEngine.GetAuthenticationHandler()
+                    .Authenticate(context, payload,_authContext);
                 if (authenticationResult.Finished)
                 {
-                    _connectionSession.SetGrantee(new Grantee(authenticationResult.Username,
+                    _connectionSession.SetGrantee(new Grantee(authenticationResult.Username!,
                         authenticationResult.Hostname));
                     _connectionSession.SetCurrentDatabaseName(authenticationResult.Database);
                 }

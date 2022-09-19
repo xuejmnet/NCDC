@@ -12,11 +12,11 @@ public class MySqlClientEngine:IDatabaseProtocolClientEngine
 {
     private readonly IClientDbConnection _clientDbConnection;
     private readonly IPacketCodec _packetCodec;
-    private readonly IAuthenticationEngine _authenticationEngine ;
+    private readonly IAuthenticationHandler _authenticationHandler ;
 
     public MySqlClientEngine(IClientDbConnection clientDbConnection,IPacketCodec packetCodec,IContextManager contextManager)
     {
-        _authenticationEngine = new MySqlAuthenticationEngine(contextManager);
+        _authenticationHandler = new MySqlAuthenticationHandler(contextManager);
         _clientDbConnection = clientDbConnection;
         _packetCodec = packetCodec;
     }
@@ -25,10 +25,21 @@ public class MySqlClientEngine:IDatabaseProtocolClientEngine
         return _packetCodec;
     }
 
-    public IAuthenticationEngine GetAuthenticationEngine()
+    public IAuthenticationHandler GetAuthenticationHandler()
     {
-        return _authenticationEngine;
+        return _authenticationHandler;
     }
+
+    public IAuthContext GetAuthContext()
+    {
+        return new MySqlAuthContext();
+    }
+    //
+    // public IAuthenticationEngine GetAuthenticationEngine()
+    // {
+    //     return _authenticationEngine;
+    // }
+    
 
     public IClientDbConnection GetClientDbConnection()
     {

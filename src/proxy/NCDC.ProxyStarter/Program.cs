@@ -84,9 +84,9 @@ Start Time:{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}");
             serivces.AddSingleton<IServerDataReaderFactory,ServerDataReaderFactory>();
             serivces.Configure<ShardingProxyOption>(_configuration);
             
-         var logicDatabase = new LogicDatabase("a");
+         var logicDatabase = new LogicDatabase("xxa");
          logicDatabase.AddDataSource("ds0", "123", MySqlConnectorFactory.Instance, true);
-         var shardingRuntimeContext = new ShardingRuntimeContext("a");
+         var shardingRuntimeContext = new ShardingRuntimeContext("xxa");
          shardingRuntimeContext.Services.AddSingleton<ILogicDatabase>(logicDatabase);
          shardingRuntimeContext.Services.AddSingleton<ITableMetadataManager,TableMetadataManager>();
          shardingRuntimeContext.Services.AddSingleton<IShardingExecutionContextFactory,ShardingExecutionContextFactory>();

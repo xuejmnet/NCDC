@@ -22,6 +22,6 @@ where TContext:IAuthContext
     AuthenticationResult IAuthenticationHandler.Authenticate(IChannelHandlerContext context, IPacketPayload payload,
         IAuthContext authContext)
     {
-         Authenticate(context, (TPacketPayload)payload, (TContext)authContext);
+         return Authenticate(context, (TPacketPayload)payload, (TContext)authContext);
     }
 }
