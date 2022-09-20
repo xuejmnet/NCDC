@@ -1,6 +1,6 @@
-namespace NCDC.ProxyClient.Command;
-
-public interface IClientCommandExecutor
-{
-    ValueTask ExecuteAsync();
-}
+// namespace NCDC.ProxyClient.Command;
+//
+// public interface IClientCommandExecutor
+// {
+//     ValueTask ExecuteAsync();
+// }

@@ -1,4 +1,5 @@
 using System.Text;
+using System.Threading.Channels;
 using DotNetty.Buffers;
 using DotNetty.Transport.Channels;
 using DotNetty.Transport.Channels.Sockets;
@@ -33,10 +34,9 @@ public class ClientChannelInboundHandler : ChannelHandlerAdapter
     private bool _authenticated;
 
     public ClientChannelInboundHandler(IDatabaseProtocolClientEngine databaseProtocolClientEngine,
-        ISocketChannel channel, ICommandListener commandListener,IContextManager contextManager)
+        ISocketChannel channel,IContextManager contextManager)
     {
         _databaseProtocolClientEngine = databaseProtocolClientEngine;
-        _commandListener = commandListener;
         _contextManager = contextManager;
         _connectionSession = new ConnectionSession(TransactionTypeEnum.LOCAL, channel,contextManager);
         _authContext = databaseProtocolClientEngine.GetAuthContext();
@@ -44,6 +44,7 @@ public class ClientChannelInboundHandler : ChannelHandlerAdapter
 
     public override void ChannelActive(IChannelHandlerContext context)
     {
+        MessageCommandProcessor.Instance.Register(context.Channel.Id);
         var connectionId = _databaseProtocolClientEngine.GetAuthenticationHandler().Handshake(context,_authContext);
         _connectionSession.SetConnectionId(connectionId);
     }
@@ -58,9 +59,12 @@ public class ClientChannelInboundHandler : ChannelHandlerAdapter
             return;
         }
 
-        var commandMessageSender =
+        var cmd =
             new MessageCommand(_databaseProtocolClientEngine, _connectionSession, ctx, byteBuffer);
-        Task.Run(async () => await _commandListener.Received(commandMessageSender).ConfigureAwait(false));
+        if (!MessageCommandProcessor.Instance.Get(ctx.Channel.Id).TryAddMessage(cmd))
+        {
+            _logger.LogError($"cant process message command: \n{ByteBufferUtil.PrettyHexDump(byteBuffer)}");
+        }
     }
 
     private bool Authenticate(IChannelHandlerContext context, IByteBuffer message)
@@ -101,5 +105,12 @@ public class ClientChannelInboundHandler : ChannelHandlerAdapter
         {
             _connectionSession.NotifyChannelIsWritable();
         }
+    }
+
+    public override void ChannelInactive(IChannelHandlerContext context)
+    {
+        context.FireChannelInactive();
+        _connectionSession.Dispose();
+        MessageCommandProcessor.Instance.UnRegister(context.Channel.Id);
     }
 }

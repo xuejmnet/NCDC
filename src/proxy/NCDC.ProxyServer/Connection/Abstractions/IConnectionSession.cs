@@ -7,7 +7,7 @@ using NCDC.ProxyServer.Contexts;
 
 namespace NCDC.ProxyServer.Connection.Abstractions;
 
-public interface IConnectionSession
+public interface IConnectionSession:IDisposable
 {
     string? DatabaseName { get; }
     IServerConnection ServerConnection { get; }

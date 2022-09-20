@@ -8,7 +8,7 @@ using NCDC.ProxyServer.Contexts;
 
 namespace NCDC.ProxyServer.Connection;
 
-public class ConnectionSession:IConnectionSession,IDisposable
+public class ConnectionSession:IConnectionSession
 {
     private readonly TransactionStatus _transactionStatus;
     private volatile int _connectionId;

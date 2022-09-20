@@ -1,3 +1,4 @@
+using System.Threading.Channels;
 using DotNetty.Transport.Bootstrapping;
 using DotNetty.Transport.Channels;
 using DotNetty.Transport.Channels.Sockets;
@@ -18,12 +19,13 @@ public class DefaultServiceHost:IServiceHost
 {
     private static readonly ILogger<DefaultServiceHost> _logger = InternalNCDCLoggerFactory.CreateLogger<DefaultServiceHost>();
  
-    private readonly ICommandListener _commandListener= new DefaultCommandListener();
+    // private readonly ICommandListener _commandListener= new DefaultCommandListener();
     private readonly IChannelHandler _connectorManagerHandler= new ConnectorManagerHandler();
     private readonly ShardingProxyOption _shardingProxyOption;
     private readonly IPacketCodec _packetCodec;
     private readonly IDatabaseProtocolClientEngine _databaseProtocolClientEngine;
     private readonly IContextManager _contextManager;
+    // private readonly Channel<MessageCommand> _messageChannel;
 
     // 主工作线程组，设置为1个线程
     private IEventLoopGroup bossGroup;
@@ -45,13 +47,15 @@ public class DefaultServiceHost:IServiceHost
         _contextManager = contextManager;
         _packetCodec = databaseProtocolClientEngine.GetPacketCodec();
         _encoderHandler = new MessagePacketEncoder(_packetCodec);
-        _commandListener.OnReceived += CommandListenerOnReceived;
+        // _commandListener.OnReceived += CommandListenerOnReceived;
+        // _messageChannel = Channel.CreateUnbounded<MessageCommand>();
     }
 
     public async Task StartAsync()
     {
         _logger.LogInformation("----------开始启动----------");
         _logger.LogInformation($"----------监听端口:{_shardingProxyOption.Port}----------");
+
 
         _clientBootstrap = new Bootstrap();
         bossGroup =new MultithreadEventLoopGroup(1);
@@ -91,7 +95,7 @@ public class DefaultServiceHost:IServiceHost
                         pipeline.AddLast(new MessagePacketDecoder(_packetCodec));
                         pipeline.AddLast(_encoderHandler);
                         pipeline.AddLast(_connectorManagerHandler);
-                        pipeline.AddLast(new ClientChannelInboundHandler(_databaseProtocolClientEngine,channel,_commandListener,_contextManager));
+                        pipeline.AddLast(new ClientChannelInboundHandler(_databaseProtocolClientEngine,channel,_contextManager));
                         // pipeline.AddLast("tls", TlsHandler.Server(_option.TlsCertificate));
                         // pipeline.AddLast("tls", new TlsHandler(stream => new SslStream(stream, true, (sender, certificate, chain, errors) => true), new ClientTlsSettings(_targetHost)));
                         // pipeline.AddLast("framing-dec", new LengthFieldBasedFrameDecoder(int.MaxValue, 0, 4, 0, 4));
