@@ -5,6 +5,7 @@ using NCDC.ProxyServer.Abstractions;
 using NCDC.ProxyServer.Connection.Metadatas;
 using NCDC.ProxyServer.Executors;
 using NCDC.ShardingMerge.Abstractions;
+using NCDC.ShardingRoute.Abstractions;
 
 namespace NCDC.ProxyServer.Contexts;
 
@@ -13,6 +14,7 @@ public interface IRuntimeContext
     string DatabaseName { get; }
     ILogicDatabase GetDatabase();
     ITableMetadataManager GetTableMetadataManager();
+    ITableRouteManager GetTableRouteManager();
     IShardingExecutionContextFactory GetShardingExecutionContextFactory();
     IDataReaderMergerFactory GetDataReaderMergerFactory();
     ISqlCommandParser GetSqlCommandParser();

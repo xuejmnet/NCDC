@@ -48,7 +48,7 @@ public sealed class TaskMessageCommandProcessor:IMessageCommandProcessor
             }
             catch (Exception e)
             {
-                _logger.LogError($"UnRegister error,channel id:[{channelId.AsShortText()}].",e);
+                _logger.LogError($"UnRegister error,channel id:[{channelId.AsShortText()}],error:{e}.");
             }
         }
     }

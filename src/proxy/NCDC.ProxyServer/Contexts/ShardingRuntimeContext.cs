@@ -6,6 +6,7 @@ using NCDC.ProxyServer.Abstractions;
 using NCDC.ProxyServer.Connection.Metadatas;
 using NCDC.ProxyServer.Executors;
 using NCDC.ShardingMerge.Abstractions;
+using NCDC.ShardingRoute.Abstractions;
 
 namespace NCDC.ProxyServer.Contexts;
 
@@ -51,6 +52,12 @@ public sealed class ShardingRuntimeContext:IRuntimeContext
     public ITableMetadataManager GetTableMetadataManager()
     {
       return _tableMetadataManager??=GetRequiredService<ITableMetadataManager>();
+    }
+
+    private ITableRouteManager? _tableRouteManager;
+    public ITableRouteManager GetTableRouteManager()
+    {
+        return _tableRouteManager??=GetRequiredService<ITableRouteManager>();
     }
 
     private IShardingExecutionContextFactory? _shardingExecutionContextFactory;
@@ -128,5 +135,6 @@ public sealed class ShardingRuntimeContext:IRuntimeContext
         GetShardingExecutionContextFactory();
         GetDataReaderMergerFactory();
         GetSqlCommandParser();
+        GetTableRouteManager();
     }
 }

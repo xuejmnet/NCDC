@@ -20,7 +20,7 @@ public class SqlRoutePredicateDiscover
     private readonly Func<IComparable, ShardingOperatorEnum, string, Func<string, bool>> _keyTranslateFilter;
     private readonly bool _shardingTableRoute;
 
-    private RoutePredicateExpression _where = RoutePredicateExpression.DefaultFalse;
+    private RoutePredicateExpression _where = RoutePredicateExpression.Default;
 
     public SqlRoutePredicateDiscover(TableMetadata tableMetadata,
         Func<IComparable, ShardingOperatorEnum, string, Func<string, bool>> keyTranslateFilter, bool shardingTableRoute)
@@ -82,6 +82,7 @@ public class SqlRoutePredicateDiscover
     {
         if (andPredicates.IsNotEmpty())
         {
+            _where = _where.And(RoutePredicateExpression.DefaultFalse);
             foreach (var andPredicate in andPredicates)
             {
                 var where = RoutePredicateExpression.Default;
@@ -118,10 +119,6 @@ public class SqlRoutePredicateDiscover
 
                 _where = _where.Or(where);
             }
-        }
-        else
-        {
-            _where = _where.Or(RoutePredicateExpression.Default);
         }
     }
 }

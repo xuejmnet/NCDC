@@ -69,7 +69,7 @@ public class ConnectorManagerHandler : ChannelDuplexHandler
         {
             string remoteAddress = RemotingHelper.ParseChannelRemoteAddress(context.Channel);
             _logger.LogError($"NETTY SERVER PIPELINE: exceptionCaught {remoteAddress}");
-            _logger.LogError("NETTY SERVER PIPELINE: exceptionCaught exception.", exception);
+            _logger.LogError($"NETTY SERVER PIPELINE: exceptionCaught exception:{exception}");
         }
         base.ExceptionCaught(context,exception);
     }

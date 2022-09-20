@@ -114,7 +114,7 @@ public sealed class MessageCommand:ICommand
             }
             catch (Exception e)
             {
-                _logger.LogError("client command execute error.",e);
+                _logger.LogError($"client command execute error:{e}");
                 _databaseProtocolClientEngine.HandleException(_connectionSession, e);
                 throw;
             }

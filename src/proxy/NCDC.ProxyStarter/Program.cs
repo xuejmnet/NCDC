@@ -103,16 +103,19 @@ Start Time:{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}");
             serivces.AddSingleton<IUserManager, DefaultUserManager>();
             serivces.Configure<ShardingProxyOption>(_configuration);
             var shardingConfiguration = new ShardingConfiguration();
-            shardingConfiguration.AddDefaultDataSource("ds0","server=127.0.0.1;port=3306;database=test;userid=root;password=root;");
+            shardingConfiguration.AddDefaultDataSource("ds0",
+                "server=127.0.0.1;port=3306;database=test;userid=root;password=root;");
 
             var logicDatabase = new LogicDatabase("xxa");
-            logicDatabase.AddDataSource("ds0", "server=127.0.0.1;port=3306;database=test;userid=root;password=root;", MySqlConnectorFactory.Instance, true);
-   
+            logicDatabase.AddDataSource("ds0", "server=127.0.0.1;port=3306;database=test;userid=root;password=root;",
+                MySqlConnectorFactory.Instance, true);
+
             var shardingRuntimeContext = new ShardingRuntimeContext("xxa");
             shardingRuntimeContext.Services.AddSingleton<ILogicDatabase>(logicDatabase);
             shardingRuntimeContext.Services.AddSingleton<ITableMetadataManager, TableMetadataManager>();
             shardingRuntimeContext.Services.AddSingleton<IDataReaderMergerFactory, DataReaderMergerFactory>();
-            shardingRuntimeContext.Services.AddSingleton<IDatabaseSettings>(sp=>new DatabaseSettings("xxa",DatabaseTypeEnum.MySql));
+            shardingRuntimeContext.Services.AddSingleton<IDatabaseSettings>(sp =>
+                new DatabaseSettings("xxa", DatabaseTypeEnum.MySql));
             shardingRuntimeContext.Services
                 .AddSingleton<IShardingExecutionContextFactory, ShardingExecutionContextFactory>();
             shardingRuntimeContext.Services.AddShardingParser();
@@ -144,6 +147,28 @@ Start Time:{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}");
 
         private static async Task StartAsync(IServiceProvider serviceProvider, ShardingProxyOption option, int? port)
         {
+            var contextManager = serviceProvider.GetRequiredService<IContextManager>();
+            var databaseNames = contextManager.GetAllDatabaseNames();
+            foreach (var databaseName in databaseNames)
+            {
+                var runtimeContext = contextManager.GetRuntimeContext(databaseName);
+                var tableMetadataManager = runtimeContext.GetTableMetadataManager();
+                var tableMetadata = new TableMetadata("sysusermod", new Dictionary<string, ColumnMetadata>()
+                {
+                    { "id", new ColumnMetadata("id", 0, "varchar", true, false, true) },
+                    { "name", new ColumnMetadata("name", 1, "varchar", false, false, true) },
+                    { "age", new ColumnMetadata("age", 2, "int", false, false, true) },
+                });
+                         tableMetadata.SetShardingTableColumn("id");
+         tableMetadata.AddActualTableWithDataSource("ds0","sysusermod_00");
+         tableMetadata.AddActualTableWithDataSource("ds0","sysusermod_01");
+         tableMetadata.AddActualTableWithDataSource("ds0","sysusermod_02");
+                tableMetadataManager.AddTableMetadata(tableMetadata);
+                var tableRouteManager = runtimeContext.GetTableRouteManager();
+                var testModTableRoute = runtimeContext.CreateInstance<TestModTableRoute>();
+                tableRouteManager.AddRoute(testModTableRoute);
+            }
+
             var host = serviceProvider.GetRequiredService<IServiceHost>();
             await host.StartAsync();
             while (Console.ReadLine() != "quit")
@@ -174,18 +199,21 @@ Start Time:{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}");
             return proxyRuntimeOption;
         }
     }
+
     public class TestModTableRoute : AbstractOperatorTableRoute
     {
         public TestModTableRoute(ITableMetadataManager tableMetadataManager) : base(tableMetadataManager)
         {
         }
-    
+
         public override string TableName => "sysusermod";
-        public override Func<string, bool> GetRouteToFilter(IComparable shardingValue, ShardingOperatorEnum shardingOperator)
+
+        public override Func<string, bool> GetRouteToFilter(IComparable shardingValue,
+            ShardingOperatorEnum shardingOperator)
         {
             var tail = FormatTableName(shardingValue);
             var table = $"{TableName}{GetTableMetadata().TableSeparator}{tail}";
-            
+
             switch (shardingOperator)
             {
                 case ShardingOperatorEnum.EQUAL: return t => t.EndsWith(table);
@@ -194,15 +222,15 @@ Start Time:{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}");
                     return t => true;
                 }
             }
-            
         }
-    
+
         public string FormatTableName(IComparable shardingValue)
         {
             var shardingKey = $"{shardingValue}";
-            var stringHashCode = GetStringHashCode(shardingKey)%3;
+            var stringHashCode = GetStringHashCode(shardingKey) % 3;
             return stringHashCode.ToString().PadLeft(2, '0');
         }
+
         public static int GetStringHashCode(string value)
         {
             Check.NotNull(value, nameof(value));
@@ -214,6 +242,7 @@ Start Time:{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}");
                     h = 31 * h + value[i]; // val[0]*31^(n-1) + val[1]*31^(n-2) + ... + val[n-1]
                 }
             }
+
             return h;
         }
     }
