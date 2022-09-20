@@ -7,6 +7,7 @@ using NCDC.ProxyClient.Abstractions;
 using NCDC.ProxyClientMySql.Common;
 using NCDC.ProxyServer.Abstractions;
 using NCDC.ProxyServer.Connection.Abstractions;
+using NCDC.ProxyServer.Extensions;
 
 namespace NCDC.ProxyClientMySql.ClientConnections.DataReaders.FieldList;
 
@@ -25,7 +26,7 @@ public sealed class MySqlFieldListClientDataReader:IClientDataReader<MySqlPacket
         _table = table;
         _filedWildcard = filedWildcard;
         _connectionSession = connectionSession;
-        _dbEncoding=connectionSession.AttributeMap.GetAttribute(MySqlConstants.MYSQL_CHARACTER_SET_ATTRIBUTE_KEY).Get().DbEncoding;
+        _dbEncoding=connectionSession.Channel.GetMySqlCharacterSet().DbEncoding;
         var sql = string.Format(SQL,_table,_connectionSession.DatabaseName);
         _serverDbDataReader = serverDataReaderFactory.Create(sql,_connectionSession);
     }

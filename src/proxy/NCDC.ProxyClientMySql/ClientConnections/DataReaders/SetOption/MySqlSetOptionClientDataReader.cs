@@ -20,7 +20,7 @@ public sealed class MySqlSetOptionClientDataReader:IClientDataReader<MySqlPacket
     }
     public IEnumerable<IPacket<MySqlPacketPayload>>  SendCommand()
     {
-        _connectionSession.AttributeMap.GetAttribute(MySqlConstants.MYSQL_OPTION_MULTI_STATEMENTS).Set(_value);
+        _connectionSession.Channel.GetAttribute(MySqlConstants.MYSQL_OPTION_MULTI_STATEMENTS).Set(_value);
         return new List<IPacket<MySqlPacketPayload>>()
         {
             new MySqlOkPacket(1,ServerStatusFlagCalculator.CalculateFor(_connectionSession))

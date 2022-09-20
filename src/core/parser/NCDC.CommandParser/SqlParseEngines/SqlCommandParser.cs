@@ -7,6 +7,7 @@ using NCDC.CommandParser.SqlParseEngines.Core.Parser;
 using NCDC.CommandParser.SqlParseEngines.Core.Visitor;
 using NCDC.CommandParser.SqlParseEngines.Hook;
 using NCDC.Exceptions;
+using NCDC.ParserEngine.Cache;
 
 
 namespace NCDC.CommandParser.SqlParseEngines
@@ -21,7 +22,7 @@ namespace NCDC.CommandParser.SqlParseEngines
     public class SqlCommandParser:ISqlCommandParser
     {
         private readonly ISqlParserConfiguration _sqlParserConfiguration;
-        // private static readonly SqlParseResultCache _cache = new SqlParseResultCache();
+        private static readonly SqlParseResultCache _cache = new SqlParseResultCache();
         private readonly SqlParserExecutor _sqlParserExecutor;
         public SqlCommandParser(ISqlParserConfiguration sqlParserConfiguration)
         {

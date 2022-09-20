@@ -15,6 +15,8 @@ using NCDC.ProxyClient;
 using NCDC.ProxyClient.Abstractions;
 using NCDC.ProxyClient.Authentication;
 using NCDC.ProxyClient.Codecs;
+using NCDC.ProxyClient.Command;
+using NCDC.ProxyClient.Command.Abstractions;
 using NCDC.ProxyClientMySql;
 using NCDC.ProxyClientMySql.Authentication;
 using NCDC.ProxyClientMySql.ClientConnections;
@@ -88,6 +90,8 @@ Start Time:{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}");
 
                 return proxyOption;
             });
+            serivces.AddSingleton<IMessageCommandProcessor, TaskMessageCommandProcessor>();
+            serivces.AddSingleton<IMessageExecutorFactory, MessageExecutorFactory>();
             serivces.AddSingleton<IContextManager, DefaultContextManager>();
             serivces.AddSingleton<IServiceHost, DefaultServiceHost>();
             serivces.AddSingleton<IPacketCodec, MySqlPacketCodecEngine>();

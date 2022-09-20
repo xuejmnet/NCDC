@@ -2,11 +2,14 @@ using DotNetty.Buffers;
 using DotNetty.Transport.Channels;
 using Microsoft.Extensions.Logging;
 using NCDC.Logger;
+using NCDC.Protocol.MySql.Constant;
+using NCDC.Protocol.MySql.Packet.Generic;
 using NCDC.Protocol.Packets;
 using NCDC.ProxyClient.Abstractions;
 using NCDC.ProxyServer;
 using NCDC.ProxyServer.Abstractions;
 using NCDC.ProxyServer.Connection.Abstractions;
+using NCDC.ProxyServer.Extensions;
 
 namespace NCDC.ProxyClient.Command;
 
@@ -34,7 +37,7 @@ public sealed class MessageCommand:ICommand
         bool isNeedFlush = false;
         bool sqlShow = true;
         using (var payload = _databaseProtocolClientEngine.GetPacketCodec().CreatePacketPayload(_message,
-                   _context.Channel.GetAttribute(CommonConstants.CHARSET_ATTRIBUTE_KEY).Get()))
+                   _context.Channel.GetEncoding()))
         {
             try
             {
@@ -81,6 +84,7 @@ public sealed class MessageCommand:ICommand
             {
                 using (var clientDataReader = clientCommand.ExecuteReader())
                 {
+                    
                     var responsePackets = clientDataReader.SendCommand();
                     // var enumerable = responsePackets as IPacket[] ?? responsePackets.ToArray();
                     // if (enumerable.IsEmpty())
@@ -92,7 +96,7 @@ public sealed class MessageCommand:ICommand
                     foreach (var responsePacket in responsePackets)
                     {
                        _= context.WriteAsync(responsePacket);
-                        i++;
+                       i++;
                     }
 
                     if (i == 0)

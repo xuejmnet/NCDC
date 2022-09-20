@@ -16,6 +16,7 @@ using NCDC.ProxyClientMySql.Common;
 using NCDC.ProxyServer.Abstractions;
 using NCDC.ProxyServer.Commons;
 using NCDC.ProxyServer.Connection.Abstractions;
+using NCDC.ProxyServer.Extensions;
 using NCDC.ProxyServer.ServerHandlers.Results;
 
 namespace NCDC.ProxyClientMySql.ClientConnections.DataReaders.Query;
@@ -37,8 +38,7 @@ public sealed class MySqlQueryClientDataReader : IClientQueryDataReader<MySqlPac
         ServerHandler = isMultiCommands
             ? new MySqlMultiServerHandler()
             : serverHandlerFactory.Create(DatabaseTypeEnum.MySql, sql, sqlCommand, connectionSession);
-        MySqlEncoding = connectionSession.AttributeMap.GetAttribute(MySqlConstants.MYSQL_CHARACTER_SET_ATTRIBUTE_KEY)
-            .Get().DbEncoding;
+        MySqlEncoding = connectionSession.Channel.GetMySqlCharacterSet().DbEncoding;
     }
 
     private ISqlCommand ParseSql(string sql)
@@ -53,8 +53,8 @@ public sealed class MySqlQueryClientDataReader : IClientQueryDataReader<MySqlPac
 
     private bool IsMultiCommands(IConnectionSession connectionSession, ISqlCommand sqlCommand, string sql)
     {
-        return connectionSession.AttributeMap.HasAttribute(MySqlConstants.MYSQL_OPTION_MULTI_STATEMENTS)
-               && MySqlSetOptionClientCommand.MYSQL_OPTION_MULTI_STATEMENTS_ON.Equals(connectionSession.AttributeMap
+        return connectionSession.Channel.HasAttribute(MySqlConstants.MYSQL_OPTION_MULTI_STATEMENTS)
+               && MySqlSetOptionClientCommand.MYSQL_OPTION_MULTI_STATEMENTS_ON.Equals(connectionSession.Channel
                    .GetAttribute(MySqlConstants.MYSQL_OPTION_MULTI_STATEMENTS).Get())
                && (sqlCommand is UpdateCommand || sqlCommand is DeleteCommand) && sql.Contains(";");
     }

@@ -1,4 +1,5 @@
 using System.Threading.Channels;
+using NCDC.ProxyClient.Command.Abstractions;
 using NCDC.ProxyServer.Abstractions;
 
 namespace NCDC.ProxyClient.Command;

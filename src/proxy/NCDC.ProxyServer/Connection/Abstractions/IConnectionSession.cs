@@ -1,5 +1,6 @@
 using System.Collections.Immutable;
 using DotNetty.Common.Utilities;
+using DotNetty.Transport.Channels;
 using NCDC.Basic.Metadatas;
 using NCDC.ProxyServer.Connection.Metadatas;
 using NCDC.ProxyServer.Connection.User;
@@ -11,7 +12,7 @@ public interface IConnectionSession:IDisposable
 {
     string? DatabaseName { get; }
     IServerConnection ServerConnection { get; }
-    IAttributeMap AttributeMap { get; }
+    IChannel Channel { get; }
     ILogicDatabase? LogicDatabase { get; }
     IRuntimeContext? RuntimeContext { get; }
     IContextManager ContextManager { get; }

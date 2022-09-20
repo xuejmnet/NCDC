@@ -1,4 +1,5 @@
 using DotNetty.Common.Utilities;
+using DotNetty.Transport.Channels;
 using NCDC.Basic.Metadatas;
 using NCDC.Enums;
 using NCDC.ProxyServer.Connection.Abstractions;
@@ -16,7 +17,7 @@ public class ConnectionSession:IConnectionSession
     public IServerConnection ServerConnection { get; }
 
 
-    public  IAttributeMap AttributeMap{ get; }
+    public  IChannel Channel{ get; }
     public ILogicDatabase? LogicDatabase => RuntimeContext?.GetDatabase();
     private volatile bool autoCommit = true;
     private volatile string? _databaseName;
@@ -27,10 +28,10 @@ public class ConnectionSession:IConnectionSession
 
     private readonly ChannelIsWritableListener _channelWaitWriteableListener;
  
-    public ConnectionSession(TransactionTypeEnum transactionType,IAttributeMap attributeMap,IContextManager contextManager)
+    public ConnectionSession(TransactionTypeEnum transactionType,IChannel channel,IContextManager contextManager)
     {
         ContextManager = contextManager;
-        AttributeMap = attributeMap;
+        Channel = channel;
         _transactionStatus=new TransactionStatus(transactionType);
         ServerConnection = new ServerConnection(this);
         _channelWaitWriteableListener = new ChannelIsWritableListener();

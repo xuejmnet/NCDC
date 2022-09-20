@@ -8,6 +8,7 @@ using NCDC.Logger;
 using NCDC.ProxyClient;
 using NCDC.ProxyClient.Codecs;
 using NCDC.ProxyClient.Command;
+using NCDC.ProxyClient.Command.Abstractions;
 using NCDC.ProxyClient.DotNetty;
 using NCDC.ProxyServer;
 using NCDC.ProxyServer.Abstractions;
@@ -25,6 +26,8 @@ public class DefaultServiceHost:IServiceHost
     private readonly IPacketCodec _packetCodec;
     private readonly IDatabaseProtocolClientEngine _databaseProtocolClientEngine;
     private readonly IContextManager _contextManager;
+
+    private readonly IMessageCommandProcessor _messageCommandProcessor;
     // private readonly Channel<MessageCommand> _messageChannel;
 
     // 主工作线程组，设置为1个线程
@@ -40,11 +43,12 @@ public class DefaultServiceHost:IServiceHost
     private Bootstrap _clientBootstrap;
     private IChannelHandler _encoderHandler;
 
-    public DefaultServiceHost(ShardingProxyOption shardingProxyOption,IDatabaseProtocolClientEngine databaseProtocolClientEngine,IContextManager contextManager)
+    public DefaultServiceHost(ShardingProxyOption shardingProxyOption,IDatabaseProtocolClientEngine databaseProtocolClientEngine,IContextManager contextManager,IMessageCommandProcessor messageCommandProcessor)
     {
         _shardingProxyOption = shardingProxyOption;
         _databaseProtocolClientEngine = databaseProtocolClientEngine;
         _contextManager = contextManager;
+        _messageCommandProcessor = messageCommandProcessor;
         _packetCodec = databaseProtocolClientEngine.GetPacketCodec();
         _encoderHandler = new MessagePacketEncoder(_packetCodec);
         // _commandListener.OnReceived += CommandListenerOnReceived;
@@ -95,7 +99,7 @@ public class DefaultServiceHost:IServiceHost
                         pipeline.AddLast(new MessagePacketDecoder(_packetCodec));
                         pipeline.AddLast(_encoderHandler);
                         pipeline.AddLast(_connectorManagerHandler);
-                        pipeline.AddLast(new ClientChannelInboundHandler(_databaseProtocolClientEngine,channel,_contextManager));
+                        pipeline.AddLast(new ClientChannelInboundHandler(_databaseProtocolClientEngine,channel,_contextManager,_messageCommandProcessor));
                         // pipeline.AddLast("tls", TlsHandler.Server(_option.TlsCertificate));
                         // pipeline.AddLast("tls", new TlsHandler(stream => new SslStream(stream, true, (sender, certificate, chain, errors) => true), new ClientTlsSettings(_targetHost)));
                         // pipeline.AddLast("framing-dec", new LengthFieldBasedFrameDecoder(int.MaxValue, 0, 4, 0, 4));

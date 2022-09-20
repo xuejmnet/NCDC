@@ -14,6 +14,7 @@ using NCDC.ProxyClientMySql.Authentication.Authenticator;
 using NCDC.ProxyClientMySql.Common;
 using NCDC.ProxyServer;
 using NCDC.ProxyServer.Contexts;
+using NCDC.ProxyServer.Extensions;
 using NCDC.ProxyServer.Helpers;
 
 namespace NCDC.ProxyClientMySql.Authentication;
@@ -86,8 +87,8 @@ public sealed class MySqlAuthenticationHandler:IAuthenticationHandler<MySqlPacke
         authContext.Database = packet.Database;
         authContext.HostAddress = RemotingHelper.GetHostAddress(context);
         var mySqlCharacterSet = MySqlCharacterSet.FindById(packet.CharacterSet);
-        context.Channel.GetAttribute(CommonConstants.CHARSET_ATTRIBUTE_KEY).Set(mySqlCharacterSet.Charset);
-        context.Channel.GetAttribute(MySqlConstants.MYSQL_CHARACTER_SET_ATTRIBUTE_KEY).Set(mySqlCharacterSet);
+        context.Channel.SetEncoding(mySqlCharacterSet.Charset);
+        context.Channel.SetMySqlCharacterSet(mySqlCharacterSet);
         if (packet.Database.NotNullOrWhiteSpace() && !_contextManager.HasRuntimeContext(packet.Database!))
         {
             context.WriteAndFlushAsync(

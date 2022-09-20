@@ -10,12 +10,13 @@ using NCDC.Protocol.MySql.Constant;
 using NCDC.Protocol.MySql.Packet.Generic;
 using NCDC.ProxyClient.Authentication;
 using NCDC.ProxyClient.Command;
-using NCDC.ProxyServer;
+using NCDC.ProxyClient.Command.Abstractions;
 using NCDC.ProxyServer.Abstractions;
 using NCDC.ProxyServer.Connection;
 using NCDC.ProxyServer.Connection.Abstractions;
 using NCDC.ProxyServer.Connection.User;
 using NCDC.ProxyServer.Contexts;
+using NCDC.ProxyServer.Extensions;
 
 namespace NCDC.ProxyClient.DotNetty;
 
@@ -27,6 +28,7 @@ public class ClientChannelInboundHandler : ChannelHandlerAdapter
     private readonly IDatabaseProtocolClientEngine _databaseProtocolClientEngine;
     private readonly ICommandListener _commandListener;
     private readonly IContextManager _contextManager;
+    private readonly IMessageCommandProcessor _messageCommandProcessor;
 
     private readonly IConnectionSession _connectionSession;
     private readonly IAuthContext _authContext;
@@ -34,17 +36,18 @@ public class ClientChannelInboundHandler : ChannelHandlerAdapter
     private bool _authenticated;
 
     public ClientChannelInboundHandler(IDatabaseProtocolClientEngine databaseProtocolClientEngine,
-        ISocketChannel channel,IContextManager contextManager)
+        ISocketChannel channel,IContextManager contextManager,IMessageCommandProcessor messageCommandProcessor)
     {
         _databaseProtocolClientEngine = databaseProtocolClientEngine;
         _contextManager = contextManager;
+        _messageCommandProcessor = messageCommandProcessor;
         _connectionSession = new ConnectionSession(TransactionTypeEnum.LOCAL, channel,contextManager);
         _authContext = databaseProtocolClientEngine.GetAuthContext();
     }
 
     public override void ChannelActive(IChannelHandlerContext context)
     {
-        MessageCommandProcessor.Instance.Register(context.Channel.Id);
+        _messageCommandProcessor.Register(context.Channel.Id);
         var connectionId = _databaseProtocolClientEngine.GetAuthenticationHandler().Handshake(context,_authContext);
         _connectionSession.SetConnectionId(connectionId);
     }
@@ -61,16 +64,16 @@ public class ClientChannelInboundHandler : ChannelHandlerAdapter
 
         var cmd =
             new MessageCommand(_databaseProtocolClientEngine, _connectionSession, ctx, byteBuffer);
-        if (!MessageCommandProcessor.Instance.Get(ctx.Channel.Id).TryAddMessage(cmd))
+        if (!_messageCommandProcessor.TryReceived(ctx.Channel.Id,cmd))
         {
-            _logger.LogError($"cant process message command: \n{ByteBufferUtil.PrettyHexDump(byteBuffer)}");
+            _logger.LogError($"cant process message command,processor maybe un register: \n{ByteBufferUtil.PrettyHexDump(byteBuffer)}");
         }
     }
 
     private bool Authenticate(IChannelHandlerContext context, IByteBuffer message)
     {
         using (var payload = _databaseProtocolClientEngine.GetPacketCodec()
-                   .CreatePacketPayload(message, context.GetAttribute(CommonConstants.CHARSET_ATTRIBUTE_KEY).Get()))
+                   .CreatePacketPayload(message, context.Channel.GetEncoding()))
         {
             try
             {
@@ -107,10 +110,14 @@ public class ClientChannelInboundHandler : ChannelHandlerAdapter
         }
     }
 
+    /// <summary>
+    /// 当连接关闭后
+    /// </summary>
+    /// <param name="context"></param>
     public override void ChannelInactive(IChannelHandlerContext context)
     {
         context.FireChannelInactive();
         _connectionSession.Dispose();
-        MessageCommandProcessor.Instance.UnRegister(context.Channel.Id);
+        _messageCommandProcessor.UnRegister(context.Channel.Id);
     }
 }

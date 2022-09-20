@@ -8,6 +8,7 @@ using NCDC.Protocol.MySql.Payload;
 using NCDC.Protocol.Packets;
 using NCDC.ProxyClient.Codecs;
 using NCDC.ProxyServer;
+using NCDC.ProxyServer.Extensions;
 
 namespace NCDC.ProxyClientMySql.Codec;
 
@@ -82,7 +83,7 @@ public sealed class MySqlPacketCodecEngine : IPacketCodec
     public void Encode(IChannelHandlerContext context, IPacket message, IByteBuffer output)
     {
         var markWriterIndex = PrepareMessageHeader(output).MarkWriterIndex();
-        var encoding = context.Channel.GetAttribute(CommonConstants.CHARSET_ATTRIBUTE_KEY).Get();
+        var encoding = context.Channel.GetEncoding();
         var payload = new MySqlPacketPayload(markWriterIndex,encoding);
         try
         {
