@@ -17,8 +17,6 @@ public sealed class MessagePacketDecoder:ByteToMessageDecoder
 
     public MessagePacketDecoder(IPacketCodec packetCodec)
     {
-        Console.WriteLine("-----------------------------------------------------------------------------------------------MessagePacketDecoder----------------------------------------------------------------------------------------");
-
         _isDebugEnabled=_logger.IsEnabled(LogLevel.Debug);
         _packetCodec = packetCodec;
     }

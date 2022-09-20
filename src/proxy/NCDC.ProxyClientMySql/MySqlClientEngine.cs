@@ -14,9 +14,9 @@ public class MySqlClientEngine:IDatabaseProtocolClientEngine
     private readonly IPacketCodec _packetCodec;
     private readonly IAuthenticationHandler _authenticationHandler ;
 
-    public MySqlClientEngine(IClientDbConnection clientDbConnection,IPacketCodec packetCodec,IContextManager contextManager)
+    public MySqlClientEngine(IClientDbConnection clientDbConnection,IPacketCodec packetCodec,IAuthenticationHandler authenticationHandler)
     {
-        _authenticationHandler = new MySqlAuthenticationHandler(contextManager);
+        _authenticationHandler = authenticationHandler;
         _clientDbConnection = clientDbConnection;
         _packetCodec = packetCodec;
     }

@@ -74,6 +74,14 @@ public sealed class ShardingConfiguration
     /// </summary>
     public IDictionary<string, string> ExtraDataSources { get; set; } = new Dictionary<string, string>();
 
+    public IReadOnlyList<string> GetAllDataSources()
+    {
+        var list = new List<string>(ExtraDataSources.Keys.Count+1);
+        list.Add(DefaultDataSourceName);
+        list.AddRange(ExtraDataSources.Keys);
+        return list.AsReadOnly();
+    }
+
     public void AddExtraDataSource(string dataSourceName, string connectionString)
     {
         if (!ExtraDataSources.TryAdd(dataSourceName, connectionString))

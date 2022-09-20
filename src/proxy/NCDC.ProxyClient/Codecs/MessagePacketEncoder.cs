@@ -18,7 +18,6 @@ public sealed class MessagePacketEncoder:MessageToByteEncoder<IPacket>
 
     public MessagePacketEncoder(IPacketCodec packetCodec)
     {
-        Console.WriteLine("-----------------------------------------------------------------------------------------------MessagePacketEncoder----------------------------------------------------------------------------------------");
         _isDebugEnabled=_logger.IsEnabled(LogLevel.Debug);
         _packetCodec = packetCodec;
     }

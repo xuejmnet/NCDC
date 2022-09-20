@@ -16,12 +16,8 @@
                 source.Add(target);
             }
         }
-        public static void AddAll<T>(this ICollection<T> source,ICollection<T> target)
+        public static void AddAll<T>(this ICollection<T> source,IEnumerable<T> target)
         {
-            if (target.Count == 0)
-            {
-                return;
-            }
             foreach (var t in target)
             {
                 source.Add(t);

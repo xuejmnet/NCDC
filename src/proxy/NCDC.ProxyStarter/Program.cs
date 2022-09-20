@@ -4,40 +4,53 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MySqlConnector;
+using NCDC.Basic.Configurations;
+using NCDC.Basic.Metadatas;
 using NCDC.Basic.TableMetadataManagers;
+using NCDC.Enums;
 using NCDC.Host;
 using NCDC.Logger;
 using NCDC.MySqlParser;
 using NCDC.ProxyClient;
 using NCDC.ProxyClient.Abstractions;
+using NCDC.ProxyClient.Authentication;
 using NCDC.ProxyClient.Codecs;
 using NCDC.ProxyClientMySql;
+using NCDC.ProxyClientMySql.Authentication;
 using NCDC.ProxyClientMySql.ClientConnections;
 using NCDC.ProxyClientMySql.Codec;
 using NCDC.ProxyServer;
 using NCDC.ProxyServer.Abstractions;
 using NCDC.ProxyServer.Connection.Metadatas;
+using NCDC.ProxyServer.Connection.User;
 using NCDC.ProxyServer.Contexts;
 using NCDC.ProxyServer.Executors;
 using NCDC.ProxyServer.Options;
 using NCDC.ProxyServer.ServerDataReaders;
 using NCDC.ProxyServer.ServerHandlers;
+using NCDC.ShardingMerge;
+using NCDC.ShardingMerge.Abstractions;
 using NCDC.ShardingParser;
 using NCDC.ShardingRewrite;
 using NCDC.ShardingRoute;
+using NCDC.ShardingRoute.TableRoutes.Abstractions;
+using DatabaseOption = NCDC.ProxyServer.Options.DatabaseOption;
+using DataSourceOption = NCDC.ProxyServer.Options.DataSourceOption;
+using UserOption = NCDC.ProxyServer.Options.UserOption;
 
 namespace NCDC.ProxyStarter
 {
     class Program
     {
         private static IConfiguration _configuration =
-            new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("appsettings.json").Build();
+            new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("appsettings.json")
+                .Build();
 
         private static ILoggerFactory _loggerFactory = LoggerFactory.Create(builder =>
         {
             builder
                 .AddSimpleConsole(c => c.TimestampFormat = "[yyyy-MM-dd HH:mm:ss]")
-                .AddFilter(level=>level>=LogLevel.Debug);
+                .AddFilter(level => level >= LogLevel.Debug);
         });
 
         private const int DEFAULT_PORT = 3307;
@@ -75,34 +88,44 @@ Start Time:{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}");
 
                 return proxyOption;
             });
-            serivces.AddSingleton<IContextManager,DefaultContextManager>();
-            serivces.AddSingleton<IServiceHost,DefaultServiceHost>();
-            serivces.AddSingleton<IPacketCodec,MySqlPacketCodecEngine>();
-            serivces.AddSingleton<IDatabaseProtocolClientEngine,MySqlClientEngine>();
-            serivces.AddSingleton<IClientDbConnection,MySqlClientDbConnection>();
-            serivces.AddSingleton<IServerHandlerFactory,ServerHandlerFactory>();
-            serivces.AddSingleton<IServerDataReaderFactory,ServerDataReaderFactory>();
+            serivces.AddSingleton<IContextManager, DefaultContextManager>();
+            serivces.AddSingleton<IServiceHost, DefaultServiceHost>();
+            serivces.AddSingleton<IPacketCodec, MySqlPacketCodecEngine>();
+            serivces.AddSingleton<IDatabaseProtocolClientEngine, MySqlClientEngine>();
+            serivces.AddSingleton<IClientDbConnection, MySqlClientDbConnection>();
+            serivces.AddSingleton<IServerHandlerFactory, ServerHandlerFactory>();
+            serivces.AddSingleton<IServerDataReaderFactory, ServerDataReaderFactory>();
+            serivces.AddSingleton<IAuthenticationHandler, MySqlAuthenticationHandler>();
+            serivces.AddSingleton<IUserManager, DefaultUserManager>();
             serivces.Configure<ShardingProxyOption>(_configuration);
-            
-         var logicDatabase = new LogicDatabase("xxa");
-         logicDatabase.AddDataSource("ds0", "123", MySqlConnectorFactory.Instance, true);
-         var shardingRuntimeContext = new ShardingRuntimeContext("xxa");
-         shardingRuntimeContext.Services.AddSingleton<ILogicDatabase>(logicDatabase);
-         shardingRuntimeContext.Services.AddSingleton<ITableMetadataManager,TableMetadataManager>();
-         shardingRuntimeContext.Services.AddSingleton<IShardingExecutionContextFactory,ShardingExecutionContextFactory>();
-         shardingRuntimeContext.Services.AddShardingParser();
-         shardingRuntimeContext.Services.AddMySqlParser();
-         shardingRuntimeContext.Services.AddShardingRoute();
-         shardingRuntimeContext.Services.AddShardingRewrite();
-         serivces.AddSingleton(sp =>
-         {
-             shardingRuntimeContext.Build();
-             return shardingRuntimeContext;
-         });
+            var shardingConfiguration = new ShardingConfiguration();
+            shardingConfiguration.AddDefaultDataSource("ds0","server=127.0.0.1;port=3306;database=test;userid=root;password=root;");
+
+            var logicDatabase = new LogicDatabase("xxa");
+            logicDatabase.AddDataSource("ds0", "server=127.0.0.1;port=3306;database=test;userid=root;password=root;", MySqlConnectorFactory.Instance, true);
+   
+            var shardingRuntimeContext = new ShardingRuntimeContext("xxa");
+            shardingRuntimeContext.Services.AddSingleton<ILogicDatabase>(logicDatabase);
+            shardingRuntimeContext.Services.AddSingleton<ITableMetadataManager, TableMetadataManager>();
+            shardingRuntimeContext.Services.AddSingleton<IDataReaderMergerFactory, DataReaderMergerFactory>();
+            shardingRuntimeContext.Services.AddSingleton<IDatabaseSettings>(sp=>new DatabaseSettings("xxa",DatabaseTypeEnum.MySql));
+            shardingRuntimeContext.Services
+                .AddSingleton<IShardingExecutionContextFactory, ShardingExecutionContextFactory>();
+            shardingRuntimeContext.Services.AddShardingParser();
+            shardingRuntimeContext.Services.AddMySqlParser();
+            shardingRuntimeContext.Services.AddShardingRoute();
+            shardingRuntimeContext.Services.AddShardingRewrite();
+            shardingRuntimeContext.Services.AddSingleton(sp => shardingConfiguration);
+            serivces.AddSingleton<IRuntimeContext>(sp =>
+            {
+                shardingRuntimeContext.Build();
+                return shardingRuntimeContext;
+            });
             var buildServiceProvider = serivces.BuildServiceProvider();
+            var userManager = buildServiceProvider.GetRequiredService<IUserManager>();
+            userManager.AddUser(new AuthUser("xjm", "abc", "%"));
             var shardingProxyOption = buildServiceProvider.GetRequiredService<ShardingProxyOption>();
-            
-            await StartAsync(buildServiceProvider,shardingProxyOption, GetPort(args));
+            await StartAsync(buildServiceProvider, shardingProxyOption, GetPort(args));
         }
 
         private static int? GetPort(string[] args)
@@ -115,17 +138,17 @@ Start Time:{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}");
             return int.TryParse(args[0], out var port) ? port : null;
         }
 
-        private static async Task StartAsync(IServiceProvider serviceProvider,ShardingProxyOption option, int? port)
+        private static async Task StartAsync(IServiceProvider serviceProvider, ShardingProxyOption option, int? port)
         {
             var host = serviceProvider.GetRequiredService<IServiceHost>();
-           await host.StartAsync();
-           while (Console.ReadLine()!="quit")
-           {
-               Console.WriteLine("unknown input params");
-           }
+            await host.StartAsync();
+            while (Console.ReadLine() != "quit")
+            {
+                Console.WriteLine("unknown input params");
+            }
 
-           await host.StopAsync();
-           Console.WriteLine("open connector safe quit");
+            await host.StopAsync();
+            Console.WriteLine("open connector safe quit");
         }
 
         static ProxyRuntimeOption BuildRuntimeOption()
@@ -145,6 +168,49 @@ Start Time:{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}");
             databaseOption.DataSources.Add(dataSourceOption);
             proxyRuntimeOption.Databases.Add(databaseOption);
             return proxyRuntimeOption;
+        }
+    }
+    public class TestModTableRoute : AbstractOperatorTableRoute
+    {
+        public TestModTableRoute(ITableMetadataManager tableMetadataManager) : base(tableMetadataManager)
+        {
+        }
+    
+        public override string TableName => "sysusermod";
+        public override Func<string, bool> GetRouteToFilter(IComparable shardingValue, ShardingOperatorEnum shardingOperator)
+        {
+            var tail = FormatTableName(shardingValue);
+            var table = $"{TableName}{GetTableMetadata().TableSeparator}{tail}";
+            
+            switch (shardingOperator)
+            {
+                case ShardingOperatorEnum.EQUAL: return t => t.EndsWith(table);
+                default:
+                {
+                    return t => true;
+                }
+            }
+            
+        }
+    
+        public string FormatTableName(IComparable shardingValue)
+        {
+            var shardingKey = $"{shardingValue}";
+            var stringHashCode = GetStringHashCode(shardingKey)%3;
+            return stringHashCode.ToString().PadLeft(2, '0');
+        }
+        public static int GetStringHashCode(string value)
+        {
+            Check.NotNull(value, nameof(value));
+            int h = 0; // 默认值是0
+            if (value.Length > 0)
+            {
+                for (int i = 0; i < value.Length; i++)
+                {
+                    h = 31 * h + value[i]; // val[0]*31^(n-1) + val[1]*31^(n-2) + ... + val[n-1]
+                }
+            }
+            return h;
         }
     }
 }

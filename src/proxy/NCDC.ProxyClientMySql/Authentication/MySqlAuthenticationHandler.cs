@@ -22,10 +22,12 @@ public sealed class MySqlAuthenticationHandler:IAuthenticationHandler<MySqlPacke
 { 
     private static readonly MySqlStatusFlagEnum DEFAULT_STATUS_FLAG = MySqlStatusFlagEnum.SERVER_STATUS_AUTOCOMMIT;
     private readonly IContextManager _contextManager;
+    private readonly IUserManager _userManager;
 
-    public MySqlAuthenticationHandler(IContextManager  contextManager)
+    public MySqlAuthenticationHandler(IContextManager  contextManager,IUserManager userManager)
     {
         _contextManager = contextManager;
+        _userManager = userManager;
     }
     public int Handshake(IChannelHandlerContext context, MySqlAuthContext authContext)
     { 
@@ -118,12 +120,12 @@ public sealed class MySqlAuthenticationHandler:IAuthenticationHandler<MySqlPacke
         {
             throw new InvalidOperationException("unknown username");
         }
-        var authUser = _contextManager.TryGetUser(authContext.Username);
 
-        if (authUser == null)
+        if (!_userManager.HasUser(authContext.Username))
         {
             return MySqlServerErrorCode.ER_ACCESS_DENIED_ERROR_ARG3;
         }
+        var authUser = _userManager.GetUser(authContext.Username);
 
         var mySqlAuthenticator = new MySqlNativePasswordAuthenticator(authContext.AuthPluginData);
         if (!mySqlAuthenticator.Authenticate(authUser, authContext.AuthResponse))
