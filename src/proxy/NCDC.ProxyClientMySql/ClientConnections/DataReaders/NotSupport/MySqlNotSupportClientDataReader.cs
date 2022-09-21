@@ -19,7 +19,8 @@ public sealed class MySqlNotSupportClientDataReader:IClientDataReader<MySqlPacke
     }
     public IEnumerable<IPacket<MySqlPacketPayload>> SendCommand()
     {
-        yield return new MySqlErrPacket(1, CommonSqlErrorCode.UNSUPPORTED_COMMAND_ARGS1, _commandType);
+        // yield return new MySqlErrPacket(1, CommonSqlErrorCode.UNSUPPORTED_COMMAND_ARGS1, _commandType);
+        yield return new MySqlOkPacket(1,MySqlStatusFlagEnum.SERVER_STATUS_AUTOCOMMIT);
         // return new IPacket<MySqlPacketPayload>[]
         // {
         //    

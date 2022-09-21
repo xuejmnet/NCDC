@@ -49,20 +49,20 @@ namespace NCDC.CommandParser.SqlParseEngines
 
         private ISqlCommand Parse0(string sql, bool useCache)
         {
-            // if (useCache)
-            // {
-            //     var sqlCommand = _cache.GetSqlCommand(sql);
-            //     if (sqlCommand != null)
-            //         return sqlCommand;
-            // }
+            if (useCache)
+            {
+                var sqlCommand = _cache.GetSqlCommand(sql);
+                if (sqlCommand != null)
+                    return sqlCommand;
+            }
             IParseTree parseTree = _sqlParserExecutor.Parse(sql).GetRootNode();
             var visitorRule = VisitorRule.ValueOf(parseTree.GetType());
             var parseTreeVisitor = CreateParseTreeVisitor(_sqlParserConfiguration,VisitorRule.Get(visitorRule).SqlCommandType);
             ISqlCommand result = (ISqlCommand)parseTreeVisitor.Visit(parseTree);
-            // if (useCache)
-            // {
-            //     _cache.Add(sql, result);
-            // }
+            if (useCache)
+            {
+                _cache.Add(sql, result);
+            }
             return result;
         }
         private  IParseTreeVisitor<IASTNode> CreateParseTreeVisitor(ISqlParserConfiguration configuration, SqlCommandTypeEnum type)

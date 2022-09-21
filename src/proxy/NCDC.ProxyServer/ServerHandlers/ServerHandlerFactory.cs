@@ -29,7 +29,7 @@ public sealed class ServerHandlerFactory:IServerHandlerFactory
         var trimCommentSql = SqlUtil.TrimComment(sql);
         if (string.IsNullOrEmpty(trimCommentSql))
         {
-            return new SkipServerHandler();
+            return SkipServerHandler.Default;
         }
 
         CheckNotSupportCommand(sqlCommand);

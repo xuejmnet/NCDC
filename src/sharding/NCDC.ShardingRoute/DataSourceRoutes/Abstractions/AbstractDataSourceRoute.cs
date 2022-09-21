@@ -16,6 +16,7 @@ public abstract class AbstractDataSourceRoute:IDataSourceRoute
     }
 
     public abstract string TableName { get; }
+    public virtual string RouteIdentity => GetType().FullName ?? $"{GetType()}";
     public TableMetadata GetTableMetadata()
     {
         return _tableMetadata;

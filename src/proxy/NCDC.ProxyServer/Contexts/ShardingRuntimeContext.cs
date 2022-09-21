@@ -5,6 +5,7 @@ using NCDC.CommandParser.Abstractions;
 using NCDC.ProxyServer.Abstractions;
 using NCDC.ProxyServer.Connection.Metadatas;
 using NCDC.ProxyServer.Executors;
+using NCDC.ProxyServer.ServiceProviders;
 using NCDC.ShardingMerge.Abstractions;
 using NCDC.ShardingRoute.Abstractions;
 
@@ -76,6 +77,12 @@ public sealed class ShardingRuntimeContext:IRuntimeContext
     public ISqlCommandParser GetSqlCommandParser()
     {
         return _sqlCommandParser??=GetRequiredService<ISqlCommandParser>();
+    }
+
+    private IShardingProvider? _shardingProvider;
+    public IShardingProvider GetShardingProvider()
+    {
+        return _shardingProvider??=GetRequiredService<IShardingProvider>();
     }
 
     public void Build()

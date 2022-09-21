@@ -159,10 +159,10 @@ Start Time:{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}");
                     { "name", new ColumnMetadata("name", 1, "varchar", false, false, true) },
                     { "age", new ColumnMetadata("age", 2, "int", false, false, true) },
                 });
-                         tableMetadata.SetShardingTableColumn("id");
-         tableMetadata.AddActualTableWithDataSource("ds0","sysusermod_00");
-         tableMetadata.AddActualTableWithDataSource("ds0","sysusermod_01");
-         tableMetadata.AddActualTableWithDataSource("ds0","sysusermod_02");
+                tableMetadata.SetShardingTableColumn("id");
+                tableMetadata.AddActualTableWithDataSource("ds0", "sysusermod_00");
+                tableMetadata.AddActualTableWithDataSource("ds0", "sysusermod_01");
+                tableMetadata.AddActualTableWithDataSource("ds0", "sysusermod_02");
                 tableMetadataManager.AddTableMetadata(tableMetadata);
                 var tableRouteManager = runtimeContext.GetTableRouteManager();
                 var testModTableRoute = runtimeContext.CreateInstance<TestModTableRoute>();

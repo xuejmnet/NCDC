@@ -4,6 +4,7 @@ using NCDC.CommandParser.Abstractions;
 using NCDC.ProxyServer.Abstractions;
 using NCDC.ProxyServer.Connection.Metadatas;
 using NCDC.ProxyServer.Executors;
+using NCDC.ProxyServer.ServiceProviders;
 using NCDC.ShardingMerge.Abstractions;
 using NCDC.ShardingRoute.Abstractions;
 
@@ -18,6 +19,7 @@ public interface IRuntimeContext
     IShardingExecutionContextFactory GetShardingExecutionContextFactory();
     IDataReaderMergerFactory GetDataReaderMergerFactory();
     ISqlCommandParser GetSqlCommandParser();
+    IShardingProvider GetShardingProvider();
     void Build();
     object? GetService(Type serviceType);
     TService? GetService<TService>();

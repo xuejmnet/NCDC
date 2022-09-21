@@ -7,11 +7,7 @@ namespace NCDC.ProxyServer.Contexts;
 
 public sealed class DefaultContextManager:IContextManager
 {
-    private readonly ConcurrentDictionary<string, IRuntimeContext> _runtimeContexts;
-    public DefaultContextManager(IEnumerable<IRuntimeContext> runtimeContexts)
-    {
-        _runtimeContexts = new ConcurrentDictionary<string, IRuntimeContext>(runtimeContexts.ToDictionary(o=>o.DatabaseName,o=>o));
-    }
+    private readonly ConcurrentDictionary<string, IRuntimeContext> _runtimeContexts=new();
     public bool AddRuntimeContext(string databaseName,IRuntimeContext runtimeContext)
     {
         throw new NotImplementedException();

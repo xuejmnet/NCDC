@@ -16,6 +16,7 @@ public abstract class AbstractTableRoute:ITableRoute
                          throw new ShardingConfigException($"cant find table metadata:{tableName}");
     }
     public abstract string TableName { get; }
+    public virtual string RouteIdentity => GetType().FullName ?? $"{GetType()}";
     public TableMetadata GetTableMetadata()
     {
         return _tableMetadata;
@@ -23,4 +24,5 @@ public abstract class AbstractTableRoute:ITableRoute
 
     public abstract ICollection<TableRouteUnit> Route(DataSourceRouteResult dataSourceRouteResult,SqlParserResult sqlParserResult);
 
+   
 }
