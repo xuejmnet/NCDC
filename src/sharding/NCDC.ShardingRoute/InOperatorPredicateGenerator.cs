@@ -1,5 +1,6 @@
 using NCDC.CommandParser.Segment.DML.Predicate.Value;
 using NCDC.Enums;
+using NCDC.Plugin.Enums;
 using NCDC.ShardingAdoNet;
 using NCDC.ShardingParser;
 using NCDC.ShardingRoute.Expressions;

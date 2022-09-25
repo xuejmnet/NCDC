@@ -15,5 +15,5 @@ public interface IDataSourceRouteManager
     /// </summary>
     /// <param name="dataSourceRoute"></param>
     /// <returns></returns>
-    bool AddDataSourceRoute(IDataSourceRoute dataSourceRoute);
+    bool AddRoute(IDataSourceRoute dataSourceRoute);
 }

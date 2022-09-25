@@ -1,6 +1,6 @@
 namespace NCDC.ProxyServer.Abstractions;
 
-public interface IInitializer
+public interface IAppInitializer
 {
     Task InitializeAsync();
 }

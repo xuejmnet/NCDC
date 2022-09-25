@@ -1,4 +1,4 @@
-namespace NCDC.ShardingRoute.TableRoutes;
+namespace NCDC.Plugin;
 
 public sealed class TableRouteUnit
 {

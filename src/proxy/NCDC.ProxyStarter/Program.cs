@@ -11,6 +11,7 @@ using NCDC.Enums;
 using NCDC.Host;
 using NCDC.Logger;
 using NCDC.MySqlParser;
+using NCDC.Plugin.Enums;
 using NCDC.ProxyClient;
 using NCDC.ProxyClient.Abstractions;
 using NCDC.ProxyClient.Authentication;
@@ -200,7 +201,7 @@ Start Time:{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}");
         }
     }
 
-    public class TestModTableRoute : AbstractOperatorTableRoute
+    public class TestModTableRoute : ShardingTableRoute
     {
         public TestModTableRoute(ITableMetadataManager tableMetadataManager) : base(tableMetadataManager)
         {

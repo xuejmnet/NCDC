@@ -53,7 +53,7 @@ public sealed class DataSourceRouteManager:IDataSourceRouteManager
         return _dataSourceRoutes.Values.ToImmutableList();
     }
 
-    public bool AddDataSourceRoute(IDataSourceRoute dataSourceRoute)
+    public bool AddRoute(IDataSourceRoute dataSourceRoute)
     {
         var tableMetadata = _tableMetadataManager.TryGet(dataSourceRoute.TableName);
         if (tableMetadata == null)

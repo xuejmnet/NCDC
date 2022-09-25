@@ -1,4 +1,4 @@
-namespace NCDC.ShardingRoute.DataSourceRoutes;
+namespace NCDC.Plugin;
 
 public class DataSourceRouteResult
 {

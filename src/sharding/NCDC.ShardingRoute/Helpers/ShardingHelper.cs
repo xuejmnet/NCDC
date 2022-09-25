@@ -1,5 +1,6 @@
 using NCDC.Basic.TableMetadataManagers;
 using NCDC.Enums;
+using NCDC.Plugin.Enums;
 using NCDC.ShardingParser;
 using NCDC.ShardingRoute.Expressions;
 

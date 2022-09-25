@@ -7,6 +7,7 @@ using NCDC.ShardingParser;
 using NCDC.ShardingRoute.Expressions;
 using NCDC.ShardingRoute.Helpers;
 using NCDC.Logger;
+using NCDC.Plugin.Enums;
 
 namespace NCDC.ShardingRoute;
 

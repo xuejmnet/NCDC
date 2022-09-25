@@ -55,6 +55,11 @@ public sealed class ShardingRuntimeContext:IRuntimeContext
       return _tableMetadataManager??=GetRequiredService<ITableMetadataManager>();
     }
 
+    private IDataSourceRouteManager? _dataSourceRouteManager;
+    public IDataSourceRouteManager GetDataSourceRouteManager()
+    {
+        return _dataSourceRouteManager??=GetRequiredService<IDataSourceRouteManager>();
+    }
     private ITableRouteManager? _tableRouteManager;
     public ITableRouteManager GetTableRouteManager()
     {
@@ -96,7 +101,7 @@ public sealed class ShardingRuntimeContext:IRuntimeContext
                 return;
             isInited = true;
             _serviceProvider = Services.BuildServiceProvider();
-            // _serviceProvider.GetRequiredService<IShardingInitializer>().Build();
+            // _serviceProvider.GetRequiredService<IAppInitializer>().Build();
             InitFieldValue();
         }
     }
@@ -142,6 +147,7 @@ public sealed class ShardingRuntimeContext:IRuntimeContext
         GetShardingExecutionContextFactory();
         GetDataReaderMergerFactory();
         GetSqlCommandParser();
+        GetDataSourceRouteManager();
         GetTableRouteManager();
     }
 }

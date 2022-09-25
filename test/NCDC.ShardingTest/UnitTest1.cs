@@ -54,7 +54,7 @@
 //         var shardingExecutionContext = shardingExecutionContextFactory.Create(sql);
 //     }
 //
-//     public class TestModTableRoute : AbstractOperatorTableRoute
+//     public class TestModTableRoute : ShardingTableRoute
 //     {
 //         public TestModTableRoute(ITableMetadataManager tableMetadataManager) : base(tableMetadataManager)
 //         {

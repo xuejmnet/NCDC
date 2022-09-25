@@ -1,3 +1,5 @@
+using NCDC.Plugin;
+
 namespace NCDC.ShardingRoute.TableRoutes;
 
 public sealed class TableRouteResult

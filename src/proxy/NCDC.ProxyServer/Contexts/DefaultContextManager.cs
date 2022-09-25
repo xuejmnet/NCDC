@@ -1,5 +1,6 @@
 using System.Collections.Concurrent;
 using System.Collections.Immutable;
+using System.Diagnostics.CodeAnalysis;
 using NCDC.Exceptions;
 using NCDC.ProxyServer.Connection.User;
 
@@ -8,9 +9,26 @@ namespace NCDC.ProxyServer.Contexts;
 public sealed class DefaultContextManager:IContextManager
 {
     private readonly ConcurrentDictionary<string, IRuntimeContext> _runtimeContexts=new();
-    public bool AddRuntimeContext(string databaseName,IRuntimeContext runtimeContext)
+    public bool AddRuntimeContext(IRuntimeContext runtimeContext)
     {
-        throw new NotImplementedException();
+        if (_runtimeContexts.ContainsKey(runtimeContext.DatabaseName))
+        {
+            return false;
+        }
+
+        return _runtimeContexts.TryAdd(runtimeContext.DatabaseName, runtimeContext);
+    }
+
+    public bool RemoveRuntimeContext(string databaseName, [MaybeNullWhen(false)] out IRuntimeContext runtimeContext)
+    {
+       
+        if (!_runtimeContexts.ContainsKey(databaseName))
+        {
+            runtimeContext = default;
+            return false;
+        }
+
+        return _runtimeContexts.Remove(databaseName, out runtimeContext);
     }
 
     public IRuntimeContext GetRuntimeContext(string databaseName)

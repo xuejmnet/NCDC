@@ -1,31 +1,25 @@
 using NCDC.Basic.TableMetadataManagers;
+using NCDC.Plugin.DataSourceRouteRules;
 using NCDC.ShardingParser;
 
 namespace NCDC.ShardingRoute.DataSourceRoutes.Abstractions;
 
 public abstract class AbstractFilterDataSourceRoute:AbstractDataSourceRoute
 {
-    protected AbstractFilterDataSourceRoute(ITableMetadataManager tableMetadataManager) : base(tableMetadataManager)
+    protected AbstractFilterDataSourceRoute(ITableMetadataManager tableMetadataManager,IDataSourceRouteRule dataSourceRouteRule) : base(tableMetadataManager,dataSourceRouteRule)
     {
     }
     public override ICollection<string> Route(SqlParserResult sqlParserResult)
     {
         var dataSourceNames = GetTableMetadata().DataSources;
-        var beforeDataSources = BeforeFilterDataSource(dataSourceNames);
+        var dataSourceRouteRule = GetRouteRule();
+        var beforeDataSources = dataSourceRouteRule.BeforeFilterDataSource(dataSourceNames);
         var routeDataSource = Route0(beforeDataSources,sqlParserResult);
-        return AfterFilterDataSource(dataSourceNames, beforeDataSources, routeDataSource);
+        return dataSourceRouteRule.AfterFilterDataSource(dataSourceNames, beforeDataSources, routeDataSource);
     }
 
     protected abstract ICollection<string> Route0(ICollection<string> beforeDataSources,SqlParserResult sqlParserResult);
 
-    protected virtual ICollection<string> BeforeFilterDataSource(ICollection<string> allDataSource)
-    {
-        return allDataSource;
-    }
-    protected virtual ICollection<string> AfterFilterDataSource(ICollection<string> allDataSources,ICollection<string> beforeDataSources,
-        ICollection<string> filterDataSources)
-    {
-        return filterDataSources;
-    }
+   
 
 }

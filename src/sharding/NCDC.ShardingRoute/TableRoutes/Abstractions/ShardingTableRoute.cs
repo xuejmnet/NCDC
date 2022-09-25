@@ -1,6 +1,9 @@
 using NCDC.Basic.TableMetadataManagers;
 using NCDC.Enums;
 using NCDC.Exceptions;
+using NCDC.Plugin;
+using NCDC.Plugin.Enums;
+using NCDC.Plugin.TableRouteRules;
 using NCDC.ShardingParser;
 using NCDC.ShardingRoute.DataSourceRoutes;
 using NCDC.ShardingRoute.Extensions;
@@ -8,12 +11,13 @@ using NCDC.ShardingRoute.Helpers;
 
 namespace NCDC.ShardingRoute.TableRoutes.Abstractions;
 
-public abstract class AbstractOperatorTableRoute:AbstractFilterTableRoute
+public  class ShardingTableRoute:AbstractFilterTableRoute
 {
-    public AbstractOperatorTableRoute(ITableMetadataManager tableMetadataManager) : base(tableMetadataManager)
+    public ShardingTableRoute(ITableMetadataManager tableMetadataManager,ITableRouteRule tableRouteRule) : base(tableMetadataManager,tableRouteRule)
     {
     }
 
+    public override string TableName => GetRouteRule().TableName;
 
     protected override ICollection<TableRouteUnit> Route0(DataSourceRouteResult dataSourceRouteResult,ICollection<string> beforeTableNames, SqlParserResult sqlParserResult)
     {
@@ -24,38 +28,25 @@ public abstract class AbstractOperatorTableRoute:AbstractFilterTableRoute
             .Select(ParseRouteWithTableName).ToList();
     }
 
-    protected virtual Func<string, bool> GetRouteFilter(IComparable shardingValue,
+    private  Func<string, bool> GetRouteFilter(IComparable shardingValue,
         ShardingOperatorEnum shardingOperator, string columnName)
     {
-        if (GetTableMetadata().IsMainShardingTableColumn(columnName))
-        {
-            return GetRouteToFilter(shardingValue, shardingOperator);
-        }
-
-        return GetExtraRouteFilter(shardingValue, shardingOperator, columnName);
+        var isMainShardingTableColumn = GetTableMetadata().IsMainShardingTableColumn(columnName);
+        return GetRouteRule().RouteFilter(shardingValue,shardingOperator,columnName,isMainShardingTableColumn);
     }
-    public abstract Func<string, bool> GetRouteToFilter(IComparable shardingValue,
-        ShardingOperatorEnum shardingOperator);
-
-    public virtual Func<string, bool> GetExtraRouteFilter(IComparable shardingValue,
-        ShardingOperatorEnum shardingOperator, string columnName)
-    {
-        throw new NotImplementedException(columnName);
-    }
-
-    protected virtual IEnumerable<string> FilterTableNameWithDataSourceResult(
+    private  IEnumerable<string> FilterTableNameWithDataSourceResult(
         DataSourceRouteResult dataSourceRouteResult,ICollection<string> beforeTableNames)
     {
         return beforeTableNames.Where(tableName =>
             dataSourceRouteResult.IntersectDataSources.Contains(ParseDataSourceWithTableName(tableName)));
     }
 
-    protected virtual string ParseDataSourceWithTableName(string tableName)
+    private string ParseDataSourceWithTableName(string tableName)
     {
         return tableName.Split(".")[0];
     }
 
-    protected virtual TableRouteUnit ParseRouteWithTableName(string tableName)
+    private TableRouteUnit ParseRouteWithTableName(string tableName)
     {
         if (!tableName.Contains("."))
         {
@@ -65,4 +56,5 @@ public abstract class AbstractOperatorTableRoute:AbstractFilterTableRoute
         var tableInfos = tableName.Split(".");
         return new TableRouteUnit(tableInfos[0], TableName,tableInfos[1]);
     }
+
 }

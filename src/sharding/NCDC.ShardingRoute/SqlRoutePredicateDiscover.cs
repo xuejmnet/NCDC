@@ -11,6 +11,7 @@ using NCDC.ShardingParser.Command;
 using NCDC.ShardingParser.Command.DML;
 using NCDC.ShardingRoute.Expressions;
 using NCDC.Extensions;
+using NCDC.Plugin.Enums;
 
 namespace NCDC.ShardingRoute;
 

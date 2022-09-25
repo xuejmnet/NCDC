@@ -1,6 +1,6 @@
 using System.ComponentModel;
 
-namespace NCDC.Enums;
+namespace NCDC.Plugin.Enums;
 
 
 

@@ -15,6 +15,7 @@ public interface IRuntimeContext
     string DatabaseName { get; }
     ILogicDatabase GetDatabase();
     ITableMetadataManager GetTableMetadataManager();
+    IDataSourceRouteManager GetDataSourceRouteManager();
     ITableRouteManager GetTableRouteManager();
     IShardingExecutionContextFactory GetShardingExecutionContextFactory();
     IDataReaderMergerFactory GetDataReaderMergerFactory();
