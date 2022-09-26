@@ -94,15 +94,11 @@ Start Time:{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}");
             serivces.AddEFCoreConfiguration();
             serivces.AddSingleton<IMessageCommandProcessor, TaskMessageCommandProcessor>();
             serivces.AddSingleton<IMessageExecutorFactory, MessageExecutorFactory>();
-            serivces.AddSingleton<IContextManager, DefaultContextManager>();
             serivces.AddSingleton<IServiceHost, DefaultServiceHost>();
             serivces.AddSingleton<IPacketCodec, MySqlPacketCodecEngine>();
             serivces.AddSingleton<IDatabaseProtocolClientEngine, MySqlClientEngine>();
             serivces.AddSingleton<IClientDbConnection, MySqlClientDbConnection>();
-            serivces.AddSingleton<IServerHandlerFactory, ServerHandlerFactory>();
-            serivces.AddSingleton<IServerDataReaderFactory, ServerDataReaderFactory>();
             serivces.AddSingleton<IAuthenticationHandler, MySqlAuthenticationHandler>();
-            serivces.AddSingleton<IUserManager, DefaultUserManager>();
             serivces.Configure<ShardingProxyOption>(_configuration);
             var shardingConfiguration = new ShardingConfiguration();
             shardingConfiguration.AddDefaultDataSource("ds0",
