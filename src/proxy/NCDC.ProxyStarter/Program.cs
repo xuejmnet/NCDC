@@ -91,6 +91,7 @@ Start Time:{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}");
 
                 return proxyOption;
             });
+            serivces.AddEFCoreConfiguration();
             serivces.AddSingleton<IMessageCommandProcessor, TaskMessageCommandProcessor>();
             serivces.AddSingleton<IMessageExecutorFactory, MessageExecutorFactory>();
             serivces.AddSingleton<IContextManager, DefaultContextManager>();

@@ -24,7 +24,10 @@ public sealed class VirtualDataSource : IVirtualDataSource
         DefaultConnectionString = shardingConfigOption.DefaultConnectionString ??
                                   throw new ArgumentNullException(
                                       $"{nameof(ShardingConfigOption)}.{nameof(shardingConfigOption.DefaultConnectionString)}");
-        AddDataSource(DefaultDataSourceName, DefaultConnectionString, true);
+        foreach (var (dataSourceName, connectionString) in shardingConfigOption.DataSources)
+        {
+            AddDataSource(dataSourceName, connectionString);
+        }
     }
 
     public string GetConnectionString(string dataSourceName)
@@ -54,19 +57,10 @@ public sealed class VirtualDataSource : IVirtualDataSource
         return dataSource.IsDefault;
     }
 
-    public bool AddDataSource(string dataSourceName, string connectionString, bool isDefault)
+    public bool AddDataSource(string dataSourceName, string connectionString)
     {
-        if (isDefault)
-        {
-            if (dataSourceName != DefaultDataSourceName)
-            {
-                throw new ShardingInvalidOperationException(
-                    $"{nameof(AddDataSource)} {nameof(DefaultDataSourceName)}:[{dataSourceName}] already exists.");
-            }
-        }
-
         return _dataSources.TryAdd(dataSourceName,
-            new DataSource(dataSourceName, connectionString, isDefault, _dbProviderFactory.Create()));
+            new DataSource(dataSourceName, connectionString, dataSourceName == DefaultDataSourceName, _dbProviderFactory.Create()));
     }
 
     public bool Exists(string dataSourceName)

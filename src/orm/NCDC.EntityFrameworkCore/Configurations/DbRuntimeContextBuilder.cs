@@ -1,11 +1,14 @@
 using Microsoft.Extensions.DependencyInjection;
 using NCDC.Basic.TableMetadataManagers;
+using NCDC.Enums;
 using NCDC.MySqlParser;
+using NCDC.ProxyServer.Abstractions;
 using NCDC.ProxyServer.Configurations;
-using NCDC.ProxyServer.Connection.Metadatas;
 using NCDC.ProxyServer.Contexts;
 using NCDC.ProxyServer.Databases;
+using NCDC.ProxyServer.DbProviderFactories;
 using NCDC.ProxyServer.Executors;
+using NCDC.ProxyServer.Options;
 using NCDC.ShardingParser;
 using NCDC.ShardingRewrite;
 using NCDC.ShardingRoute;
@@ -25,21 +28,28 @@ public sealed class DbRuntimeContextBuilder:IRuntimeContextBuilder
     public IRuntimeContext Build(string databaseName)
     {
         var shardingConfigOption = _shardingConfigOptionBuilder.Build(databaseName);
+   
+        var shardingRuntimeContext = new ShardingRuntimeContext(databaseName);
+       
+        shardingRuntimeContext.Services.AddSingleton(shardingConfigOption);
+        shardingRuntimeContext.Services.AddSingleton<IDbProviderFactory,ProxyDbProviderFactory>();
+        shardingRuntimeContext.Services.AddSingleton<IVirtualDataSource,VirtualDataSource>();
+        shardingRuntimeContext.Services.AddSingleton<ITableMetadataManager,TableMetadataManager>();
+        shardingRuntimeContext.Services.AddSingleton<IShardingExecutionContextFactory,ShardingExecutionContextFactory>();
+        shardingRuntimeContext.Services.AddShardingParser();
+        shardingRuntimeContext.Services.AddMySqlParser();
+        shardingRuntimeContext.Services.AddShardingRoute();
+        shardingRuntimeContext.Services.AddShardingRewrite();
+        shardingRuntimeContext.Build();
+        var tableMetadataManager = shardingRuntimeContext.GetTableMetadataManager();
         var tableMetadataMap = _tableMetadataBuilder.Build(databaseName);
-        var tableMetadataManager = new TableMetadataManager();
-        IVirtualDataSource
+        
         foreach (var tableName in tableMetadataMap.Keys)
         {
             tableMetadataManager.AddTableMetadata(tableMetadataMap[tableName]);
         }
-        var shardingRuntimeContext = new ShardingRuntimeContext(shardingConfigOption.DatabaseName);
-            
-         shardingRuntimeContext.Services.AddSingleton<IVirtualDataSource>(logicDatabase);
-         shardingRuntimeContext.Services.AddSingleton<ITableMetadataManager>(sp=>tableMetadataManager);
-         shardingRuntimeContext.Services.AddSingleton<IShardingExecutionContextFactory,TestShardingExecutionContextFactory>();
-         shardingRuntimeContext.Services.AddShardingParser();
-         shardingRuntimeContext.Services.AddMySqlParser();
-         shardingRuntimeContext.Services.AddShardingRoute();
-         shardingRuntimeContext.Services.AddShardingRewrite();
+
+        return shardingRuntimeContext;
     }
+
 }

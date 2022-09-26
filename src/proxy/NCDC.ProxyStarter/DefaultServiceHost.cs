@@ -22,8 +22,8 @@ public class DefaultServiceHost:IServiceHost
  
     // private readonly ICommandListener _commandListener= new DefaultCommandListener();
     private readonly IChannelHandler _connectorManagerHandler= new ConnectorManagerHandler();
-    private readonly ShardingProxyOption _shardingProxyOption;
     private readonly IPacketCodec _packetCodec;
+    private readonly IAppConfiguration _appConfiguration;
     private readonly IDatabaseProtocolClientEngine _databaseProtocolClientEngine;
     private readonly IContextManager _contextManager;
 
@@ -43,9 +43,9 @@ public class DefaultServiceHost:IServiceHost
     private Bootstrap _clientBootstrap;
     private IChannelHandler _encoderHandler;
 
-    public DefaultServiceHost(ShardingProxyOption shardingProxyOption,IDatabaseProtocolClientEngine databaseProtocolClientEngine,IContextManager contextManager,IMessageCommandProcessor messageCommandProcessor)
+    public DefaultServiceHost(IAppConfiguration appConfiguration,IDatabaseProtocolClientEngine databaseProtocolClientEngine,IContextManager contextManager,IMessageCommandProcessor messageCommandProcessor)
     {
-        _shardingProxyOption = shardingProxyOption;
+        _appConfiguration = appConfiguration;
         _databaseProtocolClientEngine = databaseProtocolClientEngine;
         _contextManager = contextManager;
         _messageCommandProcessor = messageCommandProcessor;
@@ -58,7 +58,7 @@ public class DefaultServiceHost:IServiceHost
     public async Task StartAsync()
     {
         _logger.LogInformation("----------开始启动----------");
-        _logger.LogInformation($"----------监听端口:{_shardingProxyOption.Port}----------");
+        _logger.LogInformation($"----------监听端口:{_appConfiguration.GetPort()}----------");
 
 
         _clientBootstrap = new Bootstrap();
@@ -112,8 +112,8 @@ public class DefaultServiceHost:IServiceHost
                     }));
 
                 // bootstrap绑定到指定端口的行为 就是服务端启动服务，同样的Serverbootstrap可以bind到多个端口
-                await _serverBootstrap.BindAsync(_shardingProxyOption.Port).ConfigureAwait(false);
-                _logger.LogInformation($"----------启动完成端口:{_shardingProxyOption.Port}----------");
+                await _serverBootstrap.BindAsync(_appConfiguration.GetPort()).ConfigureAwait(false);
+                _logger.LogInformation($"----------启动完成端口:{_appConfiguration.GetPort()}----------");
             }
             catch (Exception ex)
             {

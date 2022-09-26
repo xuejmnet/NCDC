@@ -13,6 +13,7 @@ public sealed class DbShardingConfigOptionBuilder:IShardingConfigOptionBuilder
     }
     public ShardingConfigOption Build(string databaseName)
     {
-        
+        //todo 查询数据库获取databaseName的配置
+        throw new NotImplementedException();
     }
 }

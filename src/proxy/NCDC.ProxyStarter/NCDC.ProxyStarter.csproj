@@ -29,6 +29,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\orm\NCDC.EntityFrameworkCore\NCDC.EntityFrameworkCore.csproj" />
       <ProjectReference Include="..\NCDC.ProxyClientMySql\NCDC.ProxyClientMySql.csproj" />
       <ProjectReference Include="..\NCDC.ProxyClient\NCDC.ProxyClient.csproj" />
     </ItemGroup>
