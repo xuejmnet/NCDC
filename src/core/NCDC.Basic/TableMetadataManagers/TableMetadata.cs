@@ -76,11 +76,6 @@ public class TableMetadata
     /// </summary>
     public ISet<string> ShardingTableColumns { get; }
 
-    /// <summary>
-    /// 分表隔离器 table sharding tail prefix
-    /// </summary>
-    public string TableSeparator { get; private set; } = "_";
-
 
     /// <summary>
     /// 设置分库字段
@@ -136,19 +131,16 @@ public class TableMetadata
         ShardingTableColumns.Add(column);
     }
 
-    /// <summary>
-    /// 分表表和后缀连接器
-    /// </summary>
-    /// <param name="separator"></param>
-    public void SetTableSeparator(string separator)
+    public void CheckMetadata()
     {
-        TableSeparator = separator;
+        CheckGenericMetadata();
+        CheckShardingDataSourceMetadata();
+        CheckShardingTableMetadata();
     }
-
     /// <summary>
     /// 启动时检查分库信息是否完整
     /// </summary>
-    public void CheckShardingDataSourceMetadata()
+    private void CheckShardingDataSourceMetadata()
     {
         if (!IsMultiDataSourceMapping)
         {
@@ -164,7 +156,7 @@ public class TableMetadata
     /// <summary>
     /// 启动时检查分表信息是否完整
     /// </summary>
-    public void CheckShardingTableMetadata()
+    private void CheckShardingTableMetadata()
     {
         if (!IsMultiTableMapping)
         {
@@ -180,7 +172,7 @@ public class TableMetadata
     /// <summary>
     /// 启动时检查对象信息是否完整
     /// </summary>
-    public void CheckGenericMetadata()
+    private void CheckGenericMetadata()
     {
         if (!IsMultiTableMapping && !IsMultiDataSourceMapping)
         {

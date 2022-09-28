@@ -4,7 +4,7 @@ using NCDC.ProxyServer.Connection.User;
 
 namespace NCDC.ProxyServer.Contexts;
 
-public sealed class DefaultUserManager:IUserManager
+public sealed class DefaultAppUserManager:IAppUserManager
 {
     private readonly ConcurrentDictionary<string, AuthUser> _users = new();
     public bool AddUser(AuthUser user)

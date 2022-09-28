@@ -24,15 +24,14 @@ public sealed class DefaultAppInitializer:IAppInitializer
         _runtimeContextBuilder = runtimeContextBuilder;
         _shardingConfigOptionBuilder = shardingConfigOptionBuilder;
     }
-    public  Task InitializeAsync()
+    public  async Task InitializeAsync()
     {
         var databases = _appDatabaseConfiguration.GetDatabases();
         foreach (var database in databases)
         {
-            var runtimeContext = _runtimeContextBuilder.Build(database);
+            var runtimeContext =await  _runtimeContextBuilder.BuildAsync(database);
             _runtimeContextLoader.Load(runtimeContext);
         }
         //启动netty监听端口
-       return Task.CompletedTask;
     }
 }

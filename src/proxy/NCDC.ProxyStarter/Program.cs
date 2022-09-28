@@ -127,7 +127,7 @@ Start Time:{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}");
                 return shardingRuntimeContext;
             });
             var buildServiceProvider = serivces.BuildServiceProvider();
-            var userManager = buildServiceProvider.GetRequiredService<IUserManager>();
+            var userManager = buildServiceProvider.GetRequiredService<IAppUserManager>();
             userManager.AddUser(new AuthUser("xjm", "abc", "%"));
             var shardingProxyOption = buildServiceProvider.GetRequiredService<ShardingProxyOption>();
             await StartAsync(buildServiceProvider, shardingProxyOption, GetPort(args));
@@ -210,7 +210,7 @@ Start Time:{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}");
             ShardingOperatorEnum shardingOperator)
         {
             var tail = FormatTableName(shardingValue);
-            var table = $"{TableName}{GetTableMetadata().TableSeparator}{tail}";
+            var table = $"{TableName}{tail}";
 
             switch (shardingOperator)
             {

@@ -4,5 +4,5 @@ namespace NCDC.ProxyServer.Configurations;
 
 public interface IShardingConfigOptionBuilder
 {
-    ShardingConfigOption Build(string databaseName);
+    Task<ShardingConfigOption> BuildAsync(string databaseName);
 }

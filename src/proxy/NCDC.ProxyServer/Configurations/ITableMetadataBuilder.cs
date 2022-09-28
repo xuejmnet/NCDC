@@ -4,5 +4,5 @@ namespace NCDC.ProxyServer.Configurations;
 
 public interface ITableMetadataBuilder
 {
-    IReadOnlyDictionary<string, TableMetadata> Build(string databaseName);
+    Task<IReadOnlyList<TableMetadata>> BuildAsync(string databaseName);
 }

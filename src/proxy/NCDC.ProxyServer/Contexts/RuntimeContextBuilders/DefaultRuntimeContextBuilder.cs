@@ -75,7 +75,7 @@
 //         shardingRuntimeContext.Services.AddShardingRoute();
 //         shardingRuntimeContext.Services.AddShardingRewrite();
 //         shardingRuntimeContext.Services.AddSingleton(sp => shardingConfiguration);
-//         shardingRuntimeContext.Build();
+//         shardingRuntimeContext.BuildAsync();
 //         var tableMetadataManager = shardingRuntimeContext.GetTableMetadataManager();
 //         var shardingTables = databaseConfig.GetShardingTables();
 //         if (shardingTables.Any())

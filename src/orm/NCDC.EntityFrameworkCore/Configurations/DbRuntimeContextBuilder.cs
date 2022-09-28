@@ -25,9 +25,9 @@ public sealed class DbRuntimeContextBuilder:IRuntimeContextBuilder
         _shardingConfigOptionBuilder = shardingConfigOptionBuilder;
         _tableMetadataBuilder = tableMetadataBuilder;
     }
-    public IRuntimeContext Build(string databaseName)
+    public async Task<IRuntimeContext> BuildAsync(string databaseName)
     {
-        var shardingConfigOption = _shardingConfigOptionBuilder.Build(databaseName);
+        var shardingConfigOption = await _shardingConfigOptionBuilder.BuildAsync(databaseName);
    
         var shardingRuntimeContext = new ShardingRuntimeContext(databaseName);
        
@@ -42,11 +42,11 @@ public sealed class DbRuntimeContextBuilder:IRuntimeContextBuilder
         shardingRuntimeContext.Services.AddShardingRewrite();
         shardingRuntimeContext.Build();
         var tableMetadataManager = shardingRuntimeContext.GetTableMetadataManager();
-        var tableMetadataMap = _tableMetadataBuilder.Build(databaseName);
+        var tableMetadatas = await _tableMetadataBuilder.BuildAsync(databaseName);
         
-        foreach (var tableName in tableMetadataMap.Keys)
+        foreach (var tableMetadata in tableMetadatas)
         {
-            tableMetadataManager.AddTableMetadata(tableMetadataMap[tableName]);
+            tableMetadataManager.AddTableMetadata(tableMetadata);
         }
 
         return shardingRuntimeContext;

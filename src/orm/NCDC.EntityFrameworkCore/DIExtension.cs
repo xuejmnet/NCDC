@@ -8,6 +8,7 @@ public static class DIExtension
 {
     public static IServiceCollection AddEFCoreConfiguration(this IServiceCollection services)
     {
+        services.AddSingleton<IAppAuthUserBuilder, DbAppAuthUserBuilder>();
         services.AddSingleton<IRuntimeContextBuilder, DbRuntimeContextBuilder>();
         services.AddSingleton<IShardingConfigOptionBuilder, DbShardingConfigOptionBuilder>();
         services.AddSingleton<IAppDatabaseConfiguration, DbAppDatabaseConfiguration>();

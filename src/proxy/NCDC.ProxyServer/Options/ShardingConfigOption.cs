@@ -41,7 +41,7 @@ namespace NCDC.ProxyServer.Options;
         public string DefaultConnectionString { get;  set; }
 
         public IDictionary<string, string> DataSources { get; }
-        public IDictionary<string, AuthUser> Users { get; }
+        public IDictionary<string, Grantee> Users { get; }
         /// <summary>
         /// 添加默认数据源
         /// </summary>
@@ -73,21 +73,21 @@ namespace NCDC.ProxyServer.Options;
             DataSources.TryAdd(dataSourceName, connectionString);
         }
 
-        public void AddUser(AuthUser user)
+        public void AddUser(Grantee user)
         {
-            if (Users.ContainsKey(user.Grantee.Username))
+            if (Users.ContainsKey(user.Username))
             {
-                throw new ShardingConfigException($"auth user repeat:[{user.Grantee.Username}]");
+                throw new ShardingConfigException($"auth user repeat:[{user.Username}]");
             }
 
-            Users.TryAdd(user.Grantee.Username, user);
+            Users.TryAdd(user.Username, user);
         }
 
         public ShardingConfigOption(string databaseName)
         {
             DatabaseName = databaseName;
             DataSources = new ConcurrentDictionary<string, string>();
-            Users = new ConcurrentDictionary<string, AuthUser>();
+            Users = new ConcurrentDictionary<string, Grantee>();
         }
         public void CheckArguments()
         {

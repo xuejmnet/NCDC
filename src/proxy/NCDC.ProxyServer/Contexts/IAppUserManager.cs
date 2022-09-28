@@ -2,7 +2,7 @@ using NCDC.ProxyServer.Connection.User;
 
 namespace NCDC.ProxyServer.Contexts;
 
-public interface IUserManager
+public interface IAppUserManager
 {
     bool AddUser(AuthUser user);
     bool HasUser(string username);

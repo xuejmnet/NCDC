@@ -29,5 +29,5 @@ public class LogicDatabaseEntity:BaseEntity
     /// 默认<code>ConnectionModeEnum.SYSTEM_AUTO</code>
     /// </summary>
     public ConnectionModeEnum ConnectionMode { get; set; }
-    
+
 }

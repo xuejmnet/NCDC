@@ -5,6 +5,6 @@ namespace NCDC.ProxyServer.Configurations;
 
 public interface IRuntimeContextBuilder
 {
-    IRuntimeContext Build(string databaseName);
-    // IRuntimeContext Build(ShardingConfigOption shardingConfigOption);
+    Task<IRuntimeContext> BuildAsync(string databaseName);
+    // IRuntimeContext BuildAsync(ShardingConfigOption shardingConfigOption);
 }

@@ -101,7 +101,7 @@ public sealed class ShardingRuntimeContext:IRuntimeContext
                 return;
             isInited = true;
             _serviceProvider = Services.BuildServiceProvider();
-            // _serviceProvider.GetRequiredService<IAppInitializer>().Build();
+            // _serviceProvider.GetRequiredService<IAppInitializer>().BuildAsync();
             InitFieldValue();
         }
     }
