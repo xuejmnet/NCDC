@@ -81,6 +81,8 @@ Start Time:{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}");
             var serivces = new ServiceCollection();
             serivces.AddSingleton<IConfiguration>(serviceProvider => _configuration);
             serivces.AddSingleton<ILoggerFactory>(serviceProvider => _loggerFactory);
+
+            serivces.AddEFCoreConfigurationStore();
             serivces.AddSingleton<ShardingProxyOption>(serviceProvider =>
             {
                 var proxyOption = serviceProvider.GetRequiredService<IOptionsSnapshot<ShardingProxyOption>>().Value;
@@ -91,7 +93,7 @@ Start Time:{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}");
 
                 return proxyOption;
             });
-            serivces.AddEFCoreConfiguration();
+            serivces.AddEFCoreConfigurationStore();
             serivces.AddSingleton<IMessageCommandProcessor, TaskMessageCommandProcessor>();
             serivces.AddSingleton<IMessageExecutorFactory, MessageExecutorFactory>();
             serivces.AddSingleton<IServiceHost, DefaultServiceHost>();
@@ -178,24 +180,24 @@ Start Time:{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}");
             Console.WriteLine("open connector safe quit");
         }
 
-        static ProxyRuntimeOption BuildRuntimeOption()
-        {
-            var proxyRuntimeOption = new ProxyRuntimeOption();
-            var userOption = new UserOption();
-            userOption.Username = "xjm";
-            userOption.Password = "abc";
-            userOption.Databases.Add("xxa");
-            proxyRuntimeOption.Users.Add(userOption);
-            var databaseOption = new DatabaseOption();
-            databaseOption.Name = "xxa";
-            var dataSourceOption = new DataSourceOption();
-            dataSourceOption.DataSourceName = "ds0";
-            dataSourceOption.ConnectionString = "server=127.0.0.1;port=3306;database=test;userid=root;password=root;";
-            dataSourceOption.IsDefault = true;
-            databaseOption.DataSources.Add(dataSourceOption);
-            proxyRuntimeOption.Databases.Add(databaseOption);
-            return proxyRuntimeOption;
-        }
+        // static ProxyRuntimeOption BuildRuntimeOption()
+        // {
+        //     var proxyRuntimeOption = new ProxyRuntimeOption();
+        //     var userOption = new UserOption();
+        //     userOption.Username = "xjm";
+        //     userOption.Password = "abc";
+        //     userOption.Databases.Add("xxa");
+        //     proxyRuntimeOption.Users.Add(userOption);
+        //     var databaseOption = new DatabaseOption();
+        //     databaseOption.Name = "xxa";
+        //     var dataSourceOption = new DataSourceOption();
+        //     dataSourceOption.DataSourceName = "ds0";
+        //     dataSourceOption.ConnectionString = "server=127.0.0.1;port=3306;database=test;userid=root;password=root;";
+        //     dataSourceOption.IsDefault = true;
+        //     databaseOption.DataSources.Add(dataSourceOption);
+        //     proxyRuntimeOption.Databases.Add(databaseOption);
+        //     return proxyRuntimeOption;
+        // }
     }
 
     public class TestModTableRoute : ShardingTableRoute

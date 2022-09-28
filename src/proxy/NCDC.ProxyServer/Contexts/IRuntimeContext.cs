@@ -21,7 +21,6 @@ public interface IRuntimeContext
     IDataReaderMergerFactory GetDataReaderMergerFactory();
     ISqlCommandParser GetSqlCommandParser();
     IShardingProvider GetShardingProvider();
-    void Build();
     object? GetService(Type serviceType);
     TService? GetService<TService>();
     object GetRequiredService(Type serviceType);

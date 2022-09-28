@@ -90,7 +90,7 @@ public sealed class ShardingRuntimeContext:IRuntimeContext
         return _shardingProvider??=GetRequiredService<IShardingProvider>();
     }
 
-    public void Build()
+    public void Initialize()
     {
         if (isInited)
             return;

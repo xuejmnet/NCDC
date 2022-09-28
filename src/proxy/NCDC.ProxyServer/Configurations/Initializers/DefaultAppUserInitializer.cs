@@ -1,9 +1,7 @@
-using NCDC.ProxyServer.Abstractions;
-using NCDC.ProxyServer.Configurations;
 using NCDC.ProxyServer.Connection.User;
 using NCDC.ProxyServer.Contexts;
 
-namespace NCDC.ProxyServer;
+namespace NCDC.ProxyServer.Configurations.Initializers;
 
 public class DefaultAppUserInitializer:IAppUserInitializer
 {

@@ -1,7 +1,7 @@
 using System.Reflection;
 using NCDC.ProxyServer.Abstractions;
 
-namespace NCDC.ProxyServer;
+namespace NCDC.ProxyServer.Configurations.Initializers;
 
 public sealed class DefaultRoutePluginInitializer:IRoutePluginInitializer
 {

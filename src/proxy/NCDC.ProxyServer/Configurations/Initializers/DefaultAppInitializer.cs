@@ -1,12 +1,7 @@
-using System.Reflection;
-using NCDC.Helpers;
-using NCDC.Plugin;
 using NCDC.ProxyServer.Abstractions;
-using NCDC.ProxyServer.Configurations;
 using NCDC.ProxyServer.Contexts;
-using NCDC.ShardingRoute.Abstractions;
 
-namespace NCDC.ProxyServer;
+namespace NCDC.ProxyServer.Configurations.Initializers;
 
 public sealed class DefaultAppInitializer:IAppInitializer
 {

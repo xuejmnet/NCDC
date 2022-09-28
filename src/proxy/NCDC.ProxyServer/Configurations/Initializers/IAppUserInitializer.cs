@@ -1,4 +1,4 @@
-namespace NCDC.ProxyServer.Abstractions;
+namespace NCDC.ProxyServer.Configurations.Initializers;
 
 public interface IAppUserInitializer
 {
