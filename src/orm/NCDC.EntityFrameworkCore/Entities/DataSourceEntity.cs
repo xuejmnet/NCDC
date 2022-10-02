@@ -23,5 +23,4 @@ public class DataSourceEntity:BaseEntity
     /// 是否默认数据源
     /// </summary>
     public bool IsDefault { get; set; }
-    public LogicDatabaseEntity LogicDatabase { get; set; }
 }

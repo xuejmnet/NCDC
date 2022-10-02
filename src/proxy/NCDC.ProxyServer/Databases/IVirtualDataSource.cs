@@ -4,6 +4,7 @@ namespace NCDC.ProxyServer.Databases;
 
 public interface IVirtualDataSource
 {
+    string GetDatabaseName();
     /// <summary>
     /// 默认的数据源名称
     /// </summary>

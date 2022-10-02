@@ -10,6 +10,11 @@ public sealed class VirtualDataSource : IVirtualDataSource
 {
     private readonly ShardingConfigOption _shardingConfigOption;
     private readonly IDbProviderFactory _dbProviderFactory;
+    public string GetDatabaseName()
+    {
+        return _shardingConfigOption.DatabaseName;
+    }
+
     public string DefaultDataSourceName { get; }
     public string DefaultConnectionString { get; }
     private readonly ConcurrentDictionary<string, IDataSource> _dataSources = new();

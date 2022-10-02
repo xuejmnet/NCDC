@@ -17,8 +17,6 @@ public static class DIExtension
         services.AddProxyServerCore();
         services.AddSingleton<IAppAuthUserBuilder, DbAppAuthUserBuilder>();
         services.AddSingleton<IRuntimeContextBuilder, DbRuntimeContextBuilder>();
-        services.AddSingleton<IShardingConfigOptionBuilder, DbShardingConfigOptionBuilder>();
-        services.AddSingleton<IAppDatabaseConfiguration, DbAppDatabaseConfiguration>();
         return services;
     }
 }

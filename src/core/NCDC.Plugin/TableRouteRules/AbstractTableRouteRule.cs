@@ -2,7 +2,7 @@ using NCDC.Plugin.Enums;
 
 namespace NCDC.Plugin.TableRouteRules;
 
-public abstract class AbstractTableRouteRule:ITableRouteRule
+public abstract class AbstractTableRouteRule:ITableRouteRule,ITableRuleConfigure
 {
     public abstract string TableName { get; }
 
@@ -34,4 +34,6 @@ public abstract class AbstractTableRouteRule:ITableRouteRule
     {
         return filterRouteUnits;
     }
+
+    public abstract void Configure(TableRuleConfigureBuilder builder);
 }

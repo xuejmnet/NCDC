@@ -12,11 +12,10 @@ namespace NCDC.ShardingRoute.DataSourceRoutes.Abstractions;
 public  class ShardingDataSourceRoute:AbstractFilterDataSourceRoute
 {
 
-    public ShardingDataSourceRoute(ITableMetadataManager tableMetadataManager,IDataSourceRouteRule dataSourceRouteRule) : base(tableMetadataManager,dataSourceRouteRule)
+    public ShardingDataSourceRoute(IDataSourceRouteRule dataSourceRouteRule,TableMetadata tableMetadata) : base(dataSourceRouteRule,tableMetadata)
     {
     }
 
-    public override string TableName => GetRouteRule().TableName;
     protected override ICollection<string> Route0(ICollection<string> dataSources, SqlParserResult sqlParserResult)
     {
         var routePredicateExpression = ShardingHelper.GetRoutePredicateExpression(sqlParserResult,GetTableMetadata(),GetRouteFilter,false);

@@ -127,7 +127,7 @@ namespace NCDC.ShardingMerge.DataReaderMergers.DQL.GroupBy
             {
                 String tableName = simpleTableSegment.GetTableName().GetIdentifier().GetValue();
                 TableMetadata tableMetaData = tableMetadataManager.Get(tableName);
-                IDictionary<String, ColumnMetadata> columns = tableMetaData.Columns;
+                IReadOnlyDictionary<String, ColumnMetadata> columns = tableMetaData.Columns;
                 String columnName = streamDataReader.GetColumnName(columnIndex);
                 if (columns.ContainsKey(columnName))
                 {

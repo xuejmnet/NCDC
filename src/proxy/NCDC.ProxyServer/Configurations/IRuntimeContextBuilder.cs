@@ -7,8 +7,5 @@ namespace NCDC.ProxyServer.Configurations;
 
 public interface IRuntimeContextBuilder
 {
-    IRuntimeContextBuilder UseConfig(Action<IShardingProvider,ShardingConfigOption> configure);
-    IRuntimeContextBuilder AddServiceConfigure(Action<IServiceCollection> configure);
-    IRuntimeContext Build(IServiceProvider appServiceProvider);
-    // IRuntimeContext BuildAsync(ShardingConfigOption shardingConfigOption);
+    Task<IReadOnlyCollection<IRuntimeContext>> BuildAsync(IServiceProvider appServiceProvider);
 }

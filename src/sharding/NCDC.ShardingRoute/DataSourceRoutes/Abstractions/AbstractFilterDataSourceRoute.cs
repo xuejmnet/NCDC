@@ -6,7 +6,7 @@ namespace NCDC.ShardingRoute.DataSourceRoutes.Abstractions;
 
 public abstract class AbstractFilterDataSourceRoute:AbstractDataSourceRoute
 {
-    protected AbstractFilterDataSourceRoute(ITableMetadataManager tableMetadataManager,IDataSourceRouteRule dataSourceRouteRule) : base(tableMetadataManager,dataSourceRouteRule)
+    protected AbstractFilterDataSourceRoute(IDataSourceRouteRule dataSourceRouteRule,TableMetadata tableMetadata) : base(dataSourceRouteRule,tableMetadata)
     {
     }
     public override ICollection<string> Route(SqlParserResult sqlParserResult)

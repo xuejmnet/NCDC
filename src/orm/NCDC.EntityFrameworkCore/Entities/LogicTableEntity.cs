@@ -1,4 +1,8 @@
+using NCDC.Basic.TableMetadataManagers;
 using NCDC.EntityFrameworkCore.Entities.Base;
+using NCDC.Exceptions;
+using NCDC.Extensions;
+using NCDC.ProxyServer.Connection.Metadatas;
 
 namespace NCDC.EntityFrameworkCore.Entities;
 
@@ -10,12 +14,25 @@ public class LogicTableEntity:BaseEntity
     public string LogicName { get; set; } = null!;
     public string Database { get; set; } = null!;
     /// <summary>
-    /// 逗号分割第一个表示为主的分表字段
+    /// 分表规则
     /// </summary>
-    public string? ShardingTableColumns { get; set; }
+    public string? ShardingTableRule { get; set; }
     /// <summary>
-    /// 逗号分割第一个表示为主的分库字段
+    /// 分库规则
     /// </summary>
-    public string? ShardingDataSourceColumns { get; set; }
+    public string? ShardingDataSourceRule { get; set; }
+    /// <summary>
+    /// <code>Dictionary<string, ColumnMetadata></code> 反序列化
+    /// </summary>
+    public string? ColumnSchema { get; set; }
+
+    public void Check()
+    {
+        if(ShardingTableRule.IsNullOrWhiteSpace()&&ShardingDataSourceRule.IsNullOrWhiteSpace())
+        {
+            throw new ShardingInvalidOperationException($"data source:[{Database}],table:[{LogicName}] {nameof(ShardingTableRule)},{nameof(ShardingDataSourceRule)} error.");
+        }
+
+    }
 
 }

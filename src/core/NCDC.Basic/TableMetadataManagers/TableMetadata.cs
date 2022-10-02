@@ -1,3 +1,5 @@
+using System.Collections.Concurrent;
+using System.Collections.Immutable;
 using NCDC.Exceptions;
 
 namespace NCDC.Basic.TableMetadataManagers;
@@ -9,20 +11,21 @@ public class TableMetadata
     /// <summary>
     /// ignore case key
     /// </summary>
-    public IDictionary<string, ColumnMetadata> Columns { get; }
+    public IReadOnlyDictionary<string, ColumnMetadata> Columns { get; }
 
 
     public TableMetadata(string logicTableName, Dictionary<string, ColumnMetadata> columns)
     {
         LogicTableName = logicTableName;
-        Columns = columns.ToDictionary(o => o.Key, o => o.Value, StringComparer.OrdinalIgnoreCase);
+        Columns = columns.ToImmutableDictionary(o => o.Key, o => o.Value, StringComparer.OrdinalIgnoreCase);
         ShardingTableColumns = new HashSet<string>();
         ShardingDataSourceColumns = new HashSet<string>();
-        DataSources = new List<string>();
-        TableNames = new List<string>();
     }
-    public ICollection<string> DataSources { get; }
-    public ICollection<string> TableNames { get; }
+
+    private readonly HashSet<string> _dataSources = new ();
+    private readonly HashSet<string> _tableNames = new ();
+    public ICollection<string> DataSources => _dataSources.ToImmutableHashSet();
+    public ICollection<string> TableNames => _dataSources.ToImmutableHashSet();
 
     public void AddActualTableWithDataSource(string dataSource, string actualTableName)
     {
@@ -32,15 +35,15 @@ public class TableMetadata
             throw new ShardingInvalidOperationException(
                 $"{nameof(TableMetadata)}.{nameof(AddActualTableWithDataSource)} {nameof(actualTableName)}:{actualTableName} contains '.'");
         }
-        if (!DataSources.Contains(dataSource))
+        if (!_dataSources.Contains(dataSource))
         {
-            DataSources.Add(dataSource);
+            _dataSources.Add(dataSource);
         }
 
         var tableName = $"{dataSource}.{actualTableName}";
-        if (!TableNames.Contains(tableName))
+        if (!_tableNames.Contains(tableName))
         {
-            TableNames.Add(tableName);
+            _tableNames.Add(tableName);
         }
     }
 

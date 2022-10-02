@@ -2,7 +2,7 @@ using NCDC.Plugin.Enums;
 
 namespace NCDC.Plugin.DataSourceRouteRules;
 
-public abstract class AbstractDataSourceRouteRule:IDataSourceRouteRule
+public abstract class AbstractDataSourceRouteRule:IDataSourceRouteRule,IDataSourceRuleConfigure
 {
     public abstract string TableName { get; }
 
@@ -36,4 +36,6 @@ public abstract class AbstractDataSourceRouteRule:IDataSourceRouteRule
     {
         return filterDataSources;
     }
+
+    public abstract void Configure(DataSourceRuleConfigureBuilder builder);
 }

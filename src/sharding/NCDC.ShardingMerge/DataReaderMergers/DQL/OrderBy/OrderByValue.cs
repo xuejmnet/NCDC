@@ -48,7 +48,7 @@ namespace NCDC.ShardingMerge.DataReaderMergers.DQL.OrderBy
             {
                 var tableName = simpleTableSegment.GetTableName().GetIdentifier().GetValue();
                 var tableMetaData = tableMetadataManager.Get(tableName);
-                IDictionary<String, ColumnMetadata> columns = tableMetaData.Columns;
+                IReadOnlyDictionary<String, ColumnMetadata> columns = tableMetaData.Columns;
                 var orderByItemSegment = eachOrderByItem.GetSegment();
                 if (orderByItemSegment is ColumnOrderByItemSegment columnOrderByItemSegment)
                 {

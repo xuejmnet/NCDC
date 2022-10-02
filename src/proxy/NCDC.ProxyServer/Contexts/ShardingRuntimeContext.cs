@@ -2,8 +2,10 @@ using Microsoft.Extensions.DependencyInjection;
 using NCDC.Basic.Metadatas;
 using NCDC.Basic.TableMetadataManagers;
 using NCDC.CommandParser.Abstractions;
+using NCDC.Exceptions;
 using NCDC.ProxyServer.Abstractions;
 using NCDC.ProxyServer.Connection.Metadatas;
+using NCDC.ProxyServer.Contexts.Initializers;
 using NCDC.ProxyServer.Executors;
 using NCDC.ProxyServer.ServiceProviders;
 using NCDC.ShardingMerge.Abstractions;
@@ -13,35 +15,22 @@ namespace NCDC.ProxyServer.Contexts;
 
 public sealed class ShardingRuntimeContext:IRuntimeContext
 {
-    
-    private bool isInited = false;
-    private object INIT_LOCK = new object();
-    private bool isInitModeled = false;
-    private object INIT_MODEL = new object();
-    private bool isCheckRequirement = false;
-    private object CHECK_REQUIREMENT = new object();
-    public  IServiceCollection Services { get; }
-
-    private IServiceProvider _serviceProvider;
-    
+    private readonly IServiceProvider _serviceProvider;
     public string DatabaseName { get; }
 
-    public ShardingRuntimeContext(string databaseName)
+    public ShardingRuntimeContext(string databaseName,IServiceProvider serviceProvider)
     {
         DatabaseName = databaseName;
-        Services= new ServiceCollection();
+        _serviceProvider = serviceProvider;
+        InitFieldValue();
+    }
+
+    public Task Initialize()
+    {
+        var runtimeContextInitializer = GetService<IRuntimeContextInitializer>()??throw new ShardingInvalidOperationException($"should be implement {nameof(IRuntimeContextInitializer)}");
+        return runtimeContextInitializer.InitializeAsync();
     }
     
-    private void CheckIfBuild()
-    {
-        if (isInited)
-            throw new InvalidOperationException("sharding runtime already build");
-    }
-    private void CheckIfNotBuild()
-    {
-        if (!isInited)
-            throw new InvalidOperationException("sharding runtime not init");
-    }
 
     private ILogicDatabase? _logicDatabase;
     public ILogicDatabase GetDatabase()
@@ -90,43 +79,24 @@ public sealed class ShardingRuntimeContext:IRuntimeContext
         return _shardingProvider??=GetRequiredService<IShardingProvider>();
     }
 
-    public void Initialize()
-    {
-        if (isInited)
-            return;
-
-        lock (INIT_LOCK)
-        {
-            if (isInited)
-                return;
-            isInited = true;
-            _serviceProvider = Services.BuildServiceProvider();
-            // _serviceProvider.GetRequiredService<IAppInitializer>().BuildAsync();
-            InitFieldValue();
-        }
-    }
 
     public object? GetService(Type serviceType)
     {
-        CheckIfNotBuild();
         return _serviceProvider.GetService(serviceType);
     }
 
     public TService? GetService<TService>()
     {
-        CheckIfNotBuild();
         return _serviceProvider.GetService<TService>();
     }
 
     public object GetRequiredService(Type serviceType)
     {
-        CheckIfNotBuild();
         return _serviceProvider.GetRequiredService(serviceType);
     }
 
     public TService GetRequiredService<TService>() where TService : notnull
     {
-        CheckIfNotBuild();
         return _serviceProvider.GetRequiredService<TService>();
     }
 

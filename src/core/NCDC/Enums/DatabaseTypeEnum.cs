@@ -6,4 +6,5 @@ public enum DatabaseTypeEnum
     MySql=2,
     PostgreSql=3,
     Oracle=4,
+    MariaDB=5,
 }

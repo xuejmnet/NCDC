@@ -1,82 +1,75 @@
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using NCDC.Basic.TableMetadataManagers;
-using NCDC.Enums;
-using NCDC.MySqlParser;
+using NCDC.EntityFrameworkCore.Entities;
+using NCDC.Extensions;
 using NCDC.ProxyServer.Abstractions;
 using NCDC.ProxyServer.Configurations;
 using NCDC.ProxyServer.Contexts;
-using NCDC.ProxyServer.Databases;
-using NCDC.ProxyServer.DbProviderFactories;
-using NCDC.ProxyServer.Executors;
-using NCDC.ProxyServer.Options;
-using NCDC.ProxyServer.ServiceProviders;
-using NCDC.ShardingParser;
-using NCDC.ShardingRewrite;
-using NCDC.ShardingRoute;
+using NCDC.ProxyServer.Contexts.Initializers;
 
 namespace NCDC.EntityFrameworkCore.Configurations;
 
-public sealed class DbRuntimeContextBuilder:IRuntimeContextBuilder
+public sealed class DbRuntimeContextBuilder : IRuntimeContextBuilder
 {
-    private readonly List<Action<IServiceCollection>> _serviceActions = new List<Action<IServiceCollection>>();
-    private readonly string _databaseName;
-    private readonly IShardingConfigOptionBuilder _shardingConfigOptionBuilder;
-    private readonly ITableMetadataBuilder _tableMetadataBuilder;
+    private readonly IServiceProvider _serviceProvider;
 
-    private Action<IShardingProvider, ShardingConfigOption> _shardingConfigOptionsConfigure;
-    public DbRuntimeContextBuilder(string databaseName,IShardingConfigOptionBuilder shardingConfigOptionBuilder,ITableMetadataBuilder tableMetadataBuilder)
+
+    public DbRuntimeContextBuilder(IServiceProvider serviceProvider)
     {
-        _databaseName = databaseName;
-        _shardingConfigOptionBuilder = shardingConfigOptionBuilder;
-        _tableMetadataBuilder = tableMetadataBuilder;
+        _serviceProvider = serviceProvider;
     }
 
-    public IRuntimeContextBuilder UseConfig(Action<IShardingProvider, ShardingConfigOption> configure)
+    public async Task<IReadOnlyCollection<IRuntimeContext>> BuildAsync(IServiceProvider appServiceProvider)
     {
-        _shardingConfigOptionsConfigure = configure ?? throw new ArgumentNullException($"{nameof(configure)}");
-        return this;
-    }
-
-    public IRuntimeContextBuilder AddServiceConfigure(Action<IServiceCollection> configure)
-    {
-        if (configure == null)
+        using (var scope = _serviceProvider.CreateScope())
         {
-            throw new ArgumentNullException(nameof(configure));
+            var dbContext = scope.ServiceProvider.GetRequiredService<NCDCDbContext>();
+            var logicDatabases = await dbContext.Set<LogicDatabaseEntity>().ToListAsync();
+            var dataSources = await dbContext.Set<DataSourceEntity>().ToListAsync();
+            var logicTables = await dbContext.Set<LogicTableEntity>().ToListAsync();
+            var runtimeContexts = new List<IRuntimeContext>(logicDatabases.Count);
+            foreach (var logicDatabase in logicDatabases)
+            {
+                var builder = LogicDatabaseApplicationBuilder.CreateBuilder(logicDatabase.Name);
+                builder.ConfigOption.AutoUseWriteConnectionStringAfterWriteDb =
+                    logicDatabase.AutoUseWriteConnectionStringAfterWriteDb;
+                builder.ConfigOption.ThrowIfQueryRouteNotMatch = logicDatabase.ThrowIfQueryRouteNotMatch;
+                builder.ConfigOption.MaxQueryConnectionsLimit = logicDatabase.MaxQueryConnectionsLimit;
+                builder.ConfigOption.ConnectionMode = logicDatabase.ConnectionMode;
+                foreach (var dataSourceEntity in dataSources)
+                {
+                    if (dataSourceEntity.IsDefault)
+                    {
+                        builder.ConfigOption.AddDefaultDataSource(dataSourceEntity.Name,
+                            dataSourceEntity.ConnectionString);
+                    }
+                    else
+                    {
+                        builder.ConfigOption.AddExtraDataSource(dataSourceEntity.Name,
+                            dataSourceEntity.ConnectionString);
+                    }
+                }
+
+                var tables = logicTables.Where(o => o.Database == logicDatabase.Name).ToList();
+                foreach (var logicTable in tables)
+                {
+                    logicTable.Check();
+                    if (logicTable.ShardingTableRule != null)
+                    {
+                        builder.RouteConfigOption.AddTableRouteRule(logicTable.LogicName,logicTable.ShardingTableRule);
+                    }
+                    if (logicTable.ShardingDataSourceRule != null)
+                    {
+                        builder.RouteConfigOption.AddDataSourceRouteRule(logicTable.LogicName,logicTable.ShardingDataSourceRule);
+                    }
+                }
+                builder.Services.AddSingleton<IRuntimeContextInitializer,EntityFrameworkCoreRuntimeContextInitializer>();
+                var runtimeContext = await builder.BuildAsync(appServiceProvider);
+                runtimeContexts.Add(runtimeContext);
+            }
+
+            return runtimeContexts.AsReadOnly();
         }
-        _serviceActions.Add(configure);;
-        return this;
     }
-
-    public  IRuntimeContext Build(IServiceProvider appServiceProvider)
-    {
-        var shardingRuntimeContext = new ShardingRuntimeContext(_databaseName);
-        
-        shardingRuntimeContext.Services.AddSingleton<IShardingProvider>(sp => new ShardingProvider(sp,appServiceProvider));
-        var configOption = new ShardingConfigOption(_databaseName);
-        shardingRuntimeContext.Services.AddSingleton<ShardingConfigOption>(sp =>
-        {
-            var shardingProvider = sp.GetRequiredService<IShardingProvider>();
-            _shardingConfigOptionsConfigure?.Invoke(shardingProvider, configOption);
-            configOption.CheckArguments();
-            return configOption;
-        });
-        
-        var shardingConfigOption = await _shardingConfigOptionBuilder.BuildAsync(databaseName);
-   
-       
-        shardingRuntimeContext.Services.AddSingleton(shardingConfigOption);
-        
-        shardingRuntimeContext.Services.AddInternalRuntimeContextService();
-        shardingRuntimeContext.Initialize();
-        var tableMetadataManager = shardingRuntimeContext.GetTableMetadataManager();
-        var tableMetadatas = await _tableMetadataBuilder.BuildAsync(databaseName);
-        
-        foreach (var tableMetadata in tableMetadatas)
-        {
-            tableMetadataManager.AddTableMetadata(tableMetadata);
-        }
-
-        return shardingRuntimeContext;
-    }
-
 }

@@ -1,4 +1,4 @@
-namespace NCDC.ProxyServer.Configurations;
+namespace NCDC.ProxyServer.Contexts.Initializers;
 
 public interface IRuntimeContextInitializer
 {

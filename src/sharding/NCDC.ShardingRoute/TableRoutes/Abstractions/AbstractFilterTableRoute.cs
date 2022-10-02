@@ -9,7 +9,7 @@ namespace NCDC.ShardingRoute.TableRoutes.Abstractions;
 public abstract class AbstractFilterTableRoute:AbstractTableRoute
 {
 
-    protected AbstractFilterTableRoute(ITableMetadataManager tableMetadataManager,ITableRouteRule tableRouteRule) : base(tableMetadataManager,tableRouteRule)
+    protected AbstractFilterTableRoute(ITableRouteRule tableRouteRule,TableMetadata tableMetadata) : base(tableRouteRule,tableMetadata)
     {
     }
 

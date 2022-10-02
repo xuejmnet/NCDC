@@ -3,6 +3,7 @@ using NCDC.Exceptions;
 using NCDC.Plugin;
 using NCDC.Plugin.TableRouteRules;
 using NCDC.ShardingParser;
+using NCDC.ShardingRoute.Abstractions;
 using NCDC.ShardingRoute.DataSourceRoutes;
 
 namespace NCDC.ShardingRoute.TableRoutes.Abstractions;
@@ -10,16 +11,14 @@ namespace NCDC.ShardingRoute.TableRoutes.Abstractions;
 public abstract class AbstractTableRoute:ITableRoute
 {
     private readonly ITableRouteRule _tableRouteRule;
-    private readonly TableMetadata _tableMetadata;
-    protected AbstractTableRoute(ITableMetadataManager tableMetadataManager,ITableRouteRule tableRouteRule)
+    private  readonly TableMetadata _tableMetadata;
+    protected AbstractTableRoute(ITableRouteRule tableRouteRule,TableMetadata tableMetadata)
     {
         _tableRouteRule = tableRouteRule;
-        // ReSharper disable once VirtualMemberCallInConstructor
-        var tableName = TableName;
-        _tableMetadata = tableMetadataManager.TryGet(tableName) ??
-                         throw new ShardingConfigException($"cant find table metadata:{tableName}");
+        _tableMetadata=tableMetadata;
     }
-    public abstract string TableName { get; }
+
+    public string TableName => GetTableMetadata().LogicTableName;
     public TableMetadata GetTableMetadata()
     {
         return _tableMetadata;
@@ -31,6 +30,4 @@ public abstract class AbstractTableRoute:ITableRoute
     }
 
     public abstract ICollection<TableRouteUnit> Route(DataSourceRouteResult dataSourceRouteResult,SqlParserResult sqlParserResult);
-
-   
 }

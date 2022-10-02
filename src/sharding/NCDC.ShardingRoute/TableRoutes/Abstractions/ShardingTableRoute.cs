@@ -13,11 +13,9 @@ namespace NCDC.ShardingRoute.TableRoutes.Abstractions;
 
 public  class ShardingTableRoute:AbstractFilterTableRoute
 {
-    public ShardingTableRoute(ITableMetadataManager tableMetadataManager,ITableRouteRule tableRouteRule) : base(tableMetadataManager,tableRouteRule)
+    public ShardingTableRoute(ITableRouteRule tableRouteRule,TableMetadata tableMetadata) : base(tableRouteRule,tableMetadata)
     {
     }
-
-    public override string TableName => GetRouteRule().TableName;
 
     protected override ICollection<TableRouteUnit> Route0(DataSourceRouteResult dataSourceRouteResult,ICollection<string> beforeTableNames, SqlParserResult sqlParserResult)
     {
