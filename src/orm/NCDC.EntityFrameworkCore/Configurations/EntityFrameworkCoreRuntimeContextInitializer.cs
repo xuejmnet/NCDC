@@ -7,6 +7,7 @@ using NCDC.Basic.TableMetadataManagers;
 using NCDC.EntityFrameworkCore.Entities;
 using NCDC.Enums;
 using NCDC.ProxyServer.Abstractions;
+using NCDC.ProxyServer.Configurations.Apps;
 using NCDC.ProxyServer.Contexts.Initializers;
 using NCDC.ProxyServer.Databases;
 using NCDC.ProxyServer.Options;

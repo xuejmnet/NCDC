@@ -1,28 +1,25 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using NCDC.Basic.TableMetadataManagers;
 using NCDC.EntityFrameworkCore.Entities;
-using NCDC.Extensions;
-using NCDC.ProxyServer.Abstractions;
-using NCDC.ProxyServer.Configurations;
+using NCDC.ProxyServer.Configurations.Apps;
 using NCDC.ProxyServer.Contexts;
 using NCDC.ProxyServer.Contexts.Initializers;
 
 namespace NCDC.EntityFrameworkCore.Configurations;
 
-public sealed class DbRuntimeContextBuilder : IRuntimeContextBuilder
+public sealed class EntityFrameworkCoreAppRuntimeContextBuilder : IAppRuntimeContextBuilder
 {
-    private readonly IServiceProvider _serviceProvider;
+    private readonly IServiceProvider _appServiceProvider;
 
 
-    public DbRuntimeContextBuilder(IServiceProvider serviceProvider)
+    public EntityFrameworkCoreAppRuntimeContextBuilder(IServiceProvider appServiceProvider)
     {
-        _serviceProvider = serviceProvider;
+        _appServiceProvider = appServiceProvider;
     }
 
-    public async Task<IReadOnlyCollection<IRuntimeContext>> BuildAsync(IServiceProvider appServiceProvider)
+    public async Task<IReadOnlyCollection<IRuntimeContext>> BuildAsync()
     {
-        using (var scope = _serviceProvider.CreateScope())
+        using (var scope = _appServiceProvider.CreateScope())
         {
             var dbContext = scope.ServiceProvider.GetRequiredService<NCDCDbContext>();
             var logicDatabases = await dbContext.Set<LogicDatabaseEntity>().ToListAsync();
@@ -65,7 +62,7 @@ public sealed class DbRuntimeContextBuilder : IRuntimeContextBuilder
                     }
                 }
                 builder.Services.AddSingleton<IRuntimeContextInitializer,EntityFrameworkCoreRuntimeContextInitializer>();
-                var runtimeContext = await builder.BuildAsync(appServiceProvider);
+                var runtimeContext = await builder.BuildAsync(_appServiceProvider);
                 runtimeContexts.Add(runtimeContext);
             }
 

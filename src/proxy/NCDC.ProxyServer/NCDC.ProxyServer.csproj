@@ -18,4 +18,8 @@
       <ProjectReference Include="..\..\sharding\NCDC.ShardingRewrite\NCDC.ShardingRewrite.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Configurations\Runtimes" />
+    </ItemGroup>
+
 </Project>

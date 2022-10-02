@@ -1,13 +1,12 @@
 using NCDC.Enums;
 using NCDC.ProxyServer.Commons;
-using NCDC.ProxyServer.Connection.User;
 
-namespace NCDC.ProxyServer.Abstractions;
+namespace NCDC.ProxyServer.Configurations.Apps;
 
 public interface IAppConfiguration
 {
     DatabaseTypeEnum GetDatabaseType();
     ConfigurationStorageTypeEnum GetConfigurationStorageType();
     int GetPort();
-    string GetRoutePluginPath();
+    string GetRulePluginPath();
 }

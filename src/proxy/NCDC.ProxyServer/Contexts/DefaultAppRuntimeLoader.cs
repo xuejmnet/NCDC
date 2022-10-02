@@ -1,10 +1,12 @@
+using NCDC.ProxyServer.Configurations.Apps;
+
 namespace NCDC.ProxyServer.Contexts;
 
-public sealed class DefaultRuntimeContextLoader:IRuntimeContextLoader
+public sealed class DefaultAppRuntimeLoader:IAppRuntimeLoader
 {
     private readonly IContextManager _contextManager;
 
-    public DefaultRuntimeContextLoader(IContextManager contextManager)
+    public DefaultAppRuntimeLoader(IContextManager contextManager)
     {
         _contextManager = contextManager;
     }

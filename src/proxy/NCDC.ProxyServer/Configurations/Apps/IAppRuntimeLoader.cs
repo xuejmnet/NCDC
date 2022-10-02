@@ -1,6 +1,8 @@
-namespace NCDC.ProxyServer.Contexts;
+using NCDC.ProxyServer.Contexts;
 
-public interface IRuntimeContextLoader
+namespace NCDC.ProxyServer.Configurations.Apps;
+
+public interface IAppRuntimeLoader
 {
     bool HasLoaded(string databaseName);
     bool Load(IRuntimeContext runtimeContext);

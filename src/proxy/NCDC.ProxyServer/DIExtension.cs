@@ -1,7 +1,10 @@
 using NCDC.Basic.TableMetadataManagers;
+using NCDC.Enums;
 using NCDC.MySqlParser;
 using NCDC.ProxyServer;
 using NCDC.ProxyServer.Abstractions;
+using NCDC.ProxyServer.Commons;
+using NCDC.ProxyServer.Configurations.Apps;
 using NCDC.ProxyServer.Configurations.Initializers;
 using NCDC.ProxyServer.Contexts;
 using NCDC.ProxyServer.Databases;
@@ -19,6 +22,10 @@ public static class DIExtension
 {
     public static IServiceCollection AddProxyServerCore(this IServiceCollection services)
     {
+        services.AddSingleton<IAppConfiguration, AppConfiguration>(sp =>
+        {
+            return new AppConfiguration(DatabaseTypeEnum.MySql, ConfigurationStorageTypeEnum.File, 3307, "/rule/test");
+        });
         services.AddSingleton<IAppUserInitializer, DefaultAppUserInitializer>();
         services.AddSingleton<IAppInitializer, DefaultAppInitializer>();
         services.AddSingleton<IRoutePluginInitializer, DefaultRoutePluginInitializer>();

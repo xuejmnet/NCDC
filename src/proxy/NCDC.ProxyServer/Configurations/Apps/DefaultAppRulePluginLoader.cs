@@ -1,19 +1,19 @@
 using System.Reflection;
 using NCDC.ProxyServer.Abstractions;
-using NCDC.ProxyServer.Configurations.Apps;
 
-namespace NCDC.ProxyServer.Configurations.Initializers;
+namespace NCDC.ProxyServer.Configurations.Apps;
 
-public sealed class DefaultRoutePluginInitializer:IRoutePluginInitializer
+public class DefaultAppRulePluginLoader:IAppRulePluginLoader
 {
     private readonly IAppConfiguration _appConfiguration;
 
-    public DefaultRoutePluginInitializer(IAppConfiguration appConfiguration)
+    public DefaultAppRulePluginLoader(IAppConfiguration appConfiguration)
     {
         _appConfiguration = appConfiguration;
     }
-    public Task InitializeAsync()
+    public void Load()
     {
+        
         //监听plugin目录
         var routePluginPath = _appConfiguration.GetRulePluginPath();
         if (!Directory.Exists(routePluginPath))
@@ -28,6 +28,5 @@ public sealed class DefaultRoutePluginInitializer:IRoutePluginInitializer
         {
             Assembly.LoadFile(fileInfo.FullName);
         }
-        return Task.CompletedTask;
     }
 }

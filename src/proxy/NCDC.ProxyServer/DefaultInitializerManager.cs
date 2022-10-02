@@ -1,4 +1,5 @@
 using NCDC.ProxyServer.Abstractions;
+using NCDC.ProxyServer.Configurations.Apps;
 using NCDC.ProxyServer.Configurations.Initializers;
 
 namespace NCDC.ProxyServer;

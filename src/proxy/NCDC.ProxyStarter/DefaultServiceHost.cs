@@ -12,6 +12,7 @@ using NCDC.ProxyClient.Command.Abstractions;
 using NCDC.ProxyClient.DotNetty;
 using NCDC.ProxyServer;
 using NCDC.ProxyServer.Abstractions;
+using NCDC.ProxyServer.Configurations.Apps;
 using NCDC.ProxyServer.Contexts;
 
 namespace NCDC.ProxyStarter;
