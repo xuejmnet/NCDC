@@ -8,13 +8,13 @@
 //
 // public class MySqlAuthenticationHandler1
 // {
-//     private readonly IContextManager _contextManager;
+//     private readonly IAppRuntimeManager _appRuntimeManager;
 //
 //     public MySqlAuthPluginData AuthPluginData = new MySqlAuthPluginData();
 //
-//     public MySqlAuthenticationHandler(IContextManager contextManager)
+//     public MySqlAuthenticationHandler(IAppRuntimeManager appRuntimeManager)
 //     {
-//         _contextManager = contextManager;
+//         _appRuntimeManager = appRuntimeManager;
 //     }
 //
 //     /// <summary>
@@ -27,7 +27,7 @@
 //     /// <returns>返回null说明登录成功</returns>
 //     public ISqlErrorCode? Login(string username,string hostname, byte[] authResponse, string? databaseName)
 //     {
-//         var authUser = _contextManager.TryGetUser(username);
+//         var authUser = _appRuntimeManager.TryGetUser(username);
 //
 //         if (authUser == null)
 //         {

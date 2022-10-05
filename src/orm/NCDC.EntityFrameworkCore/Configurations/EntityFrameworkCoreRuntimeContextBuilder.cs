@@ -1,23 +1,27 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using NCDC.EntityFrameworkCore.Entities;
+using NCDC.EntityFrameworkCore.Impls;
+using NCDC.ProxyServer.AppServices.Builder;
+using NCDC.ProxyServer.Bootstrappers;
 using NCDC.ProxyServer.Configurations.Apps;
 using NCDC.ProxyServer.Contexts;
-using NCDC.ProxyServer.Contexts.Initializers;
+using NCDC.ProxyServer.Runtimes;
+using IAppInitializer = NCDC.ProxyServer.Bootstrappers.IAppInitializer;
 
 namespace NCDC.EntityFrameworkCore.Configurations;
 
-public sealed class EntityFrameworkCoreAppRuntimeContextBuilder : IAppRuntimeContextBuilder
+public sealed class EntityFrameworkCoreRuntimeContextBuilder : IAppInitializer
 {
     private readonly IServiceProvider _appServiceProvider;
 
 
-    public EntityFrameworkCoreAppRuntimeContextBuilder(IServiceProvider appServiceProvider)
+    public EntityFrameworkCoreRuntimeContextBuilder(IServiceProvider appServiceProvider)
     {
         _appServiceProvider = appServiceProvider;
     }
 
-    public async Task<IReadOnlyCollection<IRuntimeContext>> BuildAsync()
+    public async Task<IReadOnlyCollection<IRuntimeContext>> InitializeASync()
     {
         using (var scope = _appServiceProvider.CreateScope())
         {
@@ -28,7 +32,7 @@ public sealed class EntityFrameworkCoreAppRuntimeContextBuilder : IAppRuntimeCon
             var runtimeContexts = new List<IRuntimeContext>(logicDatabases.Count);
             foreach (var logicDatabase in logicDatabases)
             {
-                var builder = LogicDatabaseApplicationBuilder.CreateBuilder(logicDatabase.Name);
+                var builder = RuntimeApplicationBuilder.CreateBuilder(logicDatabase.Name);
                 builder.ConfigOption.AutoUseWriteConnectionStringAfterWriteDb =
                     logicDatabase.AutoUseWriteConnectionStringAfterWriteDb;
                 builder.ConfigOption.ThrowIfQueryRouteNotMatch = logicDatabase.ThrowIfQueryRouteNotMatch;
@@ -61,7 +65,7 @@ public sealed class EntityFrameworkCoreAppRuntimeContextBuilder : IAppRuntimeCon
                         builder.RouteConfigOption.AddDataSourceRouteRule(logicTable.LogicName,logicTable.ShardingDataSourceRule);
                     }
                 }
-                builder.Services.AddSingleton<IRuntimeContextInitializer,EntityFrameworkCoreRuntimeContextInitializer>();
+                builder.Services.AddSingleton<IRuntimeInitializer,EntityFrameworkCoreRuntimeInitializer>();
                 var runtimeContext = await builder.BuildAsync(_appServiceProvider);
                 runtimeContexts.Add(runtimeContext);
             }

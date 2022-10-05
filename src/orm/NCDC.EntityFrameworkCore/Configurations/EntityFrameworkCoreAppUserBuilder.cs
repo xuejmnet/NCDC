@@ -5,7 +5,6 @@ using NCDC.EntityFrameworkCore.Entities;
 using NCDC.ProxyServer.Configurations.Apps;
 using NCDC.ProxyServer.Connection.User;
 using NCDC.ProxyServer.Contexts;
-using NCDC.ProxyServer.Contexts.Initializers;
 
 namespace NCDC.EntityFrameworkCore.Configurations;
 

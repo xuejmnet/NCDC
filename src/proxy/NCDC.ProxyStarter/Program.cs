@@ -24,11 +24,13 @@ using NCDC.ProxyClientMySql.ClientConnections;
 using NCDC.ProxyClientMySql.Codec;
 using NCDC.ProxyServer;
 using NCDC.ProxyServer.Abstractions;
+using NCDC.ProxyServer.AppServices;
 using NCDC.ProxyServer.Connection.Metadatas;
 using NCDC.ProxyServer.Connection.User;
 using NCDC.ProxyServer.Contexts;
 using NCDC.ProxyServer.Executors;
 using NCDC.ProxyServer.Options;
+using NCDC.ProxyServer.Runtimes;
 using NCDC.ProxyServer.ServerDataReaders;
 using NCDC.ProxyServer.ServerHandlers;
 using NCDC.ShardingMerge;
@@ -147,7 +149,7 @@ Start Time:{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}");
 
         private static async Task StartAsync(IServiceProvider serviceProvider, ShardingProxyOption option, int? port)
         {
-            var contextManager = serviceProvider.GetRequiredService<IContextManager>();
+            var contextManager = serviceProvider.GetRequiredService<IAppRuntimeManager>();
             var databaseNames = contextManager.GetAllDatabaseNames();
             foreach (var databaseName in databaseNames)
             {

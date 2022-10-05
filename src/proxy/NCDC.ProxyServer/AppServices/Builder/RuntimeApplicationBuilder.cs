@@ -3,16 +3,15 @@ using NCDC.Exceptions;
 using NCDC.Plugin.DataSourceRouteRules;
 using NCDC.Plugin.Extensions;
 using NCDC.Plugin.TableRouteRules;
-using NCDC.ProxyServer.Configurations.Initializers;
-using NCDC.ProxyServer.Contexts.Initializers;
+using NCDC.ProxyServer.Contexts;
 using NCDC.ProxyServer.Options;
+using NCDC.ProxyServer.Runtimes;
+using NCDC.ProxyServer.Runtimes.TableMetadataInitializer;
 using NCDC.ProxyServer.ServiceProviders;
-using NCDC.ShardingRoute.DataSourceRoutes.Abstractions;
-using NCDC.ShardingRoute.TableRoutes.Abstractions;
 
-namespace NCDC.ProxyServer.Contexts;
+namespace NCDC.ProxyServer.AppServices.Builder;
 
-public sealed class LogicDatabaseApplicationBuilder
+public sealed class RuntimeApplicationBuilder
 {
 
     private readonly List<Action<IServiceCollection>> _serviceActions = new List<Action<IServiceCollection>>();
@@ -24,7 +23,7 @@ public sealed class LogicDatabaseApplicationBuilder
     public ShardingConfigOption ConfigOption { get; }
     public IRouteInitConfigOption RouteConfigOption { get; }
 
-    private LogicDatabaseApplicationBuilder(string databaseName)
+    private RuntimeApplicationBuilder(string databaseName)
     {
         DatabaseName = databaseName;
         ConfigOption = new ShardingConfigOption(databaseName);
@@ -32,13 +31,13 @@ public sealed class LogicDatabaseApplicationBuilder
         Services = new ServiceCollection();
     }
 
-    public static LogicDatabaseApplicationBuilder CreateBuilder(string databaseName)
+    public static RuntimeApplicationBuilder CreateBuilder(string databaseName)
     {
-        return new LogicDatabaseApplicationBuilder(databaseName);
+        return new RuntimeApplicationBuilder(databaseName);
     }
 
 
-    public LogicDatabaseApplicationBuilder AddTableRule(string logicTableName,Type type)
+    public RuntimeApplicationBuilder AddTableRule(string logicTableName,Type type)
     {
         if (!type.IsTableRouteRule())
             throw new ShardingInvalidOperationException($"{type.FullName} is not implement {nameof(ITableRouteRule)}");
@@ -49,7 +48,7 @@ public sealed class LogicDatabaseApplicationBuilder
         return this;
     }
 
-    public LogicDatabaseApplicationBuilder AddDataSourceRule(string logicTableName,Type type)
+    public RuntimeApplicationBuilder AddDataSourceRule(string logicTableName,Type type)
     {
         if (!type.IsDataSourceRouteRule())
             throw new ShardingInvalidOperationException(
@@ -61,7 +60,7 @@ public sealed class LogicDatabaseApplicationBuilder
     }
 
 
-    public LogicDatabaseApplicationBuilder AddServiceConfigure(Action<IServiceCollection> configure)
+    public RuntimeApplicationBuilder AddServiceConfigure(Action<IServiceCollection> configure)
     {
         if (configure == null)
         {
@@ -69,7 +68,12 @@ public sealed class LogicDatabaseApplicationBuilder
         }
 
         _serviceActions.Add(configure);
-        ;
+        return this;
+    }
+
+    public RuntimeApplicationBuilder AddRuntimeInitializer<T>() where T : class,IRuntimeInitializer
+    {
+        Services.AddSingleton<IRuntimeInitializer, T>();
         return this;
     }
 
@@ -81,7 +85,7 @@ public sealed class LogicDatabaseApplicationBuilder
         Services.AddSingleton<ITableMetadataInitializer,DefaultTableMetadataInitializer>();
 
 
-        // Services.AddSingleton<IRuntimeContextInitializer, DefaultRuntimeContextInitializer>();
+        // Services.AddSingleton<IRuntimeInitializer, DefaultRuntimeContextInitializer>();
         Services.AddSingleton<IShardingProvider>(sp => new ShardingProvider(sp, appServiceProvider));
         Services.AddInternalRuntimeContextService();
         foreach (var serviceAction in _serviceActions)

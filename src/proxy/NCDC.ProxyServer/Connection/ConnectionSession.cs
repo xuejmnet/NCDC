@@ -2,10 +2,12 @@ using DotNetty.Common.Utilities;
 using DotNetty.Transport.Channels;
 using NCDC.Basic.Metadatas;
 using NCDC.Enums;
+using NCDC.ProxyServer.AppServices;
 using NCDC.ProxyServer.Connection.Abstractions;
 using NCDC.ProxyServer.Connection.Metadatas;
 using NCDC.ProxyServer.Connection.User;
 using NCDC.ProxyServer.Contexts;
+using NCDC.ProxyServer.Runtimes;
 
 namespace NCDC.ProxyServer.Connection;
 
@@ -23,14 +25,14 @@ public class ConnectionSession:IConnectionSession
     private volatile string? _databaseName;
     public string? DatabaseName => _databaseName;
     public IRuntimeContext? RuntimeContext { get;private set; }
-    public IContextManager ContextManager { get; }
+    public IAppRuntimeManager AppRuntimeManager { get; }
     private readonly TimeSpan _channelWaitMillis = TimeSpan.FromMilliseconds(200);
 
     private readonly ChannelIsWritableListener _channelWaitWriteableListener;
  
-    public ConnectionSession(TransactionTypeEnum transactionType,IChannel channel,IContextManager contextManager)
+    public ConnectionSession(TransactionTypeEnum transactionType,IChannel channel,IAppRuntimeManager appRuntimeManager)
     {
-        ContextManager = contextManager;
+        AppRuntimeManager = appRuntimeManager;
         Channel = channel;
         _transactionStatus=new TransactionStatus(transactionType);
         ServerConnection = new ServerConnection(this);
@@ -39,17 +41,17 @@ public class ConnectionSession:IConnectionSession
 
     public IReadOnlyCollection<string> GetAllDatabaseNames()
     {
-        return ContextManager.GetAllDatabaseNames();
+        return AppRuntimeManager.GetAllDatabaseNames();
     }
 
     public IReadOnlyCollection<string> GetAuthorizeDatabases()
     {
-        return ContextManager.GetAuthorizedDatabases(_grantee.Username);
+        return AppRuntimeManager.GetAuthorizedDatabases(_grantee.Username);
     }
 
     public bool DatabaseExists(string database)
     {
-        return ContextManager.HasRuntimeContext(database);
+        return AppRuntimeManager.ContainsRuntimeContext(database);
     }
 
 
@@ -91,7 +93,7 @@ public class ConnectionSession:IConnectionSession
         }
         //todo 判断是否在事务中
         _databaseName = databaseName;
-        RuntimeContext =ContextManager.GetRuntimeContext(databaseName!);
+        RuntimeContext =AppRuntimeManager.GetRuntimeContext(databaseName!);
     }
     public  Task WaitChannelIsWritableAsync(CancellationToken cancellationToken=default)
     {

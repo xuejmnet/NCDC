@@ -19,6 +19,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Folder Include="AppServices\Auth" />
       <Folder Include="Configurations\Runtimes" />
     </ItemGroup>
 

@@ -5,8 +5,8 @@ using NCDC.CommandParser.Abstractions;
 using NCDC.Exceptions;
 using NCDC.ProxyServer.Abstractions;
 using NCDC.ProxyServer.Connection.Metadatas;
-using NCDC.ProxyServer.Contexts.Initializers;
 using NCDC.ProxyServer.Executors;
+using NCDC.ProxyServer.Runtimes;
 using NCDC.ProxyServer.ServiceProviders;
 using NCDC.ShardingMerge.Abstractions;
 using NCDC.ShardingRoute.Abstractions;
@@ -27,7 +27,7 @@ public sealed class ShardingRuntimeContext:IRuntimeContext
 
     public Task Initialize()
     {
-        var runtimeContextInitializer = GetService<IRuntimeContextInitializer>()??throw new ShardingInvalidOperationException($"should be implement {nameof(IRuntimeContextInitializer)}");
+        var runtimeContextInitializer = GetService<IRuntimeInitializer>()??throw new ShardingInvalidOperationException($"should be implement {nameof(IRuntimeInitializer)}");
         return runtimeContextInitializer.InitializeAsync();
     }
     

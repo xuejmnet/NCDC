@@ -13,21 +13,23 @@ using NCDC.ProxyClient.Authentication;
 using NCDC.ProxyClientMySql.Authentication.Authenticator;
 using NCDC.ProxyClientMySql.Common;
 using NCDC.ProxyServer;
+using NCDC.ProxyServer.AppServices;
 using NCDC.ProxyServer.Contexts;
 using NCDC.ProxyServer.Extensions;
 using NCDC.ProxyServer.Helpers;
+using NCDC.ProxyServer.Runtimes;
 
 namespace NCDC.ProxyClientMySql.Authentication;
 
 public sealed class MySqlAuthenticationHandler:IAuthenticationHandler<MySqlPacketPayload,MySqlAuthContext>
 { 
     private static readonly MySqlStatusFlagEnum DEFAULT_STATUS_FLAG = MySqlStatusFlagEnum.SERVER_STATUS_AUTOCOMMIT;
-    private readonly IContextManager _contextManager;
+    private readonly IAppRuntimeManager _appRuntimeManager;
     private readonly IAppUserManager _appUserManager;
 
-    public MySqlAuthenticationHandler(IContextManager  contextManager,IAppUserManager appUserManager)
+    public MySqlAuthenticationHandler(IAppRuntimeManager  appRuntimeManager,IAppUserManager appUserManager)
     {
-        _contextManager = contextManager;
+        _appRuntimeManager = appRuntimeManager;
         _appUserManager = appUserManager;
     }
     public int Handshake(IChannelHandlerContext context, MySqlAuthContext authContext)
@@ -89,7 +91,7 @@ public sealed class MySqlAuthenticationHandler:IAuthenticationHandler<MySqlPacke
         var mySqlCharacterSet = MySqlCharacterSet.FindById(packet.CharacterSet);
         context.Channel.SetEncoding(mySqlCharacterSet.Charset);
         context.Channel.SetMySqlCharacterSet(mySqlCharacterSet);
-        if (packet.Database.NotNullOrWhiteSpace() && !_contextManager.HasRuntimeContext(packet.Database!))
+        if (packet.Database.NotNullOrWhiteSpace() && !_appRuntimeManager.ContainsRuntimeContext(packet.Database!))
         {
             context.WriteAndFlushAsync(
                 new MySqlErrPacket(++authContext.SequenceId, MySqlServerErrorCode.ER_NO_DB_ERROR));

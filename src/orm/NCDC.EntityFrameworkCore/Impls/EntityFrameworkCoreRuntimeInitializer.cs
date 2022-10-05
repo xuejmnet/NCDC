@@ -1,4 +1,3 @@
-
 using System.Data;
 using System.Data.Common;
 using Microsoft.EntityFrameworkCore;
@@ -8,14 +7,15 @@ using NCDC.EntityFrameworkCore.Entities;
 using NCDC.Enums;
 using NCDC.ProxyServer.Abstractions;
 using NCDC.ProxyServer.Configurations.Apps;
-using NCDC.ProxyServer.Contexts.Initializers;
 using NCDC.ProxyServer.Databases;
 using NCDC.ProxyServer.Options;
+using NCDC.ProxyServer.Runtimes;
+using NCDC.ProxyServer.Runtimes.TableMetadataInitializer;
 using NCDC.ProxyServer.ServiceProviders;
 
-namespace NCDC.EntityFrameworkCore.Configurations;
+namespace NCDC.EntityFrameworkCore.Impls;
 
-public class EntityFrameworkCoreRuntimeContextInitializer:IRuntimeContextInitializer
+public class EntityFrameworkCoreRuntimeInitializer:IRuntimeInitializer
 {
     private readonly IShardingProvider _shardingProvider;
     private readonly IVirtualDataSource _virtualDataSource;
@@ -24,7 +24,7 @@ public class EntityFrameworkCoreRuntimeContextInitializer:IRuntimeContextInitial
     private readonly IDbProviderFactory _dbProviderFactory;
     private readonly IAppConfiguration _appConfiguration;
 
-    public EntityFrameworkCoreRuntimeContextInitializer(IShardingProvider shardingProvider,IVirtualDataSource virtualDataSource,IRouteInitConfigOption routeInitConfigOption,ITableMetadataInitializer tableMetadataInitializer)
+    public EntityFrameworkCoreRuntimeInitializer(IShardingProvider shardingProvider,IVirtualDataSource virtualDataSource,IRouteInitConfigOption routeInitConfigOption,ITableMetadataInitializer tableMetadataInitializer)
     {
         _shardingProvider = shardingProvider;
         _virtualDataSource = virtualDataSource;
@@ -37,11 +37,8 @@ public class EntityFrameworkCoreRuntimeContextInitializer:IRuntimeContextInitial
     {
         using (var serviceScope = _shardingProvider.ApplicationServiceProvider.CreateScope())
         {
-        
-
             var dbContext = serviceScope.ServiceProvider.GetRequiredService<NCDCDbContext>();
              var dbActualTables = await dbContext.Set<ActualTableEntity>().Where(o=>o.Database==_virtualDataSource.GetDatabaseName()).ToListAsync();
-             
            
              var logicTableNames = _routeInitConfigOption.GetTableRouteRules().Keys.Union(_routeInitConfigOption.GetDataSourceRouteRules().Keys).ToList();
              foreach (var logicTableName in logicTableNames)

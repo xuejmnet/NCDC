@@ -1,8 +1,7 @@
 using NCDC.EntityFrameworkCore.Configurations;
-using NCDC.ProxyServer.Abstractions;
-using NCDC.ProxyServer.Configurations;
+using NCDC.EntityFrameworkCore.Impls;
+using NCDC.ProxyServer.Bootstrappers;
 using NCDC.ProxyServer.Configurations.Apps;
-using NCDC.ProxyServer.Contexts.Initializers;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -17,9 +16,9 @@ public static class DIExtension
     {
         //添加代理核心
         services.AddProxyServerCore();
+        services.AddAppService<EntityFrameworkCoreAppRuntimeBuilder,EntityFrameworkCoreAppRuntimeInitializer>();
         services.AddSingleton<IAppUserBuilder, EntityFrameworkCoreAppUserBuilder>();
-        services.AddSingleton<IAppRuntimeContextBuilder, EntityFrameworkCoreAppRuntimeContextBuilder>();
-        services.AddSingleton<IRuntimeContextInitializer, EntityFrameworkCoreRuntimeContextInitializer>();
+        services.AddSingleton<IAppInitializer, EntityFrameworkCoreRuntimeContextBuilder>();
         return services;
     }
 }

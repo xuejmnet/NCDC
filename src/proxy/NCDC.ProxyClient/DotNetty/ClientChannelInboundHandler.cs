@@ -12,11 +12,13 @@ using NCDC.ProxyClient.Authentication;
 using NCDC.ProxyClient.Command;
 using NCDC.ProxyClient.Command.Abstractions;
 using NCDC.ProxyServer.Abstractions;
+using NCDC.ProxyServer.AppServices;
 using NCDC.ProxyServer.Connection;
 using NCDC.ProxyServer.Connection.Abstractions;
 using NCDC.ProxyServer.Connection.User;
 using NCDC.ProxyServer.Contexts;
 using NCDC.ProxyServer.Extensions;
+using NCDC.ProxyServer.Runtimes;
 
 namespace NCDC.ProxyClient.DotNetty;
 
@@ -27,7 +29,7 @@ public class ClientChannelInboundHandler : ChannelHandlerAdapter
 
     private readonly IDatabaseProtocolClientEngine _databaseProtocolClientEngine;
     private readonly ICommandListener _commandListener;
-    private readonly IContextManager _contextManager;
+    private readonly IAppRuntimeManager _appRuntimeManager;
     private readonly IMessageCommandProcessor _messageCommandProcessor;
 
     private readonly IConnectionSession _connectionSession;
@@ -36,12 +38,12 @@ public class ClientChannelInboundHandler : ChannelHandlerAdapter
     private bool _authenticated;
 
     public ClientChannelInboundHandler(IDatabaseProtocolClientEngine databaseProtocolClientEngine,
-        ISocketChannel channel,IContextManager contextManager,IMessageCommandProcessor messageCommandProcessor)
+        ISocketChannel channel,IAppRuntimeManager appRuntimeManager,IMessageCommandProcessor messageCommandProcessor)
     {
         _databaseProtocolClientEngine = databaseProtocolClientEngine;
-        _contextManager = contextManager;
+        _appRuntimeManager = appRuntimeManager;
         _messageCommandProcessor = messageCommandProcessor;
-        _connectionSession = new ConnectionSession(TransactionTypeEnum.LOCAL, channel,contextManager);
+        _connectionSession = new ConnectionSession(TransactionTypeEnum.LOCAL, channel,appRuntimeManager);
         _authContext = databaseProtocolClientEngine.GetAuthContext();
     }
 

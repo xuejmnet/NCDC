@@ -16,7 +16,7 @@
 //
 // public class MySqlAuthenticationEngine:IAuthenticationEngine
 // {
-//     private readonly IContextManager _contextManager;
+//     private readonly IAppRuntimeManager _appRuntimeManager;
 //     private static readonly MySqlStatusFlagEnum DEFAULT_STATUS_FLAG = MySqlStatusFlagEnum.SERVER_STATUS_AUTOCOMMIT;
 //     private readonly MySqlAuthenticationHandler _authenticationHandler;
 //
@@ -27,10 +27,10 @@
 //     private string? _database;
 //     private AuthenticationResult? _currentAuthResult;
 //
-//     public MySqlAuthenticationEngine(IContextManager contextManager)
+//     public MySqlAuthenticationEngine(IAppRuntimeManager appRuntimeManager)
 //     {
-//         _contextManager = contextManager;
-//         _authenticationHandler= new MySqlAuthenticationHandler1(contextManager);
+//         _appRuntimeManager = appRuntimeManager;
+//         _authenticationHandler= new MySqlAuthenticationHandler1(appRuntimeManager);
 //     }
 //
 //     public int Handshake(IChannelHandlerContext context)

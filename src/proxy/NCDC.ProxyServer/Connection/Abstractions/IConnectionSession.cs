@@ -2,9 +2,11 @@ using System.Collections.Immutable;
 using DotNetty.Common.Utilities;
 using DotNetty.Transport.Channels;
 using NCDC.Basic.Metadatas;
+using NCDC.ProxyServer.AppServices;
 using NCDC.ProxyServer.Connection.Metadatas;
 using NCDC.ProxyServer.Connection.User;
 using NCDC.ProxyServer.Contexts;
+using NCDC.ProxyServer.Runtimes;
 
 namespace NCDC.ProxyServer.Connection.Abstractions;
 
@@ -15,7 +17,7 @@ public interface IConnectionSession:IDisposable
     IChannel Channel { get; }
     ILogicDatabase? LogicDatabase { get; }
     IRuntimeContext? RuntimeContext { get; }
-    IContextManager ContextManager { get; }
+    IAppRuntimeManager AppRuntimeManager { get; }
     IReadOnlyCollection<string> GetAllDatabaseNames();
     IReadOnlyCollection<string> GetAuthorizeDatabases();
     
