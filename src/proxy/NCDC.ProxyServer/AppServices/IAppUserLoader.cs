@@ -6,5 +6,4 @@ public interface IAppUserLoader
 {
     bool AddAppUser(AuthUser authUser);
     bool RemoveAppUser(string username);
-    bool ContainsAppUser(string username);
 }

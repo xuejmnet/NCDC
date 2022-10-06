@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Configuration;
 using NCDC.Basic.TableMetadataManagers;
 using NCDC.Enums;
 using NCDC.MySqlParser;
@@ -5,6 +6,7 @@ using NCDC.ProxyServer;
 using NCDC.ProxyServer.Abstractions;
 using NCDC.ProxyServer.AppServices;
 using NCDC.ProxyServer.AppServices.Builder;
+using NCDC.ProxyServer.Bootstrappers;
 using NCDC.ProxyServer.Commons;
 using NCDC.ProxyServer.Configurations.Apps;
 using NCDC.ProxyServer.Configurations.Initializers;
@@ -29,23 +31,28 @@ public static class DIExtension
         {
             return new AppConfiguration(DatabaseTypeEnum.MySql, ConfigurationStorageTypeEnum.File, 3307, "/rule/test");
         });
-        services.AddSingleton<IAppUserInitializer, DefaultAppUserInitializer>();
-        services.AddSingleton<IAppInitializer, DefaultAppInitializer>();
+        // services.AddSingleton<IAppConfiguration, AppConfiguration>(sp =>
+        // {
+        //     var configuration = sp.GetService<IConfiguration>();
+        //     return new AppConfiguration();
+        // });
         services.AddSingleton<IRoutePluginInitializer, DefaultRoutePluginInitializer>();
-        services.AddSingleton<IInitializerManager, DefaultInitializerManager>();
+        //IAppRuntimeLoader,IAppUserLoader,IUserDatabaseMappingLoader
         services.AddSingleton<IAppRuntimeManager, DefaultAppAppRuntimeManager>();
+        services.AddSingleton<IAppRuntimeLoader>(sp=>(sp.GetService<IAppRuntimeManager>() as IAppRuntimeLoader)!);
+        services.AddSingleton<IAppUserLoader>(sp=>(sp.GetService<IAppRuntimeManager>() as IAppUserLoader)!);
+        services.AddSingleton<IUserDatabaseMappingLoader>(sp=>(sp.GetService<IAppRuntimeManager>() as IUserDatabaseMappingLoader)!);
         services.AddSingleton<IServerHandlerFactory, ServerHandlerFactory>();
         services.AddSingleton<IServerDataReaderFactory, ServerDataReaderFactory>();
-        services.AddSingleton<IAppUserManager, DefaultAppUserManager>();
         return services;
     }
     
     public static IServiceCollection AddAppService<TBuilder,TInitializer>(this IServiceCollection services)
         where TBuilder:class,IAppRuntimeBuilder
-        where TInitializer:class,IAppRuntimeInitializer
+        where TInitializer:class,IAppInitializer
     {
-        services.AddSingleton<IAppRuntimeInitializer, TInitializer>();
-        services.AddSingleton<IAppRuntimeInitializer, TInitializer>();
+        services.AddSingleton<IAppInitializer, TInitializer>();
+        services.AddSingleton<IAppRuntimeBuilder, TBuilder>();
         return services;
     }
 

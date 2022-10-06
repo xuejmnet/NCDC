@@ -12,4 +12,5 @@ public interface IAppRuntimeManager
     ICollection<string> GetAuthorizedDatabases(string username);
     ICollection<string> GetAuthorizedUsers(string database);
     AuthUser GetUser(string username);
+    bool ContainsAppUser(string username);
 }

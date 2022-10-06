@@ -1,6 +1,6 @@
 namespace NCDC.ProxyServer.AppServices;
 
-public interface IAppRuntimeInitializer
+public interface IAppInitializer
 {
     Task InitializeAsync();
 }

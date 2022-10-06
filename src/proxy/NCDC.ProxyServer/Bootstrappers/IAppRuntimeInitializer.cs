@@ -1,6 +1,6 @@
-namespace NCDC.ProxyServer.Bootstrappers;
-
-public interface IAppRuntimeInitializer
-{
-    Task InitializeAsync();
-}
+// namespace NCDC.ProxyServer.Bootstrappers;
+//
+// public interface IAppInitializer
+// {
+//     Task InitializeAsync();
+// }

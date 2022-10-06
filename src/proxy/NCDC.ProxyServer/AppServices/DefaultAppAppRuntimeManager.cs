@@ -11,7 +11,7 @@ public sealed class DefaultAppAppRuntimeManager:IAppRuntimeManager,IAppRuntimeLo
 {
     private readonly ConcurrentDictionary<string, IRuntimeContext> _runtimeContexts=new();
     private readonly ConcurrentDictionary<string, AuthUser> _authUsers=new();
-    private readonly ConcurrentDictionary<UserDatabaseEntry, object> _userDatabases=new();
+    private readonly ConcurrentDictionary<UserDatabaseEntry, object?> _userDatabases=new();
     public bool LoadRuntimeContext(IRuntimeContext runtimeContext)
     {
         if (_runtimeContexts.ContainsKey(runtimeContext.DatabaseName))
@@ -110,16 +110,27 @@ public sealed class DefaultAppAppRuntimeManager:IAppRuntimeManager,IAppRuntimeLo
 
     public bool AddUserDatabaseMapping(UserDatabaseEntry entry)
     {
-        throw new NotImplementedException();
+        if (ContainsUserDatabaseMapping(entry))
+        {
+            return false;
+        }
+
+        return _userDatabases.TryAdd(entry, null);
     }
 
     public bool RemoveUserDatabaseMapping(UserDatabaseEntry entry)
     {
-        throw new NotImplementedException();
+       
+        if (!ContainsUserDatabaseMapping(entry))
+        {
+            return false;
+        }
+
+        return _userDatabases.TryRemove(entry, out _);
     }
 
     public bool ContainsUserDatabaseMapping(UserDatabaseEntry entry)
     {
-        throw new NotImplementedException();
+        return _userDatabases.ContainsKey(entry);
     }
 }
