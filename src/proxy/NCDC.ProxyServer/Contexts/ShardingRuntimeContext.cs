@@ -1,10 +1,8 @@
 using Microsoft.Extensions.DependencyInjection;
-using NCDC.Basic.Metadatas;
 using NCDC.Basic.TableMetadataManagers;
 using NCDC.CommandParser.Abstractions;
 using NCDC.Exceptions;
-using NCDC.ProxyServer.Abstractions;
-using NCDC.ProxyServer.Connection.Metadatas;
+using NCDC.ProxyServer.Databases;
 using NCDC.ProxyServer.Executors;
 using NCDC.ProxyServer.Runtimes;
 using NCDC.ProxyServer.ServiceProviders;
@@ -31,11 +29,10 @@ public sealed class ShardingRuntimeContext:IRuntimeContext
         return runtimeContextInitializer.InitializeAsync();
     }
     
-
-    private ILogicDatabase? _logicDatabase;
-    public ILogicDatabase GetDatabase()
+    private IVirtualDataSource? _virtualDataSource;
+    public IVirtualDataSource GetVirtualDataSource()
     {
-        return _logicDatabase??=GetRequiredService<ILogicDatabase>();
+        return _virtualDataSource??=GetRequiredService<IVirtualDataSource>();
     }
 
     private ITableMetadataManager? _tableMetadataManager;
@@ -112,7 +109,7 @@ public sealed class ShardingRuntimeContext:IRuntimeContext
 
     private void InitFieldValue()
     {
-        GetDatabase();
+        GetVirtualDataSource();
         GetTableMetadataManager();
         GetShardingExecutionContextFactory();
         GetDataReaderMergerFactory();

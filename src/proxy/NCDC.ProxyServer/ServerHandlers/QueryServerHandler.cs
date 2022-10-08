@@ -23,7 +23,7 @@ public sealed class QueryServerHandler:IServerHandler
     }
     public IServerResult Execute()
     {
-        if (_connectionSession.LogicDatabase == null)
+        if (_connectionSession.VirtualDataSource == null)
         {
             throw new ShardingException("no database selected");
         }

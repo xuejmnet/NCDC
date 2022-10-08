@@ -1,6 +1,4 @@
-using System.Collections.Concurrent;
-
-namespace NCDC.ProxyServer.Connection.User
+namespace NCDC.Basic.User
 {
     public class AuthUser
     {

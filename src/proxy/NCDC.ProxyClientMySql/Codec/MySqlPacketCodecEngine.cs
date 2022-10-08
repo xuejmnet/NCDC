@@ -8,12 +8,15 @@ using NCDC.Protocol.MySql.Payload;
 using NCDC.Protocol.Packets;
 using NCDC.ProxyClient.Codecs;
 using NCDC.ProxyServer;
+using NCDC.ProxyServer.Configurations.Apps;
 using NCDC.ProxyServer.Extensions;
 
 namespace NCDC.ProxyClientMySql.Codec;
 
 public sealed class MySqlPacketCodecEngine : IPacketCodec
 {
+    private readonly IAppConfiguration _appConfiguration;
+
     /// <summary>
     /// 16MB
     /// </summary>
@@ -32,6 +35,20 @@ public sealed class MySqlPacketCodecEngine : IPacketCodec
     public const int READABLE_BYTES_MIN_LENGTH = PAYLOAD_LENGTH+SEQUENCE_LENGTH;
 
     private readonly List<IByteBuffer> _pendingmessages = new List<IByteBuffer>();
+
+    public MySqlPacketCodecEngine(IAppConfiguration appConfiguration)
+    {
+        _appConfiguration = appConfiguration;
+    }
+    public bool LogEncodePacket()
+    {
+        return _appConfiguration.LogEncode();
+    }
+
+    public bool LogDecodePacket()
+    {
+        return _appConfiguration.LogDecode();
+    }
 
     public bool IsValidHeader(int readableBytes)
     {

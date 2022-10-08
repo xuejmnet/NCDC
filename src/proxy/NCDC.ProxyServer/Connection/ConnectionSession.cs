@@ -1,13 +1,10 @@
-using DotNetty.Common.Utilities;
 using DotNetty.Transport.Channels;
-using NCDC.Basic.Metadatas;
+using NCDC.Basic.User;
 using NCDC.Enums;
 using NCDC.ProxyServer.AppServices;
 using NCDC.ProxyServer.Connection.Abstractions;
-using NCDC.ProxyServer.Connection.Metadatas;
-using NCDC.ProxyServer.Connection.User;
 using NCDC.ProxyServer.Contexts;
-using NCDC.ProxyServer.Runtimes;
+using NCDC.ProxyServer.Databases;
 
 namespace NCDC.ProxyServer.Connection;
 
@@ -20,7 +17,8 @@ public class ConnectionSession:IConnectionSession
 
 
     public  IChannel Channel{ get; }
-    public ILogicDatabase? LogicDatabase => RuntimeContext?.GetDatabase();
+    // public ILogicDatabase? LogicDatabase => RuntimeContext?.GetDatabase();
+    public IVirtualDataSource? VirtualDataSource => RuntimeContext?.GetVirtualDataSource();
     private volatile bool autoCommit = true;
     private volatile string? _databaseName;
     public string? DatabaseName => _databaseName;

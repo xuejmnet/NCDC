@@ -1,4 +1,4 @@
-﻿using NCDC.Basic.Metadatas;
+﻿using NCDC.Basic.Configurations;
 using NCDC.Basic.TableMetadataManagers;
 using NCDC.CommandParser.Abstractions;
 using NCDC.CommandParser.Command.DAL.Dialect.MySql;
@@ -20,12 +20,12 @@ namespace NCDC.ShardingMerge.DataReaderMergers.DAL
     */
     public sealed class ShardingDALDataReaderMerger:IDataReaderMerger
     {
-        private readonly IDatabaseSettings _databaseSettings;
+        private readonly ShardingConfiguration _shardingConfiguration;
         private readonly ITableMetadataManager _tableMetadataManager;
 
-        public ShardingDALDataReaderMerger(IDatabaseSettings databaseSettings,ITableMetadataManager tableMetadataManager)
+        public ShardingDALDataReaderMerger(ShardingConfiguration shardingConfiguration,ITableMetadataManager tableMetadataManager)
         {
-            _databaseSettings = databaseSettings;
+            _shardingConfiguration = shardingConfiguration;
             _tableMetadataManager = tableMetadataManager;
         }
 
@@ -33,7 +33,7 @@ namespace NCDC.ShardingMerge.DataReaderMergers.DAL
         {
             var dalStatement = sqlCommandContext.GetSqlCommand();
             if (dalStatement is ShowDatabasesCommand showDatabasesCommand) {
-                return new SingleLocalDataMergedDataReader(new List<object>(){ _databaseSettings.GetDatabaseName() });
+                return new SingleLocalDataMergedDataReader(new List<object>(){ _shardingConfiguration.DatabaseName });
             }
             if (dalStatement is ShowTablesCommand || dalStatement is ShowTableStatusCommand || dalStatement is ShowIndexCommand) {
                 return new LogicTablesMergedDataReader(_tableMetadataManager,sqlCommandContext, streamDataReaders);

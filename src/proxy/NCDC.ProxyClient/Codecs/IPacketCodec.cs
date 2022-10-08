@@ -7,6 +7,8 @@ namespace NCDC.ProxyClient.Codecs;
 
 public interface IPacketCodec
 {
+    bool LogEncodePacket();
+    bool LogDecodePacket();
     /// <summary>
     /// 验证头部
     /// </summary>

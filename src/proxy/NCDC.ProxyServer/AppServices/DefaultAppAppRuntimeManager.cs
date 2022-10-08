@@ -1,8 +1,8 @@
 using System.Collections.Concurrent;
 using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
+using NCDC.Basic.User;
 using NCDC.Exceptions;
-using NCDC.ProxyServer.Connection.User;
 using NCDC.ProxyServer.Contexts;
 
 namespace NCDC.ProxyServer.AppServices;

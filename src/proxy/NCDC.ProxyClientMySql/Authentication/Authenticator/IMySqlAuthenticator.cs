@@ -1,6 +1,6 @@
 
+using NCDC.Basic.User;
 using NCDC.ProxyClient.Authentication;
-using NCDC.ProxyServer.Connection.User;
 
 namespace NCDC.ProxyClientMySql.Authentication.Authenticator;
 

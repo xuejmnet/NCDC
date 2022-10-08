@@ -1,4 +1,5 @@
 using System.Reflection;
+using NCDC.Basic.Plugin;
 using NCDC.ProxyServer.Abstractions;
 using NCDC.ProxyServer.Configurations.Apps;
 
@@ -20,13 +21,16 @@ public sealed class DefaultRoutePluginInitializer:IRoutePluginInitializer
         {
             Directory.CreateDirectory(routePluginPath);
         }
-
+        PluginLoader.Init(routePluginPath);
+      
         //获取当前文件夹下的所有dll进行load程序集加载获取所有的路由,将其存储到k-v内存中,
         var directoryInfo = new DirectoryInfo(routePluginPath);
         var files = directoryInfo.GetFiles().Where(o=>o.Name.EndsWith(".dll",StringComparison.OrdinalIgnoreCase)).ToList();
         foreach (var fileInfo in files)
         {
-            Assembly.LoadFile(fileInfo.FullName);
+            PluginLoader.Instance.LoadFromAssemblyPath(fileInfo.FullName);
+            // var loadFile = Assembly.LoadFile(fileInfo.FullName);
+            // var type = loadFile.GetType("ShardingRoutePluginTest.TestModTableRouteRule");
         }
         return Task.CompletedTask;
     }

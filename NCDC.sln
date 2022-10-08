@@ -67,6 +67,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NCDC.Plugin", "src\core\NCD
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NCDC.EntityFrameworkCore", "src\orm\NCDC.EntityFrameworkCore\NCDC.EntityFrameworkCore.csproj", "{575B0348-67BA-4A09-9981-574DAD4180F1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShardingRoutePluginTest", "test\ShardingRoutePluginTest\ShardingRoutePluginTest.csproj", "{99E87C6C-18E5-4819-9C30-E76FF0AC3248}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -153,6 +155,10 @@ Global
 		{575B0348-67BA-4A09-9981-574DAD4180F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{575B0348-67BA-4A09-9981-574DAD4180F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{575B0348-67BA-4A09-9981-574DAD4180F1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{99E87C6C-18E5-4819-9C30-E76FF0AC3248}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{99E87C6C-18E5-4819-9C30-E76FF0AC3248}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{99E87C6C-18E5-4819-9C30-E76FF0AC3248}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{99E87C6C-18E5-4819-9C30-E76FF0AC3248}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -188,6 +194,7 @@ Global
 		{2CA6ACFF-9B4B-4C09-85B8-B14C54AEBD52} = {EF1B7E02-2C0E-4B65-87AC-E1CEB032A7B5}
 		{65C7633A-5AA1-49CA-A7FF-8A6D486294D2} = {13416211-E7FD-42AB-9728-E17F58F306CA}
 		{575B0348-67BA-4A09-9981-574DAD4180F1} = {221F76CC-2181-4F93-89BE-61EED7D889C1}
+		{99E87C6C-18E5-4819-9C30-E76FF0AC3248} = {C37A1D9B-9BAA-435C-857B-0BB3E2C010B2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FE6C7648-4D94-4A48-B67D-3161C6FE3BC0}

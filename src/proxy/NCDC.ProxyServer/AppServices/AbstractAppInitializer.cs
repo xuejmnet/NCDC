@@ -1,8 +1,8 @@
 using Microsoft.Extensions.Logging;
+using NCDC.Basic.User;
 using NCDC.Logger;
 using NCDC.ProxyServer.AppServices.Builder;
 using NCDC.ProxyServer.Configurations.Apps;
-using NCDC.ProxyServer.Connection.User;
 
 namespace NCDC.ProxyServer.AppServices;
 

@@ -10,4 +10,6 @@ public interface IAppConfiguration
     string ConnectionsString();
     int GetPort();
     string GetRulePluginPath();
+    bool LogEncode();
+    bool LogDecode();
 }

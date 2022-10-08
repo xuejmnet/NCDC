@@ -18,19 +18,21 @@ namespace NCDC.EntityFrameworkCore.Impls;
 public class EntityFrameworkCoreRuntimeInitializer:IRuntimeInitializer
 {
     private readonly IShardingProvider _shardingProvider;
+    private readonly ITableMetadataManager _tableMetadataManager;
     private readonly IVirtualDataSource _virtualDataSource;
     private readonly IRouteInitConfigOption _routeInitConfigOption;
     private readonly ITableMetadataInitializer _tableMetadataInitializer;
     private readonly IDbProviderFactory _dbProviderFactory;
     private readonly IAppConfiguration _appConfiguration;
 
-    public EntityFrameworkCoreRuntimeInitializer(IShardingProvider shardingProvider,IVirtualDataSource virtualDataSource,IRouteInitConfigOption routeInitConfigOption,ITableMetadataInitializer tableMetadataInitializer)
+    public EntityFrameworkCoreRuntimeInitializer(IShardingProvider shardingProvider,ITableMetadataManager tableMetadataManager,IDbProviderFactory dbProviderFactory,IVirtualDataSource virtualDataSource,IRouteInitConfigOption routeInitConfigOption,ITableMetadataInitializer tableMetadataInitializer)
     {
         _shardingProvider = shardingProvider;
+        _tableMetadataManager = tableMetadataManager;
         _virtualDataSource = virtualDataSource;
         _routeInitConfigOption = routeInitConfigOption;
         _tableMetadataInitializer = tableMetadataInitializer;
-        _dbProviderFactory =_shardingProvider.ApplicationServiceProvider.GetRequiredService<IDbProviderFactory>();
+        _dbProviderFactory = dbProviderFactory;
         _appConfiguration =_shardingProvider.ApplicationServiceProvider.GetRequiredService<IAppConfiguration>();
     }
     public async Task InitializeAsync()
@@ -49,8 +51,11 @@ public class EntityFrameworkCoreRuntimeInitializer:IRuntimeInitializer
                  var tableMetadata = new TableMetadata(logicTableName,columnMetadatas);
                  foreach (var actualTable in actualTables)
                  {
-                     tableMetadata.AddActualTableWithDataSource(actualTable.TableName,actualTable.DataSource);
+                     tableMetadata.AddActualTableWithDataSource(actualTable.DataSource,actualTable.TableName);
                  }
+
+                 _tableMetadataManager.AddTableMetadata(tableMetadata);
+                 
                  await _tableMetadataInitializer.InitializeAsync(tableMetadata);
              }
         }
@@ -65,7 +70,7 @@ public class EntityFrameworkCoreRuntimeInitializer:IRuntimeInitializer
         }
         
         var connectionString = _virtualDataSource.GetConnectionString(actualTableEntity.DataSource);
-        var emptyResultSql = GenerateEmptyResultSql(actualTableEntity.LogicTableName);
+        var emptyResultSql = GenerateEmptyResultSql(actualTableEntity.TableName);
         var providerFactory = _dbProviderFactory.Create();
         using (var dbConnection = providerFactory.CreateConnection()!)
         {

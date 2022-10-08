@@ -1,7 +1,7 @@
+using NCDC.Basic.User;
 using NCDC.Protocol.Helper;
 using NCDC.Protocol.MySql.Constant;
 using NCDC.Protocol.MySql.Packet.Handshake;
-using NCDC.ProxyServer.Connection.User;
 
 namespace NCDC.ProxyClientMySql.Authentication.Authenticator;
 

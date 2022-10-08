@@ -13,19 +13,19 @@ namespace NCDC.ProxyClient.Codecs;
 public sealed class MessagePacketEncoder:MessageToByteEncoder<IPacket>
 {
     private readonly ILogger<MessagePacketEncoder> _logger= InternalNCDCLoggerFactory.CreateLogger<MessagePacketEncoder>();
-    private readonly bool _isDebugEnabled;
+    private readonly bool _logEncodePacket;
     private readonly IPacketCodec _packetCodec;
 
     public MessagePacketEncoder(IPacketCodec packetCodec)
     {
-        _isDebugEnabled=_logger.IsEnabled(LogLevel.Debug);
+        _logEncodePacket = packetCodec.LogEncodePacket();
         _packetCodec = packetCodec;
     }
     public override bool IsSharable => true;
     protected override void Encode(IChannelHandlerContext context, IPacket message, IByteBuffer output)
     {
         _packetCodec.Encode(context,message,output);
-        if (_isDebugEnabled)
+        if (_logEncodePacket)
         {
             _logger.LogDebug($"write to client {context.Channel.Id.AsShortText()} : \n{ByteBufferUtil.PrettyHexDump(output)}");
         }

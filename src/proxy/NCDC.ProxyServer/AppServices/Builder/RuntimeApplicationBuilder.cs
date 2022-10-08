@@ -1,4 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
+using NCDC.Basic.Configurations;
+using NCDC.Enums;
 using NCDC.Exceptions;
 using NCDC.Plugin.DataSourceRouteRules;
 using NCDC.Plugin.Extensions;
@@ -8,6 +10,8 @@ using NCDC.ProxyServer.Options;
 using NCDC.ProxyServer.Runtimes;
 using NCDC.ProxyServer.Runtimes.TableMetadataInitializer;
 using NCDC.ProxyServer.ServiceProviders;
+using NCDC.ShardingMerge;
+using NCDC.ShardingMerge.Abstractions;
 
 namespace NCDC.ProxyServer.AppServices.Builder;
 
@@ -20,20 +24,20 @@ public sealed class RuntimeApplicationBuilder
     private readonly IDictionary<string,Type> _dataSourceRouteRules =new Dictionary<string, Type>();
     public string DatabaseName { get; }
     public IServiceCollection Services { get; }
-    public ShardingConfigOption ConfigOption { get; }
+    public ShardingConfiguration ConfigOption { get; }
     public IRouteInitConfigOption RouteConfigOption { get; }
 
-    private RuntimeApplicationBuilder(string databaseName)
+    private RuntimeApplicationBuilder(DatabaseTypeEnum databaseType,string databaseName)
     {
         DatabaseName = databaseName;
-        ConfigOption = new ShardingConfigOption(databaseName);
+        ConfigOption = new ShardingConfiguration(databaseType,databaseName);
         RouteConfigOption = new DefaultRouteInitConfigOption();
         Services = new ServiceCollection();
     }
 
-    public static RuntimeApplicationBuilder CreateBuilder(string databaseName)
+    public static RuntimeApplicationBuilder CreateBuilder(DatabaseTypeEnum databaseType,string databaseName)
     {
-        return new RuntimeApplicationBuilder(databaseName);
+        return new RuntimeApplicationBuilder(databaseType,databaseName);
     }
 
 
@@ -80,9 +84,10 @@ public sealed class RuntimeApplicationBuilder
     public async Task<IRuntimeContext> BuildAsync(IServiceProvider appServiceProvider)
     {
         Services.AddSingleton<IShardingProvider>(sp => new ShardingProvider(sp, appServiceProvider));
-        Services.AddSingleton<ShardingConfigOption>(ConfigOption);
+        Services.AddSingleton<ShardingConfiguration>(ConfigOption);
         Services.AddSingleton<IRouteInitConfigOption>(RouteConfigOption);
         Services.AddSingleton<ITableMetadataInitializer,DefaultTableMetadataInitializer>();
+        Services.AddSingleton<IDataReaderMergerFactory,DataReaderMergerFactory>();
 
 
         // Services.AddSingleton<IRuntimeInitializer, DefaultRuntimeContextInitializer>();

@@ -41,7 +41,7 @@ public static class DIExtension
 
         throw new NotImplementedException(storageType);
     }
-    private static int ParsePort(string portStr)
+    private static int ParseInt(string portStr)
     {
         if (!int.TryParse(portStr,out var port ))
         {
@@ -49,6 +49,15 @@ public static class DIExtension
         }
 
         return port;
+    }
+    private static bool ParseBool(string portStr)
+    {
+        if (!bool.TryParse(portStr,out var b ))
+        {
+            throw new NotImplementedException(portStr);
+        }
+
+        return b;
     }
     public static IServiceCollection AddProxyServerCore(this IServiceCollection services)
     {
@@ -60,7 +69,9 @@ public static class DIExtension
             var connectionString = configuration["ConnectionString"];
             var port = configuration["Port"];
             var routePluginPath = configuration["RoutePluginPath"];
-            return new AppConfiguration(ParseDatabaseType(database), ParseStorageType(storage),connectionString, ParsePort(port), routePluginPath);
+            var logEncode = configuration["LogEncode"];
+            var logDecode = configuration["LogDecode"];
+            return new AppConfiguration(ParseDatabaseType(database), ParseStorageType(storage),connectionString, ParseInt(port), routePluginPath,ParseBool(logEncode),ParseBool(logDecode));
         });
         // services.AddSingleton<IAppConfiguration, AppConfiguration>(sp =>
         // {

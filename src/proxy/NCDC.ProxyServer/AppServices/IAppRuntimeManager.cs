@@ -1,4 +1,4 @@
-using NCDC.ProxyServer.Connection.User;
+using NCDC.Basic.User;
 using NCDC.ProxyServer.Contexts;
 
 namespace NCDC.ProxyServer.AppServices;

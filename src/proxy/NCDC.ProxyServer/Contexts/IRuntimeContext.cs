@@ -1,8 +1,6 @@
-using NCDC.Basic.Metadatas;
 using NCDC.Basic.TableMetadataManagers;
 using NCDC.CommandParser.Abstractions;
-using NCDC.ProxyServer.Abstractions;
-using NCDC.ProxyServer.Connection.Metadatas;
+using NCDC.ProxyServer.Databases;
 using NCDC.ProxyServer.Executors;
 using NCDC.ProxyServer.ServiceProviders;
 using NCDC.ShardingMerge.Abstractions;
@@ -13,7 +11,7 @@ namespace NCDC.ProxyServer.Contexts;
 public interface IRuntimeContext
 {
     string DatabaseName { get; }
-    ILogicDatabase GetDatabase();
+    IVirtualDataSource GetVirtualDataSource();
     ITableMetadataManager GetTableMetadataManager();
     IDataSourceRouteManager GetDataSourceRouteManager();
     ITableRouteManager GetTableRouteManager();

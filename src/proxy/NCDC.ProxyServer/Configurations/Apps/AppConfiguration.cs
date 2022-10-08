@@ -10,14 +10,18 @@ public class AppConfiguration:IAppConfiguration
     private readonly string _connectionString;
     private readonly int _port;
     private readonly string _rulePluginPath;
+    private readonly bool _logEncode;
+    private readonly bool _logDecode;
 
-    public AppConfiguration(DatabaseTypeEnum databaseType,DbStorageTypeEnum dbStorageType,string connectionString,int port,string rulePluginPath)
+    public AppConfiguration(DatabaseTypeEnum databaseType,DbStorageTypeEnum dbStorageType,string connectionString,int port,string rulePluginPath,bool logEncode,bool logDecode)
     {
         _databaseType = databaseType;
         _dbStorageType = dbStorageType;
         _connectionString = connectionString;
         _port = port;
         _rulePluginPath = rulePluginPath;
+        _logEncode = logEncode;
+        _logDecode = logDecode;
     }
     public DatabaseTypeEnum GetDatabaseType()
     {
@@ -42,5 +46,15 @@ public class AppConfiguration:IAppConfiguration
     public string GetRulePluginPath()
     {
         return _rulePluginPath;
+    }
+
+    public bool LogEncode()
+    {
+        return _logEncode;
+    }
+
+    public bool LogDecode()
+    {
+        return _logDecode;
     }
 }

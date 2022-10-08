@@ -12,12 +12,12 @@ namespace NCDC.ProxyClient.Codecs;
 public sealed class MessagePacketDecoder:ByteToMessageDecoder
 {
     private static readonly ILogger<MessagePacketDecoder> _logger = InternalNCDCLoggerFactory.CreateLogger<MessagePacketDecoder>();
-    private readonly bool _isDebugEnabled;
+    private readonly bool _logDecodePacket;
     private readonly IPacketCodec _packetCodec;
 
     public MessagePacketDecoder(IPacketCodec packetCodec)
     {
-        _isDebugEnabled=_logger.IsEnabled(LogLevel.Debug);
+        _logDecodePacket=packetCodec.LogDecodePacket();
         _packetCodec = packetCodec;
     }
     protected override void Decode(IChannelHandlerContext context, IByteBuffer input, List<object> output)
@@ -30,7 +30,7 @@ public sealed class MessagePacketDecoder:ByteToMessageDecoder
             return;
         }
 
-        if (_isDebugEnabled)
+        if (_logDecodePacket)
         {
             _logger.LogDebug($"read from client {context.Channel.Id.AsShortText()} : \n{ByteBufferUtil.PrettyHexDump(input)}");
         }

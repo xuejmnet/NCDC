@@ -65,12 +65,12 @@ public class ServerConnection : IServerConnection, IDisposable, IAdoMethodReplie
     private List<IServerDbConnection> GetServerDbConnectionFromContext(ConnectionModeEnum connectionMode,
         string dataSourceName, int connectionSize)
     {
-        if (ConnectionSession.LogicDatabase == null)
+        if (ConnectionSession.VirtualDataSource == null)
         {
             throw new ArgumentException("current database is null");
         }
 
-        return ConnectionSession.LogicDatabase.GetServerDbConnections(connectionMode, dataSourceName,
+        return ConnectionSession.VirtualDataSource.GetServerDbConnections(connectionMode, dataSourceName,
             connectionSize,
             _transactionType);
     }

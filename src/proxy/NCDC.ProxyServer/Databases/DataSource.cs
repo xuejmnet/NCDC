@@ -1,4 +1,5 @@
 using System.Data.Common;
+using NCDC.ProxyServer.Connection;
 using NCDC.ProxyServer.Connection.Abstractions;
 
 namespace NCDC.ProxyServer.Databases;
@@ -23,6 +24,12 @@ public sealed class DataSource:IDataSource
     {
         var dbConnection = _dbProviderFactory.CreateConnection();
         dbConnection!.ConnectionString = ConnectionString;
+        dbConnection.Open();
         return dbConnection;
+    }
+
+    public IServerDbConnection CreateServerDbConnection()
+    {
+        return new ServerDbConnection(CreateDbConnection());
     }
 }

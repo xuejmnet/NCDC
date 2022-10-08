@@ -19,4 +19,5 @@ public interface IDataSource
     bool IsDefault { get; }
 
     DbConnection CreateDbConnection();
+    IServerDbConnection CreateServerDbConnection();
 }

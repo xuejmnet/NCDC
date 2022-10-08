@@ -1,3 +1,4 @@
+using NCDC.Basic.Plugin;
 using NCDC.Basic.TableMetadataManagers;
 using NCDC.Exceptions;
 using NCDC.Helpers;
@@ -67,10 +68,16 @@ public class DefaultTableMetadataInitializer : ITableMetadataInitializer
         if (_routeInitConfigOption.HasTableRouteRule(tableMetadata.LogicTableName))
         {
             var routeRuleTypeName = _routeInitConfigOption.GetTableRouteRule(tableMetadata.LogicTableName);
-            var routeRuleType = RuntimeHelper.GetAllTypes()
-                                    .FirstOrDefault(o => Equals(o.FullName, routeRuleTypeName)) ??
+            // foreach (var allType in RuntimeHelper.GetAllTypes())
+            // {
+            //     Console.WriteLine(allType.FullName);
+            // }
+            // var assembly = PluginLoader.Load("ShardingRoutePluginTest.dll");
+            // var type = assembly.GetType(routeRuleTypeName);
+            var routeRuleType = PluginLoader.Instance.Assemblies
+                                    .Select(o=>o.GetType(routeRuleTypeName))
+                                    .FirstOrDefault(o => o!=null) ??
                                 throw new InvalidOperationException($"table rule:[{routeRuleTypeName}] not found");
-
             var routeRule = (ITableRouteRule)_serviceProvider.CreateInstance(routeRuleType);
             if (routeRule is ITableRuleConfigure tableRuleConfigure)
             {

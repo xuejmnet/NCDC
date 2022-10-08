@@ -25,7 +25,7 @@ public class TableMetadata
     private readonly HashSet<string> _dataSources = new ();
     private readonly HashSet<string> _tableNames = new ();
     public ICollection<string> DataSources => _dataSources.ToImmutableHashSet();
-    public ICollection<string> TableNames => _dataSources.ToImmutableHashSet();
+    public ICollection<string> TableNames => _tableNames.ToImmutableHashSet();
 
     public void AddActualTableWithDataSource(string dataSource, string actualTableName)
     {
