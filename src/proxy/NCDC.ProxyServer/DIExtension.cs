@@ -1,8 +1,8 @@
 using Microsoft.Extensions.Configuration;
 using NCDC.Basic.TableMetadataManagers;
 using NCDC.Enums;
+using NCDC.Extensions;
 using NCDC.MySqlParser;
-using NCDC.ProxyServer;
 using NCDC.ProxyServer.Abstractions;
 using NCDC.ProxyServer.AppServices;
 using NCDC.ProxyServer.AppServices.Builder;
@@ -10,11 +10,9 @@ using NCDC.ProxyServer.Bootstrappers;
 using NCDC.ProxyServer.Commons;
 using NCDC.ProxyServer.Configurations.Apps;
 using NCDC.ProxyServer.Configurations.Initializers;
-using NCDC.ProxyServer.Contexts;
 using NCDC.ProxyServer.Databases;
 using NCDC.ProxyServer.DbProviderFactories;
 using NCDC.ProxyServer.Executors;
-using NCDC.ProxyServer.Runtimes;
 using NCDC.ProxyServer.ServerDataReaders;
 using NCDC.ProxyServer.ServerHandlers;
 using NCDC.ShardingParser;
@@ -25,17 +23,51 @@ namespace Microsoft.Extensions.DependencyInjection;
 
 public static class DIExtension
 {
+    private static DatabaseTypeEnum ParseDatabaseType(string databaseType)
+    {
+        if ("MySql".EqualsIgnoreCase(databaseType))
+        {
+            return DatabaseTypeEnum.MySql;
+        }
+
+        throw new NotImplementedException(databaseType);
+    }
+    private static DbStorageTypeEnum ParseStorageType(string storageType)
+    {
+        if ("MySql".EqualsIgnoreCase(storageType))
+        {
+            return DbStorageTypeEnum.MySql;
+        }
+
+        throw new NotImplementedException(storageType);
+    }
+    private static int ParsePort(string portStr)
+    {
+        if (!int.TryParse(portStr,out var port ))
+        {
+            throw new NotImplementedException(portStr);
+        }
+
+        return port;
+    }
     public static IServiceCollection AddProxyServerCore(this IServiceCollection services)
     {
         services.AddSingleton<IAppConfiguration, AppConfiguration>(sp =>
         {
-            return new AppConfiguration(DatabaseTypeEnum.MySql, ConfigurationStorageTypeEnum.File, 3307, "/rule/test");
+            var configuration = sp.GetRequiredService<IConfiguration>();
+            var database = configuration["DatabaseType"];
+            var storage = configuration["StorageType"];
+            var connectionString = configuration["ConnectionString"];
+            var port = configuration["Port"];
+            var routePluginPath = configuration["RoutePluginPath"];
+            return new AppConfiguration(ParseDatabaseType(database), ParseStorageType(storage),connectionString, ParsePort(port), routePluginPath);
         });
         // services.AddSingleton<IAppConfiguration, AppConfiguration>(sp =>
         // {
         //     var configuration = sp.GetService<IConfiguration>();
         //     return new AppConfiguration();
         // });
+        services.AddSingleton<IAppBootstrapper, AppBootstrapper>();
         services.AddSingleton<IRoutePluginInitializer, DefaultRoutePluginInitializer>();
         //IAppRuntimeLoader,IAppUserLoader,IUserDatabaseMappingLoader
         services.AddSingleton<IAppRuntimeManager, DefaultAppAppRuntimeManager>();

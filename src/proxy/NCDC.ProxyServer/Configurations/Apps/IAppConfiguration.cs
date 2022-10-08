@@ -6,7 +6,8 @@ namespace NCDC.ProxyServer.Configurations.Apps;
 public interface IAppConfiguration
 {
     DatabaseTypeEnum GetDatabaseType();
-    ConfigurationStorageTypeEnum GetConfigurationStorageType();
+    DbStorageTypeEnum GetStorageType();
+    string ConnectionsString();
     int GetPort();
     string GetRulePluginPath();
 }

@@ -18,8 +18,8 @@ public interface IConnectionSession:IDisposable
     ILogicDatabase? LogicDatabase { get; }
     IRuntimeContext? RuntimeContext { get; }
     IAppRuntimeManager AppRuntimeManager { get; }
-    IReadOnlyCollection<string> GetAllDatabaseNames();
-    IReadOnlyCollection<string> GetAuthorizeDatabases();
+    ICollection<string> GetAllDatabaseNames();
+    ICollection<string> GetAuthorizeDatabases();
     
     bool DatabaseExists(string database);
     bool GetIsAutoCommit();

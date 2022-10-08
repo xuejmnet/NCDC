@@ -22,8 +22,10 @@ public abstract class AbstractAppInitializer:IAppInitializer
         _userDatabaseMappingLoader = userDatabaseMappingLoader;
         _appRuntimeBuilder = appRuntimeBuilder;
     }
+    
     public async Task InitializeAsync()
     {
+        await PreInitializeAsync();
         var authUsers =await GetAuthUsersAsync();
         foreach (var authUser in authUsers)
         {
@@ -44,6 +46,18 @@ public abstract class AbstractAppInitializer:IAppInitializer
                 _logger.LogWarning($"repeat load runtime:{runtimeContext.DatabaseName}");
             }
         }
+
+        await PostInitializeAsync();
+    }
+
+    protected virtual Task PreInitializeAsync()
+    {
+        return Task.CompletedTask;
+    }
+
+    protected virtual Task PostInitializeAsync()
+    {
+        return Task.CompletedTask;
     }
 
     protected abstract Task<IReadOnlyCollection<string>> GetRuntimesAsync();

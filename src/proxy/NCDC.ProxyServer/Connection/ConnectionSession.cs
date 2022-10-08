@@ -39,12 +39,12 @@ public class ConnectionSession:IConnectionSession
         _channelWaitWriteableListener = new ChannelIsWritableListener();
     }
 
-    public IReadOnlyCollection<string> GetAllDatabaseNames()
+    public ICollection<string> GetAllDatabaseNames()
     {
         return AppRuntimeManager.GetAllDatabaseNames();
     }
 
-    public IReadOnlyCollection<string> GetAuthorizeDatabases()
+    public ICollection<string> GetAuthorizeDatabases()
     {
         return AppRuntimeManager.GetAuthorizedDatabases(_grantee.Username);
     }

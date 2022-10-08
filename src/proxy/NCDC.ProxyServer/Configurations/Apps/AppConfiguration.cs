@@ -6,14 +6,16 @@ namespace NCDC.ProxyServer.Configurations.Apps;
 public class AppConfiguration:IAppConfiguration
 {
     private readonly DatabaseTypeEnum _databaseType;
-    private readonly ConfigurationStorageTypeEnum _configurationStorageType;
+    private readonly DbStorageTypeEnum _dbStorageType;
+    private readonly string _connectionString;
     private readonly int _port;
     private readonly string _rulePluginPath;
 
-    public AppConfiguration(DatabaseTypeEnum databaseType,ConfigurationStorageTypeEnum configurationStorageType,int port,string rulePluginPath)
+    public AppConfiguration(DatabaseTypeEnum databaseType,DbStorageTypeEnum dbStorageType,string connectionString,int port,string rulePluginPath)
     {
         _databaseType = databaseType;
-        _configurationStorageType = configurationStorageType;
+        _dbStorageType = dbStorageType;
+        _connectionString = connectionString;
         _port = port;
         _rulePluginPath = rulePluginPath;
     }
@@ -22,9 +24,14 @@ public class AppConfiguration:IAppConfiguration
         return _databaseType;
     }
 
-    public ConfigurationStorageTypeEnum GetConfigurationStorageType()
+    public DbStorageTypeEnum GetStorageType()
     {
-        return _configurationStorageType;
+        return _dbStorageType;
+    }
+
+    public string ConnectionsString()
+    {
+        return _connectionString;
     }
 
     public int GetPort()

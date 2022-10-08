@@ -21,10 +21,10 @@ public class LogicTableEntity:BaseEntity
     /// 分库规则
     /// </summary>
     public string? ShardingDataSourceRule { get; set; }
-    /// <summary>
-    /// <code>Dictionary<string, ColumnMetadata></code> 反序列化
-    /// </summary>
-    public string? ColumnSchema { get; set; }
+    // /// <summary>
+    // /// <code>Dictionary<string, ColumnMetadata></code> 反序列化
+    // /// </summary>
+    // public string? ColumnSchema { get; set; }
 
     public void Check()
     {
