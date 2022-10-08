@@ -1,6 +1,4 @@
-using NCDC.ProxyServer.Contexts;
-
-namespace NCDC.ProxyServer.AppServices.Builder;
+namespace NCDC.ProxyServer.Runtimes.Builder;
 
 public interface IAppRuntimeBuilder
 {

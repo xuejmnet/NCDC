@@ -5,15 +5,13 @@ using NCDC.Exceptions;
 using NCDC.Plugin.DataSourceRouteRules;
 using NCDC.Plugin.Extensions;
 using NCDC.Plugin.TableRouteRules;
-using NCDC.ProxyServer.Contexts;
 using NCDC.ProxyServer.Options;
-using NCDC.ProxyServer.Runtimes;
-using NCDC.ProxyServer.Runtimes.TableMetadataInitializer;
+using NCDC.ProxyServer.Runtimes.Initializer;
 using NCDC.ProxyServer.ServiceProviders;
 using NCDC.ShardingMerge;
 using NCDC.ShardingMerge.Abstractions;
 
-namespace NCDC.ProxyServer.AppServices.Builder;
+namespace NCDC.ProxyServer.Runtimes.Builder;
 
 public sealed class RuntimeApplicationBuilder
 {
@@ -100,7 +98,7 @@ public sealed class RuntimeApplicationBuilder
 
 
         var shardingRuntimeContext = new ShardingRuntimeContext(DatabaseName, Services.BuildServiceProvider());
-        await shardingRuntimeContext.Initialize();
+        await shardingRuntimeContext.InitializeAsync();
         return shardingRuntimeContext;
     }
 }

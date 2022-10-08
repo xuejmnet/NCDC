@@ -8,7 +8,7 @@ using NCDC.Protocol.MySql.Payload;
 using NCDC.Protocol.Packets;
 using NCDC.ProxyClient.Codecs;
 using NCDC.ProxyServer;
-using NCDC.ProxyServer.Configurations.Apps;
+using NCDC.ProxyServer.AppServices.Configurations;
 using NCDC.ProxyServer.Extensions;
 
 namespace NCDC.ProxyClientMySql.Codec;

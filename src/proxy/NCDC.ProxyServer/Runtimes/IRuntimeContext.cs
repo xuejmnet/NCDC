@@ -6,7 +6,7 @@ using NCDC.ProxyServer.ServiceProviders;
 using NCDC.ShardingMerge.Abstractions;
 using NCDC.ShardingRoute.Abstractions;
 
-namespace NCDC.ProxyServer.Contexts;
+namespace NCDC.ProxyServer.Runtimes;
 
 public interface IRuntimeContext
 {

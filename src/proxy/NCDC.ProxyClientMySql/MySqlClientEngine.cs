@@ -4,7 +4,6 @@ using NCDC.ProxyClient.Authentication;
 using NCDC.ProxyClient.Codecs;
 using NCDC.ProxyClientMySql.Authentication;
 using NCDC.ProxyServer.Connection.Abstractions;
-using NCDC.ProxyServer.Contexts;
 
 namespace NCDC.ProxyClientMySql;
 

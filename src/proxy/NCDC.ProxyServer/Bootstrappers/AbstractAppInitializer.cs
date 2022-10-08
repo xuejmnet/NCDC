@@ -1,10 +1,10 @@
 using Microsoft.Extensions.Logging;
 using NCDC.Basic.User;
 using NCDC.Logger;
-using NCDC.ProxyServer.AppServices.Builder;
-using NCDC.ProxyServer.Configurations.Apps;
+using NCDC.ProxyServer.AppServices;
+using NCDC.ProxyServer.Runtimes.Builder;
 
-namespace NCDC.ProxyServer.AppServices;
+namespace NCDC.ProxyServer.Bootstrappers;
 
 public abstract class AbstractAppInitializer:IAppInitializer
 {

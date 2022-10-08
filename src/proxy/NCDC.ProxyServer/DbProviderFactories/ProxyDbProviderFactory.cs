@@ -4,7 +4,6 @@ using NCDC.Basic.Configurations;
 using NCDC.Enums;
 using NCDC.Exceptions;
 using NCDC.ProxyServer.Abstractions;
-using NCDC.ProxyServer.Configurations.Apps;
 
 namespace NCDC.ProxyServer.DbProviderFactories;
 

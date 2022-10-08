@@ -2,7 +2,6 @@ using System.Collections.Immutable;
 using DotNetty.Transport.Channels;
 using NCDC.Basic.User;
 using NCDC.ProxyServer.AppServices;
-using NCDC.ProxyServer.Contexts;
 using NCDC.ProxyServer.Databases;
 using NCDC.ProxyServer.Runtimes;
 

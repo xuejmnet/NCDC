@@ -1,6 +1,6 @@
 using NCDC.Basic.TableMetadataManagers;
 
-namespace NCDC.ProxyServer.Runtimes.TableMetadataInitializer;
+namespace NCDC.ProxyServer.Runtimes.Initializer;
 
 public interface ITableMetadataInitializer
 {

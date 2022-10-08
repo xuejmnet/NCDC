@@ -1,7 +1,7 @@
 using NCDC.Enums;
 using NCDC.ProxyServer.Commons;
 
-namespace NCDC.ProxyServer.Configurations.Apps;
+namespace NCDC.ProxyServer.AppServices.Configurations;
 
 public interface IAppConfiguration
 {

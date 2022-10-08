@@ -2,9 +2,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using NCDC.EntityFrameworkCore.Entities;
 using NCDC.Exceptions;
-using NCDC.ProxyServer.AppServices.Builder;
-using NCDC.ProxyServer.Configurations.Apps;
-using NCDC.ProxyServer.Contexts;
+using NCDC.ProxyServer.AppServices.Configurations;
+using NCDC.ProxyServer.Runtimes;
+using NCDC.ProxyServer.Runtimes.Builder;
 
 namespace NCDC.EntityFrameworkCore.Impls;
 

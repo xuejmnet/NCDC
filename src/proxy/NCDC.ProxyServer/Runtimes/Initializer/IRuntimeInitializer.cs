@@ -1,4 +1,4 @@
-namespace NCDC.ProxyServer.Runtimes;
+namespace NCDC.ProxyServer.Runtimes.Initializer;
 
 public interface IRuntimeInitializer
 {

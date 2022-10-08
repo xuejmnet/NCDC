@@ -20,16 +20,19 @@ public sealed class DataSource:IDataSource
     public string DataSourceName { get; }
     public string ConnectionString { get; }
     public bool IsDefault { get; }
-    public DbConnection CreateDbConnection()
+    public DbConnection CreateDbConnection(bool open)
     {
         var dbConnection = _dbProviderFactory.CreateConnection();
         dbConnection!.ConnectionString = ConnectionString;
-        dbConnection.Open();
+        if (open)
+        {
+            dbConnection.Open();  
+        }
         return dbConnection;
     }
 
     public IServerDbConnection CreateServerDbConnection()
     {
-        return new ServerDbConnection(CreateDbConnection());
+        return new ServerDbConnection(CreateDbConnection(true));
     }
 }

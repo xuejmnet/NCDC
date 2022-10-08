@@ -1,4 +1,4 @@
-namespace NCDC.ProxyServer.AppServices;
+namespace NCDC.ProxyServer.Bootstrappers;
 
 public interface IAppInitializer
 {

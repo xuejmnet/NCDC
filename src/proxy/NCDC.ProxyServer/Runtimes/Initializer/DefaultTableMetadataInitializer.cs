@@ -12,7 +12,7 @@ using NCDC.ShardingRoute.Abstractions;
 using NCDC.ShardingRoute.DataSourceRoutes.Abstractions;
 using NCDC.ShardingRoute.TableRoutes.Abstractions;
 
-namespace NCDC.ProxyServer.Runtimes.TableMetadataInitializer;
+namespace NCDC.ProxyServer.Runtimes.Initializer;
 
 public class DefaultTableMetadataInitializer : ITableMetadataInitializer
 {

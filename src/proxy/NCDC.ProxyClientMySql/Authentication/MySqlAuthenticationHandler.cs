@@ -14,7 +14,6 @@ using NCDC.ProxyClientMySql.Authentication.Authenticator;
 using NCDC.ProxyClientMySql.Common;
 using NCDC.ProxyServer;
 using NCDC.ProxyServer.AppServices;
-using NCDC.ProxyServer.Contexts;
 using NCDC.ProxyServer.Extensions;
 using NCDC.ProxyServer.Helpers;
 using NCDC.ProxyServer.Runtimes;

@@ -5,14 +5,13 @@ using NCDC.Extensions;
 using NCDC.MySqlParser;
 using NCDC.ProxyServer.Abstractions;
 using NCDC.ProxyServer.AppServices;
-using NCDC.ProxyServer.AppServices.Builder;
+using NCDC.ProxyServer.AppServices.Configurations;
 using NCDC.ProxyServer.Bootstrappers;
 using NCDC.ProxyServer.Commons;
-using NCDC.ProxyServer.Configurations.Apps;
-using NCDC.ProxyServer.Configurations.Initializers;
 using NCDC.ProxyServer.Databases;
 using NCDC.ProxyServer.DbProviderFactories;
 using NCDC.ProxyServer.Executors;
+using NCDC.ProxyServer.Runtimes.Builder;
 using NCDC.ProxyServer.ServerDataReaders;
 using NCDC.ProxyServer.ServerHandlers;
 using NCDC.ShardingParser;
@@ -79,7 +78,6 @@ public static class DIExtension
         //     return new AppConfiguration();
         // });
         services.AddSingleton<IAppBootstrapper, AppBootstrapper>();
-        services.AddSingleton<IRoutePluginInitializer, DefaultRoutePluginInitializer>();
         //IAppRuntimeLoader,IAppUserLoader,IUserDatabaseMappingLoader
         services.AddSingleton<IAppRuntimeManager, DefaultAppAppRuntimeManager>();
         services.AddSingleton<IAppRuntimeLoader>(sp=>(sp.GetService<IAppRuntimeManager>() as IAppRuntimeLoader)!);
