@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NCDC.Host;
 using NCDC.Logger;
+using NCDC.ProxyServer.AppServices.Configurations;
 using NCDC.ProxyServer.Bootstrappers;
 
 namespace NCDC.ProxyStarter
@@ -89,10 +90,12 @@ Start Time:{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}");
             //     return shardingRuntimeContext;
             // });
             var buildServiceProvider = serivces.BuildServiceProvider();
-            // var userManager = buildServiceProvider.GetRequiredService<IAppUserManager>();
-            // userManager.AddUser(new AuthUser("xjm", "abc", "%"));
-            // var shardingProxyOption = buildServiceProvider.GetRequiredService<ShardingProxyOption>();
-            // ,GetPort(args)
+            var argPort = GetPort(args);
+            if (argPort.HasValue)
+            {
+                var appConfiguration = buildServiceProvider.GetRequiredService<IAppConfiguration>();
+                appConfiguration.Port = argPort.Value;
+            }
             await StartAsync(buildServiceProvider);
         }
 
@@ -153,7 +156,7 @@ Start Time:{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}");
         //     var databaseOption = new DatabaseOption();
         //     databaseOption.Name = "xxa";
         //     var dataSourceOption = new DataSourceOption();
-        //     dataSourceOption.DataSourceName = "ds0";
+        //     dataSourceOption.Name = "ds0";
         //     dataSourceOption.ConnectionString = "server=127.0.0.1;port=3306;database=test;userid=root;password=root;";
         //     dataSourceOption.IsDefault = true;
         //     databaseOption.DataSources.Add(dataSourceOption);

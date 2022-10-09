@@ -70,7 +70,16 @@ public static class DIExtension
             var routePluginPath = configuration["RoutePluginPath"];
             var logEncode = configuration["LogEncode"];
             var logDecode = configuration["LogDecode"];
-            return new AppConfiguration(ParseDatabaseType(database), ParseStorageType(storage),connectionString, ParseInt(port), routePluginPath,ParseBool(logEncode),ParseBool(logDecode));
+            return new AppConfiguration()
+            {
+               DatabaseType = ParseDatabaseType(database),
+               StorageType = ParseStorageType(storage),
+               ConnectionsString = connectionString,
+               Port = ParseInt(port),
+               RulePluginPath = routePluginPath,
+               LogEncode = ParseBool(logEncode),
+               LogDecode = ParseBool(logDecode)
+            };
         });
         // services.AddSingleton<IAppConfiguration, AppConfiguration>(sp =>
         // {

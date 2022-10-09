@@ -1,9 +1,11 @@
 using Microsoft.Extensions.DependencyInjection;
+using NCDC.Basic.Configurations;
 using NCDC.Basic.TableMetadataManagers;
 using NCDC.CommandParser.Abstractions;
 using NCDC.Exceptions;
 using NCDC.ProxyServer.Databases;
 using NCDC.ProxyServer.Executors;
+using NCDC.ProxyServer.Options;
 using NCDC.ProxyServer.Runtimes.Initializer;
 using NCDC.ProxyServer.ServiceProviders;
 using NCDC.ShardingMerge.Abstractions;
@@ -23,16 +25,28 @@ public sealed class ShardingRuntimeContext:IRuntimeContext
         InitFieldValue();
     }
 
-    public Task InitializeAsync()
+    private ShardingConfiguration? _shardingConfiguration;
+    public ShardingConfiguration GetShardingConfiguration()
     {
-        var runtimeContextInitializer = GetService<IRuntimeInitializer>()??throw new ShardingInvalidOperationException($"should be implement {nameof(IRuntimeInitializer)}");
-        return runtimeContextInitializer.InitializeAsync();
+        return _shardingConfiguration??=GetRequiredService<ShardingConfiguration>();
+    }
+
+    private IRouteInitConfigOption? _routeInitConfigOption;
+    public IRouteInitConfigOption GetRouteInitConfigOption()
+    {
+        return _routeInitConfigOption??=GetRequiredService<IRouteInitConfigOption>();
     }
     
     private IVirtualDataSource? _virtualDataSource;
     public IVirtualDataSource GetVirtualDataSource()
     {
         return _virtualDataSource??=GetRequiredService<IVirtualDataSource>();
+    }
+
+    private ITableMetadataInitializer? _tableMetadataInitializer;
+    public ITableMetadataInitializer GetTableMetadataInitializer()
+    {
+        return _tableMetadataInitializer??=GetRequiredService<ITableMetadataInitializer>();
     }
 
     private ITableMetadataManager? _tableMetadataManager;
@@ -109,7 +123,10 @@ public sealed class ShardingRuntimeContext:IRuntimeContext
 
     private void InitFieldValue()
     {
+        GetShardingConfiguration();
+        GetRouteInitConfigOption();
         GetVirtualDataSource();
+        GetTableMetadataInitializer();
         GetTableMetadataManager();
         GetShardingExecutionContextFactory();
         GetDataReaderMergerFactory();

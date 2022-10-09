@@ -20,13 +20,13 @@ public static class DIExtension
         services.AddDbContextPool<NCDCDbContext>((sp, builder) =>
         {
             var appConfiguration = sp.GetRequiredService<IAppConfiguration>();
-            if (DatabaseTypeEnum.MySql.Equals(appConfiguration.GetDatabaseType()))
+            if (DatabaseTypeEnum.MySql.Equals(appConfiguration.DatabaseType))
             {
-                builder.UseMySql(appConfiguration.ConnectionsString(), new MySqlServerVersion(new Version()));
+                builder.UseMySql(appConfiguration.ConnectionsString, new MySqlServerVersion(new Version()));
                 return;
             }
 
-            throw new NotSupportedException($"{appConfiguration.GetDatabaseType()}");
+            throw new NotSupportedException($"{appConfiguration.DatabaseType}");
         });
         services.AddAppService<EntityFrameworkCoreAppRuntimeBuilder,EntityFrameworkCoreAppInitializer>();
         return services;

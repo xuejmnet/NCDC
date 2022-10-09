@@ -5,7 +5,7 @@ namespace NCDC.EntityFrameworkCore.Maps;
 
 public class DataSourceMap:BaseMap<DataSourceEntity>
 {
-    public override string TableName => "DataSource";
+    public override string TableName => "Name";
     protected override void Configure0(EntityTypeBuilder<DataSourceEntity> builder)
     {
         builder.Property(o => o.Database).IsRequired().IsUnicode().HasMaxLength(255);

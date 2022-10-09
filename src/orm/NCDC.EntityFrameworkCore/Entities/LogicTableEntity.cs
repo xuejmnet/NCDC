@@ -13,13 +13,13 @@ public class LogicTableEntity:BaseEntity
     public string TableName { get; set; } = null!;
     public string Database { get; set; } = null!;
     /// <summary>
-    /// 分表规则
-    /// </summary>
-    public string? ShardingTableRule { get; set; }
-    /// <summary>
     /// 分库规则
     /// </summary>
     public string? ShardingDataSourceRule { get; set; }
+    /// <summary>
+    /// 分表规则
+    /// </summary>
+    public string? ShardingTableRule { get; set; }
     // /// <summary>
     // /// <code>Dictionary<string, ColumnMetadata></code> 反序列化
     // /// </summary>

@@ -42,12 +42,12 @@ public sealed class MySqlPacketCodecEngine : IPacketCodec
     }
     public bool LogEncodePacket()
     {
-        return _appConfiguration.LogEncode();
+        return _appConfiguration.LogEncode;
     }
 
     public bool LogDecodePacket()
     {
-        return _appConfiguration.LogDecode();
+        return _appConfiguration.LogDecode;
     }
 
     public bool IsValidHeader(int readableBytes)

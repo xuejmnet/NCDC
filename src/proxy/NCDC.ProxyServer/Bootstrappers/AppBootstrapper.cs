@@ -24,7 +24,7 @@ public class AppBootstrapper:IAppBootstrapper
     {
         
         //监听plugin目录
-        var routePluginPath = _appConfiguration.GetRulePluginPath();
+        var routePluginPath = _appConfiguration.RulePluginPath;
         if (!Directory.Exists(routePluginPath))
         {
             Directory.CreateDirectory(routePluginPath);

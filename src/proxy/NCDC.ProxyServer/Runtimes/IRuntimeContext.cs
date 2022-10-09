@@ -1,7 +1,10 @@
+using NCDC.Basic.Configurations;
 using NCDC.Basic.TableMetadataManagers;
 using NCDC.CommandParser.Abstractions;
 using NCDC.ProxyServer.Databases;
 using NCDC.ProxyServer.Executors;
+using NCDC.ProxyServer.Options;
+using NCDC.ProxyServer.Runtimes.Initializer;
 using NCDC.ProxyServer.ServiceProviders;
 using NCDC.ShardingMerge.Abstractions;
 using NCDC.ShardingRoute.Abstractions;
@@ -11,7 +14,10 @@ namespace NCDC.ProxyServer.Runtimes;
 public interface IRuntimeContext
 {
     string DatabaseName { get; }
+    ShardingConfiguration GetShardingConfiguration();
+    IRouteInitConfigOption GetRouteInitConfigOption();
     IVirtualDataSource GetVirtualDataSource();
+    ITableMetadataInitializer GetTableMetadataInitializer();
     ITableMetadataManager GetTableMetadataManager();
     IDataSourceRouteManager GetDataSourceRouteManager();
     ITableRouteManager GetTableRouteManager();

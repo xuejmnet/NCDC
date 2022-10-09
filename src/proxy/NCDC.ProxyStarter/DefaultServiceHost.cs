@@ -60,7 +60,7 @@ public class DefaultServiceHost:IServiceHost
     public async Task StartAsync()
     {
         _logger.LogInformation("----------开始启动----------");
-        _logger.LogInformation($"----------监听端口:{_appConfiguration.GetPort()}----------");
+        _logger.LogInformation($"----------监听端口:{_appConfiguration.Port}----------");
 
 
         _clientBootstrap = new Bootstrap();
@@ -114,8 +114,8 @@ public class DefaultServiceHost:IServiceHost
                     }));
 
                 // bootstrap绑定到指定端口的行为 就是服务端启动服务，同样的Serverbootstrap可以bind到多个端口
-                await _serverBootstrap.BindAsync(_appConfiguration.GetPort()).ConfigureAwait(false);
-                _logger.LogInformation($"----------启动完成端口:{_appConfiguration.GetPort()}----------");
+                await _serverBootstrap.BindAsync(_appConfiguration.Port).ConfigureAwait(false);
+                _logger.LogInformation($"----------启动完成端口:{_appConfiguration.Port}----------");
             }
             catch (Exception ex)
             {

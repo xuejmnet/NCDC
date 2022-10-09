@@ -5,11 +5,11 @@ namespace NCDC.ProxyServer.AppServices.Configurations;
 
 public interface IAppConfiguration
 {
-    DatabaseTypeEnum GetDatabaseType();
-    DbStorageTypeEnum GetStorageType();
-    string ConnectionsString();
-    int GetPort();
-    string GetRulePluginPath();
-    bool LogEncode();
-    bool LogDecode();
+    DatabaseTypeEnum DatabaseType { get; set; }
+    DbStorageTypeEnum StorageType { get; set; }
+    string ConnectionsString { get; set; }
+    int Port { get; set; }
+    string RulePluginPath{ get; set; }
+    bool LogEncode { get; set; }
+    bool LogDecode { get; set; }
 }

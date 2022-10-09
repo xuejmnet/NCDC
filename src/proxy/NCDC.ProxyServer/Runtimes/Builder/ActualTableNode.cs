@@ -1,4 +1,4 @@
-namespace NCDC.ProxyServer.Runtimes.Initializer;
+namespace NCDC.ProxyServer.Runtimes.Builder;
 
 public sealed class ActualTableNode
 {

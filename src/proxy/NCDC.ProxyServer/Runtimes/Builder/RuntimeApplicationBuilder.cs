@@ -73,13 +73,7 @@ public sealed class RuntimeApplicationBuilder
         return this;
     }
 
-    public RuntimeApplicationBuilder AddRuntimeInitializer<T>() where T : class,IRuntimeInitializer
-    {
-        Services.AddSingleton<IRuntimeInitializer, T>();
-        return this;
-    }
-
-    public async Task<IRuntimeContext> BuildAsync(IServiceProvider appServiceProvider)
+    public IRuntimeContext Build(IServiceProvider appServiceProvider)
     {
         Services.AddSingleton<IShardingProvider>(sp => new ShardingProvider(sp, appServiceProvider));
         Services.AddSingleton<ShardingConfiguration>(ConfigOption);
@@ -98,7 +92,6 @@ public sealed class RuntimeApplicationBuilder
 
 
         var shardingRuntimeContext = new ShardingRuntimeContext(DatabaseName, Services.BuildServiceProvider());
-        await shardingRuntimeContext.InitializeAsync();
         return shardingRuntimeContext;
     }
 }
