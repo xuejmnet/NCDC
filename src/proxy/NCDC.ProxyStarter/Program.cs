@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NCDC.Host;
 using NCDC.Logger;
-using NCDC.ProxyServer.AppServices.Configurations;
+using NCDC.ProxyServer.AppServices.Abstractions;
 using NCDC.ProxyServer.Bootstrappers;
 
 namespace NCDC.ProxyStarter
@@ -132,17 +132,20 @@ Start Time:{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}");
             //     var testModTableRoute = runtimeContext.CreateInstance<TestModTableRoute>();
             //     tableRouteManager.AddRoute(testModTableRoute);
             // }
+            var cancellationTokenSource = new CancellationTokenSource();
             var appBootstrapper = serviceProvider.GetRequiredService<IAppBootstrapper>();
-            await appBootstrapper.StartAsync();
-            var host = serviceProvider.GetRequiredService<IServiceHost>();
-            await host.StartAsync();
-            while (Console.ReadLine() != "quit")
+            cancellationTokenSource.Token.Register(() =>
+            {
+                appBootstrapper.StopAsync(cancellationTokenSource.Token).Wait(TimeSpan.FromSeconds(30000));
+            });
+            await appBootstrapper.StartAsync(cancellationTokenSource.Token);
+       
+            while (!cancellationTokenSource.IsCancellationRequested&&Console.ReadLine() != "quit")
             {
                 Console.WriteLine("unknown input params");
             }
-
-            await host.StopAsync();
-            Console.WriteLine("open connector safe quit");
+            cancellationTokenSource.Cancel();
+            Console.WriteLine("ncdc quit");
         }
 
         // static ProxyRuntimeOption BuildRuntimeOption()

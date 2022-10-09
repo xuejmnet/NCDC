@@ -1,6 +1,6 @@
 using NCDC.Basic.User;
 
-namespace NCDC.ProxyServer.AppServices;
+namespace NCDC.ProxyServer.AppServices.Abstractions;
 
 public interface IAppUserLoader
 {

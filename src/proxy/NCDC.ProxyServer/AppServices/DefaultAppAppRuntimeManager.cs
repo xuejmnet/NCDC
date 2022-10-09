@@ -3,6 +3,7 @@ using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
 using NCDC.Basic.User;
 using NCDC.Exceptions;
+using NCDC.ProxyServer.AppServices.Abstractions;
 using NCDC.ProxyServer.Runtimes;
 
 namespace NCDC.ProxyServer.AppServices;

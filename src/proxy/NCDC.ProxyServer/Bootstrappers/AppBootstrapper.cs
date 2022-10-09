@@ -1,6 +1,7 @@
 using NCDC.Basic.Plugin;
+using NCDC.Host;
 using NCDC.ProxyServer.AppServices;
-using NCDC.ProxyServer.AppServices.Configurations;
+using NCDC.ProxyServer.AppServices.Abstractions;
 
 namespace NCDC.ProxyServer.Bootstrappers;
 
@@ -8,16 +9,24 @@ public class AppBootstrapper:IAppBootstrapper
 {
     private readonly IAppConfiguration _appConfiguration;
     private readonly IAppInitializer _appInitializer;
+    private readonly IServiceHost _serviceHost;
 
-    public AppBootstrapper(IAppConfiguration appConfiguration,IAppInitializer appInitializer)
+    public AppBootstrapper(IAppConfiguration appConfiguration,IAppInitializer appInitializer,IServiceHost serviceHost)
     {
         _appConfiguration = appConfiguration;
         _appInitializer = appInitializer;
+        _serviceHost = serviceHost;
     }
-    public async Task StartAsync()
+    public async Task StartAsync(CancellationToken cancellationToken=default)
     {
         InitRoutePlugin();
         await _appInitializer.InitializeAsync();
+        await _serviceHost.StartAsync(cancellationToken);
+    }
+
+    public Task StopAsync(CancellationToken cancellationToken=default)
+    {
+        return _serviceHost.StopAsync(cancellationToken);
     }
 
     private void InitRoutePlugin()

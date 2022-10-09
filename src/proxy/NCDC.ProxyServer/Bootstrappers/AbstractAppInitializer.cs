@@ -2,6 +2,7 @@ using Microsoft.Extensions.Logging;
 using NCDC.Basic.User;
 using NCDC.Logger;
 using NCDC.ProxyServer.AppServices;
+using NCDC.ProxyServer.AppServices.Abstractions;
 using NCDC.ProxyServer.Runtimes.Builder;
 
 namespace NCDC.ProxyServer.Bootstrappers;

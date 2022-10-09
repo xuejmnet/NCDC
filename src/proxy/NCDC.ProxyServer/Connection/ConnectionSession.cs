@@ -2,6 +2,7 @@ using DotNetty.Transport.Channels;
 using NCDC.Basic.User;
 using NCDC.Enums;
 using NCDC.ProxyServer.AppServices;
+using NCDC.ProxyServer.AppServices.Abstractions;
 using NCDC.ProxyServer.Connection.Abstractions;
 using NCDC.ProxyServer.Databases;
 using NCDC.ProxyServer.Runtimes;

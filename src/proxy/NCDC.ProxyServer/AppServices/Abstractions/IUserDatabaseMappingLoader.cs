@@ -1,4 +1,4 @@
-namespace NCDC.ProxyServer.AppServices;
+namespace NCDC.ProxyServer.AppServices.Abstractions;
 
 public interface IUserDatabaseMappingLoader
 {

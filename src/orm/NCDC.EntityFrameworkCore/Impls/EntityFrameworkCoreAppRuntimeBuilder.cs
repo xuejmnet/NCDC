@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using NCDC.Basic.Configurations;
 using NCDC.EntityFrameworkCore.Entities;
 using NCDC.Exceptions;
-using NCDC.ProxyServer.AppServices.Configurations;
+using NCDC.ProxyServer.AppServices.Abstractions;
 using NCDC.ProxyServer.Runtimes;
 using NCDC.ProxyServer.Runtimes.Builder;
 using NCDC.ProxyServer.Runtimes.Initializer;

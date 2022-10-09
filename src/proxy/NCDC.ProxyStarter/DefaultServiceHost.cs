@@ -13,7 +13,7 @@ using NCDC.ProxyClient.DotNetty;
 using NCDC.ProxyServer;
 using NCDC.ProxyServer.Abstractions;
 using NCDC.ProxyServer.AppServices;
-using NCDC.ProxyServer.AppServices.Configurations;
+using NCDC.ProxyServer.AppServices.Abstractions;
 using NCDC.ProxyServer.Runtimes;
 
 namespace NCDC.ProxyStarter;
@@ -57,7 +57,7 @@ public class DefaultServiceHost:IServiceHost
         // _messageChannel = Channel.CreateUnbounded<MessageCommand>();
     }
 
-    public async Task StartAsync()
+    public async Task StartAsync(CancellationToken cancellationToken=default)
     {
         _logger.LogInformation("----------开始启动----------");
         _logger.LogInformation($"----------监听端口:{_appConfiguration.Port}----------");
@@ -123,8 +123,7 @@ public class DefaultServiceHost:IServiceHost
             }
 
     }
-
-    public async Task StopAsync()
+    public async Task StopAsync(CancellationToken cancellationToken = default)
     {
         try
         {

@@ -3,7 +3,7 @@ using System.Data.Common;
 using NCDC.Basic.Configurations;
 using NCDC.Basic.TableMetadataManagers;
 using NCDC.Enums;
-using NCDC.ProxyServer.AppServices.Configurations;
+using NCDC.ProxyServer.AppServices.Abstractions;
 using NCDC.ProxyServer.Databases;
 
 namespace NCDC.ProxyServer.Runtimes.Builder;
@@ -13,7 +13,7 @@ public abstract class AbstractAppRuntimeBuilder : IAppRuntimeBuilder
     private readonly IServiceProvider _appServiceProvider;
     private readonly IAppConfiguration _appConfiguration;
 
-    public AbstractAppRuntimeBuilder(IServiceProvider appServiceProvider,IAppConfiguration appConfiguration)
+    public AbstractAppRuntimeBuilder(IServiceProvider appServiceProvider, IAppConfiguration appConfiguration)
     {
         _appServiceProvider = appServiceProvider;
         _appConfiguration = appConfiguration;
@@ -22,75 +22,63 @@ public abstract class AbstractAppRuntimeBuilder : IAppRuntimeBuilder
     protected abstract Task LoadConfigurationAsync(string database);
     protected abstract void ConfigureOption(ShardingConfiguration shardingConfiguration);
     protected abstract IEnumerable<DataSourceNode> GetDataSources();
-    protected abstract IEnumerable<LogicTableNode> GetLogicTables(); public async Task<IRuntimeContext> BuildAsync(string database)
+    protected abstract IEnumerable<LogicTableNode> GetLogicTables();
+
+    public async Task<IRuntimeContext> BuildAsync(string database)
     {
         await LoadConfigurationAsync(database);
-        // using (var scope = _appServiceProvider.CreateScope())
-        // {
-        //     var dbContext = scope.ServiceProvider.GetRequiredService<NCDCDbContext>();
-        //     var logicDatabase = await dbContext.Set<LogicDatabaseEntity>( ).FirstOrDefaultAsync(o => o.Name == database);
-        //     if (logicDatabase == null)
-        //     {
-        //         throw new ShardingConfigException($"database: {database} not found");
-        //     }
-        //
-        //     var dataSources = await dbContext.Set<DataSourceEntity>().Where(o => o.Database == database).ToListAsync();
-        //     var logicTables = await dbContext.Set<LogicTableEntity>().Where(o => o.Database == database).ToListAsync();
-
-            var builder = RuntimeApplicationBuilder.CreateBuilder(_appConfiguration.DatabaseType,database);
-            ConfigureOption(builder.ConfigOption);
-            // builder.ConfigOption.AutoUseWriteConnectionStringAfterWriteDb =
-            //     logicDatabase.AutoUseWriteConnectionStringAfterWriteDb;
-            // builder.ConfigOption.ThrowIfQueryRouteNotMatch = logicDatabase.ThrowIfQueryRouteNotMatch;
-            // builder.ConfigOption.MaxQueryConnectionsLimit = logicDatabase.MaxQueryConnectionsLimit;
-            // builder.ConfigOption.ConnectionMode = logicDatabase.ConnectionMode;
-            foreach (var dataSource in  GetDataSources())
+        var builder = RuntimeApplicationBuilder.CreateBuilder(_appConfiguration.DatabaseType, database);
+        ConfigureOption(builder.ConfigOption);
+        foreach (var dataSource in GetDataSources())
+        {
+            if (dataSource.IsDefault)
             {
-                if (dataSource.IsDefault)
-                {
-                    builder.ConfigOption.AddDefaultDataSource(dataSource.Name,
-                        dataSource.ConnectionString);
-                }
-                else
-                {
-                    builder.ConfigOption.AddExtraDataSource(dataSource.Name,
-                        dataSource.ConnectionString);
-                }
+                builder.ConfigOption.AddDefaultDataSource(dataSource.Name,
+                    dataSource.ConnectionString);
+            }
+            else
+            {
+                builder.ConfigOption.AddExtraDataSource(dataSource.Name,
+                    dataSource.ConnectionString);
+            }
+        }
+
+        foreach (var logicTable in GetLogicTables())
+        {
+            if (logicTable.ShardingTableRule != null)
+            {
+                builder.RouteConfigOption.AddTableRouteRule(logicTable.Name, logicTable.ShardingTableRule);
             }
 
-            foreach (var logicTable in GetLogicTables())
+            if (logicTable.ShardingDataSourceRule != null)
             {
-                if (logicTable.ShardingTableRule != null)
-                {
-                    builder.RouteConfigOption.AddTableRouteRule(logicTable.Name, logicTable.ShardingTableRule);
-                }
-
-                if (logicTable.ShardingDataSourceRule != null)
-                {
-                    builder.RouteConfigOption.AddDataSourceRouteRule(logicTable.Name,
-                        logicTable.ShardingDataSourceRule);
-                }
+                builder.RouteConfigOption.AddDataSourceRouteRule(logicTable.Name,
+                    logicTable.ShardingDataSourceRule);
             }
+        }
 
-            var runtimeContext =  builder.Build(_appServiceProvider);
-            await InitialAsync(runtimeContext);
-            return runtimeContext;
+        var runtimeContext = builder.Build(_appServiceProvider);
+        await InitialAsync(runtimeContext);
+        return runtimeContext;
         // }
     }
+
     protected abstract List<ActualTableNode> GetActualTables(string logicTableName);
+
     private async Task InitialAsync(IRuntimeContext runtimeContext)
     {
         var virtualDataSource = runtimeContext.GetVirtualDataSource();
         var routeInitConfigOption = runtimeContext.GetRouteInitConfigOption();
         var tableMetadataManager = runtimeContext.GetTableMetadataManager();
         var tableMetadataInitializer = runtimeContext.GetTableMetadataInitializer();
-        var logicTableNames = routeInitConfigOption.GetTableRouteRules().Keys.Union(routeInitConfigOption.GetDataSourceRouteRules().Keys).Distinct().ToList();
+        var logicTableNames = routeInitConfigOption.GetTableRouteRules().Keys
+            .Union(routeInitConfigOption.GetDataSourceRouteRules().Keys).Distinct().ToList();
         foreach (var logicTableName in logicTableNames)
         {
             var actualTables = GetActualTables(logicTableName);
-          
+
             var actualTableEntity = actualTables.FirstOrDefault();
-            var columnMetadatas = await GetColumnSchemaAsync(virtualDataSource,actualTableEntity);
+            var columnMetadatas = await GetColumnSchemaAsync(virtualDataSource, actualTableEntity);
             var tableMetadata = new TableMetadata(logicTableName, columnMetadatas);
             foreach (var actualTable in actualTables)
             {
@@ -102,7 +90,9 @@ public abstract class AbstractAppRuntimeBuilder : IAppRuntimeBuilder
             await tableMetadataInitializer.InitializeAsync(tableMetadata);
         }
     }
-    private async Task<Dictionary<string, ColumnMetadata>> GetColumnSchemaAsync(IVirtualDataSource virtualDataSource,ActualTableNode? actualTableNode)
+
+    private async Task<Dictionary<string, ColumnMetadata>> GetColumnSchemaAsync(IVirtualDataSource virtualDataSource,
+        ActualTableNode? actualTableNode)
     {
         var result = new Dictionary<string, ColumnMetadata>();
         if (actualTableNode == null)
@@ -111,7 +101,7 @@ public abstract class AbstractAppRuntimeBuilder : IAppRuntimeBuilder
         }
 
         var dataSource = virtualDataSource.GetDataSource(actualTableNode.DataSource);
-       
+
         var emptyResultSql = GenerateEmptyResultSql(actualTableNode.TableName);
         using (var dbConnection = dataSource.CreateDbConnection(true))
         {
@@ -142,7 +132,7 @@ public abstract class AbstractAppRuntimeBuilder : IAppRuntimeBuilder
 
         return result;
     }
-   
+
     private string GenerateEmptyResultSql(string table)
     {
         var databaseType = _appConfiguration.DatabaseType;

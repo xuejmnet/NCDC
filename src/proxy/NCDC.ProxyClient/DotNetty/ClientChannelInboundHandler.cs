@@ -14,6 +14,7 @@ using NCDC.ProxyClient.Command;
 using NCDC.ProxyClient.Command.Abstractions;
 using NCDC.ProxyServer.Abstractions;
 using NCDC.ProxyServer.AppServices;
+using NCDC.ProxyServer.AppServices.Abstractions;
 using NCDC.ProxyServer.Connection;
 using NCDC.ProxyServer.Connection.Abstractions;
 using NCDC.ProxyServer.Extensions;

@@ -4,6 +4,7 @@ using NCDC.Basic.User;
 using NCDC.EntityFrameworkCore.Entities;
 using NCDC.Enums;
 using NCDC.ProxyServer.AppServices;
+using NCDC.ProxyServer.AppServices.Abstractions;
 using NCDC.ProxyServer.Bootstrappers;
 using NCDC.ProxyServer.Runtimes.Builder;
 

@@ -2,6 +2,6 @@ namespace NCDC.ProxyServer.Bootstrappers;
 
 public interface IAppBootstrapper
 {
-    Task StartAsync();
-    // Task StopAsync();
+    Task StartAsync(CancellationToken cancellationToken=default);
+    Task StopAsync(CancellationToken cancellationToken=default);
 }

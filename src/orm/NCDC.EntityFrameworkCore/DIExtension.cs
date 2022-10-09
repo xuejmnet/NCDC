@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using NCDC.EntityFrameworkCore;
 using NCDC.EntityFrameworkCore.Impls;
 using NCDC.Enums;
-using NCDC.ProxyServer.AppServices.Configurations;
+using NCDC.ProxyServer.AppServices.Abstractions;
 
 namespace Microsoft.Extensions.DependencyInjection;
 

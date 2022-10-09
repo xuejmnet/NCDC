@@ -5,7 +5,7 @@ using NCDC.Extensions;
 using NCDC.MySqlParser;
 using NCDC.ProxyServer.Abstractions;
 using NCDC.ProxyServer.AppServices;
-using NCDC.ProxyServer.AppServices.Configurations;
+using NCDC.ProxyServer.AppServices.Abstractions;
 using NCDC.ProxyServer.Bootstrappers;
 using NCDC.ProxyServer.Commons;
 using NCDC.ProxyServer.Databases;

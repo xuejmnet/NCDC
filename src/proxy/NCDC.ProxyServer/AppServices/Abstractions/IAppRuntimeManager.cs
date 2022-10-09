@@ -1,7 +1,7 @@
 using NCDC.Basic.User;
 using NCDC.ProxyServer.Runtimes;
 
-namespace NCDC.ProxyServer.AppServices;
+namespace NCDC.ProxyServer.AppServices.Abstractions;
 
 public interface IAppRuntimeManager
 {
