@@ -16,11 +16,9 @@ public sealed class MySqlPingClientDataReader : IClientDataReader<MySqlPacketPay
         _connectionSession = connectionSession;
     }
 
-    public IEnumerable<IPacket<MySqlPacketPayload>> SendCommand()
+    public async IAsyncEnumerable<IPacket<MySqlPacketPayload>> SendCommand()
     {
-        return new List<IPacket<MySqlPacketPayload>>()
-        {
-            new MySqlOkPacket(1, ServerStatusFlagCalculator.CalculateFor(_connectionSession))
-        };
+        var mySqlOkPacket = new MySqlOkPacket(1, ServerStatusFlagCalculator.CalculateFor(_connectionSession));
+        yield return await Task.FromResult(mySqlOkPacket);
     }
 }

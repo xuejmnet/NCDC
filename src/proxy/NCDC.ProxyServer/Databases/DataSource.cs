@@ -20,19 +20,19 @@ public sealed class DataSource:IDataSource
     public string DataSourceName { get; }
     public string ConnectionString { get; }
     public bool IsDefault { get; }
-    public DbConnection CreateDbConnection(bool open)
+    public async ValueTask<DbConnection> CreateDbConnectionAsync(bool open)
     {
         var dbConnection = _dbProviderFactory.CreateConnection();
         dbConnection!.ConnectionString = ConnectionString;
         if (open)
         {
-            dbConnection.Open();  
+            await dbConnection.OpenAsync();  
         }
         return dbConnection;
     }
 
-    public IServerDbConnection CreateServerDbConnection()
+    public async ValueTask<IServerDbConnection> CreateServerDbConnectionAsync()
     {
-        return new ServerDbConnection(CreateDbConnection(true));
+        return new ServerDbConnection(await CreateDbConnectionAsync(true));
     }
 }

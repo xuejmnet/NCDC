@@ -16,7 +16,7 @@ public sealed class ShowDatabasesServerHandler:IServerHandler
     {
         _connectionSession = connectionSession;
     }
-    public IServerResult Execute()
+    public Task<IServerResult> ExecuteAsync()
     {
         var databaseNames = GetDatabaseNames();
         _streamDataReader = new SingleLocalDataMergedDataReader(databaseNames);

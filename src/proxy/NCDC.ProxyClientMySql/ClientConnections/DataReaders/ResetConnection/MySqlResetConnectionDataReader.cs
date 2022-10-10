@@ -16,9 +16,10 @@ public class MySqlResetConnectionDataReader:IClientDataReader<MySqlPacketPayload
     {
         _connectionSession = connectionSession;
     }
-    public IEnumerable<IPacket<MySqlPacketPayload>> SendCommand()
+    public async IAsyncEnumerable<IPacket<MySqlPacketPayload>> SendCommand()
     {
         _connectionSession.Reset();
-        yield return new MySqlOkPacket(1, ServerStatusFlagCalculator.CalculateFor(_connectionSession));
+        var mySqlOkPacket = new MySqlOkPacket(1, ServerStatusFlagCalculator.CalculateFor(_connectionSession));
+        yield return await Task.FromResult(mySqlOkPacket);
     }
 }

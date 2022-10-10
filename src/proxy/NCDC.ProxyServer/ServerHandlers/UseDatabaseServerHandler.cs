@@ -17,12 +17,12 @@ public sealed class UseDatabaseServerHandler:IServerHandler
         _useCommand = useCommand;
         _connectionSession = connectionSession;
     }
-    public IServerResult Execute()
+    public Task<IServerResult> ExecuteAsync()
     {
         var database = SqlUtil.GetExactlyValue(_useCommand.GetSchema());
         if (IsAuthorized(database))
         {
-            return RecordsAffectedServerResult.Empty;
+            return Task.FromResult((IServerResult)RecordsAffectedServerResult.Empty);
         }
 
         throw new ShardingException($"unknown database {database}");

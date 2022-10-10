@@ -5,7 +5,7 @@ namespace NCDC.ProxyServer.Abstractions;
 
 public interface IServerDataReader:IDisposable
 {
-    IServerResult ExecuteDbDataReader(CancellationToken cancellationToken=new CancellationToken());
+    Task<IServerResult> ExecuteDbDataReaderAsync(CancellationToken cancellationToken=new CancellationToken());
 
     bool Read();
     BinaryRow GetRowData();

@@ -1,4 +1,5 @@
 using System.Collections.Immutable;
+using System.Data;
 using DotNetty.Transport.Channels;
 using NCDC.Basic.User;
 using NCDC.ProxyServer.AppServices;
@@ -10,6 +11,7 @@ namespace NCDC.ProxyServer.Connection.Abstractions;
 
 public interface IConnectionSession:IDisposable
 {
+    IsolationLevel IsolationLevel { get; }
     string? DatabaseName { get; }
     IServerConnection ServerConnection { get; }
     IChannel Channel { get; }
@@ -19,8 +21,6 @@ public interface IConnectionSession:IDisposable
     IAppRuntimeManager AppRuntimeManager { get; }
     ICollection<string> GetAllDatabaseNames();
     ICollection<string> GetAuthorizeDatabases();
-
-    ICollection<Func<IServerDbConnection,ValueTask>> GetConnectionInvokeReplays();
 
     bool DatabaseExists(string database);
     bool GetIsAutoCommit();
@@ -38,11 +38,6 @@ public interface IConnectionSession:IDisposable
     void SetCurrentDatabaseName(string? databaseName);
     Task WaitChannelIsWritableAsync(CancellationToken cancellationToken = default);
     void NotifyChannelIsWritable();
-
-    void CloseServerConnection()
-    {
-        // ServerConnection.CloseCurrentCommandReader();
-    }
 
     void Reset();
 }

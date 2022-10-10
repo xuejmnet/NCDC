@@ -1,7 +1,7 @@
+using System.Data;
 using DotNetty.Transport.Channels;
 using NCDC.Basic.User;
 using NCDC.Enums;
-using NCDC.ProxyServer.AppServices;
 using NCDC.ProxyServer.AppServices.Abstractions;
 using NCDC.ProxyServer.Connection.Abstractions;
 using NCDC.ProxyServer.Databases;
@@ -22,16 +22,17 @@ public class ConnectionSession:IConnectionSession
     public IVirtualDataSource? VirtualDataSource => RuntimeContext?.GetVirtualDataSource();
     private volatile bool autoCommit = true;
     private volatile string? _databaseName;
+    public IsolationLevel IsolationLevel { get; private set; }
     public string? DatabaseName => _databaseName;
     public IRuntimeContext? RuntimeContext { get;private set; }
     public IAppRuntimeManager AppRuntimeManager { get; }
     private readonly TimeSpan _channelWaitMillis = TimeSpan.FromMilliseconds(200);
 
     private readonly ChannelIsWritableListener _channelWaitWriteableListener;
-    private readonly ICollection<Func<IServerDbConnection,ValueTask>> _replay = new LinkedList<Func<IServerDbConnection,ValueTask>>();
  
-    public ConnectionSession(TransactionTypeEnum transactionType,IChannel channel,IAppRuntimeManager appRuntimeManager)
+    public ConnectionSession(TransactionTypeEnum transactionType,IsolationLevel isolationLevel,IChannel channel,IAppRuntimeManager appRuntimeManager)
     {
+        IsolationLevel = isolationLevel;
         AppRuntimeManager = appRuntimeManager;
         Channel = channel;
         _transactionStatus=new TransactionStatus(transactionType);
@@ -47,11 +48,6 @@ public class ConnectionSession:IConnectionSession
     public ICollection<string> GetAuthorizeDatabases()
     {
         return AppRuntimeManager.GetAuthorizedDatabases(_grantee.Username);
-    }
-
-    public ICollection<Func<IServerDbConnection,ValueTask>> GetConnectionInvokeReplays()
-    {
-        return _replay;
     }
 
     public bool DatabaseExists(string database)
@@ -100,7 +96,7 @@ public class ConnectionSession:IConnectionSession
         _databaseName = databaseName;
         RuntimeContext =AppRuntimeManager.GetRuntimeContext(databaseName!);
     }
-    public  Task WaitChannelIsWritableAsync(CancellationToken cancellationToken=default)
+    public Task WaitChannelIsWritableAsync(CancellationToken cancellationToken=default)
     {
         return  _channelWaitWriteableListener.WaitAsync(_channelWaitMillis,cancellationToken);
     }
@@ -109,14 +105,10 @@ public class ConnectionSession:IConnectionSession
         _channelWaitWriteableListener.Wakeup();
     }
 
-    public void CloseServerConnection()
-    {
-        // ServerConnection.CloseCurrentCommandReader();
-    }
 
     public void Reset()
     {
-        CloseServerConnection();
+        ServerConnection.Reset();
     }
 
     public void Dispose()

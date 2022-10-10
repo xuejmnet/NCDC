@@ -8,11 +8,9 @@ namespace NCDC.ProxyClientMySql.ClientConnections.DataReaders.Quit;
 
 public class MySqlQuitClientDataReader:IClientDataReader<MySqlPacketPayload>
 {
-    public IEnumerable<IPacket<MySqlPacketPayload>> SendCommand()
+    public async IAsyncEnumerable<IPacket<MySqlPacketPayload>> SendCommand()
     {
-        return new List<IPacket<MySqlPacketPayload>>(1)
-        {
-            new MySqlOkPacket(1, MySqlStatusFlagEnum.SERVER_STATUS_DEFAULT)
-        };
+        var mySqlOkPacket = new MySqlOkPacket(1, MySqlStatusFlagEnum.SERVER_STATUS_DEFAULT);
+        yield return await Task.FromResult(mySqlOkPacket);
     }
 }

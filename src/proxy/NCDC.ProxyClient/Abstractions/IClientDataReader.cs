@@ -8,7 +8,7 @@ public interface IClientDataReader:IDisposable
     /// 发送命令到数据库
     /// </summary>
     /// <returns>数据库返回结果</returns>
-    IEnumerable<IPacket> SendCommand();
+    IAsyncEnumerable<IPacket> SendCommand();
 
     bool MoveNext()
     {
@@ -28,9 +28,9 @@ public interface IClientDataReader:IDisposable
 
 public interface IClientDataReader<T>:IClientDataReader where T : IPacketPayload
 {
-    IEnumerable<IPacket<T>> SendCommand();
+    IAsyncEnumerable<IPacket<T>> SendCommand();
 
-    IEnumerable<IPacket> IClientDataReader.SendCommand()
+    IAsyncEnumerable<IPacket> IClientDataReader.SendCommand()
     {
         return SendCommand();
     }

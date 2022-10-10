@@ -34,9 +34,9 @@ public sealed class TransactionStatus
     {
          _inTransaction=inTransaction;
     }
-    public bool IsInConnectionHeldTransaction()
-    {
-        return this._inTransaction && TransactionTypeEnum.BASE != this.TransactionType;
-    }
+    // public bool IsInConnectionHeldTransaction()
+    // {
+    //     return this._inTransaction && TransactionTypeEnum.BASE != this.TransactionType;
+    // }
     
 }

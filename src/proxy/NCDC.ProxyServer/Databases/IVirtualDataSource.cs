@@ -23,6 +23,6 @@ public interface IVirtualDataSource
     bool Exists(string dataSourceName);
     IDataSource GetDataSource(string dataSourceName);
 
-    List<IServerDbConnection> GetServerDbConnections(ConnectionModeEnum connectionMode, string dataSourceName,
+    ValueTask<List<IServerDbConnection>> GetServerDbConnectionsAsync(ConnectionModeEnum connectionMode, string dataSourceName,
         int connectionSize, TransactionTypeEnum transactionType);
 }

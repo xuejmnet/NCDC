@@ -11,7 +11,7 @@ public abstract class AbstractAdoServerDataReader:AbstractExecuteServerDataReade
     {
     }
 
-    protected override List<IServerDbConnection> GetServerDbConnections(ConnectionModeEnum connectionMode, string dataSourceName, int connectionSize)
+    protected override ValueTask<List<IServerDbConnection>> GetServerDbConnectionsAsync(ConnectionModeEnum connectionMode, string dataSourceName, int connectionSize)
     {
         return ConnectionSession.ServerConnection.GetConnections(connectionMode, dataSourceName, connectionSize);
     }

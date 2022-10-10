@@ -1,5 +1,6 @@
 using System.Data;
 using NCDC.Enums;
+using NCDC.Exceptions;
 using NCDC.ProxyServer.Connection.Abstractions;
 
 namespace NCDC.ProxyServer.ServerHandlers.ServerTransactions;
@@ -23,18 +24,58 @@ public sealed class ServerTransactionManager:ITransactionManager
         {
             _connectionSession.GetTransactionStatus().SetInTransaction(true);
             TransactionHolder.InTransaction = true;
-            _connectionSession.CloseServerConnection();
+            await _connectionSession.ServerConnection.ReleaseConnectionsAsync(false);
+        }
+
+        if (TransactionTypeEnum.LOCAL == _transactionType)
+        {
+            await _localTransactionManager.BeginAsync(isolationLevel);
+            return;
+        }
+
+        throw new ShardingNotSupportedException($"transaction type:{_transactionType}");
+    }
+
+    public async Task CommitAsync()
+    {
+        if (_connectionSession.GetTransactionStatus().IsInTransaction())
+        {
+            try
+            {
+                if (TransactionTypeEnum.LOCAL == _transactionType)
+                {
+                    await _localTransactionManager.CommitAsync();
+                    return;
+                }
+                throw new ShardingNotSupportedException($"transaction type:{_transactionType}");
+            }
+            finally
+            {
+                _connectionSession.GetTransactionStatus().SetInTransaction(false);
+                TransactionHolder.InTransaction = null;
+            }
         }
     }
 
-    public Task CommitAsync()
+    public async Task RollbackAsync()
     {
-        throw new NotImplementedException();
-    }
-
-    public Task RollbackAsync()
-    {
-        throw new NotImplementedException();
+        if (_connectionSession.GetTransactionStatus().IsInTransaction())
+        {
+            try
+            {
+                if (TransactionTypeEnum.LOCAL == _transactionType)
+                {
+                    await _localTransactionManager.RollbackAsync();
+                    return;
+                }
+                throw new ShardingNotSupportedException($"transaction type:{_transactionType}");
+            }
+            finally
+            {
+                _connectionSession.GetTransactionStatus().SetInTransaction(false);
+                TransactionHolder.InTransaction = null;
+            }
+        }
     }
 
     public Task CreateSavepoint(string name)
@@ -52,5 +93,5 @@ public sealed class ServerTransactionManager:ITransactionManager
         throw new NotImplementedException();
     }
 
-    public bool SupportSavepoint { get; }
+    public bool SupportSavepoint => false;
 }

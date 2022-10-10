@@ -18,6 +18,6 @@ public interface IDataSource
     /// </summary>
     bool IsDefault { get; }
 
-    DbConnection CreateDbConnection(bool open);
-    IServerDbConnection CreateServerDbConnection();
+    ValueTask<DbConnection> CreateDbConnectionAsync(bool open);
+    ValueTask<IServerDbConnection> CreateServerDbConnectionAsync();
 }

@@ -21,11 +21,11 @@ public abstract class AbstractExecuteServerDataReader:IServerDataReader
         ConnectionSession = connectionSession;
     }
 
-    public  IServerResult ExecuteDbDataReader(
+    public async Task<IServerResult> ExecuteDbDataReaderAsync(
         CancellationToken cancellationToken = new CancellationToken())
     {
         var executor = ServerExecuteResultExecutor.Instance;
-        var executeResult = ExecuteAsync<IExecuteResult>(executor, cancellationToken).GetAwaiter().GetResult();
+        var executeResult =await ExecuteAsync<IExecuteResult>(executor, cancellationToken);
         return Merge(executeResult);
     }
 
@@ -34,27 +34,29 @@ public abstract class AbstractExecuteServerDataReader:IServerDataReader
     public abstract BinaryRow GetRowData();
 
     protected abstract IServerResult Merge(IExecuteResult executeResult);
-    protected abstract List<IServerDbConnection> GetServerDbConnections(ConnectionModeEnum connectionMode,
+    protected abstract ValueTask<List<IServerDbConnection>> GetServerDbConnectionsAsync(ConnectionModeEnum connectionMode,
         string dataSourceName, int connectionSize);
 
     private async Task<TResult> ExecuteAsync<TResult>(IExecutor<TResult> executor,CancellationToken cancellationToken = new CancellationToken())
     {
-        var resultGroups = ExecuteAsync0<TResult>(executor, cancellationToken);
+        var resultGroups =await ExecuteAsync0<TResult>(executor, cancellationToken);
         var results =(await TaskHelper.WhenAllFastFail(resultGroups)).SelectMany(o => o)
             .ToList();
         if (results.IsEmpty())
             throw new ShardingException("sharding execute result empty");
         return executor.GetShardingMerger().StreamMerge(ConnectionSession,ShardingExecutionContext,results);
     }
-    protected Task<List<TResult>>[] ExecuteAsync0<TResult>(IExecutor<TResult> executor,
+    protected async Task<Task<List<TResult>>[]> ExecuteAsync0<TResult>(IExecutor<TResult> executor,
         CancellationToken cancellationToken = new CancellationToken())
     {
-        var waitTaskQueue = ShardingExecutionContext.GetExecutionUnits()
-            .GroupBy(o => o.GetDataSourceName())
-            .Select(GetSqlExecutorGroups)
+        var dataSourceSqlExecutorUnits = await Task.WhenAll(ShardingExecutionContext.GetExecutionUnits()
+            .GroupBy(o => o.GetDataSourceName()).Select(GetSqlExecutorGroups).ToArray());
+
+        var waitTaskQueue = 
+            dataSourceSqlExecutorUnits
             .Select(dataSourceSqlExecutorUnit =>
             {
-                return Task.Run(async () =>
+                return  Task.Run(async () =>
                 {
                     return await executor.ExecuteAsync(dataSourceSqlExecutorUnit,
                         cancellationToken);
@@ -76,7 +78,7 @@ public abstract class AbstractExecuteServerDataReader:IServerDataReader
     /// <param name="sqlGroups"></param>
     /// <returns></returns>
     /// <exception cref="ArgumentNullException"></exception>
-    private DataSourceSqlExecutorUnit GetSqlExecutorGroups(IGrouping<string, ExecutionUnit> sqlGroups)
+    private async Task<DataSourceSqlExecutorUnit> GetSqlExecutorGroups(IGrouping<string, ExecutionUnit> sqlGroups)
     {
         var isSerialExecute = ShardingExecutionContext.IsSerialExecute;
         var maxQueryConnectionsLimit = ShardingExecutionContext.MaxQueryConnectionsLimit;
@@ -96,7 +98,7 @@ public abstract class AbstractExecuteServerDataReader:IServerDataReader
         //由于分组后除了最后一个元素其余元素都满足parallelCount为最大,第一个元素的分组数将是实际的创建连接数
         var createDbConnectionCount = sqlUnitPartitions[0].Count;
 
-         var dbConnections = GetServerDbConnections(connectionMode, dataSourceName, createDbConnectionCount);
+         var dbConnections =await GetServerDbConnectionsAsync(connectionMode, dataSourceName, createDbConnectionCount);
         //将SqlExecutorUnit进行分区,每个区maxQueryConnectionsLimit个
         //[1,2,3,4,5,6,7],maxQueryConnectionsLimit=3,结果就是[[1,2,3],[4,5,6],[7]]
         var sqlExecutorUnitPartitions = sqlUnitPartitions

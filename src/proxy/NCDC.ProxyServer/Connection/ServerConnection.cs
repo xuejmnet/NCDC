@@ -5,7 +5,7 @@ using NCDC.ProxyServer.Connection.Abstractions;
 
 namespace NCDC.ProxyServer.Connection;
 
-public class ServerConnection : IServerConnection, IDisposable, IAdoMethodReplier<IServerDbConnection>
+public sealed class ServerConnection : IServerConnection
 {
     private const int MAXIMUM_RETRY_COUNT = 5;
 
@@ -23,23 +23,24 @@ public class ServerConnection : IServerConnection, IDisposable, IAdoMethodReplie
     {
         _transactionType = TransactionTypeEnum.LOCAL;
         ConnectionSession = connectionSession;
-        Replier = new LinkedList<Action<IServerDbConnection>>();
+        ServerDbConnectionInvokeReplier = new LinkedList<Func<IServerDbConnection,Task>>();
     }
 
     public IConnectionSession ConnectionSession { get; }
 
-    public List<IServerDbConnection> GetConnections(ConnectionModeEnum connectionMode, string dataSourceName,
+    public async ValueTask<List<IServerDbConnection>> GetConnections(ConnectionModeEnum connectionMode, string dataSourceName,
         int connectionSize)
     {
         OneByOneLock();
         try
         {
-            if (!CachedConnections.TryGetValue(dataSourceName, out var cachedConnections))
-            {
-                cachedConnections = new List<IServerDbConnection>(Math.Max(connectionSize * 2,
-                    Environment.ProcessorCount));
-                CachedConnections.TryAdd(dataSourceName, cachedConnections);
-            }
+          
+                if (!CachedConnections.TryGetValue(dataSourceName, out var cachedConnections))
+                {
+                    cachedConnections = new List<IServerDbConnection>(Math.Max(connectionSize * 2,
+                        Environment.ProcessorCount));
+                    CachedConnections.TryAdd(dataSourceName, cachedConnections);
+                }
 
             if (cachedConnections.Count >= connectionSize)
             {
@@ -49,7 +50,7 @@ public class ServerConnection : IServerConnection, IDisposable, IAdoMethodReplie
             {
                 var dbConnections = new List<IServerDbConnection>(connectionSize);
                 dbConnections.AddRange(cachedConnections);
-                var serverDbConnections = GetServerDbConnectionFromContext(connectionMode, dataSourceName,
+                var serverDbConnections =await GetServerDbConnectionFromContextAsync(connectionMode, dataSourceName,
                     connectionSize - cachedConnections.Count());
                 dbConnections.AddRange(serverDbConnections);
                 cachedConnections.AddRange(serverDbConnections);
@@ -62,7 +63,35 @@ public class ServerConnection : IServerConnection, IDisposable, IAdoMethodReplie
         }
     }
 
-    private List<IServerDbConnection> GetServerDbConnectionFromContext(ConnectionModeEnum connectionMode,
+    public async ValueTask<LinkedList<Exception>> ReleaseConnectionsAsync(bool forceRollback)
+    {
+        var result = new LinkedList<Exception>();
+        foreach (var connections in CachedConnections.Values)
+        {
+            foreach (var serverDbConnection in connections)
+            {
+                try
+                {
+                    if (forceRollback && ConnectionSession.GetTransactionStatus().IsInTransaction())
+                    {
+                        await serverDbConnection.RollbackAsync();
+                    }
+
+                    serverDbConnection.Dispose();
+                }
+                catch (Exception ex)
+                {
+                    result.AddLast(ex);
+                }
+            }
+        }
+
+        CachedConnections.Clear();
+        ServerDbConnectionInvokeReplier.Clear();
+        return result;
+    }
+
+    private async Task<List<IServerDbConnection>> GetServerDbConnectionFromContextAsync(ConnectionModeEnum connectionMode,
         string dataSourceName, int connectionSize)
     {
         if (ConnectionSession.VirtualDataSource == null)
@@ -70,12 +99,18 @@ public class ServerConnection : IServerConnection, IDisposable, IAdoMethodReplie
             throw new ArgumentException("current database is null");
         }
 
-        return ConnectionSession.VirtualDataSource.GetServerDbConnections(connectionMode, dataSourceName,
+        var serverDbConnections = await ConnectionSession.VirtualDataSource.GetServerDbConnectionsAsync(connectionMode, dataSourceName,
             connectionSize,
             _transactionType);
+        foreach (var serverDbConnection in serverDbConnections)
+        {
+            IAdoMethodReplier adoMethodReplier = this;
+           await adoMethodReplier.ReplyTargetMethodInvokeAsync(serverDbConnection);
+        }
+        return serverDbConnections;
     }
 
-    public LinkedList<Action<IServerDbConnection>> Replier { get; }
+    public LinkedList<Func<IServerDbConnection,Task>> ServerDbConnectionInvokeReplier { get; }
 
     private void OneByOneLock()
     {
@@ -94,24 +129,16 @@ public class ServerConnection : IServerConnection, IDisposable, IAdoMethodReplie
 
     public void Dispose()
     {
-        // CloseCurrentCommandReader();
         CachedConnections.Clear();
     }
-    //
-    // public void CloseCurrentCommandReader()
-    // {
-    //     // foreach (var serverConnectionCachedConnection in CachedConnections)
-    //     // {
-    //     //     foreach (var serverDbConnection in serverConnectionCachedConnection.Value)
-    //     //     {
-    //     //         serverDbConnection.ServerDbDataReader?.Dispose();
-    //     //         serverDbConnection.ServerDbCommand?.Dispose();
-    //     //     }
-    //     // }
-    // }
 
     public IServerDbConnection GetServerDbConnection(CreateServerDbConnectionStrategyEnum strategy, string dataSourceName)
     {
         throw new NotImplementedException();
+    }
+
+    public void Reset()
+    {
+        CachedConnections.Clear();
     }
 }

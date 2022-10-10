@@ -93,7 +93,7 @@ public sealed class MessageCommand:ICommand
                     // }
 
                     int i = 0;
-                    foreach (var responsePacket in responsePackets)
+                   await foreach (var responsePacket in responsePackets)
                     {
                        _= context.WriteAsync(responsePacket);
                        i++;

@@ -14,7 +14,7 @@ public sealed class ServerDbConnection:IServerDbConnection
     {
         _dbConnection = dbConnection;
     }
-    public async ValueTask BeginAsync(IsolationLevel isolationLevel)
+    public async Task BeginAsync(IsolationLevel isolationLevel)
     {
         if (IsBeginTransaction())
         {
@@ -24,7 +24,7 @@ public sealed class ServerDbConnection:IServerDbConnection
     }
 
 
-    public async ValueTask CommitAsync()
+    public async Task CommitAsync()
     {
         if (!IsBeginTransaction())
         {
@@ -35,7 +35,7 @@ public sealed class ServerDbConnection:IServerDbConnection
         _dbTransaction = null;
     }
 
-    public async ValueTask RollbackAsync()
+    public async Task RollbackAsync()
     {
         if (!IsBeginTransaction())
         {
@@ -53,6 +53,10 @@ public sealed class ServerDbConnection:IServerDbConnection
     public DbCommand CreateCommand(string sql, ICollection<DbParameter>? dbParameters)
     {
         var dbCommand = GetDbConnection().CreateCommand();
+        if (IsBeginTransaction())
+        {
+            dbCommand.Transaction = _dbTransaction;
+        }
         dbCommand.CommandText = sql;
         if (dbParameters != null)
         {

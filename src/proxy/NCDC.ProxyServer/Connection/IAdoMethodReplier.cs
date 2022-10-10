@@ -1,18 +1,20 @@
+using NCDC.ProxyServer.Connection.Abstractions;
+
 namespace NCDC.ProxyServer.Connection;
 
-public interface IAdoMethodReplier<T>
+public interface IAdoMethodReplier
 {
-    LinkedList<Action<T>> Replier { get; }
+    LinkedList<Func<IServerDbConnection,Task>> ServerDbConnectionInvokeReplier { get; }
 
     /// <summary>
     /// 从新播放target的创建后的动作
     /// </summary>
     /// <param name="target"></param>
-    void ReplyTargetMethodInvoke(T target)
+   public async Task ReplyTargetMethodInvokeAsync(IServerDbConnection target)
     {
-        foreach (var action in Replier)
+        foreach (var action in ServerDbConnectionInvokeReplier)
         {
-            action?.Invoke(target);
+            await action.Invoke(target);
         }
     }
 
@@ -20,8 +22,8 @@ public interface IAdoMethodReplier<T>
     /// 记录target的动作
     /// </summary>
     /// <param name="targetMethod"></param>
-    void RecordTargetMethodInvoke(Action<T> targetMethod)
+    public void RecordTargetMethodInvoke(Func<IServerDbConnection,Task> targetMethod)
     {
-        Replier.AddLast(targetMethod);
+        ServerDbConnectionInvokeReplier.AddLast(targetMethod);
     }
 }

@@ -17,7 +17,7 @@ public sealed class MySqlStmtPrepareClientDataReader:IClientDataReader<MySqlPack
         _sql = sql;
         _connectionSession = connectionSession;
     }
-    public IEnumerable<IPacket<MySqlPacketPayload>> SendCommand()
+    public IAsyncEnumerable<IPacket<MySqlPacketPayload>> SendCommand()
     {
         throw new NotImplementedException();
         // var result = new LinkedList<IPacket<MySqlPacketPayload>>();

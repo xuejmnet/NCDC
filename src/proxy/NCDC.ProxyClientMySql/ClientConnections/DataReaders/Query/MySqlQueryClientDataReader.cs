@@ -59,24 +59,21 @@ public sealed class MySqlQueryClientDataReader : IClientQueryDataReader<MySqlPac
                && (sqlCommand is UpdateCommand || sqlCommand is DeleteCommand) && sql.Contains(";");
     }
 
-    public IEnumerable<IPacket<MySqlPacketPayload>> SendCommand()
+    public async IAsyncEnumerable<IPacket<MySqlPacketPayload>> SendCommand()
     {
-        var serverResult = ServerHandler.Execute();
+        var serverResult =await ServerHandler.ExecuteAsync();
         ResultType = serverResult.ResultType;
         if (serverResult is QueryServerResult queryServerResult)
         {
-            return ProcessQuery(queryServerResult);
-        }
-
-        if (serverResult is RecordsAffectedServerResult effectResult)
-        {
-            return new List<IPacket<MySqlPacketPayload>>()
+            var processQuery = ProcessQuery(queryServerResult);
+            foreach (var packet in processQuery)
             {
-                CreateUpdatePacket(effectResult)
-            };
+                yield return packet;
+            }
+        }else if (serverResult is RecordsAffectedServerResult effectResult)
+        {
+            yield return CreateUpdatePacket(effectResult);
         }
-
-        throw new NotImplementedException();
     }
 
     public IPacket<MySqlPacketPayload>? GetRowPacket()

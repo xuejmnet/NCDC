@@ -17,10 +17,11 @@ public sealed class MySqlNotSupportClientDataReader:IClientDataReader<MySqlPacke
     {
         _commandType = commandType;
     }
-    public IEnumerable<IPacket<MySqlPacketPayload>> SendCommand()
+    public async IAsyncEnumerable<IPacket<MySqlPacketPayload>> SendCommand()
     {
         // yield return new MySqlErrPacket(1, CommonSqlErrorCode.UNSUPPORTED_COMMAND_ARGS1, _commandType);
-        yield return new MySqlOkPacket(1,MySqlStatusFlagEnum.SERVER_STATUS_AUTOCOMMIT);
+        var mySqlOkPacket = new MySqlOkPacket(1, MySqlStatusFlagEnum.SERVER_STATUS_AUTOCOMMIT);
+        yield return await Task.FromResult(mySqlOkPacket);
         // return new IPacket<MySqlPacketPayload>[]
         // {
         //    

@@ -103,7 +103,7 @@ public abstract class AbstractAppRuntimeBuilder : IAppRuntimeBuilder
         var dataSource = virtualDataSource.GetDataSource(actualTableNode.DataSource);
 
         var emptyResultSql = GenerateEmptyResultSql(actualTableNode.TableName);
-        using (var dbConnection = dataSource.CreateDbConnection(true))
+        using (var dbConnection =await dataSource.CreateDbConnectionAsync(true))
         {
             using (var command = dbConnection.CreateCommand())
             {

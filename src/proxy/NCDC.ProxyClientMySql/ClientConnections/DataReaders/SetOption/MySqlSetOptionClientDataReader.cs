@@ -18,12 +18,11 @@ public sealed class MySqlSetOptionClientDataReader:IClientDataReader<MySqlPacket
         _value = value;
         _connectionSession = connectionSession;
     }
-    public IEnumerable<IPacket<MySqlPacketPayload>>  SendCommand()
+    public async IAsyncEnumerable<IPacket<MySqlPacketPayload>>  SendCommand()
     {
         _connectionSession.Channel.GetAttribute(MySqlConstants.MYSQL_OPTION_MULTI_STATEMENTS).Set(_value);
-        return new List<IPacket<MySqlPacketPayload>>()
-        {
-            new MySqlOkPacket(1,ServerStatusFlagCalculator.CalculateFor(_connectionSession))
-        };
+        
+        var mySqlOkPacket = new MySqlOkPacket(1, ServerStatusFlagCalculator.CalculateFor(_connectionSession));
+        yield return await Task.FromResult(mySqlOkPacket);
     }
 }

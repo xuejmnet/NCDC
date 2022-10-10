@@ -71,17 +71,25 @@ public sealed class ServerHandlerFactory:IServerHandlerFactory
 
         if (tclCommand is SetAutoCommitCommand setAutoCommitCommand)
         {
+            if (setAutoCommitCommand.AutoCommit)
+            {
+                return connectionSession.GetTransactionStatus().IsInTransaction()
+                    ? new TransactionServerHandler(TransactionOperationTypeEnum.COMMIT, connectionSession)
+                    : new SkipServerHandler();
+            }
             throw new NotSupportedException("SetAutoCommitCommand");
         }
 
         if (tclCommand is CommitCommand commitCommand)
         {
-            throw new NotSupportedException("CommitCommand");
+            return new TransactionServerHandler(TransactionOperationTypeEnum.COMMIT, connectionSession);
+            // throw new NotSupportedException("CommitCommand");
         }
 
         if (tclCommand is RollbackCommand rollbackCommand)
         {
-            throw new NotSupportedException("RollbackCommand");
+            return new TransactionServerHandler(TransactionOperationTypeEnum.ROLLBACK, connectionSession);
+            // throw new NotSupportedException("RollbackCommand");
         }
         //todo 判断设置隔离级别
 

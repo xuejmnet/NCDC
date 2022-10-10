@@ -10,9 +10,9 @@ public sealed class EmptyServerDataReader:IServerDataReader
 {
     private EmptyServerDataReader(){}
     public static EmptyServerDataReader Instance { get; } = new EmptyServerDataReader();
-    public IServerResult ExecuteDbDataReader(CancellationToken cancellationToken = new CancellationToken())
+    public Task<IServerResult> ExecuteDbDataReaderAsync(CancellationToken cancellationToken = new CancellationToken())
     {
-        return new RecordsAffectedServerResult();
+        return Task.FromResult((IServerResult)new RecordsAffectedServerResult());
     }
 
     public bool Read()

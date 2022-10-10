@@ -6,8 +6,8 @@ namespace NCDC.ProxyServer.ServerHandlers;
 public sealed class SkipServerHandler:IServerHandler
 {
     public static SkipServerHandler Default { get; } = new SkipServerHandler();
-    public IServerResult Execute()
+    public Task<IServerResult> ExecuteAsync()
     {
-        return RecordsAffectedServerResult.Empty;
+        return Task.FromResult((IServerResult)RecordsAffectedServerResult.Empty);
     }
 }

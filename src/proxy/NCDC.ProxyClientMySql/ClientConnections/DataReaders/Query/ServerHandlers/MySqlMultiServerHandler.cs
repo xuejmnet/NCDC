@@ -4,7 +4,7 @@ namespace NCDC.ProxyClientMySql.ClientConnections.DataReaders.Query.ServerHandle
 
 public sealed class MySqlMultiServerHandler:IServerHandler
 {
-    public IServerResult Execute()
+    public Task<IServerResult> ExecuteAsync()
     {
         throw new NotImplementedException();
     }

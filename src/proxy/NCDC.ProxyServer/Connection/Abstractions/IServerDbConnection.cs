@@ -5,9 +5,9 @@ namespace NCDC.ProxyServer.Connection.Abstractions;
 
 public interface IServerDbConnection:IDisposable
 {
-    ValueTask BeginAsync(IsolationLevel isolationLevel);
-    ValueTask CommitAsync();
-    ValueTask RollbackAsync();
+    Task BeginAsync(IsolationLevel isolationLevel);
+    Task CommitAsync();
+    Task RollbackAsync();
     DbConnection GetDbConnection();
     DbCommand CreateCommand(string sql,ICollection<DbParameter>? dbParameters);
     bool IsBeginTransaction();

@@ -15,14 +15,15 @@ public sealed class UnicastServerHandler : IServerHandler
     private readonly IServerDataReaderFactory _serverDataReaderFactory;
     private IServerDataReader? _serverDataReader;
 
-    public UnicastServerHandler(string sql, IConnectionSession connectionSession,IServerDataReaderFactory serverDataReaderFactory)
+    public UnicastServerHandler(string sql, IConnectionSession connectionSession,
+        IServerDataReaderFactory serverDataReaderFactory)
     {
         _sql = sql;
         _connectionSession = connectionSession;
         _serverDataReaderFactory = serverDataReaderFactory;
     }
 
-    public IServerResult Execute()
+    public Task<IServerResult> ExecuteAsync()
     {
         var originalDatabaseName = _connectionSession.DatabaseName;
         var currentDatabaseName = originalDatabaseName ?? GetFirstDatabaseName();
@@ -30,7 +31,7 @@ public sealed class UnicastServerHandler : IServerHandler
         {
             _connectionSession.SetCurrentDatabaseName(currentDatabaseName);
             _serverDataReader = _serverDataReaderFactory.Create(_sql, _connectionSession);
-                return _serverDataReader.ExecuteDbDataReader();
+            return _serverDataReader.ExecuteDbDataReaderAsync();
         }
         finally
         {
@@ -40,7 +41,7 @@ public sealed class UnicastServerHandler : IServerHandler
 
     private string GetFirstDatabaseName()
     {
-        var allDatabaseNames =_connectionSession.GetAllDatabaseNames();
+        var allDatabaseNames = _connectionSession.GetAllDatabaseNames();
 
         return allDatabaseNames.FirstOrDefault() ?? throw new ShardingException("no database can select");
     }

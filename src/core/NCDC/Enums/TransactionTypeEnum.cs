@@ -12,6 +12,6 @@
     /// </summary>
     public enum TransactionTypeEnum
     {
-        LOCAL, XA, BASE
+        LOCAL//, XA, BASE
     }
 }

@@ -21,7 +21,7 @@ public sealed class QueryServerHandler:IServerHandler
         _serverDataReaderFactory = serverDataReaderFactory;
         Sql = sql;
     }
-    public IServerResult Execute()
+    public Task<IServerResult> ExecuteAsync()
     {
         if (_connectionSession.VirtualDataSource == null)
         {
@@ -29,7 +29,7 @@ public sealed class QueryServerHandler:IServerHandler
         }
 
         ServerDataReader = _serverDataReaderFactory.Create(Sql,_sqlCommand, _connectionSession);
-        return ServerDataReader.ExecuteDbDataReader();
+        return ServerDataReader.ExecuteDbDataReaderAsync();
         
        
     }

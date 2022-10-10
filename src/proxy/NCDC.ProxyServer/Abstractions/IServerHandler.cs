@@ -4,7 +4,7 @@ namespace NCDC.ProxyServer.Abstractions;
 
 public interface IServerHandler:IDisposable
 {
-    IServerResult Execute();
+    Task<IServerResult> ExecuteAsync();
         
     bool Read()
     {

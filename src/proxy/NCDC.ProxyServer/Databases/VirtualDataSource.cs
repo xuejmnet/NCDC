@@ -92,7 +92,7 @@ public sealed class VirtualDataSource : IVirtualDataSource
 
     }
 
-    public List<IServerDbConnection> GetServerDbConnections(ConnectionModeEnum connectionMode, string dataSourceName, int connectionSize,
+    public async ValueTask<List<IServerDbConnection>> GetServerDbConnectionsAsync(ConnectionModeEnum connectionMode, string dataSourceName, int connectionSize,
         TransactionTypeEnum transactionType)
     {if (!_dataSources.TryGetValue(dataSourceName, out var dataSource))
         {
@@ -101,8 +101,9 @@ public sealed class VirtualDataSource : IVirtualDataSource
 
         if (1 == connectionSize)
         {
+            var serverDbConnection = await CreateServerDbConnection(transactionType, dataSource);
             return new List<IServerDbConnection>()
-                { CreateServerDbConnection(transactionType, dataSource) };
+                { serverDbConnection };
         }
 
         // if (ConnectionModeEnum.CONNECTION_STRICTLY == connectionMode)
@@ -112,20 +113,20 @@ public sealed class VirtualDataSource : IVirtualDataSource
         //
         // lock (proxyDatabase)
         // {
-            return CreateServerDbConnections(transactionType, dataSource, connectionSize);
+            return await CreateServerDbConnections(transactionType, dataSource, connectionSize);
         // }
     }
 
     // public SchemaMetaData SchemaMetaData { get; }
 
-    private List<IServerDbConnection> CreateServerDbConnections(TransactionTypeEnum transactionType,IDataSource dataSource,int connectionSize)
+    private async ValueTask<List<IServerDbConnection>> CreateServerDbConnections(TransactionTypeEnum transactionType,IDataSource dataSource,int connectionSize)
     {
         var serverDbConnections = new List<IServerDbConnection>(connectionSize);
         for (int i = 0; i < connectionSize; i++)
         {
             try
             {
-                serverDbConnections.Add(CreateServerDbConnection(transactionType,dataSource));
+                serverDbConnections.Add(await CreateServerDbConnection(transactionType,dataSource));
             }
             catch (Exception ex)
             {
@@ -142,9 +143,9 @@ public sealed class VirtualDataSource : IVirtualDataSource
         return serverDbConnections;
     }
 
-    private IServerDbConnection CreateServerDbConnection(TransactionTypeEnum transactionType, 
+    private  ValueTask<IServerDbConnection> CreateServerDbConnection(TransactionTypeEnum transactionType, 
         IDataSource dataSource)
     {
-        return dataSource.CreateServerDbConnection();
+        return dataSource.CreateServerDbConnectionAsync();
     }
 }

@@ -1,3 +1,4 @@
+using System.Data;
 using System.Text;
 using System.Threading.Channels;
 using DotNetty.Buffers;
@@ -43,7 +44,7 @@ public class ClientChannelInboundHandler : ChannelHandlerAdapter
         _databaseProtocolClientEngine = databaseProtocolClientEngine;
         _appRuntimeManager = appRuntimeManager;
         _messageCommandProcessor = messageCommandProcessor;
-        _connectionSession = new ConnectionSession(TransactionTypeEnum.LOCAL, channel,appRuntimeManager);
+        _connectionSession = new ConnectionSession(TransactionTypeEnum.LOCAL,IsolationLevel.ReadCommitted, channel,appRuntimeManager);
         _authContext = databaseProtocolClientEngine.GetAuthContext();
     }
 

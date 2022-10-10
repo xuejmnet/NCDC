@@ -53,7 +53,6 @@ public sealed class QueryServerDataReader:AbstractAdoServerDataReader
     public override void Dispose()
     {
         StreamDataReader?.Dispose();
-        ConnectionSession.CloseServerConnection();
     }
 
 }
