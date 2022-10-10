@@ -18,14 +18,14 @@ namespace NCDC.ShardingMerge.DataReaderMergers.DQL.OrderBy
     {
         protected ICollection<OrderByItem> OrderByItems { get; }
 
-        protected Base.PriorityQueues.PriorityQueue<OrderByValue> OrderByValuesQueue { get; }
+        protected PriorityQueue<OrderByValue> OrderByValuesQueue { get; }
 
         protected bool IsFirstNext { get; set; }
 
         public OrderByStreamMergedDataReader(List<IStreamDataReader> streamDataReaders, SelectCommandContext selectCommandContext, ITableMetadataManager tableMetadataManager)
         {
             this.OrderByItems = selectCommandContext.GetOrderByContext().GetItems();
-            this.OrderByValuesQueue = new Base.PriorityQueues.PriorityQueue<OrderByValue>(streamDataReaders.Count);
+            this.OrderByValuesQueue = new PriorityQueue<OrderByValue>(streamDataReaders.Count);
             OrderResultSetsToQueue(streamDataReaders, selectCommandContext, tableMetadataManager);
             IsFirstNext = true;
         }
