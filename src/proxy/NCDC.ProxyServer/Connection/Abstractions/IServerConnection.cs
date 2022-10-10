@@ -10,7 +10,7 @@ public interface IServerConnection : IAdoMethodReplier, IDisposable
     ValueTask<List<IServerDbConnection>> GetConnections(ConnectionModeEnum connectionMode, string dataSourceName,
         int connectionSize);
 
-    ValueTask<LinkedList<Exception>> ReleaseConnectionsAsync(bool forceRollback);
+    ValueTask ReleaseConnectionsAsync(bool forceRollback);
     // void CloseCurrentCommandReader();
 
     IServerDbConnection GetServerDbConnection(CreateServerDbConnectionStrategyEnum strategy, string dataSourceName);

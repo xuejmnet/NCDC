@@ -16,31 +16,38 @@ public sealed class ServerConnection : IServerConnection
     public int ConnectionId { get; set; }
     public string UserName { get; set; }
 
-    public IDictionary<string/*data source*/, List<IServerDbConnection>> CachedConnections { get; } =
+    public IDictionary<string /*data source*/, List<IServerDbConnection>> CachedConnections { get; } =
         new Dictionary<string, List<IServerDbConnection>>();
 
     public ServerConnection(IConnectionSession connectionSession)
     {
         _transactionType = TransactionTypeEnum.LOCAL;
         ConnectionSession = connectionSession;
-        ServerDbConnectionInvokeReplier = new LinkedList<Func<IServerDbConnection,Task>>();
+        ServerDbConnectionInvokeReplier = new LinkedList<Func<IServerDbConnection, Task>>();
     }
 
     public IConnectionSession ConnectionSession { get; }
 
-    public async ValueTask<List<IServerDbConnection>> GetConnections(ConnectionModeEnum connectionMode, string dataSourceName,
+    /// <summary>
+    /// 获取ado链接用来和数据库交互
+    /// </summary>
+    /// <param name="connectionMode"></param>
+    /// <param name="dataSourceName"></param>
+    /// <param name="connectionSize"></param>
+    /// <returns></returns>
+    public async ValueTask<List<IServerDbConnection>> GetConnections(ConnectionModeEnum connectionMode,
+        string dataSourceName,
         int connectionSize)
     {
         OneByOneLock();
         try
         {
-          
-                if (!CachedConnections.TryGetValue(dataSourceName, out var cachedConnections))
-                {
-                    cachedConnections = new List<IServerDbConnection>(Math.Max(connectionSize * 2,
-                        Environment.ProcessorCount));
-                    CachedConnections.TryAdd(dataSourceName, cachedConnections);
-                }
+            if (!CachedConnections.TryGetValue(dataSourceName, out var cachedConnections))
+            {
+                cachedConnections = new List<IServerDbConnection>(Math.Max(connectionSize * 2,
+                    Environment.ProcessorCount));
+                CachedConnections.TryAdd(dataSourceName, cachedConnections);
+            }
 
             if (cachedConnections.Count >= connectionSize)
             {
@@ -50,7 +57,7 @@ public sealed class ServerConnection : IServerConnection
             {
                 var dbConnections = new List<IServerDbConnection>(connectionSize);
                 dbConnections.AddRange(cachedConnections);
-                var serverDbConnections =await GetServerDbConnectionFromContextAsync(connectionMode, dataSourceName,
+                var serverDbConnections = await GetServerDbConnectionFromContextAsync(connectionMode, dataSourceName,
                     connectionSize - cachedConnections.Count());
                 dbConnections.AddRange(serverDbConnections);
                 cachedConnections.AddRange(serverDbConnections);
@@ -63,35 +70,31 @@ public sealed class ServerConnection : IServerConnection
         }
     }
 
-    public async ValueTask<LinkedList<Exception>> ReleaseConnectionsAsync(bool forceRollback)
+    public async ValueTask ReleaseConnectionsAsync(bool forceRollback)
     {
-        var result = new LinkedList<Exception>();
-        foreach (var connections in CachedConnections.Values)
+        var releaseConnections = CachedConnections.Values
+            .SelectMany(connections => connections.Select(serverDbConnection =>
+                ReleaseServerDbConnectionAsync(forceRollback, serverDbConnection))).ToArray();
+        try
         {
-            foreach (var serverDbConnection in connections)
-            {
-                try
-                {
-                    if (forceRollback && ConnectionSession.GetTransactionStatus().IsInTransaction())
-                    {
-                        await serverDbConnection.RollbackAsync();
-                    }
-
-                    serverDbConnection.Dispose();
-                }
-                catch (Exception ex)
-                {
-                    result.AddLast(ex);
-                }
-            }
+            await Task.WhenAll(releaseConnections);
         }
-
-        CachedConnections.Clear();
-        ServerDbConnectionInvokeReplier.Clear();
-        return result;
+        finally
+        {
+            CachedConnections.Clear();
+            ServerDbConnectionInvokeReplier.Clear();
+        }
     }
 
-    private async Task<List<IServerDbConnection>> GetServerDbConnectionFromContextAsync(ConnectionModeEnum connectionMode,
+    private async Task ReleaseServerDbConnectionAsync(bool forceRollback, IServerDbConnection serverDbConnection)
+    {
+        if (forceRollback && ConnectionSession.GetTransactionStatus().IsInTransaction())
+            await serverDbConnection.RollbackAsync();
+        serverDbConnection.Dispose();
+    }
+
+    private async Task<List<IServerDbConnection>> GetServerDbConnectionFromContextAsync(
+        ConnectionModeEnum connectionMode,
         string dataSourceName, int connectionSize)
     {
         if (ConnectionSession.VirtualDataSource == null)
@@ -99,18 +102,20 @@ public sealed class ServerConnection : IServerConnection
             throw new ArgumentException("current database is null");
         }
 
-        var serverDbConnections = await ConnectionSession.VirtualDataSource.GetServerDbConnectionsAsync(connectionMode, dataSourceName,
+        var serverDbConnections = await ConnectionSession.VirtualDataSource.GetServerDbConnectionsAsync(connectionMode,
+            dataSourceName,
             connectionSize,
             _transactionType);
         foreach (var serverDbConnection in serverDbConnections)
         {
             IAdoMethodReplier adoMethodReplier = this;
-           await adoMethodReplier.ReplyTargetMethodInvokeAsync(serverDbConnection);
+            await adoMethodReplier.ReplyTargetMethodInvokeAsync(serverDbConnection);
         }
+
         return serverDbConnections;
     }
 
-    public LinkedList<Func<IServerDbConnection,Task>> ServerDbConnectionInvokeReplier { get; }
+    public LinkedList<Func<IServerDbConnection, Task>> ServerDbConnectionInvokeReplier { get; }
 
     private void OneByOneLock()
     {
@@ -132,7 +137,8 @@ public sealed class ServerConnection : IServerConnection
         CachedConnections.Clear();
     }
 
-    public IServerDbConnection GetServerDbConnection(CreateServerDbConnectionStrategyEnum strategy, string dataSourceName)
+    public IServerDbConnection GetServerDbConnection(CreateServerDbConnectionStrategyEnum strategy,
+        string dataSourceName)
     {
         throw new NotImplementedException();
     }
@@ -140,5 +146,6 @@ public sealed class ServerConnection : IServerConnection
     public void Reset()
     {
         CachedConnections.Clear();
+        ServerDbConnectionInvokeReplier.Clear();
     }
 }
