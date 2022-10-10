@@ -14,4 +14,5 @@ public sealed class QueryServerResult:IServerResult
     {
         DbColumns = dbColumns;
     }
+
 }

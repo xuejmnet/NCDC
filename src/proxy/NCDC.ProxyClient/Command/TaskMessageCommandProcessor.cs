@@ -11,7 +11,7 @@ public sealed class TaskMessageCommandProcessor:IMessageCommandProcessor
 {
 
     private static readonly ILogger<TaskMessageCommandProcessor> _logger =
-        InternalNCDCLoggerFactory.CreateLogger<TaskMessageCommandProcessor>();
+        NCDCLoggerFactory.CreateLogger<TaskMessageCommandProcessor>();
     
     private readonly ConcurrentDictionary<IChannelId, IMessageExecutor> _executors = new();
     private readonly IMessageExecutorFactory _messageExecutorFactory;

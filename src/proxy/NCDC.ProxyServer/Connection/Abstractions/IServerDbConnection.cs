@@ -5,12 +5,10 @@ namespace NCDC.ProxyServer.Connection.Abstractions;
 
 public interface IServerDbConnection:IDisposable
 {
-    void BeginTransaction(IsolationLevel isolationLevel);
-    void CommitTransaction();
-    void RollbackTransaction();
-    IServerDbCommand CreateCommand(string sql,ICollection<DbParameter>? dbParameters);
+    ValueTask BeginAsync(IsolationLevel isolationLevel);
+    ValueTask CommitAsync();
+    ValueTask RollbackAsync();
     DbConnection GetDbConnection();
-    IServerDbTransaction? ServerDbTransaction { get; set; }
-    IServerDbCommand? ServerDbCommand { get; set; }
-    IServerDbDataReader? ServerDbDataReader { get; set; }
+    DbCommand CreateCommand(string sql,ICollection<DbParameter>? dbParameters);
+    bool IsBeginTransaction();
 }

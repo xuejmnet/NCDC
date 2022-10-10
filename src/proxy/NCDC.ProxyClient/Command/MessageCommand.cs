@@ -15,7 +15,7 @@ namespace NCDC.ProxyClient.Command;
 
 public sealed class MessageCommand:ICommand
 {
-    private static readonly ILogger<MessageCommand> _logger = InternalNCDCLoggerFactory.CreateLogger<MessageCommand>();
+    private static readonly ILogger<MessageCommand> _logger = NCDCLoggerFactory.CreateLogger<MessageCommand>();
     private readonly IDatabaseProtocolClientEngine _databaseProtocolClientEngine;
     private readonly IConnectionSession _connectionSession;
     private readonly IChannelHandlerContext _context;

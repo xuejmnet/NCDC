@@ -14,7 +14,7 @@ namespace NCDC.ProxyServer.ServerHandlers;
 
 public sealed class ServerHandlerFactory:IServerHandlerFactory
 {
-    private static readonly ILogger<ServerHandlerFactory> _logger = InternalNCDCLoggerFactory.CreateLogger<ServerHandlerFactory>();
+    private static readonly ILogger<ServerHandlerFactory> _logger = NCDCLoggerFactory.CreateLogger<ServerHandlerFactory>();
     private readonly IServerDataReaderFactory _serverDataReaderFactory;
 
     public ServerHandlerFactory(IServerDataReaderFactory serverDataReaderFactory)
@@ -65,8 +65,8 @@ public sealed class ServerHandlerFactory:IServerHandlerFactory
     {
         if (tclCommand is BeginTransactionCommand beginTransactionCommand)
         {
-            throw new NotSupportedException("BeginTransactionCommand");
-            // return new TransactionServerHandler(TransactionOperationTypeEnum.BEGIN, connectionSession);
+            // throw new NotSupportedException("BeginTransactionCommand");
+            return new TransactionServerHandler(TransactionOperationTypeEnum.BEGIN, connectionSession);
         }
 
         if (tclCommand is SetAutoCommitCommand setAutoCommitCommand)

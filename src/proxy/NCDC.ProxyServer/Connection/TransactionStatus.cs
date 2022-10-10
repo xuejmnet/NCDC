@@ -8,12 +8,12 @@ namespace NCDC.ProxyServer.Connection;
 /// </summary>
 public sealed class TransactionStatus
 {
-    private volatile TransactionTypeEnum _transactionType;
-    private volatile bool _inTransaction;
+    public  TransactionTypeEnum TransactionType { get; private set; }
+    private  bool _inTransaction;
 
     public TransactionStatus(TransactionTypeEnum transactionType)
     {
-        _transactionType = transactionType;
+        TransactionType = transactionType;
     }
 
     public void SetTransactionType(TransactionTypeEnum transactionType)
@@ -23,16 +23,20 @@ public sealed class TransactionStatus
             throw new ShardingException("failed to switch transaction type, please terminate current transaction.");
         }
 
-        this._transactionType = transactionType;
+        this.TransactionType = transactionType;
     }
 
-    public bool InTransaction()
+    public bool IsInTransaction()
     {
         return _inTransaction;
     }
+    public void SetInTransaction(bool inTransaction)
+    {
+         _inTransaction=inTransaction;
+    }
     public bool IsInConnectionHeldTransaction()
     {
-        return this._inTransaction && TransactionTypeEnum.BASE != this._transactionType;
+        return this._inTransaction && TransactionTypeEnum.BASE != this.TransactionType;
     }
     
 }

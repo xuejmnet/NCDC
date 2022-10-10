@@ -75,11 +75,8 @@ namespace NCDC.ShardingMerge.DataReaderMergers.DQL.OrderBy
 
         public override void Dispose()
         {
-            while (!OrderByValuesQueue.IsEmpty())
-            {
-                var orderByValue = OrderByValuesQueue.Poll();
-                orderByValue?.Dispose();
-            }
+            //如果优先级队列里面还有其余的链接直接全部回收掉
+            OrderByValuesQueue.Dispose();
         }
     }
 }

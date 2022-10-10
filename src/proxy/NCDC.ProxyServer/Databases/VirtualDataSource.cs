@@ -14,7 +14,7 @@ namespace NCDC.ProxyServer.Databases;
 
 public sealed class VirtualDataSource : IVirtualDataSource
 {
-    private static ILogger<VirtualDataSource> _logger = InternalNCDCLoggerFactory.CreateLogger<VirtualDataSource>();
+    private static ILogger<VirtualDataSource> _logger = NCDCLoggerFactory.CreateLogger<VirtualDataSource>();
     private readonly ShardingConfiguration _shardingConfiguration;
     private readonly IDbProviderFactory _dbProviderFactory;
     public string GetDatabaseName()

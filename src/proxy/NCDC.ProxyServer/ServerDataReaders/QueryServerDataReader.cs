@@ -40,7 +40,8 @@ public sealed class QueryServerDataReader:AbstractAdoServerDataReader
         if (executeResult is QueryExecuteResult queryExecuteResult)
         {
             StreamDataReader = queryExecuteResult.StreamDataReader;
-            QueryServerResult= new QueryServerResult(queryExecuteResult.DbColumns);
+            QueryServerResult= new QueryServerResult(queryExecuteResult.DbColumns.Select(o=>o).ToList());
+            // queryExecuteResult.Dispose();
             return QueryServerResult;
         }
         else

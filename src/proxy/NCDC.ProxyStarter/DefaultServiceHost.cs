@@ -20,7 +20,7 @@ namespace NCDC.ProxyStarter;
 
 public class DefaultServiceHost:IServiceHost
 {
-    private static readonly ILogger<DefaultServiceHost> _logger = InternalNCDCLoggerFactory.CreateLogger<DefaultServiceHost>();
+    private static readonly ILogger<DefaultServiceHost> _logger = NCDCLoggerFactory.CreateLogger<DefaultServiceHost>();
  
     // private readonly ICommandListener _commandListener= new DefaultCommandListener();
     private readonly IChannelHandler _connectorManagerHandler= new ConnectorManagerHandler();

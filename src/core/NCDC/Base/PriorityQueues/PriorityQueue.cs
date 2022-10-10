@@ -3,7 +3,7 @@
     /// 泛型优先队列 https://www.cnblogs.com/skyivben/archive/2009/04/18/1438731.html 优化T类型不需要实现IComparable
     /// </summary>
     /// <typeparam name="T">实现IComparable&lt;T&gt;的类型</typeparam>
-    public class PriorityQueue<T> {
+    public class PriorityQueue<T>:IDisposable {
         private const int defaultCapacity = 0x10;//默认容量为16
 
         private IComparer<T> comparer;
@@ -62,5 +62,16 @@
         private bool descending;
         private int heapLength;
         private T[] buffer;
+
+        public void Dispose()
+        {
+            if (typeof(IDisposable).IsAssignableFrom(typeof(T)))
+            {
+                for (var i = 0; i < buffer.Length; i++)
+                {
+                    ((IDisposable)buffer[i]).Dispose();
+                }
+            }
+        }
     }
 }

@@ -16,7 +16,7 @@ namespace NCDC.ProxyServer.Executors
     public delegate void Log(string msg);
     public class SqlLogger
     {
-        private static readonly ILogger<SqlLogger> _logger = InternalNCDCLoggerFactory.CreateLogger<SqlLogger>();
+        private static readonly ILogger<SqlLogger> _logger = NCDCLoggerFactory.CreateLogger<SqlLogger>();
 
         private SqlLogger()
         {

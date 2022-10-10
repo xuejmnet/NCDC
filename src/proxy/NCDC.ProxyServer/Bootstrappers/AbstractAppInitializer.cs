@@ -10,7 +10,7 @@ namespace NCDC.ProxyServer.Bootstrappers;
 public abstract class AbstractAppInitializer:IAppInitializer
 {
     private readonly ILogger<AbstractAppInitializer> _logger =
-        InternalNCDCLoggerFactory.CreateLogger<AbstractAppInitializer>();
+        NCDCLoggerFactory.CreateLogger<AbstractAppInitializer>();
     private readonly IAppRuntimeLoader _appRuntimeLoader;
     private readonly IAppUserLoader _appUserLoader;
     private readonly IUserDatabaseMappingLoader _userDatabaseMappingLoader;

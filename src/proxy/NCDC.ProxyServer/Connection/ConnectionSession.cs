@@ -28,6 +28,7 @@ public class ConnectionSession:IConnectionSession
     private readonly TimeSpan _channelWaitMillis = TimeSpan.FromMilliseconds(200);
 
     private readonly ChannelIsWritableListener _channelWaitWriteableListener;
+    private readonly ICollection<Func<IServerDbConnection,ValueTask>> _replay = new LinkedList<Func<IServerDbConnection,ValueTask>>();
  
     public ConnectionSession(TransactionTypeEnum transactionType,IChannel channel,IAppRuntimeManager appRuntimeManager)
     {
@@ -46,6 +47,11 @@ public class ConnectionSession:IConnectionSession
     public ICollection<string> GetAuthorizeDatabases()
     {
         return AppRuntimeManager.GetAuthorizedDatabases(_grantee.Username);
+    }
+
+    public ICollection<Func<IServerDbConnection,ValueTask>> GetConnectionInvokeReplays()
+    {
+        return _replay;
     }
 
     public bool DatabaseExists(string database)
@@ -105,11 +111,17 @@ public class ConnectionSession:IConnectionSession
 
     public void CloseServerConnection()
     {
-        ServerConnection.CloseCurrentCommandReader();
+        // ServerConnection.CloseCurrentCommandReader();
+    }
+
+    public void Reset()
+    {
+        CloseServerConnection();
     }
 
     public void Dispose()
     {
         ServerConnection.Dispose();
     }
+    
 }

@@ -25,7 +25,7 @@ namespace NCDC.ProxyClient.DotNetty;
 public class ClientChannelInboundHandler : ChannelHandlerAdapter
 {
     private static readonly ILogger<ClientChannelInboundHandler> _logger =
-        InternalNCDCLoggerFactory.CreateLogger<ClientChannelInboundHandler>();
+        NCDCLoggerFactory.CreateLogger<ClientChannelInboundHandler>();
 
     private readonly IDatabaseProtocolClientEngine _databaseProtocolClientEngine;
     private readonly ICommandListener _commandListener;

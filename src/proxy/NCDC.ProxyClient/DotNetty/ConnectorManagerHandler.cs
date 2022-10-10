@@ -8,7 +8,7 @@ namespace NCDC.ProxyClient.DotNetty;
 public class ConnectorManagerHandler : ChannelDuplexHandler
 {
     private static readonly ILogger<ConnectorManagerHandler> _logger =
-        InternalNCDCLoggerFactory.CreateLogger<ConnectorManagerHandler>();
+        NCDCLoggerFactory.CreateLogger<ConnectorManagerHandler>();
 
     private readonly bool _logDebug;
 

@@ -1,6 +1,7 @@
 using System.Data;
 using System.Data.Common;
 using NCDC.Base;
+using NCDC.Exceptions;
 using NCDC.ProxyServer.Connection.Abstractions;
 
 namespace NCDC.ProxyServer.Connection;
@@ -8,34 +9,40 @@ namespace NCDC.ProxyServer.Connection;
 public sealed class ServerDbConnection:IServerDbConnection
 {
     private readonly DbConnection _dbConnection;
+    private DbTransaction? _dbTransaction;
     public ServerDbConnection(DbConnection dbConnection)
     {
         _dbConnection = dbConnection;
     }
-    public void BeginTransaction(IsolationLevel isolationLevel)
+    public async ValueTask BeginAsync(IsolationLevel isolationLevel)
     {
-        ShardingAssert.ShouldBeNull(ServerDbTransaction,nameof(ServerDbTransaction));
-        ServerDbTransaction = new ServerDbTransaction(this, isolationLevel);
+        if (IsBeginTransaction())
+        {
+            throw new ShardingInvalidOperationException("transaction is already begin");
+        }
+        _dbTransaction =await GetDbConnection().BeginTransactionAsync(isolationLevel);
     }
 
 
-    public void CommitTransaction()
+    public async ValueTask CommitAsync()
     {
-        ShardingAssert.ShouldBeNotNull(ServerDbTransaction,nameof(ServerDbTransaction));
-        ServerDbTransaction!.CommitTransaction();
+        if (!IsBeginTransaction())
+        {
+            throw new ShardingInvalidOperationException("transaction is not begin");
+        }
+
+        await _dbTransaction!.CommitAsync();
+        _dbTransaction = null;
     }
 
-    public void RollbackTransaction()
+    public async ValueTask RollbackAsync()
     {
-        ShardingAssert.ShouldBeNotNull(ServerDbTransaction,nameof(ServerDbTransaction));
-        ServerDbTransaction!.RollbackTransaction();
-    }
-
-    public IServerDbCommand CreateCommand(string sql, ICollection<DbParameter>? dbParameters)
-    {
-        ShardingAssert.ShouldBeNull(ServerDbCommand,nameof(ServerDbCommand));
-        ServerDbCommand= new ServerDbCommand(this, sql, dbParameters);
-        return ServerDbCommand;
+        if (!IsBeginTransaction())
+        {
+            throw new ShardingInvalidOperationException("transaction is not begin");
+        }
+        await _dbTransaction!.RollbackAsync();
+        _dbTransaction = null;
     }
 
     public DbConnection GetDbConnection()
@@ -43,15 +50,38 @@ public sealed class ServerDbConnection:IServerDbConnection
         return _dbConnection;
     }
 
-    public IServerDbTransaction? ServerDbTransaction { get; set; }
-    public IServerDbCommand? ServerDbCommand { get; set; }
-    public IServerDbDataReader? ServerDbDataReader { get; set; }
+    public DbCommand CreateCommand(string sql, ICollection<DbParameter>? dbParameters)
+    {
+        var dbCommand = GetDbConnection().CreateCommand();
+        dbCommand.CommandText = sql;
+        if (dbParameters != null)
+        {
+            foreach (var shardingParameter in dbParameters)
+            {
+                var dbParameter = dbCommand.CreateParameter();
+                dbParameter.ParameterName = shardingParameter.ParameterName;
+                dbParameter.Value = shardingParameter.Value;
+                dbParameter.DbType = shardingParameter.DbType;
+                dbParameter.Direction = shardingParameter.Direction;
+                dbParameter.IsNullable = shardingParameter.IsNullable;
+                dbParameter.SourceColumn = shardingParameter.SourceColumn;
+                dbParameter.SourceColumnNullMapping = shardingParameter.SourceColumnNullMapping;
+                dbParameter.Size = shardingParameter.Size;
+                dbCommand.Parameters.Add(dbParameter);
+            }
+        }
+
+        return dbCommand;
+    }
+
+    public bool IsBeginTransaction() => _dbTransaction != null;
 
     public void Dispose()
     {
-        ServerDbCommand?.Dispose();
-        ServerDbDataReader?.Dispose();
-        ServerDbTransaction?.Dispose();
+        if (IsBeginTransaction())
+        {
+            _dbTransaction!.Dispose();
+        }
         _dbConnection.Dispose();
     }
 }

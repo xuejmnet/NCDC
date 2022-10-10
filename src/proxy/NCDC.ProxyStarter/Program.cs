@@ -43,7 +43,7 @@ Start Time:{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}");
             //注册常用编码
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
             var port = GetPort(args);
-            InternalNCDCLoggerFactory.DefaultFactory = _loggerFactory;
+            NCDCLoggerFactory.DefaultFactory = _loggerFactory;
             var serivces = new ServiceCollection();
             serivces.AddSingleton<IConfiguration>(serviceProvider => _configuration);
             serivces.AddSingleton<ILoggerFactory>(serviceProvider => _loggerFactory);
@@ -147,71 +147,5 @@ Start Time:{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}");
             cancellationTokenSource.Cancel();
             Console.WriteLine("ncdc quit");
         }
-
-        // static ProxyRuntimeOption BuildRuntimeOption()
-        // {
-        //     var proxyRuntimeOption = new ProxyRuntimeOption();
-        //     var userOption = new UserOption();
-        //     userOption.Username = "xjm";
-        //     userOption.Password = "abc";
-        //     userOption.Databases.Add("xxa");
-        //     proxyRuntimeOption.Users.Add(userOption);
-        //     var databaseOption = new DatabaseOption();
-        //     databaseOption.Name = "xxa";
-        //     var dataSourceOption = new DataSourceOption();
-        //     dataSourceOption.Name = "ds0";
-        //     dataSourceOption.ConnectionString = "server=127.0.0.1;port=3306;database=test;userid=root;password=root;";
-        //     dataSourceOption.IsDefault = true;
-        //     databaseOption.DataSources.Add(dataSourceOption);
-        //     proxyRuntimeOption.Databases.Add(databaseOption);
-        //     return proxyRuntimeOption;
-        // }
     }
-
-    // public class TestModTableRoute : ShardingTableRoute
-    // {
-    //     public TestModTableRoute(ITableMetadataManager tableMetadataManager) : base(tableMetadataManager)
-    //     {
-    //     }
-    //
-    //     public override string TableName => "sysusermod";
-    //
-    //     public override Func<string, bool> GetRouteToFilter(IComparable shardingValue,
-    //         ShardingOperatorEnum shardingOperator)
-    //     {
-    //         var tail = FormatTableName(shardingValue);
-    //         var table = $"{TableName}{tail}";
-    //
-    //         switch (shardingOperator)
-    //         {
-    //             case ShardingOperatorEnum.EQUAL: return t => t.EndsWith(table);
-    //             default:
-    //             {
-    //                 return t => true;
-    //             }
-    //         }
-    //     }
-    //
-    //     public string FormatTableName(IComparable shardingValue)
-    //     {
-    //         var shardingKey = $"{shardingValue}";
-    //         var stringHashCode = GetStringHashCode(shardingKey) % 3;
-    //         return stringHashCode.ToString().PadLeft(2, '0');
-    //     }
-    //
-    //     public static int GetStringHashCode(string value)
-    //     {
-    //         Check.NotNull(value, nameof(value));
-    //         int h = 0; // 默认值是0
-    //         if (value.Length > 0)
-    //         {
-    //             for (int i = 0; i < value.Length; i++)
-    //             {
-    //                 h = 31 * h + value[i]; // val[0]*31^(n-1) + val[1]*31^(n-2) + ... + val[n-1]
-    //             }
-    //         }
-    //
-    //         return h;
-    //     }
-    // }
 }

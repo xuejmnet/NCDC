@@ -14,7 +14,7 @@ namespace NCDC.Logger
     /// Author: xjm
     /// Created: 2022/5/18 10:02:25
     /// Email: 326308290@qq.com
-    public sealed class InternalNCDCLoggerFactory
+    public sealed class NCDCLoggerFactory
     {
         static ILoggerFactory _defaultFactory;
 

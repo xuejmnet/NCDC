@@ -12,7 +12,7 @@ namespace NCDC.ProxyClient.Codecs;
 /// </summary>
 public sealed class MessagePacketEncoder:MessageToByteEncoder<IPacket>
 {
-    private readonly ILogger<MessagePacketEncoder> _logger= InternalNCDCLoggerFactory.CreateLogger<MessagePacketEncoder>();
+    private readonly ILogger<MessagePacketEncoder> _logger= NCDCLoggerFactory.CreateLogger<MessagePacketEncoder>();
     private readonly bool _logEncodePacket;
     private readonly IPacketCodec _packetCodec;
 

@@ -1,6 +1,6 @@
 namespace NCDC.ProxyServer.StreamMerges;
 
-public interface IExecuteResult
+public interface IExecuteResult:IDisposable
 {
     
 }

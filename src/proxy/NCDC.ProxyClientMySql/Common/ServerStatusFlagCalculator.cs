@@ -9,7 +9,7 @@ public sealed class ServerStatusFlagCalculator
     {
         int result = 0;
         result |= connectionSession.GetIsAutoCommit() ? (int)MySqlStatusFlagEnum.SERVER_STATUS_AUTOCOMMIT : 0;
-        result |= connectionSession.GetTransactionStatus().InTransaction()
+        result |= connectionSession.GetTransactionStatus().IsInTransaction()
             ? (int)MySqlStatusFlagEnum.SERVER_STATUS_IN_TRANS
             : 0;
         return (MySqlStatusFlagEnum)result;

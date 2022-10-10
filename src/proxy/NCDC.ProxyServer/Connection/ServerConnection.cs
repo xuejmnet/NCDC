@@ -16,7 +16,7 @@ public class ServerConnection : IServerConnection, IDisposable, IAdoMethodReplie
     public int ConnectionId { get; set; }
     public string UserName { get; set; }
 
-    public IDictionary<string, List<IServerDbConnection>> CachedConnections { get; } =
+    public IDictionary<string/*data source*/, List<IServerDbConnection>> CachedConnections { get; } =
         new Dictionary<string, List<IServerDbConnection>>();
 
     public ServerConnection(IConnectionSession connectionSession)
@@ -94,19 +94,24 @@ public class ServerConnection : IServerConnection, IDisposable, IAdoMethodReplie
 
     public void Dispose()
     {
-        CloseCurrentCommandReader();
+        // CloseCurrentCommandReader();
         CachedConnections.Clear();
     }
+    //
+    // public void CloseCurrentCommandReader()
+    // {
+    //     // foreach (var serverConnectionCachedConnection in CachedConnections)
+    //     // {
+    //     //     foreach (var serverDbConnection in serverConnectionCachedConnection.Value)
+    //     //     {
+    //     //         serverDbConnection.ServerDbDataReader?.Dispose();
+    //     //         serverDbConnection.ServerDbCommand?.Dispose();
+    //     //     }
+    //     // }
+    // }
 
-    public void CloseCurrentCommandReader()
+    public IServerDbConnection GetServerDbConnection(CreateServerDbConnectionStrategyEnum strategy, string dataSourceName)
     {
-        foreach (var serverConnectionCachedConnection in CachedConnections)
-        {
-            foreach (var serverDbConnection in serverConnectionCachedConnection.Value)
-            {
-                serverDbConnection.ServerDbDataReader?.Dispose();
-                serverDbConnection.ServerDbCommand?.Dispose();
-            }
-        }
+        throw new NotImplementedException();
     }
 }

@@ -19,7 +19,7 @@ namespace NCDC.ProxyClientMySql.ClientConnections;
 public sealed class MySqlClientDbConnection : IClientDbConnection<MySqlPacketPayload>
 {
     private static readonly ILogger<MySqlClientDbConnection> _logger =
-        InternalNCDCLoggerFactory.CreateLogger<MySqlClientDbConnection>();
+        NCDCLoggerFactory.CreateLogger<MySqlClientDbConnection>();
     private readonly IServerHandlerFactory _serverHandlerFactory;
     private readonly IServerDataReaderFactory _serverDataReaderFactory;
 
@@ -51,6 +51,8 @@ public sealed class MySqlClientDbConnection : IClientDbConnection<MySqlPacketPay
                 return new MySqlSetOptionClientCommand(payload,connectionSession);
             case MySqlCommandTypeEnum.COM_PING:
                 return new MySqlPingClientCommand(connectionSession);
+            case MySqlCommandTypeEnum.COM_RESET_CONNECTION:
+                return new MySqlResetConnectionCommand(connectionSession);
             default: return new MySqlNotSupportedClientCommand(commandType);
         }
     }

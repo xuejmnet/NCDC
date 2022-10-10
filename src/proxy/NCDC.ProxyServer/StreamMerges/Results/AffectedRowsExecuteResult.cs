@@ -11,4 +11,8 @@ public sealed class AffectedRowsExecuteResult:IExecuteResult
         RecordsAffected = recordsAffected;
         LastInsertId = lastInsertId;
     }
+
+    public void Dispose()
+    {
+    }
 }

@@ -1,3 +1,4 @@
+using System.Data.Common;
 using NCDC.Enums;
 using NCDC.ProxyServer.Connection.Abstractions;
 
@@ -8,14 +9,14 @@ public sealed class CommandExecuteUnit
 {
     public ExecutionUnit ExecutionUnit { get; }
     
-    public IServerDbCommand ServerDbCommand{ get; }
+    public DbCommand ServerDbCommand{ get; }
     
     public ConnectionModeEnum ConnectionMode{ get; }
 
-    public CommandExecuteUnit(ExecutionUnit executionUnit, IServerDbCommand serverDbCommand, ConnectionModeEnum connectionMode)
+    public CommandExecuteUnit(ExecutionUnit executionUnit, DbCommand dbCommand, ConnectionModeEnum connectionMode)
     {
         ExecutionUnit = executionUnit;
-        ServerDbCommand = serverDbCommand;
+        ServerDbCommand = dbCommand;
         ConnectionMode = connectionMode;
     }
 }

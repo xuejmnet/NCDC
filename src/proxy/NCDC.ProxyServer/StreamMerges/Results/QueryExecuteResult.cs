@@ -13,4 +13,9 @@ public sealed class QueryExecuteResult:IExecuteResult
         DbColumns = dbColumns;
         StreamDataReader = streamDataReader;
     }
+
+    public void Dispose()
+    {
+        StreamDataReader.Dispose();
+    }
 }

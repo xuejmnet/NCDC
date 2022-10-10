@@ -19,7 +19,9 @@ public interface IConnectionSession:IDisposable
     IAppRuntimeManager AppRuntimeManager { get; }
     ICollection<string> GetAllDatabaseNames();
     ICollection<string> GetAuthorizeDatabases();
-    
+
+    ICollection<Func<IServerDbConnection,ValueTask>> GetConnectionInvokeReplays();
+
     bool DatabaseExists(string database);
     bool GetIsAutoCommit();
 
@@ -39,6 +41,8 @@ public interface IConnectionSession:IDisposable
 
     void CloseServerConnection()
     {
-        ServerConnection.CloseCurrentCommandReader();
+        // ServerConnection.CloseCurrentCommandReader();
     }
+
+    void Reset();
 }

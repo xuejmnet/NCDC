@@ -1,8 +1,8 @@
-namespace NCDC.ProxyServer.Connection.Abstractions;
-
-public interface IServerDbTransaction:IDisposable
-{
-    void CommitTransaction();
-    void RollbackTransaction();
-    IServerDbConnection GetServerDbConnection();
-}
+// namespace NCDC.ProxyServer.Connection.Abstractions;
+//
+// public interface IServerDbTransaction:IDisposable
+// {
+//     ValueTask CommitTransactionAsync();
+//     ValueTask RollbackTransactionAsync();
+//     IServerDbConnection GetServerDbConnection();
+// }

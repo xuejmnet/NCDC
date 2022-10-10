@@ -19,8 +19,7 @@ public sealed class ServerExecuteResultExecutor:AbstractStreamMergeExecutor<IExe
     {
         var connectionMode = commandExecuteUnit.ConnectionMode;
         var serverDbCommand = commandExecuteUnit.ServerDbCommand;
-        var serverDbDataReader = serverDbCommand.ExecuteReader();
-        var dbDataReader = serverDbDataReader.GetDbDataReader();
+        var dbDataReader = serverDbCommand.ExecuteReader();
         var isSelect = dbDataReader.RecordsAffected<0;
         if (isSelect)
         {
@@ -33,7 +32,14 @@ public sealed class ServerExecuteResultExecutor:AbstractStreamMergeExecutor<IExe
         else
         {
             var lastInsertId=dbDataReader.Read() ? dbDataReader.GetInt64(0) : 0L;
-            return new AffectedRowsExecuteResult(dbDataReader.RecordsAffected, lastInsertId);
+            try
+            {
+                return new AffectedRowsExecuteResult(dbDataReader.RecordsAffected, lastInsertId);
+            }
+            finally
+            {
+                dbDataReader.Dispose();
+            }
         }
     }
     
