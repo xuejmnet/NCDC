@@ -21,6 +21,7 @@ namespace NCDC.CommandParser.Constant
             _quotes.Add(QuoteCharacterEnum.SINGLE_QUOTE, new QuoteCharacter("'", "'"));
             _quotes.Add(QuoteCharacterEnum.QUOTE, new QuoteCharacter("\"", "\""));
             _quotes.Add(QuoteCharacterEnum.BRACKETS, new QuoteCharacter("[", "]"));
+            _quotes.Add(QuoteCharacterEnum.PARENTHESES, new QuoteCharacter("(", ")"));
             _quotes.Add(QuoteCharacterEnum.NONE, new QuoteCharacter("", ""));
         }
         private QuoteCharacter(string startDelimiter, string endDelimiter)
@@ -63,6 +64,7 @@ namespace NCDC.CommandParser.Constant
         SINGLE_QUOTE,
         QUOTE,
         BRACKETS,
+        PARENTHESES,
         NONE
     }
 }

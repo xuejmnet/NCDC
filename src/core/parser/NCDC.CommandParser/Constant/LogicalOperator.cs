@@ -13,18 +13,23 @@ namespace NCDC.CommandParser.Constant
     */
     public class LogicalOperator
     {
-        private static readonly IDictionary<LogicalOperatorEnum, LogicalOperator> _logicalOperators = new Dictionary<LogicalOperatorEnum, LogicalOperator>();
+        private static readonly IDictionary<string, LogicalOperatorEnum> _logicalOperators = new Dictionary<string, LogicalOperatorEnum>();
 
         static LogicalOperator()
-        {
-            _logicalOperators.Add(LogicalOperatorEnum.AND, new LogicalOperator("AND", "&&"));
-            _logicalOperators.Add(LogicalOperatorEnum.OR, new LogicalOperator("OR", "||"));
-        }
-        private readonly ICollection<string> _texts = new SortedSet<string>(StringComparer.OrdinalIgnoreCase);
-
-        private LogicalOperator(params string[] texts)
-        {
-            this._texts.AddAll(texts);
+        {        _logicalOperators.Add("and", LogicalOperatorEnum.AND);
+            _logicalOperators.Add("And", LogicalOperatorEnum.AND);
+            _logicalOperators.Add("aNd", LogicalOperatorEnum.AND);
+            _logicalOperators.Add("anD", LogicalOperatorEnum.AND);
+            _logicalOperators.Add("ANd", LogicalOperatorEnum.AND);
+            _logicalOperators.Add("AnD", LogicalOperatorEnum.AND);
+            _logicalOperators.Add("aND", LogicalOperatorEnum.AND);
+            _logicalOperators.Add("AND", LogicalOperatorEnum.AND);
+            _logicalOperators.Add("&&",  LogicalOperatorEnum.AND);
+            _logicalOperators.Add("or",  LogicalOperatorEnum.OR);
+            _logicalOperators.Add("Or",  LogicalOperatorEnum.OR);
+            _logicalOperators.Add("oR",  LogicalOperatorEnum.OR);
+            _logicalOperators.Add("OR",  LogicalOperatorEnum.OR);
+            _logicalOperators.Add("||",  LogicalOperatorEnum.OR);
         }
 
         /**
@@ -35,20 +40,18 @@ namespace NCDC.CommandParser.Constant
          */
         public static LogicalOperatorEnum? ValueFrom(string text)
         {
-            foreach (var logicalOperator in _logicalOperators)
+            if (_logicalOperators.TryGetValue(text, out var logicalOperator))
             {
-                if (logicalOperator.Value._texts.Contains(text))
-                {
-                    return logicalOperator.Key;
-                }
+                return logicalOperator;
             }
+
             return null;
         }
     }
 
     public enum LogicalOperatorEnum
     {
-        AND=1,
-        OR=1<<1
+        AND,
+        OR
     }
 }

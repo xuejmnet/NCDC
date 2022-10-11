@@ -8,7 +8,7 @@ namespace NCDC.CommandParser.Constant
 */
     public enum OrderDirectionEnum
     {
-        ASC=1,
-        DESC=1<<1
+        ASC,
+        DESC
     }
 }

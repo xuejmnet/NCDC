@@ -5,6 +5,7 @@ using System.Text;
 using Antlr4.Runtime;
 using NCDC.CommandParser.Abstractions;
 using NCDC.CommandParser.Abstractions.SqlParser;
+using NCDC.CommandParser.Core;
 using NCDC.CommandParser.SqlParseEngines.Core;
 
 

@@ -1,4 +1,5 @@
 using System;
+using NCDC.CommandParser.Exceptions;
 
 namespace NCDC.CommandParser.Constant
 {
@@ -10,23 +11,35 @@ namespace NCDC.CommandParser.Constant
 */
     public class AggregationType
     {
+        private static readonly IDictionary<string, AggregationTypeEnum> _caches =
+            new Dictionary<string, AggregationTypeEnum>(StringComparer.OrdinalIgnoreCase);
+        static AggregationType()
+        {
+            _caches.Add(nameof(AggregationTypeEnum.MAX),AggregationTypeEnum.MAX);
+            _caches.Add(nameof(AggregationTypeEnum.MIN),AggregationTypeEnum.MIN);
+            _caches.Add(nameof(AggregationTypeEnum.SUM),AggregationTypeEnum.SUM);
+            _caches.Add(nameof(AggregationTypeEnum.COUNT),AggregationTypeEnum.COUNT);
+            _caches.Add(nameof(AggregationTypeEnum.AVG),AggregationTypeEnum.AVG);
+            _caches.Add(nameof(AggregationTypeEnum.BIT_XOR),AggregationTypeEnum.BIT_XOR);
+        }
         public static bool IsAggregationType(string aggregationType)
         {
-            return nameof(AggregationTypeEnum.MAX).Equals(aggregationType, StringComparison.OrdinalIgnoreCase)
-                   || nameof(AggregationTypeEnum.MIN).Equals(aggregationType, StringComparison.OrdinalIgnoreCase)
-                   || nameof(AggregationTypeEnum.SUM).Equals(aggregationType, StringComparison.OrdinalIgnoreCase)
-                   || nameof(AggregationTypeEnum.COUNT).Equals(aggregationType, StringComparison.OrdinalIgnoreCase)
-                   || nameof(AggregationTypeEnum.AVG).Equals(aggregationType, StringComparison.OrdinalIgnoreCase);
+            return _caches.ContainsKey(aggregationType);
         }
 
         public static AggregationTypeEnum ValueOf(string aggregationType)
         {
-            return (AggregationTypeEnum)Enum.Parse(typeof(AggregationTypeEnum),aggregationType);
+            if (IsAggregationType(aggregationType))
+            {
+                return _caches[aggregationType];
+            }
+
+            throw new SqlParsingBaseException($"unknown aggregation type:{aggregationType}");
         }
     }
 
     public enum AggregationTypeEnum
     {
-        MAX, MIN, SUM, COUNT, AVG
+        MAX, MIN, SUM, COUNT, AVG,BIT_XOR
     }
 }

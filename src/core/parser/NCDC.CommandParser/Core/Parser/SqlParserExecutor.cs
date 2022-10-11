@@ -6,7 +6,7 @@ using NCDC.CommandParser.Abstractions;
 using NCDC.CommandParser.Abstractions.SqlParser;
 using NCDC.Exceptions;
 
-namespace NCDC.CommandParser.SqlParseEngines.Core.Parser
+namespace NCDC.CommandParser.Core.Parser
 {
     /*
     * @Author: xjm

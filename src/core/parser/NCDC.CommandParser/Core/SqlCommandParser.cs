@@ -1,16 +1,14 @@
-﻿using System;
-using Antlr4.Runtime.Tree;
+﻿using Antlr4.Runtime.Tree;
 using NCDC.CommandParser.Abstractions;
 using NCDC.CommandParser.Abstractions.Visitor;
 using NCDC.CommandParser.Command;
-using NCDC.CommandParser.SqlParseEngines.Core.Parser;
-using NCDC.CommandParser.SqlParseEngines.Core.Visitor;
+using NCDC.CommandParser.Core.Parser;
+using NCDC.CommandParser.Core.Visitor;
 using NCDC.CommandParser.SqlParseEngines.Hook;
 using NCDC.Exceptions;
 using NCDC.ParserEngine.Cache;
 
-
-namespace NCDC.CommandParser.SqlParseEngines
+namespace NCDC.CommandParser.Core
 {
     /*
     * @Author: xjm
