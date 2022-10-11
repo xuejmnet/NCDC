@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NCDC.Host;
 using NCDC.Logger;
+using NCDC.MySqlParser;
 using NCDC.ProxyServer.AppServices.Abstractions;
 using NCDC.ProxyServer.Bootstrappers;
 
@@ -42,7 +43,6 @@ Start Time:{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}");
 
             //注册常用编码
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-            var port = GetPort(args);
             NCDCLoggerFactory.DefaultFactory = _loggerFactory;
             var serivces = new ServiceCollection();
             serivces.AddSingleton<IConfiguration>(serviceProvider => _configuration);
@@ -51,44 +51,8 @@ Start Time:{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}");
             serivces.AddSingleton<IServiceHost, DefaultServiceHost>();
             serivces.AddEntityFrameworkCoreConfiguration();
             serivces.AddProxyClientMySql();
-            // serivces.AddSingleton<ShardingProxyOption>(serviceProvider =>
-            // {
-            //     var proxyOption = serviceProvider.GetRequiredService<IOptionsSnapshot<ShardingProxyOption>>().Value;
-            //     if (port.HasValue)
-            //     {
-            //         proxyOption.Port = port.Value;
-            //     }
-            //
-            //     return proxyOption;
-            // });
-            //
-            // serivces.Configure<ShardingProxyOption>(_configuration);
-            // var shardingConfiguration = new ShardingConfiguration();
-            // shardingConfiguration.AddDefaultDataSource("ds0",
-            //     "server=127.0.0.1;port=3306;database=test;userid=root;password=root;");
-            //
-            // var logicDatabase = new LogicDatabase("xxa");
-            // logicDatabase.AddDataSource("ds0", "server=127.0.0.1;port=3306;database=test;userid=root;password=root;",
-            //     MySqlConnectorFactory.Instance, true);
-            //
-            // var shardingRuntimeContext = new ShardingRuntimeContext("xxa");
-            // shardingRuntimeContext.Services.AddSingleton<ILogicDatabase>(logicDatabase);
-            // shardingRuntimeContext.Services.AddSingleton<ITableMetadataManager, TableMetadataManager>();
-            // shardingRuntimeContext.Services.AddSingleton<IDataReaderMergerFactory, DataReaderMergerFactory>();
-            // shardingRuntimeContext.Services.AddSingleton<IDatabaseSettings>(sp =>
-            //     new DatabaseSettings("xxa", DatabaseTypeEnum.MySql));
-            // shardingRuntimeContext.Services
-            //     .AddSingleton<IShardingExecutionContextFactory, ShardingExecutionContextFactory>();
-            // shardingRuntimeContext.Services.AddShardingParser();
-            // shardingRuntimeContext.Services.AddMySqlParser();
-            // shardingRuntimeContext.Services.AddShardingRoute();
-            // shardingRuntimeContext.Services.AddShardingRewrite();
-            // shardingRuntimeContext.Services.AddSingleton(sp => shardingConfiguration);
-            // serivces.AddSingleton<IRuntimeContext>(sp =>
-            // {
-            //     shardingRuntimeContext.Build();
-            //     return shardingRuntimeContext;
-            // });
+            serivces.AddMySqlParser();
+            
             var buildServiceProvider = serivces.BuildServiceProvider();
             var argPort = GetPort(args);
             if (argPort.HasValue)
@@ -111,27 +75,6 @@ Start Time:{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}");
 
         private static async Task StartAsync(IServiceProvider serviceProvider)
         {
-            // var contextManager = serviceProvider.GetRequiredService<IAppRuntimeManager>();
-            // var databaseNames = contextManager.GetAllDatabaseNames();
-            // foreach (var databaseName in databaseNames)
-            // {
-            //     var runtimeContext = contextManager.GetRuntimeContext(databaseName);
-            //     var tableMetadataManager = runtimeContext.GetTableMetadataManager();
-            //     var tableMetadata = new TableMetadata("sysusermod", new Dictionary<string, ColumnMetadata>()
-            //     {
-            //         { "id", new ColumnMetadata("id", 0, "varchar", true, false, true) },
-            //         { "name", new ColumnMetadata("name", 1, "varchar", false, false, true) },
-            //         { "age", new ColumnMetadata("age", 2, "int", false, false, true) },
-            //     });
-            //     tableMetadata.SetShardingTableColumn("id");
-            //     tableMetadata.AddActualTableWithDataSource("ds0", "sysusermod_00");
-            //     tableMetadata.AddActualTableWithDataSource("ds0", "sysusermod_01");
-            //     tableMetadata.AddActualTableWithDataSource("ds0", "sysusermod_02");
-            //     tableMetadataManager.AddTableMetadata(tableMetadata);
-            //     var tableRouteManager = runtimeContext.GetTableRouteManager();
-            //     var testModTableRoute = runtimeContext.CreateInstance<TestModTableRoute>();
-            //     tableRouteManager.AddRoute(testModTableRoute);
-            // }
             var cancellationTokenSource = new CancellationTokenSource();
             var appBootstrapper = serviceProvider.GetRequiredService<IAppBootstrapper>();
             cancellationTokenSource.Token.Register(() =>

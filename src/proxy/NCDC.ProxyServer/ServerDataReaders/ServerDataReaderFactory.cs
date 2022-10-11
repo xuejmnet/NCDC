@@ -21,7 +21,7 @@ public sealed class ServerDataReaderFactory:IServerDataReaderFactory
     public IServerDataReader Create(string sql, IConnectionSession connectionSession)
     {
         var shardingExecutionContextFactory = connectionSession.RuntimeContext!.GetShardingExecutionContextFactory();
-        var shardingExecutionContext =shardingExecutionContextFactory.Create(sql);
+        var shardingExecutionContext =shardingExecutionContextFactory.Create(connectionSession,sql);
         if (shardingExecutionContext.GetExecutionUnits().IsEmpty())
         {
             return EmptyServerDataReader.Instance;

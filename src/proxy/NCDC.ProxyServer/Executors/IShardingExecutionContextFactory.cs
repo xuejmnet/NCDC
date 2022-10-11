@@ -1,9 +1,10 @@
 using NCDC.CommandParser.Abstractions;
+using NCDC.ProxyServer.Connection.Abstractions;
 
 namespace NCDC.ProxyServer.Executors;
 
 public interface IShardingExecutionContextFactory
 {
-    ShardingExecutionContext Create(string sql);
+    ShardingExecutionContext Create(IConnectionSession connectionSession,string sql);
     ShardingExecutionContext Create(string sql,ISqlCommand sqlCommand);
 }

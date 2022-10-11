@@ -23,7 +23,7 @@ public interface IRuntimeContext
     ITableRouteManager GetTableRouteManager();
     IShardingExecutionContextFactory GetShardingExecutionContextFactory();
     IDataReaderMergerFactory GetDataReaderMergerFactory();
-    ISqlCommandParser GetSqlCommandParser();
+    // ISqlCommandParser GetSqlCommandParser();
     IShardingProvider GetShardingProvider();
     object? GetService(Type serviceType);
     TService? GetService<TService>();

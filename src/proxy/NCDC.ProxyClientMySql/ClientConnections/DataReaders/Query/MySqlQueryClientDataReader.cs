@@ -3,6 +3,7 @@ using MySqlConnector;
 using NCDC.CommandParser.Abstractions;
 using NCDC.CommandParser.Command.DML;
 using NCDC.Enums;
+using NCDC.Exceptions;
 using NCDC.Protocol.MySql.Constant;
 using NCDC.Protocol.MySql.Packet;
 using NCDC.Protocol.MySql.Packet.Command;
@@ -48,7 +49,7 @@ public sealed class MySqlQueryClientDataReader : IClientQueryDataReader<MySqlPac
             throw new NotSupportedException(sql);
         }
 
-        return ConnectionSession.RuntimeContext!.GetSqlCommandParser().Parse(sql, false);
+        return ConnectionSession.GetSqlCommandParser().Parse(sql, false);
     }
 
     private bool IsMultiCommands(IConnectionSession connectionSession, ISqlCommand sqlCommand, string sql)

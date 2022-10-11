@@ -24,6 +24,10 @@ public sealed class EntityFrameworkCoreAppRuntimeBuilder : AbstractAppRuntimeBui
 
     protected override async Task LoadConfigurationAsync(string database)
     {
+        _logicDatabase = null;
+        _dataSourceNodes.Clear();
+        _logicTableNodes.Clear();
+        _actualTableNodes.Clear();
         using (var scope = _appServiceProvider.CreateScope())
         {
             var dbContext = scope.ServiceProvider.GetRequiredService<NCDCDbContext>();

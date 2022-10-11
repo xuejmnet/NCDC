@@ -42,6 +42,11 @@ public sealed class ServerHandlerFactory:IServerHandlerFactory
             return CreateDALCommandServerHandler(dalCommand, sql,connectionSession);
         }
 
+        if (sqlCommand is SetCommand && null == connectionSession.DatabaseName)
+        {
+            return SkipServerHandler.Default;
+        }
+
         return new QueryServerHandler(sql,sqlCommand,connectionSession,_serverDataReaderFactory);
     }
     private IServerHandler CreateDALCommandServerHandler(DALCommand dalCommand, string sql,

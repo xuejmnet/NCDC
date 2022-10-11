@@ -117,7 +117,6 @@ public static class DIExtension
         services.AddSingleton<ITableMetadataManager,TableMetadataManager>();
         services.AddSingleton<IShardingExecutionContextFactory,ShardingExecutionContextFactory>();
         services.AddShardingParser();
-        services.AddMySqlParser();
         services.AddShardingRoute();
         services.AddShardingRewrite();
         return services;

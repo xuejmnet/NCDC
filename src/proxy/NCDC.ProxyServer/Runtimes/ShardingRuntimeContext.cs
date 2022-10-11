@@ -78,11 +78,11 @@ public sealed class ShardingRuntimeContext:IRuntimeContext
       return _dataReaderMergerFactory??=GetRequiredService<IDataReaderMergerFactory>();
     }
 
-    private ISqlCommandParser? _sqlCommandParser;
-    public ISqlCommandParser GetSqlCommandParser()
-    {
-        return _sqlCommandParser??=GetRequiredService<ISqlCommandParser>();
-    }
+    // private ISqlCommandParser? _sqlCommandParser;
+    // public ISqlCommandParser GetSqlCommandParser()
+    // {
+    //     return _sqlCommandParser??=GetRequiredService<ISqlCommandParser>();
+    // }
 
     private IShardingProvider? _shardingProvider;
     public IShardingProvider GetShardingProvider()
@@ -130,7 +130,7 @@ public sealed class ShardingRuntimeContext:IRuntimeContext
         GetTableMetadataManager();
         GetShardingExecutionContextFactory();
         GetDataReaderMergerFactory();
-        GetSqlCommandParser();
+        // GetSqlCommandParser();
         GetDataSourceRouteManager();
         GetTableRouteManager();
     }

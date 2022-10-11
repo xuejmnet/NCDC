@@ -2,6 +2,7 @@ using System.Collections.Immutable;
 using System.Data;
 using DotNetty.Transport.Channels;
 using NCDC.Basic.User;
+using NCDC.CommandParser.Abstractions;
 using NCDC.ProxyServer.AppServices;
 using NCDC.ProxyServer.AppServices.Abstractions;
 using NCDC.ProxyServer.Databases;
@@ -13,6 +14,7 @@ public interface IConnectionSession:IDisposable
 {
     IsolationLevel IsolationLevel { get; }
     string? DatabaseName { get; }
+    ISqlCommandParser GetSqlCommandParser();
     IServerConnection ServerConnection { get; }
     IChannel Channel { get; }
     // ILogicDatabase? LogicDatabase { get; }

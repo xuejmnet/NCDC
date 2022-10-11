@@ -6,6 +6,7 @@ using DotNetty.Transport.Channels;
 using DotNetty.Transport.Channels.Sockets;
 using Microsoft.Extensions.Logging;
 using NCDC.Basic.User;
+using NCDC.CommandParser.Abstractions;
 using NCDC.Enums;
 using NCDC.Logger;
 using NCDC.Protocol.MySql.Constant;
@@ -39,12 +40,12 @@ public class ClientChannelInboundHandler : ChannelHandlerAdapter
     private bool _authenticated;
 
     public ClientChannelInboundHandler(IDatabaseProtocolClientEngine databaseProtocolClientEngine,
-        ISocketChannel channel,IAppRuntimeManager appRuntimeManager,IMessageCommandProcessor messageCommandProcessor)
+        ISocketChannel channel,IAppRuntimeManager appRuntimeManager,IMessageCommandProcessor messageCommandProcessor,ISqlCommandParser sqlCommandParser)
     {
         _databaseProtocolClientEngine = databaseProtocolClientEngine;
         _appRuntimeManager = appRuntimeManager;
         _messageCommandProcessor = messageCommandProcessor;
-        _connectionSession = new ConnectionSession(TransactionTypeEnum.LOCAL,IsolationLevel.ReadCommitted, channel,appRuntimeManager);
+        _connectionSession = new ConnectionSession(TransactionTypeEnum.LOCAL,IsolationLevel.ReadCommitted, channel,appRuntimeManager,sqlCommandParser);
         _authContext = databaseProtocolClientEngine.GetAuthContext();
     }
 

@@ -2,6 +2,7 @@ using NCDC.Basic.Configurations;
 using NCDC.Basic.TableMetadataManagers;
 using NCDC.CommandParser.Abstractions;
 using NCDC.Extensions;
+using NCDC.ProxyServer.Connection.Abstractions;
 using NCDC.ShardingAdoNet;
 using NCDC.ShardingParser;
 using NCDC.ShardingParser.Abstractions;
@@ -17,18 +18,16 @@ namespace NCDC.ProxyServer.Executors;
 
 public sealed class ShardingExecutionContextFactory : IShardingExecutionContextFactory
 {
-    private readonly ISqlCommandParser _sqlCommandParser;
     private readonly ISqlCommandContextFactory _sqlCommandContextFactory;
     private readonly IRouteContextFactory _routeContextFactory;
     private readonly ISqlRewriterContextFactory _sqlRewriterContextFactory;
     private readonly ITableMetadataManager _tableMetadataManager;
     private readonly ShardingConfiguration _shardingConfiguration;
 
-    public ShardingExecutionContextFactory(ISqlCommandParser sqlCommandParser,
+    public ShardingExecutionContextFactory(
         ISqlCommandContextFactory sqlCommandContextFactory, IRouteContextFactory routeContextFactory,
         ISqlRewriterContextFactory sqlRewriterContextFactory,ITableMetadataManager tableMetadataManager,ShardingConfiguration shardingConfiguration)
     {
-        _sqlCommandParser = sqlCommandParser;
         _sqlCommandContextFactory = sqlCommandContextFactory;
         _routeContextFactory = routeContextFactory;
         _sqlRewriterContextFactory = sqlRewriterContextFactory;
@@ -36,9 +35,9 @@ public sealed class ShardingExecutionContextFactory : IShardingExecutionContextF
         _shardingConfiguration = shardingConfiguration;
     }
 
-    public ShardingExecutionContext Create(string sql)
+    public ShardingExecutionContext Create(IConnectionSession connectionSession,string sql)
     {
-        var sqlCommand = _sqlCommandParser.Parse(sql, false);
+        var sqlCommand = connectionSession.GetSqlCommandParser().Parse(sql, false);
         return Create(sql, sqlCommand);
     }
 
