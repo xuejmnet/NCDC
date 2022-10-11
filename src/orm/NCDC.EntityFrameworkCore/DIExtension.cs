@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging.Abstractions;
 using NCDC.EntityFrameworkCore;
 using NCDC.EntityFrameworkCore.Impls;
 using NCDC.Enums;
@@ -22,7 +23,7 @@ public static class DIExtension
             var appConfiguration = sp.GetRequiredService<IAppConfiguration>();
             if (DatabaseTypeEnum.MySql.Equals(appConfiguration.DatabaseType))
             {
-                builder.UseMySql(appConfiguration.ConnectionsString, new MySqlServerVersion(new Version()));
+                builder.UseMySql(appConfiguration.ConnectionsString, new MySqlServerVersion(new Version())).UseLoggerFactory(NullLoggerFactory.Instance);
                 return;
             }
 

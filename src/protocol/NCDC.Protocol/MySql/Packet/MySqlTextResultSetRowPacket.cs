@@ -47,7 +47,7 @@ public sealed class MySqlTextResultSetRowPacket:IMysqlPacket
                 } else if (o is bool b) {
                     payload.WriteBytesLenenc( new byte[] { (byte)(b?'1':'0') });
                 } else if (o is DateTime dt) {
-                    payload.WriteStringLenenc(dt.ToString("yyyy-MM-dd HH:mm:ss"));
+                    payload.WriteStringLenenc(dt.ToString("yyyy-MM-dd HH:mm:ss.fff"));
                 } else {
                     payload.WriteStringLenenc(o.ToString());
                 }

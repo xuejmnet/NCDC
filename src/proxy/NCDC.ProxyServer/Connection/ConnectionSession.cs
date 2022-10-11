@@ -27,7 +27,7 @@ public class ConnectionSession : IConnectionSession
     // public ILogicDatabase? LogicDatabase => RuntimeContext?.GetDatabase();
     public IVirtualDataSource? VirtualDataSource => RuntimeContext?.GetVirtualDataSource();
     private volatile bool autoCommit = true;
-    private volatile string? _databaseName;
+    private  string? _databaseName;
     public IsolationLevel IsolationLevel { get; private set; }
     public string? DatabaseName => _databaseName;
     public IRuntimeContext? RuntimeContext { get; private set; }

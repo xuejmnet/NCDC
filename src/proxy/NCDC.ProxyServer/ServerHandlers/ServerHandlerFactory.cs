@@ -42,10 +42,6 @@ public sealed class ServerHandlerFactory:IServerHandlerFactory
             return CreateDALCommandServerHandler(dalCommand, sql,connectionSession);
         }
 
-        if (sqlCommand is SetCommand && null == connectionSession.DatabaseName)
-        {
-            return SkipServerHandler.Default;
-        }
 
         return new QueryServerHandler(sql,sqlCommand,connectionSession,_serverDataReaderFactory);
     }
@@ -60,6 +56,10 @@ public sealed class ServerHandlerFactory:IServerHandlerFactory
         if (dalCommand is ShowDatabasesCommand)
         {
             return new ShowDatabasesServerHandler(connectionSession);
+        }
+        if (dalCommand is SetCommand && null == connectionSession.DatabaseName)
+        {
+            return SkipServerHandler.Default;
         }
 
         return new UnicastServerHandler(sql, connectionSession, _serverDataReaderFactory);

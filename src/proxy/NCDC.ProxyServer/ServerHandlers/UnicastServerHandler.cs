@@ -23,7 +23,7 @@ public sealed class UnicastServerHandler : IServerHandler
         _serverDataReaderFactory = serverDataReaderFactory;
     }
 
-    public Task<IServerResult> ExecuteAsync()
+    public async Task<IServerResult> ExecuteAsync()
     {
         var originalDatabaseName = _connectionSession.DatabaseName;
         var currentDatabaseName = originalDatabaseName ?? GetFirstDatabaseName();
@@ -31,7 +31,7 @@ public sealed class UnicastServerHandler : IServerHandler
         {
             _connectionSession.SetCurrentDatabaseName(currentDatabaseName);
             _serverDataReader = _serverDataReaderFactory.Create(_sql, _connectionSession);
-            return _serverDataReader.ExecuteDbDataReaderAsync();
+            return await _serverDataReader.ExecuteDbDataReaderAsync();
         }
         finally
         {
