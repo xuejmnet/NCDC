@@ -43,7 +43,7 @@ namespace NCDC.CommandParser.SqlParseEngines
             catch(Exception e)
             {
                 parsingHookManager.FinishFailure(e);
-                throw e;
+                throw;
             }
         }
 

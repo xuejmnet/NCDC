@@ -2,86 +2,39 @@ using System.Collections.Immutable;
 
 namespace NCDC.Protocol.MySql.Constant;
 
+/// <summary>
+/// See <a href="https://dev.mysql.com/doc/internals/en/com-query-response.html#column-type">MySQL documentation</a>.
+/// </summary>
 public enum MySqlColumnTypeEnum
 {
-    MYSQL_TYPE_DECIMAL=0x00,
-    
-    MYSQL_TYPE_TINY=0x01,
-    
-    MYSQL_TYPE_SHORT=0x02,
-    
-    MYSQL_TYPE_LONG=0x03,
-    
-    MYSQL_TYPE_FLOAT=0x04,
-    
-    MYSQL_TYPE_DOUBLE=0x05,
-    
-    MYSQL_TYPE_NULL=0x06,
-    
-    MYSQL_TYPE_TIMESTAMP=0x07,
-    
-    MYSQL_TYPE_LONGLONG=0x08,
-    
-    MYSQL_TYPE_INT24=0x09,
-    
-    MYSQL_TYPE_DATE=0x0a,
-    
-    MYSQL_TYPE_TIME=0x0b,
-    
-    MYSQL_TYPE_DATETIME=0x0c,
-    
-    MYSQL_TYPE_YEAR=0x0d,
-    
-    MYSQL_TYPE_NEWDATE=0x0e,
-    
-    MYSQL_TYPE_VARCHAR=0x0f,
-    
-    MYSQL_TYPE_BIT=0x10,
-    
-    MYSQL_TYPE_TIMESTAMP2=0x11,
-    
-    MYSQL_TYPE_DATETIME2=0x12,
-    
-    MYSQL_TYPE_TIME2=0x13,
-    MySQL_TYPE_JSON=0xf5,
-    
-    MYSQL_TYPE_NEWDECIMAL=0xf6,
-    
-    MYSQL_TYPE_ENUM=0xf7,
-    
-    MYSQL_TYPE_SET=0xf8,
-    
-    MYSQL_TYPE_TINY_BLOB=0xf9,
-    
-    MYSQL_TYPE_MEDIUM_BLOB=0xfa,
-    
-    MYSQL_TYPE_LONG_BLOB=0xfb,
-    
-    MYSQL_TYPE_BLOB=0xfc,
-    
-    MYSQL_TYPE_VAR_STRING=0xfd,
-    
-    MYSQL_TYPE_STRING=0xfe,
-    
-    MYSQL_TYPE_GEOMETRY=0xff
-}
-
-public sealed class MySqlColumnTypeMapping
-{
-    private static readonly ImmutableDictionary<Type, MySqlColumnTypeEnum> CLR_TYPE_TO_MYSQL_COLUMN_TYPES;
-
-    static MySqlColumnTypeMapping()
-    {
-        var mySqlColumnTypeEnums = new Dictionary<Type, MySqlColumnTypeEnum>();
-         mySqlColumnTypeEnums.Add(typeof(bool),MySqlColumnTypeEnum.MYSQL_TYPE_BIT);
-         mySqlColumnTypeEnums.Add(typeof(byte),MySqlColumnTypeEnum.MYSQL_TYPE_TINY);
-         mySqlColumnTypeEnums.Add(typeof(short),MySqlColumnTypeEnum.MYSQL_TYPE_SHORT);
-         mySqlColumnTypeEnums.Add(typeof(int),MySqlColumnTypeEnum.MYSQL_TYPE_LONG);
-         mySqlColumnTypeEnums.Add(typeof(long),MySqlColumnTypeEnum.MYSQL_TYPE_LONGLONG);
-         mySqlColumnTypeEnums.Add(typeof(float),MySqlColumnTypeEnum.MYSQL_TYPE_FLOAT);
-         mySqlColumnTypeEnums.Add(typeof(double),MySqlColumnTypeEnum.MYSQL_TYPE_DOUBLE);
-         mySqlColumnTypeEnums.Add(typeof(decimal),MySqlColumnTypeEnum.MYSQL_TYPE_NEWDECIMAL);
-         mySqlColumnTypeEnums.Add(typeof(string),MySqlColumnTypeEnum.MYSQL_TYPE_STRING);
-        CLR_TYPE_TO_MYSQL_COLUMN_TYPES = ImmutableDictionary.CreateRange(mySqlColumnTypeEnums);
-    }
+    Decimal = 0,
+    Tiny = 1,
+    Short = 2,
+    Long = 3,
+    Float = 4,
+    Double = 5,
+    Null = 6,
+    Timestamp = 7,
+    Longlong = 8,
+    Int24 = 9,
+    Date = 10,
+    Time = 11,
+    DateTime = 12,
+    Year = 13,
+    NewDate = 14,
+    VarChar = 15,
+    Bit = 16,
+    Timestamp2 = 17,
+    DateTime2 = 18,
+    Json = 0xF5,
+    NewDecimal = 0xF6,
+    Enum = 0xF7,
+    Set = 0xF8,
+    TinyBlob = 0xF9,
+    MediumBlob = 0xFA,
+    LongBlob = 0xFB,
+    Blob = 0xFC,
+    VarString = 0xFD,
+    String = 0xFE,
+    Geometry = 0xFF,
 }

@@ -14,6 +14,7 @@ using NCDC.ProxyClient.Abstractions;
 using NCDC.ProxyClientMySql.ClientConnections.Commands;
 using NCDC.ProxyClientMySql.ClientConnections.DataReaders.Query.ServerHandlers;
 using NCDC.ProxyClientMySql.Common;
+using NCDC.ProxyClientMySql.Extensions;
 using NCDC.ProxyServer.Abstractions;
 using NCDC.ProxyServer.Commons;
 using NCDC.ProxyServer.Connection.Abstractions;
@@ -49,6 +50,7 @@ public sealed class MySqlQueryClientDataReader : IClientQueryDataReader<MySqlPac
             throw new NotSupportedException(sql);
         }
 
+        Console.WriteLine("MySqlQueryClientDataReader:"+sql);
         return ConnectionSession.GetSqlCommandParser().Parse(sql, false);
     }
 
@@ -105,10 +107,14 @@ public sealed class MySqlQueryClientDataReader : IClientQueryDataReader<MySqlPac
         result.Add(new MySqlFieldCountPacket(++sequenceId, dbColumns.Count));
         foreach (var dbColumn in dbColumns)
         {
-            result.Add(new MySqlColumnDefinition41Packet(++sequenceId, characterSet, GetColumnFieldDetailFlag(dbColumn),
-                dbColumn.BaseSchemaName, dbColumn.BaseTableName, dbColumn.BaseTableName,
-                dbColumn.ColumnName, dbColumn.BaseColumnName, dbColumn.ColumnSize.Value,
-                (int)((MySqlDbColumn)dbColumn).ProviderType, dbColumn.NumericScale ?? 0, false));
+            var mySqlDbColumn = (MySqlDbColumn)dbColumn;
+            var b = typeof(string)== mySqlDbColumn.DataType|| typeof(Guid)== mySqlDbColumn.DataType;
+            var columnFieldDetailFlag = GetColumnFieldDetailFlag(dbColumn);
+            result.Add(new MySqlColumnDefinition41Packet(++sequenceId, characterSet,columnFieldDetailFlag ,
+                mySqlDbColumn.BaseSchemaName??string.Empty, mySqlDbColumn.BaseTableName??string.Empty, mySqlDbColumn.BaseTableName??string.Empty,
+                mySqlDbColumn.ColumnName, mySqlDbColumn.BaseColumnName??string.Empty, mySqlDbColumn.ColumnSize.GetValueOrDefault()*(b?4:1),//utf8mb4是size*4
+                (int)mySqlDbColumn.GetMySqlColumnType(null,mySqlDbColumn.ColumnSize.GetValueOrDefault(),columnFieldDetailFlag)
+                , mySqlDbColumn.NumericScale ?? 0, false));
         }
 
         result.Add(new MySqlEofPacket(++sequenceId, statusFlags));

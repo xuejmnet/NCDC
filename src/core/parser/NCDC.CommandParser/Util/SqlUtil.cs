@@ -74,6 +74,9 @@ namespace NCDC.CommandParser.Util
         private static int GetParenthesesOffset(string value)
         {
             int result = 0;
+            if (string.IsNullOrEmpty(value)) {
+                return result;
+            }
             while (Paren.Get(ParenEnum.PARENTHESES).GetLeftParen() == value[result])
             {
                 result++;

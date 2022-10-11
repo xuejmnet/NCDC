@@ -10,5 +10,4 @@
       <ProjectReference Include="..\NCDC.ProxyClient\NCDC.ProxyClient.csproj" />
     </ItemGroup>
 
-
 </Project>

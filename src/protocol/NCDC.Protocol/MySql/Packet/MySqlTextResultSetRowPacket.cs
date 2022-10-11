@@ -27,9 +27,10 @@ public sealed class MySqlTextResultSetRowPacket:IMysqlPacket
     }
     public void WriteTo(MySqlPacketPayload payload)
     {
+        int i = 0;
         foreach (object o in _data)
         {
-            if (o is null)
+            if (o is null || o is DBNull)
             {
                 payload.WriteInt1(NULL);
             }
@@ -44,13 +45,15 @@ public sealed class MySqlTextResultSetRowPacket:IMysqlPacket
                 else if (o is decimal d) {
                     payload.WriteStringLenenc(d.ToString(CultureInfo.InvariantCulture));
                 } else if (o is bool b) {
-                    payload.WriteBytesLenenc(b ? new byte[]{1} : new byte[]{0});
+                    payload.WriteBytesLenenc( new byte[] { (byte)(b?'1':'0') });
                 } else if (o is DateTime dt) {
                     payload.WriteStringLenenc(dt.ToString("yyyy-MM-dd HH:mm:ss"));
                 } else {
                     payload.WriteStringLenenc(o.ToString());
                 }
             }
+
+            i++;
         }
     }
 

@@ -42,7 +42,7 @@ public sealed class MySqlFieldListClientDataReader : IClientDataReader<MySqlPack
             var columnName = _serverDbDataReader.GetRowData().Cells[0].ToString();
             yield return new MySqlColumnDefinition41Packet(++currentSequenceId, _dbEncoding, _database, _table, _table,
                 columnName ?? string.Empty, columnName ?? string.Empty, 100,
-                (int)MySqlColumnTypeEnum.MYSQL_TYPE_VARCHAR,
+                (int)MySqlColumnTypeEnum.VarChar,
                 0, true);
         }
 
