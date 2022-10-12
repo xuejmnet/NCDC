@@ -14,30 +14,19 @@ namespace NCDC.CommandParser.Segment.DDL.Column.Alter
     */
     public sealed class RenameColumnSegment:ISqlSegment
     {
-        private readonly int _startIndex;
-
-        private readonly int _stopIndex;
-
+        public int StartIndex { get; }
+        public int StopIndex { get; }
         public ColumnSegment OldColumnName { get; }
 
         public ColumnSegment ColumnName { get; }
 
         public RenameColumnSegment(int startIndex, int stopIndex, ColumnSegment oldColumnName, ColumnSegment columnName)
         {
-            this._startIndex = startIndex;
-            this._stopIndex = stopIndex;
+            StartIndex = startIndex;
+            StopIndex = stopIndex;
             OldColumnName = oldColumnName;
             ColumnName = columnName;
         }
 
-        public int GetStartIndex()
-        {
-            return _startIndex;
-        }
-
-        public int GetStopIndex()
-        {
-            return _stopIndex;
-        }
     }
 }

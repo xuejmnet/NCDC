@@ -14,26 +14,20 @@ namespace NCDC.CommandParser.Segment.DDL.Column.Alter
     */
     public sealed class DropColumnDefinitionSegment:IAlterDefinitionSegment
     {
-        private readonly int _startIndex;
-
-        private readonly int _stopIndex;
-        private ICollection<ColumnSegment> Columns { get; }
+        public int StartIndex { get; }
+        public int StopIndex { get; }
+        public ICollection<ColumnSegment> Columns { get; }
 
         public DropColumnDefinitionSegment(int startIndex, int stopIndex, ICollection<ColumnSegment> columns)
         {
-            _startIndex = startIndex;
-            _stopIndex = stopIndex;
+            StartIndex = startIndex;
+            StopIndex = stopIndex;
             Columns = columns;
         }
 
-        public int GetStartIndex()
+        public override string ToString()
         {
-            return _startIndex;
-        }
-
-        public int GetStopIndex()
-        {
-            return _stopIndex;
+            return $"{nameof(StartIndex)}: {StartIndex}, {nameof(StopIndex)}: {StopIndex}, {nameof(Columns)}: {Columns}";
         }
     }
 }

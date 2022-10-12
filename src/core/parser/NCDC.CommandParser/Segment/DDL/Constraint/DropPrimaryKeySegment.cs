@@ -13,24 +13,18 @@ namespace NCDC.CommandParser.Segment.DDL.Constraint
     */
     public sealed class DropPrimaryKeySegment:ISqlSegment
     {
-        private readonly int _startIndex;
-
-        private readonly int _stopIndex;
+        public int StartIndex { get; }
+        public int StopIndex { get; }
 
         public DropPrimaryKeySegment(int startIndex, int stopIndex)
         {
-            _startIndex = startIndex;
-            _stopIndex = stopIndex;
+            StartIndex = startIndex;
+            StopIndex = stopIndex;
         }
 
-        public int GetStartIndex()
+        public override string ToString()
         {
-            return _startIndex;
-        }
-
-        public int GetStopIndex()
-        {
-            return _stopIndex;
+            return $"{nameof(StartIndex)}: {StartIndex}, {nameof(StopIndex)}: {StopIndex}";
         }
     }
 }

@@ -8,56 +8,14 @@ namespace NCDC.CommandParser.Segment.Generic
 */
     public sealed class DataTypeLengthSegment:ISqlSegment
     {
-        
-        private int startIndex;
-    
-        private int stopIndex;
-    
-        private int precision;
-    
-        private int scale;
-    
-        /// <summary>
-        /// get secondNumber.
-        /// </summary>
-        /// <returns></returns>
-        public int GetScale() {
-            return scale;
-        }
+        public int StartIndex { get; set; }
+        public int StopIndex { get; set; }
+        public int Percision { get; set; }
+        public int? Scale { get; set; }
 
-        public int GetStartIndex()
+        public override string ToString()
         {
-            return startIndex;
-        }
-
-        public int GetStopIndex()
-        {
-            return stopIndex;
-        }
-
-        public int GetPrecision()
-        {
-            return precision;
-        }
-
-        public void SetScale(int scale)
-        {
-            this.scale = scale;
-        }
-
-        public void SetStartIndex(int startIndex)
-        {
-            this.startIndex = startIndex;
-        }
-
-        public void SetStopIndex(int stopIndex)
-        {
-            this.stopIndex = stopIndex;
-        }
-
-        public void SetPrecision(int precision)
-        {
-            this.precision = this.precision;
+            return $"{nameof(StartIndex)}: {StartIndex}, {nameof(StopIndex)}: {StopIndex}, {nameof(Percision)}: {Percision}, {nameof(Scale)}: {Scale}";
         }
     }
 }

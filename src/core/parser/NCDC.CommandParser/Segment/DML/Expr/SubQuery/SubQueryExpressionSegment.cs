@@ -20,14 +20,12 @@ namespace NCDC.CommandParser.Segment.DML.Expr.SubQuery
         }
 
         public  SubQuerySegment SubQuery { get;}
-        public int GetStartIndex()
-        {
-            return SubQuery.GetStartIndex();
-        }
+        public int StartIndex => SubQuery.StartIndex;
+        public int StopIndex  => SubQuery.StopIndex;
 
-        public int GetStopIndex()
+        public override string ToString()
         {
-            return SubQuery.GetStopIndex();
+            return $"{nameof(SubQuery)}: {SubQuery}, {nameof(StartIndex)}: {StartIndex}, {nameof(StopIndex)}: {StopIndex}";
         }
     }
 }

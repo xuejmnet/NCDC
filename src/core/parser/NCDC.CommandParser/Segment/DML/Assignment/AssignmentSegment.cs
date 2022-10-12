@@ -10,40 +10,17 @@ namespace NCDC.CommandParser.Segment.DML.Assignment
     * @Ver: 1.0
     * @Email: 326308290@qq.com
     */
-    public sealed class AssignmentSegment:ISqlSegment
+    public abstract class AssignmentSegment:ISqlSegment
     {
-        private readonly int _startIndex;
-        private readonly int _stopIndex;
-        private readonly ColumnSegment _column;
-    
-        private readonly IExpressionSegment _value;
+        public abstract List<ColumnSegment> GetColumns();
 
-        public AssignmentSegment(int startIndex, int stopIndex, ColumnSegment column, IExpressionSegment value)
-        {
-            _startIndex = startIndex;
-            _stopIndex = stopIndex;
-            _column = column;
-            _value = value;
-        }
+        public abstract IExpressionSegment GetValue();
+        public abstract int StartIndex { get; }
+        public abstract int StopIndex { get; }
 
-        public int GetStartIndex()
+        public override string ToString()
         {
-            return _startIndex;
-        }
-
-        public int GetStopIndex()
-        {
-            return _stopIndex;
-        }
-
-        public ColumnSegment GetColumn()
-        {
-            return _column;
-        }
-
-        public IExpressionSegment GetValue()
-        {
-            return _value;
+            return $"{nameof(StartIndex)}: {StartIndex}, {nameof(StopIndex)}: {StopIndex}";
         }
     }
 }

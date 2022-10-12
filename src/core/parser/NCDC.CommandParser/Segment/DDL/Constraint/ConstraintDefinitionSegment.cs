@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using NCDC.CommandParser.Segment.DDL.Index;
 using NCDC.CommandParser.Segment.DML.Column;
 using NCDC.CommandParser.Segment.Generic.Table;
 
@@ -15,27 +16,24 @@ namespace NCDC.CommandParser.Segment.DDL.Constraint
     */
     public sealed class ConstraintDefinitionSegment:ICreateDefinitionSegment,IAlterDefinitionSegment
     {
-        private readonly int _startIndex;
-
-        private readonly int _stopIndex;
+        public int StartIndex { get; }
+        public int StopIndex { get; }
 
         public readonly ICollection<ColumnSegment> PrimaryKeyColumns = new LinkedList<ColumnSegment>();
-        public SimpleTableSegment ReferencedTable { get; set; }
+        public readonly ICollection<ColumnSegment> IndexColumns = new List<ColumnSegment>();
+        public ConstraintSegment? ConstraintName { get; set; }
+        public IndexSegment? IndexName { get; set; }
+        public SimpleTableSegment? ReferencedTable { get; set; }
 
         public ConstraintDefinitionSegment(int startIndex, int stopIndex)
         {
-            this._startIndex = startIndex;
-            this._stopIndex = stopIndex;
+            StartIndex = startIndex;
+            StopIndex = stopIndex;
         }
 
-        public int GetStartIndex()
+        public override string ToString()
         {
-            return _startIndex;
-        }
-
-        public int GetStopIndex()
-        {
-            return _stopIndex;
+            return $"{nameof(PrimaryKeyColumns)}: {PrimaryKeyColumns}, {nameof(IndexColumns)}: {IndexColumns}, {nameof(StartIndex)}: {StartIndex}, {nameof(StopIndex)}: {StopIndex}, {nameof(ConstraintName)}: {ConstraintName}, {nameof(IndexName)}: {IndexName}, {nameof(ReferencedTable)}: {ReferencedTable}";
         }
     }
 }

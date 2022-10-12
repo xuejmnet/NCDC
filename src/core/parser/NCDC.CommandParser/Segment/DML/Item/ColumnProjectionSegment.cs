@@ -11,36 +11,32 @@ namespace NCDC.CommandParser.Segment.DML.Item
 */
     public sealed class ColumnProjectionSegment:IProjectionSegment, IAliasAvailable
     {
-        private readonly ColumnSegment _column;
-    
-        private AliasSegment _alias;
+        public ColumnSegment Column { get; }
 
-        public ColumnProjectionSegment(ColumnSegment column) {
-            _column = column;
-        }
+        private AliasSegment? _alias;
 
-        public int GetStartIndex()
+        public ColumnProjectionSegment(ColumnSegment column)
         {
-            return _column.GetStartIndex();
+            Column = column;
         }
 
-        public int GetStopIndex()
+        public string? GetAlias()
         {
-            return _column.GetStopIndex();
+            return _alias?.IdentifierValue.Value;
         }
-
-        public string GetAlias()
-        {
-            return _alias?.GetIdentifier().GetValue();
-        }
-        public ColumnSegment GetColumn()
-        {
-            return _column;
-        }
+      
 
         public void SetAlias(AliasSegment alias)
         {
             this._alias = alias;
+        }
+
+        public int StartIndex => Column.StartIndex;
+        public int StopIndex => _alias?.StopIndex ?? Column.StopIndex;
+
+        public override string ToString()
+        {
+            return $"Alias: {_alias}, {nameof(Column)}: {Column}, {nameof(StartIndex)}: {StartIndex}, {nameof(StopIndex)}: {StopIndex}";
         }
     }
 }

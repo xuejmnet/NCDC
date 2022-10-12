@@ -12,6 +12,6 @@ namespace NCDC.CommandParser.Value
     */
     public interface IValueASTNode<out T>:IASTNode
     {
-        T GetValue();
+        T Value { get; }
     }
 }

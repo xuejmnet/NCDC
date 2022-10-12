@@ -9,6 +9,6 @@
     */
     public interface IComplexExpressionSegment:IExpressionSegment
     {
-        string GetText();
+        string Text { get; }
     }
 }

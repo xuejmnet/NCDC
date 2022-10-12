@@ -14,29 +14,22 @@ namespace NCDC.CommandParser.Segment.DDL.Column.Alter
     */
     public sealed class AddColumnDefinitionSegment: IAlterDefinitionSegment
     {
-        private readonly int _startIndex;
-
-        private readonly int _stopIndex;
-
         public AddColumnDefinitionSegment(int startIndex, int stopIndex, ICollection<ColumnDefinitionSegment> columnDefinitions)
         {
-            this._startIndex = startIndex;
-            this._stopIndex = stopIndex;
+            StartIndex = startIndex;
+            StopIndex = stopIndex;
             ColumnDefinitions = columnDefinitions;
         }
 
+        public int StartIndex { get; }
+        public int StopIndex { get; }
         public  ICollection<ColumnDefinitionSegment> ColumnDefinitions { get; }
 
-        public ColumnPositionSegment ColumnPosition { get; set; }
+        public ColumnPositionSegment? ColumnPosition { get; set; }
 
-        public int GetStartIndex()
+        public override string ToString()
         {
-            return _startIndex;
-        }
-
-        public int GetStopIndex()
-        {
-            return _stopIndex;
+            return $"{nameof(StartIndex)}: {StartIndex}, {nameof(StopIndex)}: {StopIndex}, {nameof(ColumnDefinitions)}: {ColumnDefinitions}, {nameof(ColumnPosition)}: {ColumnPosition}";
         }
     }
 }

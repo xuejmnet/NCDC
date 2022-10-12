@@ -10,39 +10,15 @@ namespace NCDC.CommandParser.Segment.DAL
 */
     public sealed class FromTableSegment:ISqlSegment
     {
-        private int startIndex;
+        public int StartIndex { get; set;}
     
-        private int stopIndex;
+        public int StopIndex { get; set;}
     
-        private SimpleTableSegment table;
-        public int GetStartIndex()
-        {
-            return startIndex;
-        }
+        public SimpleTableSegment? Table { get; set;}
 
-        public void SetStartIndex(int startIndex)
+        public override string ToString()
         {
-            this.startIndex = startIndex;
-        }
-
-        public int GetStopIndex()
-        {
-            return stopIndex;
-        }
-
-        public void SetStopIndex(int stopIndex)
-        {
-            this.stopIndex = stopIndex;
-        }
-
-        public SimpleTableSegment GetTable()
-        {
-            return table;
-        }
-
-        public void SetTable(SimpleTableSegment table)
-        {
-            this.table = table;
+            return $"{nameof(StartIndex)}: {StartIndex}, {nameof(StopIndex)}: {StopIndex}, {nameof(Table)}: {Table}";
         }
     }
 }

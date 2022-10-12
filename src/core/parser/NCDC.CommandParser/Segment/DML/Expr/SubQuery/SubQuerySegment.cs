@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using NCDC.CommandParser.Command.DML;
+using NCDC.CommandParser.Constant;
 using NCDC.CommandParser.Segment.DML.Predicate.Value;
 
 namespace NCDC.CommandParser.Segment.DML.Expr.SubQuery
@@ -13,28 +14,23 @@ namespace NCDC.CommandParser.Segment.DML.Expr.SubQuery
     * @Ver: 1.0
     * @Email: 326308290@qq.com
     */
-    public sealed class SubQuerySegment:ISqlSegment,IPredicateRightValue
+    public sealed class SubQuerySegment:IExpressionSegment
     {
-        private readonly int _startIndex;
-
-        private readonly int _stopIndex;
-
-        public SubQuerySegment(int startIndex, int stopIndex, SelectCommand @select)
-        {
-            this._startIndex = startIndex;
-            this._stopIndex = stopIndex;
-            Select = @select;
-        }
-
+        public int StartIndex { get; }
+        public int StopIndex { get; }
         public SelectCommand Select { get; }
-        public int GetStartIndex()
+        public SubQueryTypeEnum? SubQueryType { get; set; }
+
+        public SubQuerySegment(int startIndex, int stopIndex, SelectCommand select)
         {
-            return _startIndex;
+            StartIndex= startIndex;
+            StopIndex = stopIndex;
+            Select = select;
         }
 
-        public int GetStopIndex()
+        public override string ToString()
         {
-            return _stopIndex;
+            return $"{nameof(StartIndex)}: {StartIndex}, {nameof(StopIndex)}: {StopIndex}, {nameof(Select)}: {Select}, {nameof(SubQueryType)}: {SubQueryType}";
         }
     }
 }

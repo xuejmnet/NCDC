@@ -14,36 +14,33 @@ namespace NCDC.CommandParser.Segment.DDL.Column
     * @Ver: 1.0
     * @Email: 326308290@qq.com
     */
-    public sealed class ColumnDefinitionSegment: ICreateDefinitionSegment
+    public sealed class ColumnDefinitionSegment : ICreateDefinitionSegment
     {
-        private readonly int _startIndex;
-
-        private readonly int _stopIndex;
-
-        public ColumnSegment ColumnName{get;set;}
+        public int StartIndex { get; }
+        public int StopIndex { get; }
+        public ColumnSegment ColumnName { get; set; }
 
         public DataTypeSegment DataType { get; set; }
 
-        public  bool PrimaryKey { get; set; }
+        public bool PrimaryKey { get; set; }
+        public bool NotNull { get; }
 
         public readonly ICollection<SimpleTableSegment> ReferencedTables = new LinkedList<SimpleTableSegment>();
 
-        public ColumnDefinitionSegment( int startIndex,  int stopIndex,  ColumnSegment columnName,  DataTypeSegment dataType,  bool primaryKey)
+        public ColumnDefinitionSegment(int startIndex, int stopIndex, ColumnSegment columnName,
+            DataTypeSegment dataType, bool primaryKey, bool notNull)
         {
-            this._startIndex = startIndex;
-            this._stopIndex = stopIndex;
-            this.ColumnName = columnName;
-            this.DataType = dataType;
-            this.PrimaryKey = primaryKey;
-        }
-        public int GetStartIndex()
-        {
-            return _startIndex;
+            StartIndex = startIndex;
+            StopIndex = stopIndex;
+            ColumnName = columnName;
+            DataType = dataType;
+            PrimaryKey = primaryKey;
+            NotNull = notNull;
         }
 
-        public int GetStopIndex()
+        public override string ToString()
         {
-            return _stopIndex;
+            return $"{nameof(ReferencedTables)}: {ReferencedTables}, {nameof(StartIndex)}: {StartIndex}, {nameof(StopIndex)}: {StopIndex}, {nameof(ColumnName)}: {ColumnName}, {nameof(DataType)}: {DataType}, {nameof(PrimaryKey)}: {PrimaryKey}, {nameof(NotNull)}: {NotNull}";
         }
     }
 }

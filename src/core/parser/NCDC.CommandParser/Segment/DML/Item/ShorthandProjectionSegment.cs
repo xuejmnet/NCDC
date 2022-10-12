@@ -8,38 +8,33 @@ namespace NCDC.CommandParser.Segment.DML.Item
 * @Date: Sunday, 11 April 2021 21:55:09
 * @Email: 326308290@qq.com
 */
-    public sealed class ShorthandProjectionSegment:IProjectionSegment,IOwnerAvailable
+    public sealed class ShorthandProjectionSegment:IProjectionSegment,IOwnerAvailable,IAliasAvailable
     {
-        private readonly int _startIndex;
+        public int StartIndex { get; }
+        public int StopIndex { get; }
     
-        private readonly int _stopIndex;
-    
-        private OwnerSegment owner;
+        public OwnerSegment? Owner { get; set; }
+        private AliasSegment? _alias;
 
         public ShorthandProjectionSegment(int startIndex, int stopIndex)
         {
-            _startIndex = startIndex;
-            _stopIndex = stopIndex;
+            StartIndex = startIndex;
+            StopIndex = stopIndex;
         }
 
-        public int GetStartIndex()
+        public string? GetAlias()
         {
-            return _startIndex;
+            return _alias?.IdentifierValue.Value;
         }
 
-        public int GetStopIndex()
+        public void SetAlias(AliasSegment alias)
         {
-            return _stopIndex;
+            this._alias = alias;
         }
 
-        public OwnerSegment GetOwner()
+        public override string ToString()
         {
-            return owner;
-        }
-
-        public void SetOwner(OwnerSegment owner)
-        {
-            this.owner = owner;
+            return $"Alias: {GetAlias()}, {nameof(StartIndex)}: {StartIndex}, {nameof(StopIndex)}: {StopIndex}, {nameof(Owner)}: {Owner}";
         }
     }
 }

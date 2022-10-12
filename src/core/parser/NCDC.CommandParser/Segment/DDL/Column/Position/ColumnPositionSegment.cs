@@ -14,31 +14,22 @@ namespace NCDC.CommandParser.Segment.DDL.Column.Position
     */
     public abstract class ColumnPositionSegment:ISqlSegment,IComparable<ColumnPositionSegment>
     {
-        private readonly int _startIndex;
-
-        private readonly int _stopIndex;
-
+        public int StartIndex { get; }
+        public int StopIndex { get; }
         public  ColumnSegment ColumnName { get; }
 
         public ColumnPositionSegment(int startIndex, int stopIndex, ColumnSegment columnName)
         {
-            this._startIndex = startIndex;
-            this._stopIndex = stopIndex;
+            StartIndex = startIndex;
+            StopIndex = stopIndex;
             ColumnName = columnName;
         }
-        public int GetStartIndex()
-        {
-            return _startIndex;
-        }
 
-        public int GetStopIndex()
+        public int CompareTo(ColumnPositionSegment? other)
         {
-            return _stopIndex;
-        }
-
-        public int CompareTo(ColumnPositionSegment other)
-        {
-            return _startIndex - other._startIndex;
+            if (other is null)
+                throw new ArgumentNullException(nameof(other));
+            return StartIndex - other.StartIndex;
         }
     }
 }

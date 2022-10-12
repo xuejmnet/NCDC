@@ -7,34 +7,22 @@
     * @Ver: 1.0
     * @Email: 326308290@qq.com
     */
-   public class LiteralExpressionSegment:ISimpleExpressionSegment
+   public sealed class LiteralExpressionSegment:ISimpleExpressionSegment
     {
-        private readonly int _startIndex;
-
-        private readonly int _stopIndex;
-
-        private readonly object _literals;
+        public int StartIndex { get; }
+        public int StopIndex { get; }
+        public object Literals { get; }
 
         public LiteralExpressionSegment(int startIndex, int stopIndex, object literals)
         {
-            _startIndex = startIndex;
-            _stopIndex = stopIndex;
-            _literals = literals;
+            StartIndex = startIndex;
+            StopIndex = stopIndex;
+            Literals = literals;
         }
 
-        public int GetStartIndex()
+        public override string ToString()
         {
-            return _startIndex;
-        }
-
-        public int GetStopIndex()
-        {
-            return _stopIndex;
-        }
-
-        public object GetLiterals()
-        {
-            return _literals;
+            return $"{nameof(StartIndex)}: {StartIndex}, {nameof(StopIndex)}: {StopIndex}, {nameof(Literals)}: {Literals}";
         }
     }
 }

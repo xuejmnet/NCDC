@@ -10,44 +10,22 @@ namespace NCDC.CommandParser.Segment.DML.Item
 */
     public sealed class ProjectionsSegment:ISqlSegment
     {
-        
-        private readonly int _startIndex;
+        public int StartIndex { get; }
+        public int StopIndex { get; }
     
-        private readonly int _stopIndex;
-    
-        private bool distinctRow;
+        public bool DistinctRow { get; set; }
 
-        private readonly ICollection<IProjectionSegment> _projections = new LinkedList<IProjectionSegment>();
+        public ICollection<IProjectionSegment> Projections = new LinkedList<IProjectionSegment>();
 
         public ProjectionsSegment(int startIndex, int stopIndex)
         {
-            _startIndex = startIndex;
-            _stopIndex = stopIndex;
+            StartIndex = startIndex;
+            StopIndex = stopIndex;
         }
 
-        public int GetStartIndex()
+        public override string ToString()
         {
-            return _startIndex;
-        }
-
-        public int GetStopIndex()
-        {
-            return _stopIndex;
-        }
-
-        public void SetDistinctRow(bool isDistinctRow)
-        {
-            distinctRow = isDistinctRow;
-        }
-
-        public ICollection<IProjectionSegment> GetProjections()
-        {
-            return _projections;
-        }
-
-        public bool IsDistinctRow()
-        {
-            return distinctRow;
+            return $"{nameof(Projections)}: {Projections}, {nameof(StartIndex)}: {StartIndex}, {nameof(StopIndex)}: {StopIndex}, {nameof(DistinctRow)}: {DistinctRow}";
         }
     }
 }

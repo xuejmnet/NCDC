@@ -8,50 +8,16 @@ namespace NCDC.CommandParser.Segment.Generic
 */
     public sealed class DataTypeSegment:ISqlSegment
     {
-        private int startIndex;
+        public int StartIndex { get; set; }
+        public int StopIndex { get; set; }
     
-        private int stopIndex;
+        public string? DataTypeName { get; set; }
     
-        private string dataTypeName;
-    
-        private DataTypeLengthSegment dataLength;
+        public DataTypeLengthSegment? DataLength { get; set; }
 
-        public string GetDataTypeName()
+        public override string ToString()
         {
-            return dataTypeName;
-        }
-
-        public void SetDataTypeName(string dataTypeName)
-        {
-            this.dataTypeName = dataTypeName;
-        }
-
-        public DataTypeLengthSegment GetDataLength()
-        {
-            return dataLength;
-        }
-
-        public void SetDataLength(DataTypeLengthSegment dataLength)
-        {
-            this.dataLength = dataLength;
-        }
-        public int GetStartIndex()
-        {
-            return startIndex;
-        }
-        public int GetStopIndex()
-        {
-            return stopIndex;
-        }
-
-        public void SetStartIndex(int startIndex)
-        {
-            this.startIndex = startIndex;
-        }
-
-        public void SetStopIndex(int stopIndex)
-        {
-            this.stopIndex = stopIndex;
+            return $"{nameof(StartIndex)}: {StartIndex}, {nameof(StopIndex)}: {StopIndex}, {nameof(DataTypeName)}: {DataTypeName}, {nameof(DataLength)}: {DataLength}";
         }
     }
 }

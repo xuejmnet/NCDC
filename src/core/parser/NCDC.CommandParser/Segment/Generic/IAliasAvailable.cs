@@ -9,7 +9,7 @@
     */
     public interface IAliasAvailable: ISqlSegment
     {
-        string GetAlias();
+        string? GetAlias();
         void SetAlias(AliasSegment alias);
     }
 }

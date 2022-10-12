@@ -12,15 +12,15 @@ namespace NCDC.CommandParser.Segment.DML.Item
     */
     public sealed class AggregationDistinctProjectionSegment:AggregationProjectionSegment
     {
-        private readonly string _distinctExpression;
-        public AggregationDistinctProjectionSegment(int startIndex, int stopIndex, AggregationTypeEnum type, int innerExpressionStartIndex,string distinctExpression) : base(startIndex, stopIndex, type, innerExpressionStartIndex)
+       public string DistinctExpression { get; }
+        public AggregationDistinctProjectionSegment(int startIndex, int stopIndex, AggregationTypeEnum type,string innerExpression,string distinctExpression) : base(startIndex, stopIndex, type, innerExpression)
         {
-            this._distinctExpression = SqlUtil.GetExpressionWithoutOutsideParentheses(distinctExpression);
+            DistinctExpression = SqlUtil.GetExpressionWithoutOutsideParentheses(distinctExpression);
         }
 
-        public string GetDistinctExpression()
+        public override string ToString()
         {
-            return _distinctExpression;
+            return $"{base.ToString()}, {nameof(DistinctExpression)}: {DistinctExpression}";
         }
     }
 }

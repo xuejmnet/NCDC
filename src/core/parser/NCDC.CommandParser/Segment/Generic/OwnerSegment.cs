@@ -11,32 +11,17 @@ namespace NCDC.CommandParser.Segment.Generic
     */
     public sealed class OwnerSegment:ISqlSegment
     {
-        private readonly int _startIndex;
+        public int StartIndex { get; }
+        public int StopIndex { get; }
+        public IdentifierValue IdentifierValue { get; }
 
-        private readonly int _stopIndex;
-
-        private readonly IdentifierValue _identifier;
-
-        public OwnerSegment(int startIndex, int stopIndex, IdentifierValue identifier)
+        public OwnerSegment(int startIndex, int stopIndex, IdentifierValue identifierValue)
         {
-            _startIndex = startIndex;
-            _stopIndex = stopIndex;
-            _identifier = identifier;
+            StartIndex = startIndex;
+            StopIndex = stopIndex;
+            IdentifierValue = identifierValue;
         }
+        public OwnerSegment? Owner { get; set; }
 
-        public int GetStartIndex()
-        {
-            return _startIndex;
-        }
-
-        public int GetStopIndex()
-        {
-            return _stopIndex;
-        }
-
-        public IdentifierValue GetIdentifier()
-        {
-            return _identifier;
-        }
     }
 }

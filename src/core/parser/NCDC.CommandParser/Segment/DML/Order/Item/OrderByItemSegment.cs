@@ -10,29 +10,18 @@ namespace NCDC.CommandParser.Segment.DML.Order.Item
 */
     public abstract class OrderByItemSegment:ISqlSegment
     {
-        private readonly int _startIndex;
-    
-        private readonly int _stopIndex;
+        public int StartIndex { get; }
+        public int StopIndex { get; }
         private readonly OrderDirectionEnum _orderDirection;
     
         private readonly OrderDirectionEnum _nullOrderDirection;
 
         public OrderByItemSegment(int startIndex, int stopIndex, OrderDirectionEnum orderDirection, OrderDirectionEnum nullOrderDirection)
         {
-            _startIndex = startIndex;
-            _stopIndex = stopIndex;
+            StartIndex = startIndex;
+            StopIndex = stopIndex;
             _orderDirection = orderDirection;
             _nullOrderDirection = nullOrderDirection;
-        }
-
-        public int GetStartIndex()
-        {
-            return _startIndex;
-        }
-
-        public int GetStopIndex()
-        {
-            return _stopIndex;
         }
 
         public OrderDirectionEnum GetOrderDirection()

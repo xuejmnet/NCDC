@@ -9,15 +9,18 @@ namespace NCDC.CommandParser.Segment.Generic.Table
     * @Ver: 1.0
     * @Email: 326308290@qq.com
     */
-    public sealed class SimpleTableSegment:ITableSegment,IOwnerAvailable,IAliasAvailable
+    public sealed class SimpleTableSegment:ITableSegment,IOwnerAvailable
     {
-        private readonly TableNameSegment _tableName;
-        private OwnerSegment owner;
+        public int StartIndex => GetStartIndex();
+        public int StopIndex => GetStopIndex();
+        public OwnerSegment? Owner { get; set; }
+        
+        public TableNameSegment TableName { get; }
         private AliasSegment alias;
 
         public SimpleTableSegment(int startIndex,int stopIndex,IdentifierValue identifierValue)
         {
-            this._tableName = new TableNameSegment(startIndex, stopIndex, identifierValue);
+            TableName = new TableNameSegment(startIndex, stopIndex, identifierValue);
         }
 
         public SimpleTableSegment(TableNameSegment tableName)
@@ -32,12 +35,12 @@ namespace NCDC.CommandParser.Segment.Generic.Table
         /// 如果不存在所属者就返回表名的开始索引
         /// </summary>
         /// <returns></returns>
-        public int GetStartIndex()
+        private int GetStartIndex()
         {
-            return null == owner ? _tableName.GetStartIndex() : owner.GetStartIndex();
+            return null == Owner ? TableName.StartIndex : Owner.;
         }
 
-        public int GetStopIndex()
+        private int GetStopIndex()
         {
             return _tableName.GetStopIndex();
             //FIXME: Rewriter need to handle alias as well
@@ -63,5 +66,6 @@ namespace NCDC.CommandParser.Segment.Generic.Table
         {
             this.alias = alias;
         }
+
     }
 }

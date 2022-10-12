@@ -13,36 +13,35 @@ namespace NCDC.CommandParser.Segment.DML.Item
     * @Ver: 1.0
     * @Email: 326308290@qq.com
     */
-    public sealed class SubQueryProjectionSegment:ISqlSegment,IProjectionSegment,IAliasAvailable
+    public sealed class SubQueryProjectionSegment:IProjectionSegment,IAliasAvailable
     {
-        private readonly SubQuerySegment _subquery;
-    
-        
-        private AliasSegment alias;
+        public SubQuerySegment SubQuery { get; }
+        public string Text { get; }
 
-        public SubQueryProjectionSegment(SubQuerySegment subquery)
+
+        private AliasSegment? _alias;
+
+        public SubQueryProjectionSegment(SubQuerySegment subQuery,string text)
         {
-            this._subquery = subquery;
+            SubQuery = subQuery;
+            Text = text;
         }
-
-        public int GetStartIndex()
+        public string? GetAlias()
         {
-            return _subquery.GetStartIndex();
-        }
-
-        public int GetStopIndex()
-        {
-            return _subquery.GetStopIndex();
-        }
-
-        public string GetAlias()
-        {
-            return alias?.GetIdentifier().GetValue();
+            return _alias?.IdentifierValue.Value;
         }
 
         public void SetAlias(AliasSegment alias)
         {
-            this.alias = alias;
+            this._alias = alias;
+        }
+
+        public int StartIndex => SubQuery.StartIndex;
+        public int StopIndex => SubQuery.StopIndex;
+
+        public override string ToString()
+        {
+            return $"Alias: {GetAlias()}, {nameof(SubQuery)}: {SubQuery}, {nameof(Text)}: {Text}, {nameof(StartIndex)}: {StartIndex}, {nameof(StopIndex)}: {StopIndex}";
         }
     }
 }

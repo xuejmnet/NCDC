@@ -11,30 +11,20 @@ namespace NCDC.CommandParser.Segment.DML.Assignment
     */
     public sealed class SetAssignmentSegment:ISqlSegment
     {
-        private readonly int _startIndex;
-        private readonly int _stopIndex;
-        private readonly ICollection<AssignmentSegment> _assignments;
+        public int StartIndex { get; }
+        public int StopIndex { get; }
+        public ICollection<AssignmentSegment> Assignments { get; }
 
         public SetAssignmentSegment(int startIndex, int stopIndex, ICollection<AssignmentSegment> assignments)
         {
-            _startIndex = startIndex;
-            _stopIndex = stopIndex;
-            _assignments = assignments;
+            StartIndex = startIndex;
+            StopIndex = stopIndex;
+            Assignments = assignments;
         }
 
-        public int GetStartIndex()
+        public override string ToString()
         {
-            return _startIndex;
-        }
-
-        public int GetStopIndex()
-        {
-            return _stopIndex;
-        }
-
-        public ICollection<AssignmentSegment> GetAssignments()
-        {
-            return _assignments;
+            return $"{nameof(StartIndex)}: {StartIndex}, {nameof(StopIndex)}: {StopIndex}, {nameof(Assignments)}: {Assignments}";
         }
     }
 }

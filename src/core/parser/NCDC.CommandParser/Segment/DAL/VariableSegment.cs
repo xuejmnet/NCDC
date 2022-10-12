@@ -8,32 +8,14 @@ namespace NCDC.CommandParser.Segment.DAL
 */
     public sealed class VariableSegment:ISqlSegment
     {
-        private readonly int _startIndex;
-    
-        private readonly int _stopIndex;
-    
-        private readonly string _variable;
+        public int StartIndex { get; set; }
+        public int StopIndex { get; set; }
+        public string? Scope { get; set; }
+        public string? Variable { get; set; }
 
-        public VariableSegment(int startIndex, int stopIndex, string variable)
+        public override string ToString()
         {
-            _startIndex = startIndex;
-            _stopIndex = stopIndex;
-            _variable = variable;
-        }
-
-        public int GetStartIndex()
-        {
-            return _startIndex;
-        }
-
-        public int GetStopIndex()
-        {
-            return _stopIndex;
-        }
-
-        public string GetVariable()
-        {
-            return _variable;
+            return $"{nameof(StartIndex)}: {StartIndex}, {nameof(StopIndex)}: {StopIndex}, {nameof(Scope)}: {Scope}, {nameof(Variable)}: {Variable}";
         }
     }
 }

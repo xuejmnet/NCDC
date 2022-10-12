@@ -14,29 +14,21 @@ namespace NCDC.CommandParser.Segment.DDL.Column.Alter
     */
     public sealed class ModifyColumnDefinitionSegment:IAlterDefinitionSegment
     {
-        private readonly int _startIndex;
-
-        private readonly int _stopIndex;
+        public int StartIndex { get; }
+        public int StopIndex { get; }
+        public ColumnDefinitionSegment ColumnDefinition { get; }
+        public ColumnPositionSegment? ColumnPosition { get; set; }
 
         public ModifyColumnDefinitionSegment(int startIndex, int stopIndex, ColumnDefinitionSegment columnDefinition)
         {
-            _startIndex = startIndex;
-            _stopIndex = stopIndex;
+            StartIndex = startIndex;
+            StopIndex = stopIndex;
             ColumnDefinition = columnDefinition;
         }
 
-        public ColumnDefinitionSegment ColumnDefinition { get; }
-
-        public ColumnPositionSegment ColumnPosition { get; set; }
-
-        public int GetStartIndex()
+        public override string ToString()
         {
-            throw new NotImplementedException();
-        }
-
-        public int GetStopIndex()
-        {
-            throw new NotImplementedException();
+            return $"{nameof(StartIndex)}: {StartIndex}, {nameof(StopIndex)}: {StopIndex}, {nameof(ColumnDefinition)}: {ColumnDefinition}, {nameof(ColumnPosition)}: {ColumnPosition}";
         }
     }
 }

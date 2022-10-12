@@ -1,4 +1,5 @@
 ﻿using NCDC.CommandParser.Constant;
+using NCDC.CommandParser.Segment.DML.Expr;
 using NCDC.CommandParser.Segment.Generic;
 
 namespace NCDC.CommandParser.Segment.DML.Item
@@ -10,54 +11,36 @@ namespace NCDC.CommandParser.Segment.DML.Item
     * @Ver: 1.0
     * @Email: 326308290@qq.com
     */
-    public class AggregationProjectionSegment:IProjectionSegment,IAliasAvailable
+    public class AggregationProjectionSegment:IProjectionSegment,IAliasAvailable,IExpressionSegment
     {
-        private readonly int _startIndex;
+        public int StartIndex { get; }
+        public int StopIndex { get; }
+        public AggregationTypeEnum Type { get; }
+        public string InnerExpression { get; }
 
-        private readonly int _stopIndex;
 
-        private readonly AggregationTypeEnum _type;
-    
-        private readonly int _innerExpressionStartIndex;
+        private AliasSegment? _alias;
 
-        private AliasSegment alias;
-
-        public AggregationProjectionSegment(int startIndex, int stopIndex, AggregationTypeEnum type, int innerExpressionStartIndex)
+        public AggregationProjectionSegment(int startIndex, int stopIndex, AggregationTypeEnum type, string innerExpression)
         {
-            _startIndex = startIndex;
-            _stopIndex = stopIndex;
-            _type = type;
-            _innerExpressionStartIndex = innerExpressionStartIndex;
+            StartIndex = startIndex;
+            StopIndex = stopIndex;
+            Type = type;
+            InnerExpression = innerExpression;
         }
-
-        public int GetStartIndex()
+        public string? GetAlias()
         {
-            return _startIndex;
-        }
-
-        public int GetStopIndex()
-        {
-            return _stopIndex;
-        }
-
-        public string GetAlias()
-        {
-            return alias?.GetIdentifier().GetValue();
+            return _alias?.IdentifierValue.Value;
         }
 
         public void SetAlias(AliasSegment alias)
         {
-            this.alias = alias;
+            _alias = alias;
         }
 
-        public int GetInnerExpressionStartIndex()
+        public override string ToString()
         {
-            return _innerExpressionStartIndex;
-        }
-
-        public AggregationTypeEnum GetAggregationType()
-        {
-            return _type;
+            return $"Alias: {_alias}, {nameof(StartIndex)}: {StartIndex}, {nameof(StopIndex)}: {StopIndex}, {nameof(Type)}: {Type}, {nameof(InnerExpression)}: {InnerExpression}";
         }
     }
 }

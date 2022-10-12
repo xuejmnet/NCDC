@@ -16,11 +16,12 @@ namespace NCDC.CommandParser.Segment
         /// 起始索引
         /// </summary>
         /// <returns></returns>
-        int GetStartIndex();
+        int StartIndex { get; }
+
         /// <summary>
         /// 结束索引
         /// </summary>
         /// <returns></returns>
-        int GetStopIndex();
+        int StopIndex { get; }
     }
 }

@@ -12,32 +12,21 @@ namespace NCDC.CommandParser.Segment.DML.Column
     */
     public sealed class InsertColumnsSegment:ISqlSegment
     {
-        private readonly int _startIndex;
+        public int StartIndex { get; }
+        public int StopIndex { get; }
+        public ICollection<ColumnSegment> Columns { get; }
 
-        private readonly int _stopIndex;
-
-        private readonly List<ColumnSegment> _columns;
 
         public InsertColumnsSegment(int startIndex, int stopIndex, ICollection<ColumnSegment> columns)
         {
-            _startIndex = startIndex;
-            _stopIndex = stopIndex;
-            _columns = columns.ToList();
+            StartIndex = startIndex;
+            StopIndex = stopIndex;
+            Columns = columns;
         }
 
-        public int GetStartIndex()
+        public override string ToString()
         {
-            return _startIndex;
-        }
-
-        public int GetStopIndex()
-        {
-            return _stopIndex;
-        }
-
-        public List<ColumnSegment> GetColumns()
-        {
-            return _columns;
+            return $"{nameof(StartIndex)}: {StartIndex}, {nameof(StopIndex)}: {StopIndex}, {nameof(Columns)}: {Columns}";
         }
     }
 }

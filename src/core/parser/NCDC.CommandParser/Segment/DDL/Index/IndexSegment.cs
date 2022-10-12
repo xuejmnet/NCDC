@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using NCDC.CommandParser.Segment.Generic;
 using NCDC.CommandParser.Value.Identifier;
 
 namespace NCDC.CommandParser.Segment.DDL.Index
@@ -12,28 +13,23 @@ namespace NCDC.CommandParser.Segment.DDL.Index
     * @Ver: 1.0
     * @Email: 326308290@qq.com
     */
-    public sealed class IndexSegment:ISqlSegment
+    public sealed class IndexSegment:ISqlSegment,IOwnerAvailable
     {
-        private readonly int _startIndex;
+        public int StartIndex { get; }
+        public int StopIndex { get; }
+        public OwnerSegment? Owner { get; set; }
+        public  IdentifierValue IdentifierValue { get; }
 
-        private readonly int _stopIndex;
-
-        public IndexSegment(int startIndex, int stopIndex, IdentifierValue identifier)
+        public IndexSegment(int startIndex, int stopIndex, IdentifierValue identifierValue)
         {
-            _startIndex = startIndex;
-            _stopIndex = stopIndex;
-            Identifier = identifier;
+            StartIndex = startIndex;
+            StopIndex = stopIndex;
+            IdentifierValue = identifierValue;
         }
 
-        public  IdentifierValue Identifier { get; }
-        public int GetStartIndex()
+        public override string ToString()
         {
-            return _startIndex;
-        }
-
-        public int GetStopIndex()
-        {
-            return _stopIndex;
+            return $"{nameof(StartIndex)}: {StartIndex}, {nameof(StopIndex)}: {StopIndex}, {nameof(Owner)}: {Owner}, {nameof(IdentifierValue)}: {IdentifierValue}";
         }
     }
 }

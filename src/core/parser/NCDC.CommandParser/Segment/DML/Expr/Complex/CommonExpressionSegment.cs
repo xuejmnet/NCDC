@@ -9,32 +9,16 @@
     */
     public sealed class CommonExpressionSegment:IComplexExpressionSegment
     {
-        private readonly int _startIndex;
+        public int StartIndex { get; }
+        public int StopIndex { get; }
+        public string Text { get; }
 
-        private readonly int _stopIndex;
-
-        private readonly string _text;
 
         public CommonExpressionSegment(int startIndex, int stopIndex, string text)
         {
-            _startIndex = startIndex;
-            _stopIndex = stopIndex;
-            _text = text;
-        }
-
-        public int GetStartIndex()
-        {
-            return _startIndex;
-        }
-
-        public int GetStopIndex()
-        {
-            return _stopIndex;
-        }
-
-        public string GetText()
-        {
-            return _text;
+            StartIndex = startIndex;
+            StopIndex = stopIndex;
+            Text = text;
         }
     }
 }

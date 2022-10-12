@@ -8,32 +8,20 @@ namespace NCDC.CommandParser.Segment.DAL
 */
     public sealed class ShowLikeSegment:ISqlSegment
     {
-        private readonly int _startIndex;
-    
-        private readonly int _stopIndex;
-    
-        private readonly string _pattern;
+        public int StartIndex { get; }
+        public int StopIndex { get; }
+        public string Pattern { get; }
 
         public ShowLikeSegment(int startIndex, int stopIndex, string pattern)
         {
-            _startIndex = startIndex;
-            _stopIndex = stopIndex;
-            _pattern = pattern;
+            StartIndex = startIndex;
+            StopIndex = stopIndex;
+            Pattern = pattern;
         }
 
-        public int GetStartIndex()
+        public override string ToString()
         {
-            return _startIndex;
-        }
-
-        public int GetStopIndex()
-        {
-            return _stopIndex;
-        }
-
-        public string GetPattern()
-        {
-            return _pattern;
+            return $"{nameof(StartIndex)}: {StartIndex}, {nameof(StopIndex)}: {StopIndex}, {nameof(Pattern)}: {Pattern}";
         }
     }
 }

@@ -11,33 +11,25 @@ namespace NCDC.CommandParser.Segment.DML.Order
 */
     public sealed class OrderBySegment:ISqlSegment
     {
-        
-        private readonly int _startIndex;
-    
-        private readonly int _stopIndex;
-    
+        public int StartIndex { get; }
+        public int StopIndex { get; }
+
         private readonly ICollection<OrderByItemSegment> _orderByItems;
 
         public OrderBySegment(int startIndex, int stopIndex, ICollection<OrderByItemSegment> orderByItems)
         {
-            _startIndex = startIndex;
-            _stopIndex = stopIndex;
+            StartIndex = startIndex;
+            StopIndex = stopIndex;
             _orderByItems = orderByItems;
         }
-
-        public int GetStartIndex()
-        {
-            return _startIndex;
-        }
-
-        public int GetStopIndex()
-        {
-            return _stopIndex;
-        }
-
         public ICollection<OrderByItemSegment> GetOrderByItems()
         {
             return _orderByItems;
+        }
+
+        public override string ToString()
+        {
+            return $"OrderByItems: {_orderByItems}, {nameof(StartIndex)}: {StartIndex}, {nameof(StopIndex)}: {StopIndex}";
         }
     }
 }

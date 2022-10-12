@@ -1,4 +1,5 @@
-﻿using NCDC.CommandParser.Segment.DML.Expr.Complex;
+﻿using NCDC.CommandParser.Segment.DML.Expr;
+using NCDC.CommandParser.Segment.DML.Expr.Complex;
 using NCDC.CommandParser.Segment.Generic;
 using NCDC.CommandParser.Util;
 
@@ -13,45 +14,35 @@ namespace NCDC.CommandParser.Segment.DML.Item
     */
     public sealed class ExpressionProjectionSegment:IProjectionSegment,IComplexExpressionSegment,IAliasAvailable
     {
-        private readonly int _startIndex;
-
-        private readonly int _stopIndex;
-
-        private readonly string _text;
+        public int StartIndex { get; }
+        public int StopIndex { get; }
+        public IExpressionSegment? Expr { get; }
+        public string Text { get; }
     
-        private AliasSegment alias;
+        private AliasSegment? _alias;
 
-        public ExpressionProjectionSegment(int startIndex, int stopIndex, string text)
+        public ExpressionProjectionSegment(int startIndex, int stopIndex, string text,IExpressionSegment? expr)
         {
-            _startIndex = startIndex;
-            _stopIndex = stopIndex;
-            _text = SqlUtil.GetExpressionWithoutOutsideParentheses(text);
+            StartIndex = startIndex;
+            StopIndex = stopIndex;
+            Text = SqlUtil.GetExpressionWithoutOutsideParentheses(text);
+            Expr = expr;
         }
 
-        public int GetStartIndex()
+        public string? GetAlias()
         {
-            return _startIndex;
-        }
-
-        public int GetStopIndex()
-        {
-            return _stopIndex;
-        }
-
-        public string GetText()
-        {
-            return _text;
-        }
-
-        public string GetAlias()
-        {
-            return alias?.GetIdentifier().GetValue();
+            return _alias?.IdentifierValue.Value;
         }
 
 
         public void SetAlias(AliasSegment alias)
         {
-            this.alias = alias;
+            this._alias = alias;
+        }
+
+        public override string ToString()
+        {
+            return $"Alias: {GetAlias()}, {nameof(StartIndex)}: {StartIndex}, {nameof(StopIndex)}: {StopIndex}, {nameof(Expr)}: {Expr}, {nameof(Text)}: {Text}";
         }
     }
 }

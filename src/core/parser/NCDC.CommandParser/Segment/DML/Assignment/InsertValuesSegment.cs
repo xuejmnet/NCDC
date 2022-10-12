@@ -13,30 +13,20 @@ namespace NCDC.CommandParser.Segment.DML.Assignment
     */
     public sealed class InsertValuesSegment:ISqlSegment
     {
-        private readonly int _startIndex;
-        private readonly int _stopIndex;
-        private readonly List<IExpressionSegment> _values;
+        public int StartIndex { get; }
+        public int StopIndex { get; }
+        public List<IExpressionSegment> Values { get; }
 
-        public InsertValuesSegment(int startIndex, int stopIndex, ICollection<IExpressionSegment> values)
+        public InsertValuesSegment(int startIndex, int stopIndex, List<IExpressionSegment> values)
         {
-            _startIndex = startIndex;
-            _stopIndex = stopIndex;
-            _values = values.ToList();
+            StartIndex = startIndex;
+            StopIndex = stopIndex;
+            Values = values;
         }
 
-        public int GetStartIndex()
+        public override string ToString()
         {
-            return _startIndex;
-        }
-
-        public int GetStopIndex()
-        {
-            return _stopIndex;
-        }
-
-        public List<IExpressionSegment> GetValues()
-        {
-            return _values;
+            return $"{nameof(StartIndex)}: {StartIndex}, {nameof(StopIndex)}: {StopIndex}, {nameof(Values)}: {Values}";
         }
     }
 }

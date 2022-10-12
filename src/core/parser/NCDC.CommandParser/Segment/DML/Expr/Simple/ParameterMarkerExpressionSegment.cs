@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
+using NCDC.CommandParser.Constant;
+using NCDC.CommandParser.Segment.DML.Item;
+using NCDC.CommandParser.Segment.Generic;
 
 namespace NCDC.CommandParser.Segment.DML.Expr.Simple
 {
@@ -12,45 +15,43 @@ namespace NCDC.CommandParser.Segment.DML.Expr.Simple
     * @Ver: 1.0
     * @Email: 326308290@qq.com
     */
-    public class ParameterMarkerExpressionSegment:ISimpleExpressionSegment
+    public class ParameterMarkerExpressionSegment:ISimpleExpressionSegment,IProjectionSegment,IAliasAvailable,IParameterMarkerSegment
     {
-        private readonly int _startIndex;
+        public int StartIndex { get; }
+        public int StopIndex { get; }
+        public int ParameterMarkerIndex { get; }
+        public string ParamName { get; }
+        public ParameterMarkerTypeEnum ParameterMarkerType { get; }
+        private AliasSegment? _alias;
 
-        private readonly int _stopIndex;
-
-        private readonly int _parameterMarkerIndex;
-        private readonly string _paramName;
 
         public ParameterMarkerExpressionSegment(int startIndex, int stopIndex, int parameterMarkerIndex,string paramName)
         {
-            _startIndex = startIndex;
-            _stopIndex = stopIndex;
-            _parameterMarkerIndex = parameterMarkerIndex;
-            _paramName = NormalizeParameterName(paramName);
+            StartIndex = startIndex;
+            StopIndex = stopIndex;
+            ParameterMarkerIndex = parameterMarkerIndex;
+            ParamName = NormalizeParameterName(paramName);
+            ParameterMarkerType = ParameterMarkerTypeEnum.AT;
         }
 
         internal static string NormalizeParameterName(string name)
         {
             return name.StartsWith("@", StringComparison.Ordinal) || name.StartsWith("?", StringComparison.Ordinal) ? name.Substring(1) : name;
         }
-        public int GetStartIndex()
+
+        public string? GetAlias()
         {
-            return _startIndex;
+            return _alias?.IdentifierValue.Value;
         }
 
-        public int GetStopIndex()
+        public void SetAlias(AliasSegment alias)
         {
-            return _stopIndex;
+            _alias = alias;
         }
 
-        public int GetParameterMarkerIndex()
+        public override string ToString()
         {
-            return _parameterMarkerIndex;
-        }
-
-        public string GetParameterName()
-        {
-            return _paramName;
+            return $"{nameof(StartIndex)}: {StartIndex}, {nameof(StopIndex)}: {StopIndex}, {nameof(ParameterMarkerIndex)}: {ParameterMarkerIndex}, {nameof(ParamName)}: {ParamName}, {nameof(ParameterMarkerType)}: {ParameterMarkerType}, Alias: {GetAlias()}";
         }
     }
 }

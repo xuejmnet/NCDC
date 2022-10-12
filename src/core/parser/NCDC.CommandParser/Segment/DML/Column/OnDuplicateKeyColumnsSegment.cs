@@ -12,35 +12,21 @@ namespace NCDC.CommandParser.Segment.DML.Column
     */
     public sealed class OnDuplicateKeyColumnsSegment:ISqlSegment
     {
-
-        private readonly int _startIndex;
-
-        private readonly int _stopIndex;
-
-        private readonly ICollection<AssignmentSegment> _columns;
-
+        public int StartIndex { get; }
+        public int StopIndex { get; }
+        public ICollection<AssignmentSegment> Columns { get; }
 
 
         public OnDuplicateKeyColumnsSegment(int startIndex, int stopIndex, ICollection<AssignmentSegment> columns)
         {
-            _startIndex = startIndex;
-            _stopIndex = stopIndex;
-            _columns = columns;
+            StartIndex = startIndex;
+            StopIndex = stopIndex;
+            Columns = columns;
         }
 
-        public int GetStartIndex()
+        public override string ToString()
         {
-            return _startIndex;
-        }
-
-        public int GetStopIndex()
-        {
-            return _stopIndex;
-        }
-
-        public ICollection<AssignmentSegment> GetColumns()
-        {
-            return _columns;
+            return $"{nameof(StartIndex)}: {StartIndex}, {nameof(StopIndex)}: {StopIndex}, {nameof(Columns)}: {Columns}";
         }
     }
 }

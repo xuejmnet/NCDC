@@ -8,26 +8,22 @@ namespace NCDC.CommandParser.Segment.DAL
 * @Date: Monday, 12 April 2021 22:30:50
 * @Email: 326308290@qq.com
 */
-    public sealed class FromSchemaSegment:ISqlSegment,IRemoveAvailable
+    public sealed class FromSchemaSegment:ISqlSegment
     {
-        private readonly int _startIndex;
-    
-        private readonly int _stopIndex;
+        public int StartIndex { get; }
+        public int StopIndex { get; }
+        public DatabaseSegment Schema { get; }
 
-        public FromSchemaSegment(int startIndex, int stopIndex)
+        public FromSchemaSegment(int startIndex, int stopIndex,DatabaseSegment schema)
         {
-            _startIndex = startIndex;
-            _stopIndex = stopIndex;
+            StartIndex = startIndex;
+            StopIndex = stopIndex;
+            Schema = schema;
         }
 
-        public int GetStartIndex()
+        public override string ToString()
         {
-            return _startIndex;
-        }
-
-        public int GetStopIndex()
-        {
-            return _stopIndex;
+            return $"{nameof(StartIndex)}: {StartIndex}, {nameof(StopIndex)}: {StopIndex}, {nameof(Schema)}: {Schema}";
         }
     }
 }

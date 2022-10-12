@@ -13,12 +13,12 @@ namespace NCDC.CommandParser.Segment.DML.Order.Item
     {
         private readonly ColumnSegment _column;
         public ColumnOrderByItemSegment(ColumnSegment column,OrderDirectionEnum orderDirection, OrderDirectionEnum nullOrderDirection) 
-            : base(column.GetStartIndex(), column.GetStopIndex(), orderDirection, nullOrderDirection)
+            : base(column.StartIndex, column.StopIndex, orderDirection, nullOrderDirection)
         {
             this._column = column;
         }
         public ColumnOrderByItemSegment(ColumnSegment column,OrderDirectionEnum orderDirection) 
-            : base(column.GetStartIndex(), column.GetStopIndex(), orderDirection, OrderDirectionEnum.ASC)
+            : base(column.StartIndex, column.StopIndex, orderDirection, OrderDirectionEnum.ASC)
         {
             this._column = column;
         }
@@ -31,6 +31,11 @@ namespace NCDC.CommandParser.Segment.DML.Order.Item
         public ColumnSegment GetColumn()
         {
             return _column;
+        }
+
+        public override string ToString()
+        {
+            return $"{base.ToString()}, Column: {_column}";
         }
     }
 }

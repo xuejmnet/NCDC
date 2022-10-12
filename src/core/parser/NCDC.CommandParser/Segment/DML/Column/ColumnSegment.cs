@@ -1,4 +1,6 @@
-﻿using NCDC.CommandParser.Segment.DML.Predicate.Value;
+﻿using System.Text;
+using NCDC.CommandParser.Segment.DML.Expr;
+using NCDC.CommandParser.Segment.DML.Predicate.Value;
 using NCDC.CommandParser.Segment.Generic;
 using NCDC.CommandParser.Value.Identifier;
 
@@ -11,51 +13,38 @@ namespace NCDC.CommandParser.Segment.DML.Column
     * @Ver: 1.0
     * @Email: 326308290@qq.com
     */
-    public sealed class ColumnSegment:ISqlSegment,IPredicateRightValue,IOwnerAvailable
+    public sealed class ColumnSegment:IExpressionSegment,IOwnerAvailable
     {
-        
-        private readonly int _startIndex;
-        private readonly int _stopIndex;
-        private readonly IdentifierValue _identifier;
-        private  OwnerSegment? owner;
+        public int StartIndex { get; }
+        public int StopIndex { get; }
+        public IdentifierValue IdentifierValue { get; }
 
-        public ColumnSegment(int startIndex, int stopIndex, IdentifierValue identifier)
+        public OwnerSegment? Owner { get; set; }
+        private string? OwnerValue => Owner?.IdentifierValue.Value;
+
+        public ColumnSegment(int startIndex, int stopIndex, IdentifierValue identifierValue)
         {
-            _startIndex = startIndex;
-            _stopIndex = stopIndex;
-            _identifier = identifier;
+            StartIndex = startIndex;
+            StopIndex = stopIndex;
+            IdentifierValue = identifierValue;
         }
 
-        public int GetStartIndex()
-        {
-            return _startIndex;
-        }
-
-        public int GetStopIndex()
-        {
-            return _stopIndex;
-        }
-
-        public IdentifierValue GetIdentifier()
-        {
-            return _identifier;
-        }
-
-        public OwnerSegment? GetOwner()
-        {
-            return owner;
-        }
-
-        public void SetOwner(OwnerSegment? owner)
-        {
-            this.owner = owner;
-        }
         /// <summary>
         /// 获取所属值如table.column
         /// </summary>
         /// <returns></returns>
         public string GetQualifiedName() {
-            return null == owner ? _identifier.GetValue() : owner.GetIdentifier().GetValue() + "." + _identifier.GetValue();
+            return null == Owner ? IdentifierValue.Value : Owner.IdentifierValue.Value + "." + IdentifierValue.Value;
+        }
+
+        public string GetExpression()
+        {
+            return  null == Owner ? IdentifierValue.Value :$"{Owner.IdentifierValue.Value}.{IdentifierValue.Value}";
+        }
+
+        public override int GetHashCode()
+        {
+            return $"{OwnerValue}{IdentifierValue.Value}".GetHashCode();
         }
     }
 }

@@ -12,23 +12,27 @@ namespace NCDC.CommandParser.Value.Identifier
     */
     public sealed class IdentifierValue : IValueASTNode<string>
     {
-        private readonly string _value;
 
-        private readonly QuoteCharacterEnum _quoteCharacterEnum;
+        public string Value { get; }
+        public  QuoteCharacterEnum QuoteCharacter { get; }
 
-        public IdentifierValue(string text)
+        public IdentifierValue(string value,QuoteCharacterEnum quoteCharacter)
         {
-            _value = SqlUtil.GetExactlyValue(text);
-            _quoteCharacterEnum = QuoteCharacter.GetQuoteCharacter(text);
+            Value = value;
+            QuoteCharacter = quoteCharacter;
         }
-        public string GetValue()
+        public IdentifierValue(string text):this(SqlUtil.GetExactlyValue(text)!,NCDC.CommandParser.Constant.QuoteCharacter.GetQuoteCharacter(text))
         {
-            return _value;
+        }
+        public IdentifierValue(string text,string reservedCharacters):this(SqlUtil.GetExactlyValue(text,reservedCharacters)!,NCDC.CommandParser.Constant.QuoteCharacter.GetQuoteCharacter(text))
+        {
         }
 
-        public QuoteCharacterEnum GetQuoteCharacter()
+
+        public override string ToString()
         {
-            return _quoteCharacterEnum;
+            return $"{nameof(Value)}: {Value}, {nameof(QuoteCharacter)}: {QuoteCharacter}";
         }
+
     }
 }

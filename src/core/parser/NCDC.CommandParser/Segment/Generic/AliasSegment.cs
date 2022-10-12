@@ -14,30 +14,20 @@ namespace NCDC.CommandParser.Segment.Generic
     /// </summary>
     public sealed class AliasSegment:ISqlSegment
     {
-        private readonly int _startIndex;
-        private readonly int _stopIndex;
-        private readonly IdentifierValue _identifier;
+        public int StartIndex { get; }
+        public int StopIndex { get; }
+        public IdentifierValue IdentifierValue { get; }
 
-        public AliasSegment(int startIndex, int stopIndex, IdentifierValue identifier)
+        public AliasSegment(int startIndex, int stopIndex, IdentifierValue identifierValue)
         {
-            _startIndex = startIndex;
-            _stopIndex = stopIndex;
-            _identifier = identifier;
+            StartIndex = startIndex;
+            StopIndex = stopIndex;
+            IdentifierValue = identifierValue;
         }
 
-        public int GetStartIndex()
+        public override string ToString()
         {
-            return _startIndex;
-        }
-
-        public int GetStopIndex()
-        {
-            return _stopIndex;
-        }
-
-        public IdentifierValue GetIdentifier()
-        {
-            return _identifier;
+            return $"{nameof(StartIndex)}: {StartIndex}, {nameof(StopIndex)}: {StopIndex}, {nameof(IdentifierValue)}: {IdentifierValue}";
         }
     }
 }

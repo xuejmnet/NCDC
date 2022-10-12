@@ -43,13 +43,25 @@ namespace NCDC.CommandParser.Util
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static string GetExactlyValue(string value)
+        public static string? GetExactlyValue(string? value)
         {
-            return value?.Replace("[",string.Empty)
+            if (value == null)
+                return null;
+            return value.Replace("[",string.Empty)
                 .Replace("]", string.Empty)
                 .Replace("`", string.Empty)
                 .Replace("'", string.Empty)
                 .Replace("\"", string.Empty);
+        }
+        public static string? GetExactlyValue(string? value,string reservedCharacters)
+        {
+            if (value == null)
+                return null;
+            var charArray = EXCLUDED_CHARACTERS.ToCharArray();
+            charArray.RemoveAll(reservedCharacters.ToCharArray());
+            var valueChars = value.ToCharArray();
+            valueChars.RemoveAll(charArray);
+            return new string(valueChars);
         }
 
         /// <summary>
