@@ -1,6 +1,7 @@
 using NCDC.CommandParser.Abstractions;
-using NCDC.CommandParser.Constant;
-using NCDC.CommandParser.Segment.DML.Order.Item;
+using NCDC.CommandParser.Common.Command;
+using NCDC.CommandParser.Common.Constant;
+using NCDC.CommandParser.Common.Segment.DML.Order.Item;
 using NCDC.ShardingParser.Command;
 using NCDC.ShardingParser.Command.DML;
 using NCDC.ShardingRewrite.Sql.Token.Generator;

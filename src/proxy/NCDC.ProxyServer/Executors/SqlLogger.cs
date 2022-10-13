@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Logging;
 using NCDC.CommandParser.Abstractions;
+using NCDC.CommandParser.Common.Command;
 using NCDC.Logger;
 using NCDC.ShardingParser.Command;
 

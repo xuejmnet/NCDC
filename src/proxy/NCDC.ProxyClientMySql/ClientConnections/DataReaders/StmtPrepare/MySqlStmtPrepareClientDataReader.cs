@@ -1,5 +1,5 @@
 using NCDC.CommandParser.Abstractions;
-using NCDC.CommandParser.Command.DML;
+using NCDC.CommandParser.Common.Command.DML;
 using NCDC.Protocol.MySql.Payload;
 using NCDC.Protocol.Packets;
 using NCDC.ProxyClient.Abstractions;

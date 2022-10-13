@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using NCDC.CommandParser.Abstractions;
 using NCDC.CommandParser.Abstractions.Visitor.Commands;
-using NCDC.CommandParser.Command.TCL;
+using NCDC.CommandParser.Common.Command.TCL;
 using NCDC.Extensions;
 
 

@@ -1,5 +1,5 @@
 using Microsoft.Extensions.Logging;
-using NCDC.CommandParser.Segment.DML.Predicate.Value;
+using NCDC.CommandParser.Common.Segment.DML.Predicate.Value;
 using NCDC.Enums;
 using NCDC.Exceptions;
 using NCDC.ShardingAdoNet;

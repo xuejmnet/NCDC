@@ -1,10 +1,11 @@
 using Microsoft.Extensions.Logging;
 using NCDC.CommandParser.Abstractions;
-using NCDC.CommandParser.Command.DAL.Dialect;
-using NCDC.CommandParser.Command.DAL.Dialect.MySql;
-using NCDC.CommandParser.Command.DCL;
-using NCDC.CommandParser.Command.TCL;
-using NCDC.CommandParser.Util;
+using NCDC.CommandParser.Common.Command;
+using NCDC.CommandParser.Common.Command.DAL.Dialect;
+using NCDC.CommandParser.Common.Command.DCL;
+using NCDC.CommandParser.Common.Command.TCL;
+using NCDC.CommandParser.Common.Util;
+using NCDC.CommandParser.Dialect.Command.MySql.DAL;
 using NCDC.Enums;
 using NCDC.Logger;
 using NCDC.ProxyServer.Abstractions;
@@ -33,7 +34,7 @@ public sealed class ServerHandlerFactory:IServerHandlerFactory
         }
 
         CheckNotSupportCommand(sqlCommand);
-        if (sqlCommand is TCLCommand tclCommand)
+        if (sqlCommand is ITCLCommand tclCommand)
         {
             return CreateTCLCommandServerHandler(tclCommand,sql, connectionSession);
         }
@@ -48,7 +49,7 @@ public sealed class ServerHandlerFactory:IServerHandlerFactory
     private IServerHandler CreateDALCommandServerHandler(DALCommand dalCommand, string sql,
         IConnectionSession connectionSession)
     {
-        if (dalCommand is UseCommand useCommand)
+        if (dalCommand is MySqlUseCommand useCommand)
         {
             return new UseDatabaseServerHandler(useCommand, connectionSession);
         }
@@ -65,16 +66,16 @@ public sealed class ServerHandlerFactory:IServerHandlerFactory
         return new UnicastServerHandler(sql, connectionSession, _serverDataReaderFactory);
     }
 
-    private IServerHandler CreateTCLCommandServerHandler(TCLCommand tclCommand, string sql,
+    private IServerHandler CreateTCLCommandServerHandler(ITCLCommand itclCommand, string sql,
         IConnectionSession connectionSession)
     {
-        if (tclCommand is BeginTransactionCommand beginTransactionCommand)
+        if (itclCommand is BeginTransactionCommand beginTransactionCommand)
         {
             // throw new NotSupportedException("BeginTransactionCommand");
             return new TransactionServerHandler(TransactionOperationTypeEnum.BEGIN, connectionSession);
         }
 
-        if (tclCommand is SetAutoCommitCommand setAutoCommitCommand)
+        if (itclCommand is SetAutoCommitCommand setAutoCommitCommand)
         {
             if (setAutoCommitCommand.AutoCommit)
             {
@@ -85,13 +86,13 @@ public sealed class ServerHandlerFactory:IServerHandlerFactory
             throw new NotSupportedException("SetAutoCommitCommand");
         }
 
-        if (tclCommand is CommitCommand commitCommand)
+        if (itclCommand is CommitCommand commitCommand)
         {
             return new TransactionServerHandler(TransactionOperationTypeEnum.COMMIT, connectionSession);
             // throw new NotSupportedException("CommitCommand");
         }
 
-        if (tclCommand is RollbackCommand rollbackCommand)
+        if (itclCommand is RollbackCommand rollbackCommand)
         {
             return new TransactionServerHandler(TransactionOperationTypeEnum.ROLLBACK, connectionSession);
             // throw new NotSupportedException("RollbackCommand");
@@ -99,7 +100,7 @@ public sealed class ServerHandlerFactory:IServerHandlerFactory
         //todo 判断设置隔离级别
 
         return new UnicastServerHandler(sql,connectionSession,_serverDataReaderFactory);
-        // throw new NotSupportedException(tclCommand.GetType().FullName);
+        // throw new NotSupportedException(itclCommand.GetType().FullName);
     }
 
     private void CheckNotSupportCommand(ISqlCommand sqlCommand)

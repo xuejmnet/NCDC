@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Microsoft.Extensions.Caching.Memory;
 using NCDC.CommandParser.Abstractions;
-using NCDC.CommandParser.Command;
+using NCDC.CommandParser.Common.Command;
 
 namespace NCDC.ParserEngine.Cache
 {

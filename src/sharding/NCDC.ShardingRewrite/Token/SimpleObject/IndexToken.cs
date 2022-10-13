@@ -1,9 +1,10 @@
 ﻿using System.Text;
 using NCDC.CommandParser.Abstractions;
-using NCDC.CommandParser.Constant;
-using NCDC.CommandParser.Value.Identifier;
+using NCDC.CommandParser.Common.Constant;
+using NCDC.CommandParser.Common.Value.Identifier;
 using NCDC.ShardingParser.Command;
 using NCDC.Basic.TableMetadataManagers;
+using NCDC.CommandParser.Common.Command;
 using NCDC.ShardingRewrite.Sql.Token.SimpleObject;
 using NCDC.ShardingRoute;
 

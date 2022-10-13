@@ -1,6 +1,7 @@
 using NCDC.Basic.Configurations;
 using NCDC.Basic.TableMetadataManagers;
 using NCDC.CommandParser.Abstractions;
+using NCDC.CommandParser.Common.Command;
 using NCDC.Extensions;
 using NCDC.ProxyServer.Connection.Abstractions;
 using NCDC.ShardingAdoNet;

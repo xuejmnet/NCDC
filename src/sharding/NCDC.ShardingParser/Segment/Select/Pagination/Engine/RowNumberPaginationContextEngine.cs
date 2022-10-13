@@ -1,8 +1,8 @@
-﻿using NCDC.CommandParser.Segment.DML.Expr;
-using NCDC.CommandParser.Segment.DML.Expr.Simple;
-using NCDC.CommandParser.Segment.DML.Pagination.RowNumber;
-using NCDC.CommandParser.Segment.DML.Predicate;
-using NCDC.CommandParser.Segment.DML.Predicate.Value;
+﻿using NCDC.CommandParser.Common.Segment.DML.Expr;
+using NCDC.CommandParser.Common.Segment.DML.Expr.Simple;
+using NCDC.CommandParser.Common.Segment.DML.Pagination.RowNumber;
+using NCDC.CommandParser.Common.Segment.DML.Predicate;
+using NCDC.CommandParser.Common.Segment.DML.Predicate.Value;
 using NCDC.ShardingParser.Segment.Select.Projection;
 using NCDC.Extensions;
 using NCDC.ShardingAdoNet;

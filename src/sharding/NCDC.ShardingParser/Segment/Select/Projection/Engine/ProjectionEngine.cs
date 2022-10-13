@@ -1,6 +1,6 @@
-using NCDC.CommandParser.Constant;
-using NCDC.CommandParser.Segment.DML.Item;
-using NCDC.CommandParser.Segment.Generic.Table;
+using NCDC.CommandParser.Common.Constant;
+using NCDC.CommandParser.Common.Segment.DML.Item;
+using NCDC.CommandParser.Common.Segment.Generic.Table;
 using NCDC.ShardingParser.Segment.Select.Projection.Impl;
 using NCDC.Basic.TableMetadataManagers;
 using NCDC.Extensions;

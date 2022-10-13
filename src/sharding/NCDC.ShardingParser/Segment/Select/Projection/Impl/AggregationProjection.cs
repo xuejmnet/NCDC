@@ -1,5 +1,5 @@
-using NCDC.CommandParser.Constant;
-using NCDC.CommandParser.Util;
+using NCDC.CommandParser.Common.Constant;
+using NCDC.CommandParser.Common.Util;
 
 namespace NCDC.ShardingParser.Segment.Select.Projection.Impl
 {

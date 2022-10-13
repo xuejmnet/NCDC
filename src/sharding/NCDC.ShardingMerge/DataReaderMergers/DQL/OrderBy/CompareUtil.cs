@@ -1,4 +1,4 @@
-using NCDC.CommandParser.Constant;
+using NCDC.CommandParser.Common.Constant;
 
 namespace NCDC.ShardingMerge.DataReaderMergers.DQL.OrderBy
 {

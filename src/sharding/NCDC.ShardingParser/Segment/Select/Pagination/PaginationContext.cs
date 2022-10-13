@@ -1,5 +1,5 @@
-using NCDC.CommandParser.Segment.DML.Pagination;
-using NCDC.CommandParser.Segment.DML.Pagination.limit;
+using NCDC.CommandParser.Common.Segment.DML.Pagination;
+using NCDC.CommandParser.Common.Segment.DML.Pagination.limit;
 using NCDC.Exceptions;
 using NCDC.ShardingParser.Command.DML;
 using NCDC.ShardingAdoNet;
@@ -81,7 +81,7 @@ namespace NCDC.ShardingParser.Segment.Select.Pagination
             {
                 return 0L;
             }
-            return _offsetSegment.isBoundOpened() ? _actualOffset - 1 : _actualOffset;
+            return _offsetSegment.IsBoundOpened() ? _actualOffset - 1 : _actualOffset;
         }
 
         public long? GetActualRowCount()
@@ -90,7 +90,7 @@ namespace NCDC.ShardingParser.Segment.Select.Pagination
             {
                 return null;
             }
-            return _rowCountSegment.isBoundOpened() ? _actualRowCount + 1 : _actualRowCount;
+            return _rowCountSegment.IsBoundOpened() ? _actualRowCount + 1 : _actualRowCount;
         }
 
         public int? GetOffsetParameterIndex()

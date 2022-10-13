@@ -1,4 +1,4 @@
-using NCDC.CommandParser.Segment.DML.Expr;
+using NCDC.CommandParser.Common.Segment.DML.Expr;
 using NCDC.ShardingRewrite.Sql.Token.SimpleObject.Generic;
 using NCDC.ShardingRoute;
 

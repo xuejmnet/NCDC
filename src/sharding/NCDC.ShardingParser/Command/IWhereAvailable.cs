@@ -1,4 +1,4 @@
-using NCDC.CommandParser.Segment.DML.Predicate;
+using NCDC.CommandParser.Common.Segment.DML.Predicate;
 
 namespace NCDC.ShardingParser.Command
 {

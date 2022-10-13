@@ -1,4 +1,4 @@
-using NCDC.CommandParser.Util;
+using NCDC.CommandParser.Common.Util;
 using NCDC.Protocol.MySql.Constant;
 using NCDC.Protocol.MySql.Packet.Generic;
 using NCDC.Protocol.MySql.Payload;

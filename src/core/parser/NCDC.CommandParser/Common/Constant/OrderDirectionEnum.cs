@@ -1,0 +1,14 @@
+namespace NCDC.CommandParser.Common.Constant
+{
+/*
+* @Author: xjm
+* @Description:
+* @Date: Sunday, 11 April 2021 15:40:03
+* @Email: 326308290@qq.com
+*/
+    public enum OrderDirectionEnum
+    {
+        ASC,
+        DESC
+    }
+}

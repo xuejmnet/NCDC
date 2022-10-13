@@ -1,5 +1,5 @@
-using NCDC.CommandParser.Segment.DML.Expr;
-using NCDC.CommandParser.Segment.DML.Expr.Simple;
+using NCDC.CommandParser.Common.Segment.DML.Expr;
+using NCDC.CommandParser.Common.Segment.DML.Expr.Simple;
 using NCDC.ShardingAdoNet;
 using NCDC.Base;
 

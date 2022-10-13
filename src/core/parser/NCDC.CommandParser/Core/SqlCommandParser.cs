@@ -1,7 +1,7 @@
 ﻿using Antlr4.Runtime.Tree;
 using NCDC.CommandParser.Abstractions;
 using NCDC.CommandParser.Abstractions.Visitor;
-using NCDC.CommandParser.Command;
+using NCDC.CommandParser.Common.Command;
 using NCDC.CommandParser.Core.Parser;
 using NCDC.CommandParser.Core.Visitor;
 using NCDC.CommandParser.SqlParseEngines.Hook;

@@ -1,7 +1,7 @@
-﻿using NCDC.CommandParser.Command.DML;
+﻿using NCDC.CommandParser.Common.Command.DML;
 using NCDC.CommandParser.Predicate;
-using NCDC.CommandParser.Segment.DML.Predicate;
-using NCDC.CommandParser.Segment.Generic.Table;
+using NCDC.CommandParser.Common.Segment.DML.Predicate;
+using NCDC.CommandParser.Common.Segment.Generic.Table;
 using NCDC.Extensions;
 using NCDC.ShardingParser.Segment.Table;
 using NCDC.Extensions;

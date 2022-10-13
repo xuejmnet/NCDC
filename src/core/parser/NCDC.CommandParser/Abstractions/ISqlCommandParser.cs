@@ -1,3 +1,5 @@
+using NCDC.CommandParser.Common.Command;
+
 namespace NCDC.CommandParser.Abstractions;
 
 public interface ISqlCommandParser

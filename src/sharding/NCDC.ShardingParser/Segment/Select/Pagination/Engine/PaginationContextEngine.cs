@@ -1,6 +1,6 @@
-﻿using NCDC.CommandParser.Command.DML;
-using NCDC.CommandParser.Segment.DML.Pagination.Top;
-using NCDC.CommandParser.Segment.DML.Predicate;
+﻿using NCDC.CommandParser.Common.Command.DML;
+using NCDC.CommandParser.Common.Segment.DML.Pagination.Top;
+using NCDC.CommandParser.Common.Segment.DML.Predicate;
 using NCDC.ShardingParser.Segment.Select.Projection;
 using NCDC.ShardingAdoNet;
 

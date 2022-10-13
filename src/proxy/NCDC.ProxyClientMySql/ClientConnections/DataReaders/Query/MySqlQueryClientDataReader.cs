@@ -1,7 +1,8 @@
 using System.Data.Common;
 using MySqlConnector;
 using NCDC.CommandParser.Abstractions;
-using NCDC.CommandParser.Command.DML;
+using NCDC.CommandParser.Common.Command;
+using NCDC.CommandParser.Common.Command.DML;
 using NCDC.Enums;
 using NCDC.Exceptions;
 using NCDC.Protocol.MySql.Constant;

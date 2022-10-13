@@ -1,5 +1,5 @@
 ﻿using System.Text;
-using NCDC.CommandParser.Constant;
+using NCDC.CommandParser.Common.Constant;
 using NCDC.ShardingRewrite.Sql.Token.SimpleObject;
 
 namespace NCDC.ShardingRewrite.Token.SimpleObject

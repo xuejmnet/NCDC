@@ -1,7 +1,7 @@
 ﻿using NCDC.CommandParser.Abstractions;
 using NCDC.CommandParser.Abstractions.Visitor.Commands;
-using NCDC.CommandParser.Command.TCL;
-using NCDC.CommandParser.Segment.TCL;
+using NCDC.CommandParser.Common.Command.TCL;
+using NCDC.CommandParser.Common.Segment.TCL;
 
 
 namespace NCDC.MySqlParser.Visitor.Impl

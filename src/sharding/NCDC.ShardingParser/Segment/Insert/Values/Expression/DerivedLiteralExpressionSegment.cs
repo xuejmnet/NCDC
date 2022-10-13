@@ -1,4 +1,4 @@
-﻿using NCDC.CommandParser.Segment.DML.Expr.Simple;
+﻿using NCDC.CommandParser.Common.Segment.DML.Expr.Simple;
 
 namespace NCDC.ShardingParser.Segment.Insert.Values.Expression
 {

@@ -1,7 +1,8 @@
 using NCDC.Basic.Configurations;
 using NCDC.Basic.TableMetadataManagers;
 using NCDC.CommandParser.Abstractions;
-using NCDC.CommandParser.Command.DAL.Dialect;
+using NCDC.CommandParser.Common.Command;
+using NCDC.CommandParser.Common.Command.DAL.Dialect;
 using NCDC.ShardingMerge.Abstractions;
 using NCDC.ShardingMerge.DataReaderMergers;
 using NCDC.ShardingMerge.DataReaderMergers.DAL;

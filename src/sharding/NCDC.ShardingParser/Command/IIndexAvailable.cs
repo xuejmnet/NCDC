@@ -1,4 +1,4 @@
-using NCDC.CommandParser.Segment.DDL.Index;
+using NCDC.CommandParser.Common.Segment.DDL.Index;
 
 namespace NCDC.ShardingParser.Command
 {

@@ -1,0 +1,6 @@
+namespace NCDC.CommandParser.Common.Constant;
+
+public enum SubQueryTypeEnum
+{
+    PROJECTION_SUB_QUERY, TABLE_SUB_QUERY, PREDICATE_SUB_QUERY, INSERT_SELECT_SUB_QUERY, EXISTS_SUB_QUERY
+}

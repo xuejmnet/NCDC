@@ -1,5 +1,5 @@
 using NCDC.Base;
-using NCDC.CommandParser.Command.DML;
+using NCDC.CommandParser.Common.Command.DML;
 using NCDC.ShardingParser.Command.DML;
 using NCDC.ShardingAdoNet;
 using NCDC.ShardingRewrite.Sql.Token.SimpleObject;

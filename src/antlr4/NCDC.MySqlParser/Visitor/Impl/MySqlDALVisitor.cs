@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Text;
 using NCDC.CommandParser.Abstractions;
 using NCDC.CommandParser.Abstractions.Visitor.Commands;
-using NCDC.CommandParser.Command.DAL.Dialect;
-using NCDC.CommandParser.Command.DAL.Dialect.MySql;
-using NCDC.CommandParser.Segment.DAL;
-using NCDC.CommandParser.Segment.Generic;
-using NCDC.CommandParser.Segment.Generic.Table;
-using NCDC.CommandParser.Value.Identifier;
-using NCDC.CommandParser.Value.Literal.Impl;
+using NCDC.CommandParser.Common.Command.DAL.Dialect;
+using NCDC.CommandParser.Common.Segment.DAL;
+using NCDC.CommandParser.Common.Segment.Generic;
+using NCDC.CommandParser.Common.Segment.Generic.Table;
+using NCDC.CommandParser.Common.Value.Identifier;
+using NCDC.CommandParser.Common.Value.Literal.Impl;
+using NCDC.CommandParser.Dialect.Command.MySql.DAL;
 
 
 namespace NCDC.MySqlParser.Visitor.Impl
@@ -96,7 +96,7 @@ namespace NCDC.MySqlParser.Visitor.Impl
 
         public override IASTNode VisitAnalyzeTable(MySqlCommandParser.AnalyzeTableContext ctx)
         {
-            return new AnalyzeTableCommand();
+            return new MySqlAnalyzeTableCommand();
         }
 
 
@@ -144,7 +144,7 @@ namespace NCDC.MySqlParser.Visitor.Impl
 
         public override IASTNode VisitUse(MySqlCommandParser.UseContext ctx)
         {
-            UseCommand result = new UseCommand();
+            MySqlUseCommand result = new MySqlUseCommand();
             result.SetSchema(((IdentifierValue)Visit(ctx.schemaName())).GetValue());
             return result;
         }

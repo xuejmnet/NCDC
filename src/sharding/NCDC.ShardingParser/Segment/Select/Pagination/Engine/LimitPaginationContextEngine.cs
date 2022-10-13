@@ -1,4 +1,4 @@
-﻿using NCDC.CommandParser.Segment.DML.Pagination.limit;
+﻿using NCDC.CommandParser.Common.Segment.DML.Pagination.limit;
 using NCDC.ShardingAdoNet;
 
 namespace NCDC.ShardingParser.Segment.Select.Pagination.Engine

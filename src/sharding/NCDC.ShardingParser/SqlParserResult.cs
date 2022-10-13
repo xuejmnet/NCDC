@@ -1,6 +1,7 @@
 using NCDC.Basic.TableMetadataManagers;
 using NCDC.CommandParser.Abstractions;
-using NCDC.CommandParser.Command.DML;
+using NCDC.CommandParser.Common.Command;
+using NCDC.CommandParser.Common.Command.DML;
 using NCDC.ShardingAdoNet;
 using NCDC.ShardingParser.Command;
 
@@ -33,7 +34,7 @@ public sealed class SqlParserResult
     /// <returns></returns>
     private bool IsNativeSql(ISqlCommandContext<ISqlCommand> sqlCommandContext)
     {
-        if (sqlCommandContext.GetSqlCommand() is DMLCommand)
+        if (sqlCommandContext.GetSqlCommand() is IDMLCommand)
         {
             return false;
         }
@@ -42,7 +43,7 @@ public sealed class SqlParserResult
     }
     private bool IsDefaultDataSourceExecute(ISqlCommandContext<ISqlCommand> sqlCommandContext,ITableMetadataManager tableMetadataManager)
     {
-        if (sqlCommandContext.GetSqlCommand() is DMLCommand)
+        if (sqlCommandContext.GetSqlCommand() is IDMLCommand)
         {
             var tableNames = sqlCommandContext.GetTablesContext().GetTableNames();
             return tableNames.All(o => !tableMetadataManager.IsSharding(o));

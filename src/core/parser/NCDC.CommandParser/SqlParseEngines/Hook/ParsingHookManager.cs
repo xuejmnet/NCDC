@@ -1,4 +1,5 @@
 ﻿using NCDC.CommandParser.Abstractions;
+using NCDC.CommandParser.Common.Command;
 
 namespace NCDC.CommandParser.SqlParseEngines.Hook
 {

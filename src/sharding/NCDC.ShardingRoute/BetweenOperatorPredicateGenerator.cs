@@ -1,4 +1,4 @@
-using NCDC.CommandParser.Segment.DML.Predicate.Value;
+using NCDC.CommandParser.Common.Segment.DML.Predicate.Value;
 using NCDC.Enums;
 using NCDC.Plugin.Enums;
 using NCDC.ShardingAdoNet;

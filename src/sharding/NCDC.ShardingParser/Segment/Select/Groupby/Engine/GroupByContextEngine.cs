@@ -1,5 +1,5 @@
-using NCDC.CommandParser.Command.DML;
-using NCDC.CommandParser.Segment.DML.Order.Item;
+using NCDC.CommandParser.Common.Command.DML;
+using NCDC.CommandParser.Common.Segment.DML.Order.Item;
 using NCDC.ShardingParser.Segment.Select.OrderBy;
 
 namespace NCDC.ShardingParser.Segment.Select.Groupby.Engine

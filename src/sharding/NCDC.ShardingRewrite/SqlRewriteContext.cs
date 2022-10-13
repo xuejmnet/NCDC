@@ -2,6 +2,7 @@ using NCDC.CommandParser.Abstractions;
 using NCDC.ShardingParser.Command;
 using NCDC.ShardingParser.Command.DML;
 using NCDC.Basic.TableMetadataManagers;
+using NCDC.CommandParser.Common.Command;
 using NCDC.ShardingAdoNet;
 using NCDC.ShardingRewrite.Abstractions;
 using NCDC.ShardingRewrite.ParameterRewriters.ParameterBuilders;

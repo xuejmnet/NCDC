@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using NCDC.CommandParser.Abstractions;
-using NCDC.CommandParser.Constant;
-using NCDC.CommandParser.Segment.DML.Predicate;
+using NCDC.CommandParser.Common.Constant;
+using NCDC.CommandParser.Common.Segment.DML.Predicate;
 using NCDC.Exceptions;
 using NCDC.Extensions;
 using NCDC.Extensions;

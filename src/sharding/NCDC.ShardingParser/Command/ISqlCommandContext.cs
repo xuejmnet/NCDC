@@ -1,5 +1,5 @@
 using NCDC.CommandParser.Abstractions;
-using NCDC.CommandParser.Command;
+using NCDC.CommandParser.Common.Command;
 using NCDC.ShardingParser.Segment.Table;
 
 namespace NCDC.ShardingParser.Command

@@ -1,4 +1,5 @@
 using NCDC.CommandParser.Abstractions;
+using NCDC.CommandParser.Common.Command;
 using NCDC.Extensions;
 using NCDC.ProxyServer.Abstractions;
 using NCDC.ProxyServer.Connection.Abstractions;

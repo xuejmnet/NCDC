@@ -1,7 +1,7 @@
-﻿using NCDC.CommandParser.Command.DML;
-using NCDC.CommandParser.Segment.DML.Item;
-using NCDC.CommandParser.Segment.DML.Order.Item;
-using NCDC.CommandParser.Segment.Generic.Table;
+﻿using NCDC.CommandParser.Common.Command.DML;
+using NCDC.CommandParser.Common.Segment.DML.Item;
+using NCDC.CommandParser.Common.Segment.DML.Order.Item;
+using NCDC.CommandParser.Common.Segment.Generic.Table;
 using NCDC.ShardingParser.Segment.Select.Groupby;
 using NCDC.ShardingParser.Segment.Select.OrderBy;
 using NCDC.ShardingParser.Segment.Select.Projection.Impl;

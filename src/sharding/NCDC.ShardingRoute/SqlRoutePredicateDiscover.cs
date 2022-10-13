@@ -1,8 +1,9 @@
 using NCDC.Basic.TableMetadataManagers;
 using NCDC.CommandParser.Abstractions;
-using NCDC.CommandParser.Command.DML;
-using NCDC.CommandParser.Segment.DML.Predicate;
-using NCDC.CommandParser.Segment.DML.Predicate.Value;
+using NCDC.CommandParser.Common.Command;
+using NCDC.CommandParser.Common.Command.DML;
+using NCDC.CommandParser.Common.Segment.DML.Predicate;
+using NCDC.CommandParser.Common.Segment.DML.Predicate.Value;
 using NCDC.Enums;
 using NCDC.Exceptions;
 using NCDC.ShardingAdoNet;
@@ -41,9 +42,9 @@ public class SqlRoutePredicateDiscover
     {
         var sqlCommandContext = sqlParserResult.SqlCommandContext;
         var parameterContext = sqlParserResult.ParameterContext;
-        if (!(sqlCommandContext.GetSqlCommand() is DMLCommand))
+        if (!(sqlCommandContext.GetSqlCommand() is IDMLCommand))
         {
-            throw new ShardingException($"sql command not {nameof(DMLCommand)} cant resolve route");
+            throw new ShardingException($"sql command not {nameof(IDMLCommand)} cant resolve route");
         }
 
         if (sqlCommandContext is InsertCommandContext insertCommandContext)

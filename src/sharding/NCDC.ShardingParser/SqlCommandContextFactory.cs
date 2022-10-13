@@ -1,8 +1,9 @@
 using NCDC.CommandParser.Abstractions;
-using NCDC.CommandParser.Command.DML;
+using NCDC.CommandParser.Common.Command.DML;
 using NCDC.ShardingParser.Command;
 using NCDC.ShardingParser.Command.DML;
 using NCDC.Basic.TableMetadataManagers;
+using NCDC.CommandParser.Common.Command;
 using NCDC.ShardingAdoNet;
 using NCDC.ShardingParser.Abstractions;
 
@@ -23,7 +24,7 @@ namespace NCDC.ShardingParser
             _tableMetadataManager = tableMetadataManager;
         }
         public  ISqlCommandContext<ISqlCommand> Create(string sql, ParameterContext parameterContext, ISqlCommand sqlCommand) {
-            if(sqlCommand is DMLCommand dmlCommand)
+            if(sqlCommand is IDMLCommand dmlCommand)
             {
                 return GetDMLCommandContext(sql, parameterContext, dmlCommand);
             }
@@ -43,7 +44,7 @@ namespace NCDC.ShardingParser
             return new GenericSqlCommandContext<ISqlCommand>(sqlCommand);
         }
 
-        private  ISqlCommandContext<ISqlCommand> GetDMLCommandContext(string sql, ParameterContext parameterContext, DMLCommand sqlCommand)
+        private  ISqlCommandContext<ISqlCommand> GetDMLCommandContext(string sql, ParameterContext parameterContext, IDMLCommand sqlCommand)
         {
             if (sqlCommand is SelectCommand selectCommand)
             {

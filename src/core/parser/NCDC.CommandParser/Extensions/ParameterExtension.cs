@@ -4,7 +4,7 @@ using System.Data.Common;
 using System.Linq;
 using System.Text;
 using NCDC.Base;
-using NCDC.CommandParser.Segment.DML.Expr.Simple;
+using NCDC.CommandParser.Common.Segment.DML.Expr.Simple;
 
 namespace NCDC.CommandParser.Extensions
 {

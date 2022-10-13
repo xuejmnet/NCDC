@@ -1,4 +1,4 @@
-using NCDC.CommandParser.Segment.DML.Order.Item;
+using NCDC.CommandParser.Common.Segment.DML.Order.Item;
 
 namespace NCDC.ShardingParser.Segment.Select.OrderBy
 {

@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using NCDC.CommandParser.Abstractions;
 using NCDC.CommandParser.Abstractions.Visitor.Commands;
-using NCDC.CommandParser.Command.DCL;
-using NCDC.CommandParser.Segment.Generic.Table;
+using NCDC.CommandParser.Common.Command.DCL;
+using NCDC.CommandParser.Common.Segment.Generic.Table;
 
 
 namespace NCDC.SqlServerParser.Visitor.Impl

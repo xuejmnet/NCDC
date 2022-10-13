@@ -1,5 +1,5 @@
-using NCDC.CommandParser.Command.DAL.Dialect.MySql;
-using NCDC.CommandParser.Util;
+using NCDC.CommandParser.Common.Util;
+using NCDC.CommandParser.Dialect.Command.MySql.DAL;
 using NCDC.Exceptions;
 using NCDC.ProxyServer.Abstractions;
 using NCDC.ProxyServer.Connection.Abstractions;
@@ -9,17 +9,17 @@ namespace NCDC.ProxyServer.ServerHandlers;
 
 public sealed class UseDatabaseServerHandler:IServerHandler
 {
-    private readonly UseCommand _useCommand;
+    private readonly MySqlUseCommand _mySqlUseCommand;
     private readonly IConnectionSession _connectionSession;
 
-    public UseDatabaseServerHandler( UseCommand useCommand,IConnectionSession connectionSession)
+    public UseDatabaseServerHandler( MySqlUseCommand mySqlUseCommand,IConnectionSession connectionSession)
     {
-        _useCommand = useCommand;
+        _mySqlUseCommand = mySqlUseCommand;
         _connectionSession = connectionSession;
     }
     public Task<IServerResult> ExecuteAsync()
     {
-        var database = SqlUtil.GetExactlyValue(_useCommand.GetSchema());
+        var database = SqlUtil.GetExactlyValue(_mySqlUseCommand.GetSchema());
         if (IsAuthorized(database))
         {
             return Task.FromResult((IServerResult)RecordsAffectedServerResult.Empty);

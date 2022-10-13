@@ -1,5 +1,5 @@
-using NCDC.CommandParser.Segment.DML.Column;
-using NCDC.CommandParser.Segment.Generic.Table;
+using NCDC.CommandParser.Common.Segment.DML.Column;
+using NCDC.CommandParser.Common.Segment.Generic.Table;
 using NCDC.Basic.TableMetadataManagers;
 using NCDC.Exceptions;
 using NCDC.Extensions;

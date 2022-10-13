@@ -1,5 +1,5 @@
 using NCDC.Basic.Configurations;
-using NCDC.CommandParser.Command.DML;
+using NCDC.CommandParser.Common.Command.DML;
 using NCDC.Extensions;
 using NCDC.ShardingParser;
 using NCDC.ShardingRoute.Abstractions;

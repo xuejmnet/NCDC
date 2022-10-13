@@ -1,6 +1,7 @@
 using NCDC.Base;
 using NCDC.Basic.TableMetadataManagers;
 using NCDC.CommandParser.Abstractions;
+using NCDC.CommandParser.Common.Command;
 using NCDC.Extensions;
 using NCDC.ShardingMerge.DataReaderMergers.DQL.GroupBy.Aggregation;
 using NCDC.ShardingMerge.DataReaders.Memory;

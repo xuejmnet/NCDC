@@ -1,5 +1,5 @@
 ﻿using Antlr4.Runtime.Tree;
-using NCDC.CommandParser.Command;
+using NCDC.CommandParser.Common.Command;
 using NCDC.CommandParser.Exceptions;
 
 namespace NCDC.CommandParser.Core.Visitor

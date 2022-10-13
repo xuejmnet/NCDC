@@ -1,7 +1,7 @@
 ﻿using NCDC.Basic.Configurations;
 using NCDC.Basic.TableMetadataManagers;
 using NCDC.CommandParser.Abstractions;
-using NCDC.CommandParser.Command.DAL.Dialect.MySql;
+using NCDC.CommandParser.Common.Command;
 using NCDC.ShardingMerge.Abstractions;
 using NCDC.ShardingMerge.DataReaderMergers.DAL.Common;
 using NCDC.ShardingMerge.DataReaderMergers.DAL.Show;

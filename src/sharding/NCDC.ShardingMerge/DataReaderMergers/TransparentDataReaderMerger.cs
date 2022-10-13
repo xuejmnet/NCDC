@@ -1,4 +1,5 @@
 ﻿using NCDC.CommandParser.Abstractions;
+using NCDC.CommandParser.Common.Command;
 using NCDC.ShardingMerge.Abstractions;
 using NCDC.ShardingMerge.DataReaders.Transparent;
 using NCDC.ShardingParser.Command;

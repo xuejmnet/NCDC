@@ -1,6 +1,6 @@
 ﻿using NCDC.Base;
 using NCDC.Basic.TableMetadataManagers;
-using NCDC.CommandParser.Segment.DML.Order.Item;
+using NCDC.CommandParser.Common.Segment.DML.Order.Item;
 using NCDC.ShardingParser.Command.DML;
 using NCDC.ShardingParser.Segment.Select.OrderBy;
 using NCDC.StreamDataReaders;

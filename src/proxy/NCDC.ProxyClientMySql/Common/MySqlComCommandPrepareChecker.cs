@@ -1,11 +1,12 @@
 using NCDC.CommandParser.Abstractions;
-using NCDC.CommandParser.Command.DAL.Dialect;
-using NCDC.CommandParser.Command.DAL.Dialect.MySql;
-using NCDC.CommandParser.Command.DCL;
-using NCDC.CommandParser.Command.DDL;
-using NCDC.CommandParser.Command.DML;
-using NCDC.CommandParser.Command.RL;
-using NCDC.CommandParser.Command.TCL;
+using NCDC.CommandParser.Common.Command;
+using NCDC.CommandParser.Common.Command.DAL.Dialect;
+using NCDC.CommandParser.Common.Command.DCL;
+using NCDC.CommandParser.Common.Command.DDL;
+using NCDC.CommandParser.Common.Command.DML;
+using NCDC.CommandParser.Common.Command.RL;
+using NCDC.CommandParser.Common.Command.TCL;
+using NCDC.CommandParser.Dialect.Command.MySql.DAL;
 
 namespace NCDC.ProxyClientMySql.Common;
 
@@ -17,7 +18,7 @@ public static class MySqlComCommandPrepareChecker
         SQL_COMMANDS_ALLOWED = new HashSet<Type>();
         SQL_COMMANDS_ALLOWED.Add(typeof(AlterTableCommand));
         SQL_COMMANDS_ALLOWED.Add(typeof(AlterUserCommand));
-        SQL_COMMANDS_ALLOWED.Add(typeof(AnalyzeTableCommand));
+        SQL_COMMANDS_ALLOWED.Add(typeof(MySqlAnalyzeTableCommand));
         SQL_COMMANDS_ALLOWED.Add(typeof(CacheIndexCommand));
         SQL_COMMANDS_ALLOWED.Add(typeof(CallCommand));
         SQL_COMMANDS_ALLOWED.Add(typeof(ChangeMasterCommand));

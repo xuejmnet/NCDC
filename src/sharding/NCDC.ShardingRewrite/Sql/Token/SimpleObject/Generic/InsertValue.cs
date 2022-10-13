@@ -1,7 +1,7 @@
 ﻿using System.Text;
-using NCDC.CommandParser.Segment.DML.Expr;
-using NCDC.CommandParser.Segment.DML.Expr.Complex;
-using NCDC.CommandParser.Segment.DML.Expr.Simple;
+using NCDC.CommandParser.Common.Segment.DML.Expr;
+using NCDC.CommandParser.Common.Segment.DML.Expr.Complex;
+using NCDC.CommandParser.Common.Segment.DML.Expr.Simple;
 
 namespace NCDC.ShardingRewrite.Sql.Token.SimpleObject.Generic
 {
