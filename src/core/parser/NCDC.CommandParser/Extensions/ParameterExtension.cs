@@ -21,8 +21,8 @@ namespace NCDC.CommandParser.Extensions
         public static object GetParameterValue(this List<object> parameters, ParameterMarkerExpressionSegment parameterMarkerExpressionSegment)
         {
 
-            var parameter = parameters.Select(o => (DbParameter)o).FirstOrDefault(o => o.ParameterName.Equals(parameterMarkerExpressionSegment.GetParameterName()));
-            ShardingAssert.ShouldBeNotNull(parameter, $"Sharding value cant find parameter name :[{parameterMarkerExpressionSegment.GetParameterName()}].");
+            var parameter = parameters.Select(o => (DbParameter)o).FirstOrDefault(o => o.ParameterName.Equals(parameterMarkerExpressionSegment.ParamName));
+            ShardingAssert.ShouldBeNotNull(parameter, $"Sharding value cant find parameter name :[{parameterMarkerExpressionSegment.ParamName}].");
             return parameter.Value;
         }
     }

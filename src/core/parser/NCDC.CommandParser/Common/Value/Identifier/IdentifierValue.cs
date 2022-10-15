@@ -21,10 +21,10 @@ namespace NCDC.CommandParser.Common.Value.Identifier
             Value = value;
             QuoteCharacter = quoteCharacter;
         }
-        public IdentifierValue(string text):this(SqlUtil.GetExactlyValue(text)!,NCDC.CommandParser.Constant.QuoteCharacter.GetQuoteCharacter(text))
+        public IdentifierValue(string text):this(SqlUtil.GetExactlyValue(text)!,NCDC.CommandParser.Common.Constant.QuoteCharacter.GetQuoteCharacter(text))
         {
         }
-        public IdentifierValue(string text,string reservedCharacters):this(SqlUtil.GetExactlyValue(text,reservedCharacters)!,NCDC.CommandParser.Constant.QuoteCharacter.GetQuoteCharacter(text))
+        public IdentifierValue(string text,string reservedCharacters):this(SqlUtil.GetExactlyValue(text,reservedCharacters)!,NCDC.CommandParser.Common.Constant.QuoteCharacter.GetQuoteCharacter(text))
         {
         }
 

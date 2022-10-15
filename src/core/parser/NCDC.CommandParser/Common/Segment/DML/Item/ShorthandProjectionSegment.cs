@@ -27,7 +27,7 @@ namespace NCDC.CommandParser.Common.Segment.DML.Item
             return _alias?.IdentifierValue.Value;
         }
 
-        public void SetAlias(AliasSegment alias)
+        public void SetAlias(AliasSegment? alias)
         {
             this._alias = alias;
         }

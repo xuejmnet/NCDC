@@ -5,5 +5,10 @@ namespace NCDC.CommandParser.Dialect.Command.MySql.DML;
 
 public sealed class MySqlDoCommand:DoCommand,IMySqlCommand
 {
-    public ICollection<IExpressionSegment>? Parameters { get; set; }
+    public MySqlDoCommand(ICollection<IExpressionSegment> parameters)
+    {
+        Parameters = parameters;
+    }
+
+    public ICollection<IExpressionSegment> Parameters { get; }
 }

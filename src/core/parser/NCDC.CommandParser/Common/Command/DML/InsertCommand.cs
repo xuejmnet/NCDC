@@ -3,6 +3,7 @@ using System.Linq;
 using NCDC.CommandParser.Common.Segment.DML.Assignment;
 using NCDC.CommandParser.Common.Segment.DML.Column;
 using NCDC.CommandParser.Common.Segment.DML.Expr;
+using NCDC.CommandParser.Common.Segment.DML.Expr.SubQuery;
 using NCDC.CommandParser.Common.Segment.Generic.Table;
 
 namespace NCDC.CommandParser.Common.Command.DML
@@ -19,7 +20,7 @@ namespace NCDC.CommandParser.Common.Command.DML
         public SimpleTableSegment? Table { get; set; }
 
         public InsertColumnsSegment? InsertColumns { get; set; }
-        public SubQueryTableSegment? InsertSelect { get; set; }
+        public SubQuerySegment? InsertSelect { get; set; }
         public readonly ICollection<InsertValuesSegment> Values = new LinkedList<InsertValuesSegment>();
     }
 }

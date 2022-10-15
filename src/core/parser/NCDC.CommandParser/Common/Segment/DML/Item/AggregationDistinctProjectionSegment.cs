@@ -17,10 +17,5 @@ namespace NCDC.CommandParser.Common.Segment.DML.Item
         {
             DistinctExpression = SqlUtil.GetExpressionWithoutOutsideParentheses(distinctExpression);
         }
-
-        public override string ToString()
-        {
-            return $"{base.ToString()}, {nameof(DistinctExpression)}: {DistinctExpression}";
-        }
     }
 }

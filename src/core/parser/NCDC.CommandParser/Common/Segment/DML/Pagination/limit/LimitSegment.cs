@@ -10,11 +10,11 @@ namespace NCDC.CommandParser.Common.Segment.DML.Pagination.limit
     {
         public int StartIndex { get; }
         public int StopIndex { get; }
-        public IPaginationValueSegment Offset { get; }
+        public IPaginationValueSegment? Offset { get; }
         public IPaginationValueSegment RowCount { get; }
 
 
-        public LimitSegment(int startIndex, int stopIndex, IPaginationValueSegment offset, IPaginationValueSegment rowCount)
+        public LimitSegment(int startIndex, int stopIndex, IPaginationValueSegment? offset, IPaginationValueSegment rowCount)
         {
             StartIndex = startIndex;
             StopIndex = stopIndex;

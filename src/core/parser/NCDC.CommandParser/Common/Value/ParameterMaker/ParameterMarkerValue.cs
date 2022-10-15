@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using NCDC.CommandParser.Common.Constant;
 
 namespace NCDC.CommandParser.Common.Value.ParameterMaker
 {
@@ -14,11 +15,15 @@ namespace NCDC.CommandParser.Common.Value.ParameterMaker
     public sealed class ParameterMarkerValue:IValueASTNode<int>
     {
 
-        public ParameterMarkerValue(int value)
+        public ParameterMarkerValue(int value, ParameterMarkerTypeEnum parameterMarkerType,string parameterName)
         {
             Value = value;
+            ParameterMarkerType = parameterMarkerType;
+            ParameterName = parameterName;
         }
 
         public int Value { get; }
+        public ParameterMarkerTypeEnum ParameterMarkerType { get; }
+        public string ParameterName { get; }
     }
 }

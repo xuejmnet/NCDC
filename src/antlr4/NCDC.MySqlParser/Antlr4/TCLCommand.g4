@@ -17,37 +17,79 @@
 
 grammar TCLCommand;
 
-import Symbol, Keyword, MySqlKeyword, Literals, BaseRule;
+import BaseRule;
 
 setTransaction
-    : SET scope_? TRANSACTION
+    : SET optionType? TRANSACTION transactionCharacteristics
     ;
 
 setAutoCommit
-    : SET scope_? AUTOCOMMIT EQ_ autoCommitValue
-    ;
-
-scope_
-    : (GLOBAL | PERSIST | PERSIST_ONLY | SESSION)
-    | AT_ AT_ (GLOBAL | PERSIST | PERSIST_ONLY | SESSION) DOT_
-    ;
-
-autoCommitValue
-    : NUMBER_ | ON | OFF
+    : SET (AT_? AT_)? optionType? DOT_? AUTOCOMMIT EQ_ autoCommitValue=(NUMBER_ | ON | OFF)
     ;
 
 beginTransaction
-    : BEGIN | START TRANSACTION
+    : BEGIN | START TRANSACTION (transactionCharacteristic (COMMA_ transactionCharacteristic)*)?
+    ;
+
+transactionCharacteristic
+    : WITH CONSISTENT SNAPSHOT | transactionAccessMode
     ;
 
 commit
-    : COMMIT
+    : COMMIT WORK? optionChain? optionRelease?
     ;
 
 rollback
-    : ROLLBACK
+    : ROLLBACK (WORK? TO SAVEPOINT? identifier | WORK? optionChain? optionRelease?)
     ;
 
 savepoint
-    : SAVEPOINT
+    : SAVEPOINT identifier
     ;
+
+begin
+    : BEGIN WORK?
+    ;
+
+lock
+    : LOCK (INSTANCE FOR BACKUP | (TABLES tableLock (COMMA_ tableLock)*))
+    ;
+
+unlock
+    : UNLOCK (INSTANCE | TABLE | TABLES)
+    ;
+
+releaseSavepoint
+    : RELEASE SAVEPOINT identifier
+    ;
+
+xa
+    : XA ((START | BEGIN) xid (JOIN | RESUME)?
+        | END xid (SUSPEND (FOR MIGRATE)?)?
+        | PREPARE xid
+        | COMMIT xid (ONE PHASE)?
+        | ROLLBACK xid
+        | RECOVER (CONVERT XID)?
+    )
+    ;
+
+optionChain
+    : AND NO? CHAIN
+    ;
+
+optionRelease
+    : NO? RELEASE
+    ;
+
+tableLock
+    : tableName (AS? alias)? lockOption
+    ;
+
+lockOption
+    : READ LOCAL? | LOW_PRIORITY? WRITE
+    ;
+
+xid
+    : gtrid=textString (COMMA_ bqual=textString (COMMA_ formatID=NUMBER_)?)?
+    ;
+

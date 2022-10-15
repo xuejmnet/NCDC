@@ -1,5 +1,10 @@
 ﻿using System.Text.RegularExpressions;
+using NCDC.CommandParser.Abstractions;
 using NCDC.CommandParser.Common.Constant;
+using NCDC.CommandParser.Common.Segment.DML.Expr;
+using NCDC.CommandParser.Common.Segment.DML.Expr.Complex;
+using NCDC.CommandParser.Common.Segment.DML.Expr.Simple;
+using NCDC.CommandParser.Common.Value.Literal.Impl;
 using NCDC.Extensions;
 
 namespace NCDC.CommandParser.Common.Util
@@ -115,6 +120,21 @@ namespace NCDC.CommandParser.Common.Util
             }
 
             return result.Trim();
+        }
+        public static IExpressionSegment CreateLiteralExpression(IASTNode astNode,  int startIndex,  int stopIndex,  String text) {
+            if (astNode is StringLiteralValue stringLiteralValue) {
+                return new LiteralExpressionSegment(startIndex, stopIndex, stringLiteralValue.Value);
+            }
+            if (astNode is NumberLiteralValue numberLiteralValue) {
+                return new LiteralExpressionSegment(startIndex, stopIndex, numberLiteralValue.Value);
+            }
+            if (astNode is BooleanLiteralValue booleanLiteralValue) {
+                return new LiteralExpressionSegment(startIndex, stopIndex,booleanLiteralValue.Value);
+            }
+            if (astNode is OtherLiteralValue otherLiteralValue) {
+                return new CommonExpressionSegment(startIndex, stopIndex, otherLiteralValue.Value);
+            }
+            return new CommonExpressionSegment(startIndex, stopIndex, text);
         }
     }
 }

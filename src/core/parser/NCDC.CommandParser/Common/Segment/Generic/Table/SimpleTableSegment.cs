@@ -42,7 +42,7 @@ namespace NCDC.CommandParser.Common.Segment.Generic.Table
             return this._alias?.IdentifierValue.Value;
         }
 
-        public void SetAlias(AliasSegment alias)
+        public void SetAlias(AliasSegment? alias)
         {
             this._alias = alias;
         }

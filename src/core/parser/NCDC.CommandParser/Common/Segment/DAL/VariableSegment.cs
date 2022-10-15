@@ -13,9 +13,5 @@ namespace NCDC.CommandParser.Common.Segment.DAL
         public string? Scope { get; set; }
         public string? Variable { get; set; }
 
-        public override string ToString()
-        {
-            return $"{nameof(StartIndex)}: {StartIndex}, {nameof(StopIndex)}: {StopIndex}, {nameof(Scope)}: {Scope}, {nameof(Variable)}: {Variable}";
-        }
     }
 }

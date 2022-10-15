@@ -17,7 +17,7 @@
 
 grammar MySqlCommand;
 
-import Symbol, Comments, DMLCommand, DDLCommand, TCLCommand, DCLCommand, DALCommand, RLCommand;
+import Comments, DDLCommand, TCLCommand, DCLCommand, RLCommand;
 
 execute
     : (select
@@ -25,15 +25,36 @@ execute
     | update
     | delete
     | replace
+    | binlog
     | createTable
-    | alterTable
+    | alterStatement
     | repairTable
-    | renameTableSpecification
     | dropTable
-    | dropDatabase
     | truncateTable
     | createIndex
     | dropIndex
+    | createProcedure
+    | dropProcedure
+    | createFunction
+    | dropFunction
+    | createDatabase
+    | dropDatabase
+    | createEvent
+    | dropEvent
+    | createLogfileGroup
+    | dropLogfileGroup
+    | createServer
+    | dropServer
+    | createView
+    | dropView
+    | createTrigger
+    | dropTrigger
+    | alterResourceGroup
+    | createResourceGroup
+    | dropResourceGroup
+    | prepare
+    | executeStmt
+    | deallocate
     | setTransaction
     | beginTransaction
     | setAutoCommit
@@ -50,20 +71,55 @@ execute
     | dropRole
     | setDefaultRole
     | setRole
+    | createSRSStatement
+    | dropSRSStatement
+    | flush
+    | getDiagnosticsStatement
+    | groupReplication
+    | handlerStatement
+    | help
+    | importStatement
+    | install
+    | kill
+    | loadStatement
+    | lock
+    | cacheIndex
+    | loadIndexInfo
+    | optimizeTable
+    | purgeBinaryLog
+    | releaseSavepoint
+    | resetStatement
     | setPassword
+    | setTransaction
+    | setResourceGroup
+    | resignalStatement
+    | signalStatement
+    | restart
+    | shutdown
+    | begin
     | use
-    | desc
-    | showDatabases
-    | showTables
-    | showTableStatus
-    | showColumns
-    | showIndex
-    | showCreateTable
-    | showOther
+    | explain
+    | doStatement
+    | show
     | setVariable
+    | setCharacter
     | call
-    | changeMasterTo
+    | change
+    | checkTable
+    | checksumTable
+    | clone
     | startSlave
     | stopSlave
-    ) SEMI_?
+    | analyzeTable
+    | renameTable
+    | uninstall
+    | unlock
+    | xa
+    | createLoadableFunction
+    | createTablespace
+    | alterTablespace
+    | dropTablespace
+    | delimiter
+    ) (SEMI_ EOF? | EOF)
+    | EOF
     ;

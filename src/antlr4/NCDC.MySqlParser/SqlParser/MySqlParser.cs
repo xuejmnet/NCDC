@@ -6,7 +6,6 @@ using Antlr4.Runtime;
 using NCDC.CommandParser.Abstractions;
 using NCDC.CommandParser.Abstractions.SqlParser;
 using NCDC.CommandParser.Core;
-using NCDC.CommandParser.SqlParseEngines.Core;
 
 
 namespace NCDC.MySqlParser.SqlParser
@@ -29,7 +28,7 @@ namespace NCDC.MySqlParser.SqlParser
 
         public IASTNode Parse()
         {
-            return new ParseASTNode(execute());
+            return new ParseASTNode(execute(),(CommonTokenStream)TokenStream);
         }
     }
 }

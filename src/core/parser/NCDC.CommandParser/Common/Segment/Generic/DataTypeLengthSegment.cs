@@ -10,7 +10,7 @@ namespace NCDC.CommandParser.Common.Segment.Generic
     {
         public int StartIndex { get; set; }
         public int StopIndex { get; set; }
-        public int Percision { get; set; }
+        public int Precision { get; set; }
         public int? Scale { get; set; }
     }
 }

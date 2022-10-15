@@ -25,6 +25,15 @@ namespace NCDC.CommandParser.Common.Segment.DML.Expr.Simple
         private AliasSegment? _alias;
 
 
+        public ParameterMarkerExpressionSegment(int startIndex, int stopIndex, int parameterMarkerIndex,ParameterMarkerTypeEnum parameterMarkerType,string paramName)
+        {
+            StartIndex = startIndex;
+            StopIndex = stopIndex;
+            ParameterMarkerIndex = parameterMarkerIndex;
+            ParamName = NormalizeParameterName(paramName);
+            ParameterMarkerType = parameterMarkerType;
+        }
+
         public ParameterMarkerExpressionSegment(int startIndex, int stopIndex, int parameterMarkerIndex,string paramName)
         {
             StartIndex = startIndex;
@@ -44,7 +53,7 @@ namespace NCDC.CommandParser.Common.Segment.DML.Expr.Simple
             return _alias?.IdentifierValue.Value;
         }
 
-        public void SetAlias(AliasSegment alias)
+        public void SetAlias(AliasSegment? alias)
         {
             _alias = alias;
         }

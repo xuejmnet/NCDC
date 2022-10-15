@@ -1,5 +1,4 @@
 ﻿using NCDC.CommandParser.Common.Command.DML;
-using NCDC.CommandParser.Predicate;
 using NCDC.CommandParser.Common.Segment.DML.Item;
 using NCDC.CommandParser.Common.Segment.DML.Order.Item;
 using NCDC.CommandParser.Common.Segment.DML.Predicate;
@@ -15,6 +14,8 @@ using NCDC.ShardingParser.Segment.Select.Projection;
 using NCDC.ShardingParser.Segment.Select.Projection.Engine;
 using NCDC.ShardingParser.Segment.Table;
 using NCDC.Basic.TableMetadataManagers;
+using NCDC.CommandParser.Common.Constant;
+using NCDC.CommandParser.Common.Segment.DML.Column;
 using NCDC.CommandParser.Common.Util;
 using NCDC.Exceptions;
 using NCDC.Extensions;
@@ -41,8 +42,13 @@ namespace NCDC.ShardingParser.Command.DML
         private readonly OrderByContext _orderByContext;
 
         private readonly PaginationContext _paginationContext;
+        private readonly IDictionary<int, SelectCommandContext> _subQueryContexts;
+        private readonly ICollection<WhereSegment> _whereSegments;
+        private readonly ICollection<ColumnSegment> _columnSegments;
 
-        private readonly bool _containsSubQuery;
+        public SubQueryTypeEnum? SubQueryType { get; set; }
+        
+        public bool NeedAggregateRewrite{ get; set; }
 
         public SelectCommandContext(ITableMetadataManager tableMetadataManager, string sql, ParameterContext parameterContext, SelectCommand sqlCommand) : base(sqlCommand)
         {

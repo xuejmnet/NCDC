@@ -1,3 +1,6 @@
+using NCDC.CommandParser.Common.Segment.DML.Column;
+using NCDC.CommandParser.Common.Segment.Generic.Table;
+
 namespace NCDC.CommandParser.Common.Segment.DML.Predicate
 {
 /*
@@ -17,5 +20,7 @@ namespace NCDC.CommandParser.Common.Segment.DML.Predicate
 
         public int StartIndex { get; }
         public int StopIndex { get; }
+        public ICollection<SimpleTableSegment> Tables = new LinkedList<SimpleTableSegment>();
+        public ICollection<ColumnSegment> Columns = new LinkedList<ColumnSegment>();
     }
 }

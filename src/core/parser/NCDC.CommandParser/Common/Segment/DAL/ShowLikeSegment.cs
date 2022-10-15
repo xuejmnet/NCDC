@@ -18,10 +18,5 @@ namespace NCDC.CommandParser.Common.Segment.DAL
             StopIndex = stopIndex;
             Pattern = pattern;
         }
-
-        public override string ToString()
-        {
-            return $"{nameof(StartIndex)}: {StartIndex}, {nameof(StopIndex)}: {StopIndex}, {nameof(Pattern)}: {Pattern}";
-        }
     }
 }

@@ -17,44 +17,23 @@
 
 grammar DALCommand;
 
-import Symbol, Keyword, MySqlKeyword, Literals, BaseRule;
+import DMLCommand;
 
 use
     : USE schemaName
     ;
 
-desc
-    : (DESC | DESCRIBE) tableName
+help
+    : HELP textOrIdentifier
     ;
 
-showDatabases
-    : SHOW (DATABASES | SCHEMAS) (showLike | showWhereClause_)?
+explain
+    : (DESC | DESCRIBE | EXPLAIN)
+    (tableName (columnRef | textString)?
+    | explainType? (explainableStatement | FOR CONNECTION connectionId)
+    | ANALYZE (FORMAT EQ_ TREE)? select)
     ;
-
-showTables
-    : SHOW EXTENDED? FULL? TABLES fromSchema? (showLike | showWhereClause_)?
-    ;
-
-showTableStatus
-    : SHOW TABLE STATUS fromSchema? (showLike | showWhereClause_)?
-    ;
-
-showColumns
-    : SHOW EXTENDED? FULL? (COLUMNS | FIELDS) fromTable fromSchema?  (showColumnLike_ | showWhereClause_)?
-    ;
-
-showIndex
-    : SHOW EXTENDED? (INDEX | INDEXES | KEYS) fromTable fromSchema? showWhereClause_?
-    ;
-
-showCreateTable
-    : SHOW CREATE TABLE tableName
-    ;
-
-showOther
-    : SHOW
-    ;
-
+    
 fromSchema
     : (FROM | IN) schemaName
     ;
@@ -67,16 +46,12 @@ showLike
     : LIKE stringLiterals
     ;
 
-showColumnLike_
-    : LIKE stringLiterals
-    ;
-
-showWhereClause_
+showWhereClause
     : WHERE expr
     ;
 
 showFilter
-    : showLike | showWhereClause_
+    : showLike | showWhereClause
     ;
 
 showProfileType
@@ -84,7 +59,27 @@ showProfileType
     ;
 
 setVariable
-    : SET variable?
+    : SET optionValueList
+    ;
+
+optionValueList
+    : optionValueNoOptionType (COMMA_ optionValue)*
+    | optionType (internalVariableName EQ_ setExprOrDefault) (COMMA_ optionValue)*
+    ;
+
+optionValueNoOptionType
+    : internalVariableName equal setExprOrDefault
+    | userVariable equal expr
+    | setSystemVariable equal setExprOrDefault
+    | NAMES (equal expr | charsetName collateClause? | DEFAULT)
+    ;
+
+equal
+    : EQ_ | ASSIGNMENT_
+    ;
+    
+optionValue
+    : optionType internalVariableName EQ_ setExprOrDefault | optionValueNoOptionType
     ;
 
 showBinaryLogs
@@ -92,7 +87,7 @@ showBinaryLogs
     ;
 
 showBinlogEvents
-    : SHOW BINLOG EVENTS (IN DEFINER)? (FROM NUMBER_)? (LIMIT (NUMBER_ COMMA_)? NUMBER_)?
+    : SHOW BINLOG EVENTS (IN logName)? (FROM NUMBER_)? limitClause?
     ;
 
 showCharacterSet
@@ -103,8 +98,12 @@ showCollation
     : SHOW COLLATION showFilter?
     ;
 
+showColumns
+    : SHOW EXTENDED? FULL? (COLUMNS | FIELDS) fromTable fromSchema? showFilter?
+    ;
+
 showCreateDatabase
-    : SHOW CREATE (DATABASE | SCHEMA) (IF NOT EXISTS)? schemaName
+    : SHOW CREATE (DATABASE | SCHEMA) ifNotExists? schemaName
     ;
 
 showCreateEvent
@@ -116,7 +115,11 @@ showCreateFunction
     ;
 
 showCreateProcedure
-    : SHOW CREATE PROCEDURE functionName
+    : SHOW CREATE PROCEDURE procedureName
+    ;
+
+showCreateTable
+    : SHOW CREATE TABLE tableName
     ;
 
 showCreateTrigger
@@ -124,15 +127,19 @@ showCreateTrigger
     ;
 
 showCreateUser
-    : SHOW CREATE USER userName
+    : SHOW CREATE USER username
     ;
 
 showCreateView
     : SHOW CREATE VIEW viewName
     ;
 
+showDatabases
+    : SHOW (DATABASES | SCHEMAS) showFilter?
+    ;
+
 showEngine
-    : SHOW ENGINE engineName (STATUS | MUTEX)
+    : SHOW ENGINE engineRef (STATUS | MUTEX)
     ;
 
 showEngines
@@ -140,7 +147,7 @@ showEngines
     ;
 
 showErrors
-    : SHOW ((ERRORS (LIMIT (NUMBER_ COMMA_)? NUMBER_)?) | (COUNT LP_ ASTERISK_ RP_ ERRORS))
+    : SHOW (COUNT LP_ ASTERISK_ RP_)? ERRORS limitClause?
     ;
 
 showEvents
@@ -155,8 +162,12 @@ showFunctionStatus
     : SHOW FUNCTION STATUS showFilter?
     ;
 
-showGrant
-    : SHOW GRANTS ( FOR (userName | roleName) (USING roleName (COMMA_ roleName)+)?)
+showGrants
+    : SHOW GRANTS (FOR (username | roleName) (USING roleName (COMMA_ roleName)*)?)?
+    ;
+
+showIndex
+    : SHOW EXTENDED? (INDEX | INDEXES | KEYS) fromTable fromSchema? showWhereClause?
     ;
 
 showMasterStatus
@@ -180,7 +191,7 @@ showProcedureCode
     ;
 
 showProcedureStatus
-    : SHOW PROCEDURE STATUS showFilter
+    : SHOW PROCEDURE STATUS showFilter?
     ;
 
 showProcesslist
@@ -188,7 +199,7 @@ showProcesslist
     ;
 
 showProfile
-    : SHOW PROFILE ( showProfileType (COMMA_ showProfileType)*)? (FOR QUERY NUMBER_)? (LIMIT NUMBER_ (OFFSET NUMBER_))?
+    : SHOW PROFILE (showProfileType (COMMA_ showProfileType)*)? (FOR QUERY NUMBER_)? limitClause?
     ;
 
 showProfiles
@@ -196,52 +207,76 @@ showProfiles
     ;
 
 showRelaylogEvent
-    : SHOW RELAYLOG EVENTS (IN logName)? (FROM NUMBER_)? (LIMIT (NUMBER_ COMMA_)? NUMBER_) FOR CHANNEL channelName
+    : SHOW RELAYLOG EVENTS (IN logName)? (FROM NUMBER_)? limitClause? (FOR CHANNEL channelName)?
     ;
 
-showSlavehost
-    : SHOW SLAVE HOST
+showReplicas
+    : SHOW REPLICAS
+    ;
+
+showSlaveHosts
+    : SHOW SLAVE HOSTS
+    ;
+
+showReplicaStatus
+    : SHOW REPLICA STATUS (FOR CHANNEL channelName)?
     ;
 
 showSlaveStatus
-    : SHOW SLAVE STATUS (FOR CHANNEL channelName)
+    : SHOW SLAVE STATUS (FOR CHANNEL channelName)?
     ;
 
 showStatus
-    : SHOW (GLOBAL | SESSION) STATUS showFilter?
+    : SHOW (GLOBAL | SESSION)? STATUS showFilter?
     ;
 
-showTrriggers
-    : SHOW TRIGGER fromSchema? showFilter?
+showTableStatus
+    : SHOW TABLE STATUS fromSchema? showFilter?
+    ;
+
+showTables
+    : SHOW EXTENDED? FULL? TABLES fromSchema? showFilter?
+    ;
+
+showTriggers
+    : SHOW TRIGGERS fromSchema? showFilter?
     ;
 
 showVariables
-    : SHOW (GLOBAL | SESSION)? VARIABLES showFilter
+    : SHOW (GLOBAL | SESSION)? VARIABLES showFilter?
     ;
 
 showWarnings
-    : SHOW ((WARNINGS (LIMIT (NUMBER_ COMMA_)? NUMBER_)?) | (COUNT LP_ ASTERISK_ RP_ WARNINGS))
+    : SHOW (COUNT LP_ ASTERISK_ RP_)? WARNINGS limitClause?
+    ;
+
+showCharset
+    : SHOW CHARSET
     ;
 
 setCharacter
-    : SET (CHARACTER SET | CHARSET) (characterSetName_ | DEFAULT)
-    ;
-
-setName
-    : SET NAMES (characterSetName_ (COLLATE collationName_)? | DEFAULT)
+    : SET (CHARACTER SET | CHARSET) (charsetName | DEFAULT)
     ;
 
 clone
-    : CLONE cloneAction_
+    : CLONE cloneAction
     ;
 
-cloneAction_
-    : LOCAL DATA DIRECTORY EQ_? cloneDir SEMI_
-    | INSTANCE FROM cloneInstance IDENTIFIED BY STRING_ (DATA DIRECTORY EQ_ cloneDir)? (REQUIRE NO? SSL)?
+cloneAction
+    : LOCAL DATA DIRECTORY EQ_? cloneDir
+    | INSTANCE FROM cloneInstance IDENTIFIED BY string_ (DATA DIRECTORY EQ_? cloneDir)? (REQUIRE NO? SSL)?
     ;
 
-createUdf
-    : CREATE AGGREGATE FUNCTION functionName RETURNS ( STRING | INTEGER | REAL | DECIMAL) SONAME shardLibraryName
+createLoadableFunction
+    : CREATE AGGREGATE? FUNCTION functionName RETURNS (STRING | INTEGER | REAL | DECIMAL) SONAME shardLibraryName
+    ;
+
+install
+    : installComponent | installPlugin
+    ;
+
+uninstall
+    :uninstallComponent | uninstallPlugin
     ;
 
 installComponent
@@ -261,42 +296,46 @@ uninstallPlugin
     ;
 
 analyzeTable
-    : ANALYZE (NO_WRITE_TO_BINLOG | LOCAL)? TABLE (tableNames 
-    | tableName UPDATE HISTOGRAM ON columnNames (WITH NUMBER_ BUCKETS)
-    | tableName DROP HISTOGRAM ON columnNames)
+    : ANALYZE (NO_WRITE_TO_BINLOG | LOCAL)? tableOrTables tableList histogram?
+    ;
+
+histogram
+    : UPDATE HISTOGRAM ON columnNames (WITH NUMBER_ BUCKETS)?
+    | DROP HISTOGRAM ON columnNames
     ;
 
 checkTable
-    : CHECK TABLE tableNames checkTableOption_
+    : CHECK TABLE tableList checkTableOption?
     ;
 
-checkTableOption_
-    : FOR UPGRADE | QUICK | FAST | MEDIUM | EXTENDED | CHANGE
+checkTableOption
+    : FOR UPGRADE | QUICK | FAST | MEDIUM | EXTENDED | CHANGED
     ;
 
 checksumTable
-    : CHECKSUM TABLE tableNames (QUICK | EXTENDED)
+    : CHECKSUM tableOrTables tableList (QUICK | EXTENDED)?
     ;
+
 optimizeTable
-    : OPTIMIZE (NO_WRITE_TO_BINLOG | LOCAL)? TABLE tableNames
+    : OPTIMIZE (NO_WRITE_TO_BINLOG | LOCAL)? tableOrTables tableList
     ;
 
 repairTable
-    : REPAIR (NO_WRITE_TO_BINLOG | LOCAL)? TABLE tableNames QUICK? EXTENDED? USE_FRM?
+    : REPAIR (NO_WRITE_TO_BINLOG | LOCAL)? tableOrTables tableList QUICK? EXTENDED? USE_FRM?
     ;
 
 alterResourceGroup
-    : ALTER RESOURCE GROUP groupName (VCPU EQ_? vcpuSpec_ (COMMA_ vcpuSpec_)*)? (THREAD_PRIORITY EQ_? NUMBER_)?
+    : ALTER RESOURCE GROUP groupName (VCPU EQ_? vcpuSpec (COMMA_ vcpuSpec)*)? (THREAD_PRIORITY EQ_? NUMBER_)?
     (ENABLE | DISABLE FORCE?)?
     ;
 
-vcpuSpec_
+vcpuSpec
     : NUMBER_ | NUMBER_ MINUS_ NUMBER_
     ;
 
 createResourceGroup
-    : CREATE RESOURCE GROUP groupName TYPE EQ_ (SYSTEM | USER) (VCPU EQ_? vcpuSpec_ (COMMA_ vcpuSpec_)*)? 
-    (THREAD_PRIORITY EQ_? NUMBER_)? (ENABLE | DISABLE )?
+    : CREATE RESOURCE GROUP groupName TYPE EQ_ (SYSTEM | USER) (VCPU EQ_? vcpuSpec (COMMA_ vcpuSpec)*)?
+    (THREAD_PRIORITY EQ_? NUMBER_)? (ENABLE | DISABLE)?
     ;
 
 dropResourceGroup
@@ -312,11 +351,11 @@ binlog
     ;
 
 cacheIndex
-    : CACHE INDEX (tableIndexList (COMMA_ tableIndexList)* | tableName PARTITION LP_ partitionList RP_) IN IDENTIFIER_
+    : CACHE INDEX (cacheTableIndexList (COMMA_ cacheTableIndexList)* | tableName PARTITION LP_ partitionList RP_) IN (identifier | DEFAULT)
     ;
 
-tableIndexList
-    : tableName (PARTITION LP_ partitionList RP_)? ((INDEX | KEY) LP_ indexName (COMMA_ indexName)* RP_)?
+cacheTableIndexList
+    : tableName ((INDEX | KEY) LP_ indexName (COMMA_ indexName)* RP_)?
     ;
 
 partitionList
@@ -324,37 +363,45 @@ partitionList
     ;
 
 flush
-    : FLUSH (NO_WRITE_TO_BINLOG | LOCAL)? (flushOption_ (COMMA_ flushOption_) * | tablesOption_)
+    : FLUSH (NO_WRITE_TO_BINLOG | LOCAL)? (flushOption (COMMA_ flushOption)* | tablesOption)
     ;
 
-flushOption_
+flushOption
     : BINARY LOGS | ENGINE LOGS | ERROR LOGS | GENERAL LOGS | HOSTS | LOGS | PRIVILEGES | OPTIMIZER_COSTS
     | RELAY LOGS (FOR CHANNEL channelName)? | SLOW LOGS | STATUS | USER_RESOURCES 
     ;
 
-tablesOption_
+tablesOption
     : TABLES |TABLES tableName (COMMA_ tableName)* | TABLES WITH READ LOCK | TABLES tableName (COMMA_ tableName)* WITH READ LOCK
     | TABLES tableName (COMMA_ tableName)* FOR EXPORT
     ;
 
 kill
-    : KILL (CONNECTION | QUERY)? NUMBER_+
+    : KILL (CONNECTION | QUERY)? IDENTIFIER_
     ;
 
 loadIndexInfo
-    : LOAD INDEX INTO CACHE tableIndexList (COMMA_ tableIndexList)*
+    : LOAD INDEX INTO CACHE loadTableIndexList (COMMA_ loadTableIndexList)*
+    ;
+
+loadTableIndexList
+    : tableName (PARTITION LP_ partitionList RP_)? ((INDEX | KEY) LP_ indexName (COMMA_ indexName)* RP_)? (IGNORE LEAVES)?
     ;
 
 resetStatement
-    : RESET resetOption_ (COMMA_ resetOption_)*
+    : RESET resetOption (COMMA_ resetOption)*
+    | resetPersist
     ;
 
-resetOption_
-    : MASTER | SLAVE | QUERY CACHE
+resetOption
+    : MASTER (TO binaryLogFileIndexNumber)?
+    | SLAVE ALL? channelOption?
+    | REPLICA
+    | QUERY CACHE
     ;
 
 resetPersist
-    : RESET PERSIST ((IF EXISTS)? IDENTIFIER_)
+    : RESET PERSIST (ifExists? identifier)?
     ;
 
 restart
@@ -363,4 +410,66 @@ restart
 
 shutdown
     : SHUTDOWN
+    ;
+
+explainType
+    : FORMAT EQ_ formatName
+    ;
+    
+explainableStatement
+    : select | delete | insert | replace | update
+    ;
+
+formatName
+    : TRADITIONAL | JSON | TREE
+    ;
+
+delimiter
+    : DELIMITER delimiterName
+    ;
+    
+show
+    : showDatabases
+    | showTables
+    | showTableStatus
+    | showBinaryLogs
+    | showColumns
+    | showIndex
+    | showCreateDatabase
+    | showCreateTable
+    | showBinlogEvents
+    | showCharacterSet
+    | showCollation
+    | showCreateEvent
+    | showCreateFunction
+    | showCreateProcedure
+    | showCreateTrigger
+    | showCreateUser
+    | showCreateView
+    | showEngine
+    | showEngines
+    | showCharset
+    | showErrors
+    | showEvents
+    | showFunctionCode
+    | showFunctionStatus
+    | showGrants
+    | showMasterStatus
+    | showPlugins
+    | showOpenTables
+    | showPrivileges
+    | showProcedureCode
+    | showProcesslist
+    | showProfile
+    | showProcedureStatus
+    | showProfiles
+    | showSlaveHosts
+    | showSlaveStatus
+    | showRelaylogEvent
+    | showStatus
+    | showTriggers
+    | showWarnings
+    | showVariables
+    | showReplicas
+    | showReplicaStatus
     ;

@@ -16,9 +16,9 @@ namespace NCDC.CommandParser.Common.Segment.DDL.Column.Position
     {
         public int StartIndex { get; }
         public int StopIndex { get; }
-        public  ColumnSegment ColumnName { get; }
+        public  ColumnSegment? ColumnName { get; }
 
-        public ColumnPositionSegment(int startIndex, int stopIndex, ColumnSegment columnName)
+        public ColumnPositionSegment(int startIndex, int stopIndex, ColumnSegment? columnName)
         {
             StartIndex = startIndex;
             StopIndex = stopIndex;

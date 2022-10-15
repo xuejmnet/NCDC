@@ -13,12 +13,12 @@ namespace NCDC.CommandParser.Common.Command.DML
 */
     public abstract class DeleteCommand : AbstractSqlCommand, IDMLCommand
     {
-        protected DeleteCommand(SimpleTableSegment table)
+        protected DeleteCommand(ITableSegment table)
         {
             Table = table;
         }
 
-        public SimpleTableSegment Table { get; }
+        public ITableSegment Table { get; }
         public WhereSegment? Where { get; set; }
     }
 }

@@ -16,9 +16,5 @@ namespace NCDC.CommandParser.Common.Segment.DAL
     
         public SimpleTableSegment? Table { get; set;}
 
-        public override string ToString()
-        {
-            return $"{nameof(StartIndex)}: {StartIndex}, {nameof(StopIndex)}: {StopIndex}, {nameof(Table)}: {Table}";
-        }
     }
 }

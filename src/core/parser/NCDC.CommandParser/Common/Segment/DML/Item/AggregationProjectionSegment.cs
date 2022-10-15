@@ -17,6 +17,7 @@ namespace NCDC.CommandParser.Common.Segment.DML.Item
         public int StopIndex { get; }
         public AggregationTypeEnum Type { get; }
         public string InnerExpression { get; }
+        public ICollection<IExpressionSegment> Parameters = new LinkedList<IExpressionSegment>();
 
 
         private AliasSegment? _alias;
@@ -33,14 +34,10 @@ namespace NCDC.CommandParser.Common.Segment.DML.Item
             return _alias?.IdentifierValue.Value;
         }
 
-        public void SetAlias(AliasSegment alias)
+        public void SetAlias(AliasSegment? alias)
         {
             _alias = alias;
         }
 
-        public override string ToString()
-        {
-            return $"Alias: {_alias}, {nameof(StartIndex)}: {StartIndex}, {nameof(StopIndex)}: {StopIndex}, {nameof(Type)}: {Type}, {nameof(InnerExpression)}: {InnerExpression}";
-        }
     }
 }

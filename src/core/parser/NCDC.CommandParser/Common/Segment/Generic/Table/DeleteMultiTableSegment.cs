@@ -11,7 +11,7 @@ public sealed class DeleteMultiTableSegment:ITableSegment
         return null;
     }
 
-    public void SetAlias(AliasSegment alias)
+    public void SetAlias(AliasSegment? alias)
     {
     }
 }

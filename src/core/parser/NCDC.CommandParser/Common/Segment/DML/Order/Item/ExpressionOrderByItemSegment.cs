@@ -1,4 +1,5 @@
 ﻿using NCDC.CommandParser.Common.Constant;
+using NCDC.CommandParser.Common.Segment.DML.Expr;
 
 namespace NCDC.CommandParser.Common.Segment.DML.Order.Item
 {
@@ -11,12 +12,12 @@ namespace NCDC.CommandParser.Common.Segment.DML.Order.Item
     */
     public sealed class ExpressionOrderByItemSegment:TextOrderByItemSegment
     {
-        private readonly string? _expr;
+        private readonly IExpressionSegment? _expr;
         private readonly string _expression;
         public ExpressionOrderByItemSegment(int startIndex, int stopIndex, string expression, OrderDirectionEnum orderDirection) : this(startIndex, stopIndex, expression, orderDirection, OrderDirectionEnum.ASC)
         {
         }
-        public ExpressionOrderByItemSegment(int startIndex, int stopIndex, string expression, OrderDirectionEnum orderDirection,string expr) : this(startIndex, stopIndex, expression, orderDirection, OrderDirectionEnum.ASC)
+        public ExpressionOrderByItemSegment(int startIndex, int stopIndex, string expression, OrderDirectionEnum orderDirection,IExpressionSegment expr) : this(startIndex, stopIndex, expression, orderDirection, OrderDirectionEnum.ASC)
         {
             _expr = expr;
         }
@@ -29,7 +30,7 @@ namespace NCDC.CommandParser.Common.Segment.DML.Order.Item
         {
             return _expression;
         }
-        public  string? GetExpr()
+        public  IExpressionSegment? GetExpr()
         {
             return _expr;
         }

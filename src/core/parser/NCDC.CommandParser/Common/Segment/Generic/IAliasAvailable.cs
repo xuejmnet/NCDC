@@ -10,6 +10,6 @@
     public interface IAliasAvailable: ISqlSegment
     {
         string? GetAlias();
-        void SetAlias(AliasSegment alias);
+        void SetAlias(AliasSegment? alias);
     }
 }

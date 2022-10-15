@@ -6,7 +6,6 @@
 		<Nullable>enable</Nullable>
 	</PropertyGroup>
 
-
 	<ItemGroup>
 		<Antlr4 Include="Antlr4\MySqlCommand.g4">
 			<Package>NCDC.MySqlParser</Package>
@@ -16,7 +15,6 @@
 	<ItemGroup>
 		<PackageReference Include="Antlr4.Runtime.Standard" Version="4.9.2" />
 		<PackageReference Include="Antlr4BuildTasks" Version="8.14" PrivateAssets="all" />
-		<PackageReference Include="MySqlConnector" Version="2.1.13" />
 	</ItemGroup>
 
 	<ItemGroup>

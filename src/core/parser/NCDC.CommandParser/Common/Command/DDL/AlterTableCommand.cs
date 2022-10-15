@@ -29,7 +29,7 @@ namespace NCDC.CommandParser.Common.Command.DDL
     
         public  ICollection<DropColumnDefinitionSegment> DropColumnDefinitions = new LinkedList<DropColumnDefinitionSegment>();
     
-        public  ICollection<ConstraintDefinitionSegment> AddConstraintDefinitions = new LinkedList<ConstraintDefinitionSegment>();
+        public  ICollection<AddConstraintDefinitionSegment> AddConstraintDefinitions = new LinkedList<AddConstraintDefinitionSegment>();
         public  ICollection<ValidateConstraintDefinitionSegment> ValidateConstraintDefinitions = new LinkedList<ValidateConstraintDefinitionSegment>();
         public  ICollection<ModifyConstraintDefinitionSegment> ModifyConstraintDefinitions = new LinkedList<ModifyConstraintDefinitionSegment>();
         public  ICollection<DropConstraintDefinitionSegment> DropConstraintDefinitions = new LinkedList<DropConstraintDefinitionSegment>();

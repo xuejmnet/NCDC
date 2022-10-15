@@ -14,7 +14,7 @@ namespace NCDC.CommandParser.Common.Segment.DDL.Column.Position
     */
     public sealed class ColumnFirstPositionSegment:ColumnPositionSegment
     {
-        public ColumnFirstPositionSegment(int startIndex, int stopIndex, ColumnSegment columnName) : base(startIndex, stopIndex, columnName)
+        public ColumnFirstPositionSegment(int startIndex, int stopIndex, ColumnSegment? columnName) : base(startIndex, stopIndex, columnName)
         {
         }
     }

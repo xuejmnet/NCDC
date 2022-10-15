@@ -7,6 +7,7 @@ public  sealed class JoinTableSegment:ITableSegment
 {
     public int StartIndex { get; set; }
     public int StopIndex { get; set; }
+    public ITableSegment? Left { get; set; }
     public string? JoinType { get; set; }
     public ITableSegment? Right { get; set; }
     public IExpressionSegment? Condition { get; set; }
@@ -17,7 +18,7 @@ public  sealed class JoinTableSegment:ITableSegment
         return _alias?.IdentifierValue.Value;
     }
 
-    public void SetAlias(AliasSegment alias)
+    public void SetAlias(AliasSegment? alias)
     {
         _alias = alias;
     }

@@ -10,6 +10,11 @@ namespace NCDC.CommandParser.Common.Command.TCL
 */
     public abstract class SetAutoCommitCommand: AbstractSqlCommand, ITCLCommand
     {
-        public bool AutoCommit { get; set; }
+        protected SetAutoCommitCommand(bool autoCommit)
+        {
+            AutoCommit = autoCommit;
+        }
+
+        public bool AutoCommit { get;}
     }
 }

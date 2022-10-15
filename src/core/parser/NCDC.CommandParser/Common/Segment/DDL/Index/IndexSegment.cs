@@ -17,19 +17,14 @@ namespace NCDC.CommandParser.Common.Segment.DDL.Index
     {
         public int StartIndex { get; }
         public int StopIndex { get; }
+        public IndexNameSegment IndexName { get; }
         public OwnerSegment? Owner { get; set; }
-        public  IdentifierValue IdentifierValue { get; }
 
-        public IndexSegment(int startIndex, int stopIndex, IdentifierValue identifierValue)
+        public IndexSegment(int startIndex, int stopIndex, IndexNameSegment indexName)
         {
             StartIndex = startIndex;
             StopIndex = stopIndex;
-            IdentifierValue = identifierValue;
-        }
-
-        public override string ToString()
-        {
-            return $"{nameof(StartIndex)}: {StartIndex}, {nameof(StopIndex)}: {StopIndex}, {nameof(Owner)}: {Owner}, {nameof(IdentifierValue)}: {IdentifierValue}";
+            IndexName = indexName;
         }
     }
 }
