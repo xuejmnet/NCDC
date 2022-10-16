@@ -22,5 +22,15 @@ namespace NCDC.CommandParser.Common.Command.DML
         public InsertColumnsSegment? InsertColumns { get; set; }
         public SubQuerySegment? InsertSelect { get; set; }
         public readonly ICollection<InsertValuesSegment> Values = new LinkedList<InsertValuesSegment>();
+
+        public ICollection<ColumnSegment> GetColumns()
+        {
+            if (InsertColumns is null)
+            {
+                return Array.Empty<ColumnSegment>();
+            }
+
+            return InsertColumns.Columns;
+        }
     }
 }

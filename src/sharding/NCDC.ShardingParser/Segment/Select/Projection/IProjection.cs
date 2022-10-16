@@ -11,7 +11,7 @@ namespace NCDC.ShardingParser.Segment.Select.Projection
         
         string GetExpression();
     
-        string GetAlias();
+        string? GetAlias();
 
         string GetColumnLabel();
     }

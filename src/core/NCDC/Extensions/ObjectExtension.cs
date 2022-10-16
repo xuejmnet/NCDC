@@ -13,9 +13,11 @@ namespace NCDC.Extensions
     */
     public static class ObjectExtension
     {
-        public static bool EqualsIgnoreCase(this string source, string target)
+        public static bool EqualsIgnoreCase(this string? source, string? target)
         {
             if (source == null)
+                return false;
+            if(target==null)
                 return false;
             return source.Equals(target, StringComparison.OrdinalIgnoreCase);
         }

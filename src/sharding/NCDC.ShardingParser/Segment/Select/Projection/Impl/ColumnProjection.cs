@@ -9,13 +9,12 @@ namespace NCDC.ShardingParser.Segment.Select.Projection.Impl
 */
     public sealed class ColumnProjection:IProjection
     {
-        private readonly string _owner;
-    
+        private readonly string? _owner;
         private readonly string _name;
-    
-        private readonly string _alias;
+        private readonly string? _alias;
 
-        public ColumnProjection(string owner, string name, string @alias)
+
+        public ColumnProjection(string? owner, string name, string? @alias)
         {
             _owner = owner;
             _name = name;
@@ -27,7 +26,7 @@ namespace NCDC.ShardingParser.Segment.Select.Projection.Impl
             return null == _owner ? _name : _owner + "." + _name;
         }
 
-        public string GetAlias()
+        public string? GetAlias()
         {
             return _alias;
         }
@@ -35,6 +34,11 @@ namespace NCDC.ShardingParser.Segment.Select.Projection.Impl
         public string GetColumnLabel()
         {
             return _alias ?? _name;
+        }
+
+        public string GetName()
+        {
+            return _name;
         }
         /// <summary>
         /// table.column as alias

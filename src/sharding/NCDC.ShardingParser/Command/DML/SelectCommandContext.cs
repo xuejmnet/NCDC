@@ -16,6 +16,7 @@ using NCDC.ShardingParser.Segment.Table;
 using NCDC.Basic.TableMetadataManagers;
 using NCDC.CommandParser.Common.Constant;
 using NCDC.CommandParser.Common.Segment.DML.Column;
+using NCDC.CommandParser.Common.Segment.DML.Expr.SubQuery;
 using NCDC.CommandParser.Common.Util;
 using NCDC.Exceptions;
 using NCDC.Extensions;
@@ -43,32 +44,58 @@ namespace NCDC.ShardingParser.Command.DML
 
         private readonly PaginationContext _paginationContext;
         private readonly IDictionary<int, SelectCommandContext> _subQueryContexts;
-        private readonly ICollection<WhereSegment> _whereSegments;
-        private readonly ICollection<ColumnSegment> _columnSegments;
+        private readonly ICollection<WhereSegment> _whereSegments=new LinkedList<WhereSegment>();
+        private readonly ICollection<ColumnSegment> _columnSegments=new LinkedList<ColumnSegment>();
 
         public SubQueryTypeEnum? SubQueryType { get; set; }
         
         public bool NeedAggregateRewrite{ get; set; }
 
-        public SelectCommandContext(ITableMetadataManager tableMetadataManager, string sql, ParameterContext parameterContext, SelectCommand sqlCommand) : base(sqlCommand)
+        public SelectCommandContext(ITableMetadataManager tableMetadataManager, ParameterContext parameterContext, SelectCommand sqlCommand) : base(sqlCommand)
         {
-            _tablesContext = new TablesContext(sqlCommand.GetSimpleTableSegments());
+            ExtractWhereSegments(_whereSegments, sqlCommand);
+            ColumnExtractor.ExtractColumnSegments(_columnSegments, _whereSegments);
+            _subQueryContexts = CreateSubQueryContexts(tableMetadataManager, parameterContext);
+            _tablesContext = new TablesContext(,_subQueryContexts);
             _groupByContext = new GroupByContextEngine().CreateGroupByContext(sqlCommand);
             _orderByContext = new OrderByContextEngine().CreateOrderBy(sqlCommand, _groupByContext);
             _projectionsContext = new ProjectionsContextEngine(tableMetadataManager).CreateProjectionsContext(sql, sqlCommand, _groupByContext, _orderByContext);
             _paginationContext = new PaginationContextEngine().CreatePaginationContext(sqlCommand, _projectionsContext, parameterContext);
             _containsSubQuery = ContainsSubQuery();
         }
-        private bool ContainsSubQuery()
-        {
-            // FIXME process subquery
-            //        Collection<SubqueryPredicateSegment> subqueryPredicateSegments = getSqlStatement().findSQLSegments(SubqueryPredicateSegment.class);
-            //        for (SubqueryPredicateSegment each : subqueryPredicateSegments) {
-            //            if (!each.getAndPredicates().isEmpty()) {
-            //                return true;
-            //            }
-            //        }
-            return false;
+        
+        private void ExtractWhereSegments(ICollection<WhereSegment> whereSegments,  SelectCommand selectCommand) {
+            if (selectCommand.Where is not null)
+            {
+                _whereSegments.Add(selectCommand.Where);
+            }
+            whereSegments.AddAll(WhereExtractUtil.GetSubQueryWhereSegments(selectCommand));
+            whereSegments.AddAll(WhereExtractUtil.GetJoinWhereSegments(selectCommand));
+        }
+        private IDictionary<int, SelectCommandContext> CreateSubQueryContexts(ITableMetadataManager tableMetadataManager, ParameterContext parameterContext) {
+            var subQuerySegments = SubQueryExtractUtil.GetSubQuerySegments(GetSqlCommand());
+            var querySegments = subQuerySegments as SubQuerySegment[] ?? subQuerySegments.ToArray();
+            var result = new Dictionary<int,SelectCommandContext>(querySegments.Count());
+            
+            foreach (var subQuerySegment in querySegments)
+            {
+                var subQueryContext = new SelectCommandContext(tableMetadataManager,parameterContext,subQuerySegment.Select);
+                subQueryContext.SubQueryType = subQuerySegment.SubQueryType;
+                result.Add(subQuerySegment.StartIndex,subQueryContext);
+            }
+            return result;
+        }
+        
+        private IEnumerable<ITableSegment> GetAllTableSegments() {
+            TableExtractor tableExtractor = new TableExtractor();
+            tableExtractor.extractTablesFromSelect(getSqlStatement());
+            Collection<TableSegment> result = new LinkedList<>(tableExtractor.getRewriteTables());
+            for (TableSegment each : tableExtractor.getTableContext()) {
+                if (each instanceof SubqueryTableSegment) {
+                    result.add(each);
+                }
+            }
+            return result;
         }
 
         /**

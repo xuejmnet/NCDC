@@ -1,8 +1,12 @@
+using System.Collections.ObjectModel;
 using NCDC.CommandParser.Common.Segment.DML.Column;
 using NCDC.CommandParser.Common.Segment.Generic.Table;
 using NCDC.Basic.TableMetadataManagers;
 using NCDC.Exceptions;
 using NCDC.Extensions;
+using NCDC.ShardingParser.Command.DML;
+using NCDC.ShardingParser.Segment.Select.SubQuery;
+using NCDC.ShardingParser.Segment.Select.SubQuery.Engine;
 
 namespace NCDC.ShardingParser.Segment.Table
 {
@@ -17,16 +21,73 @@ namespace NCDC.ShardingParser.Segment.Table
     /// </summary>
     public class TablesContext
     {
-        private readonly ICollection<SimpleTableSegment> _tables;
+        private readonly ICollection<SimpleTableSegment> _tables=new LinkedList<SimpleTableSegment>();
+        private readonly ICollection<string> _tableNames=new HashSet<string>();
+        private readonly ICollection<string> _schemaNames=new HashSet<string>();
+        private readonly ICollection<string> _databaseNames=new HashSet<string>();
 
-        public TablesContext(SimpleTableSegment tableSegment) : this(new List<SimpleTableSegment>(1) {tableSegment})
+        private readonly IDictionary<string, ICollection<SubQueryTableContext>> _subQueryTables =
+            new Dictionary<string, ICollection<SubQueryTableContext>>();
+
+
+        public TablesContext(IEnumerable<ITableSegment> tableSegments,IDictionary<int,SelectCommandContext> subQueryContexts)
         {
+            if (tableSegments.IsEmpty())
+            {
+                return;
+            }
+
+            foreach (var tableSegment in tableSegments)
+            {
+
+                if (tableSegment is SimpleTableSegment simpleTableSegment)
+                {
+                    _tables.Add(simpleTableSegment);
+                    _tableNames.Add(simpleTableSegment.TableName.IdentifierValue.Value);
+                    if (simpleTableSegment.Owner is not null)
+                    {
+                        _schemaNames.Add(simpleTableSegment.Owner.IdentifierValue.Value);
+                    }
+
+                    var databaseName = FindDatabaseName(simpleTableSegment);
+                    if (databaseName is not null)
+                    {
+                        _databaseNames.Add(databaseName);
+                    }
+                }
+                if (tableSegment is SubQueryTableSegment subQueryTableSegment) {
+                    
+                    _subQueryTables.AddAll(CreateSubQueryTables(subQueryContexts, subQueryTableSegment));
+                }
+            }
+        }
+    
+        private string? FindDatabaseName( SimpleTableSegment tableSegment)
+        {
+            return tableSegment.Owner?.IdentifierValue.Value;
+        }
+    
+        private IDictionary<String, ICollection<SubQueryTableContext>> CreateSubQueryTables(IDictionary<int, SelectCommandContext> subQueryContexts,  SubQueryTableSegment subQueryTable) {
+            var subQueryContext = subQueryContexts[subQueryTable.SubQuery.StartIndex];
+            var subQueryTableContexts = SubQueryTableContextEngine.CreateSubQueryTableContexts(subQueryContext,subQueryTable.GetAlias());
+            IDictionary<string, ICollection<SubQueryTableContext>> result = new Dictionary<string, ICollection<SubQueryTableContext>>();
+            foreach (var subQueryTableContext in subQueryTableContexts)
+            {
+                if (subQueryTableContext.Alias is not null)
+                {
+                    if (!result.TryGetValue(subQueryTableContext.Alias, out var r))
+                    {
+                        r = new LinkedList<SubQueryTableContext>();
+                        result.TryAdd(subQueryTableContext.Alias, r);
+                    }
+
+                    r.Add(subQueryTableContext);
+                }
+                
+            }
+            return result;
         }
 
-        public TablesContext(ICollection<SimpleTableSegment> tables)
-        {
-            _tables = tables;
-        }
 
         /// <summary>
         /// ��ȡ���еı�����
