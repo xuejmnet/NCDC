@@ -1,10 +1,12 @@
-﻿using NCDC.CommandParser.Common.Segment.DML.Expr;
+﻿using NCDC.CommandParser.Common.Segment.DML.Column;
+using NCDC.CommandParser.Common.Segment.DML.Expr;
 using NCDC.CommandParser.Common.Segment.DML.Expr.Simple;
 using NCDC.CommandParser.Common.Segment.DML.Pagination;
 using NCDC.CommandParser.Common.Segment.DML.Pagination.RowNumber;
 using NCDC.CommandParser.Common.Segment.DML.Pagination.Top;
 using NCDC.CommandParser.Common.Segment.DML.Predicate;
 using NCDC.CommandParser.Common.Segment.DML.Predicate.Value;
+using NCDC.CommandParser.Common.Util;
 using NCDC.Extensions;
 using NCDC.ShardingAdoNet;
 
@@ -27,19 +29,20 @@ namespace NCDC.ShardingParser.Segment.Select.Pagination.Engine
          * @param parameters SQL parameters
          * @return pagination context
          */
-        public PaginationContext CreatePaginationContext(TopProjectionSegment topProjectionSegment, ICollection<AndPredicateSegment> andPredicates, ParameterContext parameterContext)
+        public PaginationContext CreatePaginationContext(TopProjectionSegment topProjectionSegment, ICollection<IExpressionSegment> expressions, ParameterContext parameterContext)
         {
-            var rowNumberPredicate = GetRowNumberPredicate(andPredicates, topProjectionSegment.GetAlias());
+            var andPredicates = expressions.SelectMany(o=>ExpressionExtractUtil.GetAndPredicateSegments(o)).ToList();
+            var rowNumberPredicate =andPredicates.IsNotEmpty()? GetRowNumberPredicate(andPredicates, topProjectionSegment.GetAlias()):null;
             var offset = rowNumberPredicate!=null ? CreateOffsetWithRowNumber(rowNumberPredicate) : null;
             var rowCount = topProjectionSegment.GetTop();
             return new PaginationContext(offset, rowCount, parameterContext);
         }
 
-        private PredicateSegment GetRowNumberPredicate(ICollection<AndPredicateSegment> andPredicates, string rowNumberAlias)
+        private IExpressionSegment? GetRowNumberPredicate(ICollection<AndPredicateSegment> andPredicates, string rowNumberAlias)
         {
             foreach (var andPredicate in andPredicates)
             {
-                foreach (var predicate in andPredicate.GetPredicates())
+                foreach (var predicate in andPredicate.Predicates)
                 {
                     if (IsRowNumberColumn(predicate, rowNumberAlias) && IsCompareCondition(predicate))
                         return predicate;
@@ -48,30 +51,40 @@ namespace NCDC.ShardingParser.Segment.Select.Pagination.Engine
             return null;
         }
 
-        private bool IsRowNumberColumn(PredicateSegment predicate, string rowNumberAlias)
+        private bool IsRowNumberColumn(IExpressionSegment predicate, string rowNumberAlias)
         {
-            return predicate.GetColumn().GetIdentifier().GetValue().EqualsIgnoreCase(rowNumberAlias);
+            if (predicate is BinaryOperationExpression binaryOperationExpression)
+            {
+                return  binaryOperationExpression.Left is ColumnSegment columnSegment&& columnSegment.IdentifierValue.Value.EqualsIgnoreCase(rowNumberAlias);
+            }
+
+            return false;
         }
 
-        private bool IsCompareCondition(PredicateSegment predicate)
+        private bool IsCompareCondition(IExpressionSegment predicate)
         {
-            var predicateRightValue=predicate.GetPredicateRightValue();
-            if (predicateRightValue is PredicateCompareRightValue predicateCompareRightValue) {
-                var @operator= predicateCompareRightValue.GetOperator();
+            if (predicate is BinaryOperationExpression binaryOperationExpression)
+            {
+                var @operator = binaryOperationExpression.Operator;
                 return ">".Equals(@operator) || ">=".Equals(@operator);
             }
             return false;
         }
 
-        private IPaginationValueSegment CreateOffsetWithRowNumber(PredicateSegment predicateSegment)
+        private IPaginationValueSegment? CreateOffsetWithRowNumber(IExpressionSegment predicateSegment)
         {
-            IExpressionSegment expression = ((PredicateCompareRightValue)predicateSegment.GetPredicateRightValue()).GetExpression();
-            switch (((PredicateCompareRightValue)predicateSegment.GetPredicateRightValue()).GetOperator())
+            if (!(predicateSegment is BinaryOperationExpression binaryOperationExpression))
+            {
+                return null;
+            }
+
+            var @operator = binaryOperationExpression.Operator;
+            switch (@operator)
             {
                 case ">":
-                    return CreateRowNumberValueSegment(expression, false);
+                    return CreateRowNumberValueSegment(binaryOperationExpression, false);
                 case ">=":
-                    return CreateRowNumberValueSegment(expression, true);
+                    return CreateRowNumberValueSegment(binaryOperationExpression, true);
                 default:
                     return null;
             }
@@ -79,17 +92,17 @@ namespace NCDC.ShardingParser.Segment.Select.Pagination.Engine
 
         private RowNumberValueSegment CreateRowNumberValueSegment(IExpressionSegment expression, bool boundOpened)
         {
-            int startIndex = expression.GetStartIndex();
-            int stopIndex = expression.GetStopIndex();
+            int startIndex = expression.StartIndex;
+            int stopIndex = expression.StopIndex;
             if (expression is LiteralExpressionSegment literalExpressionSegment)
             {
                 return new NumberLiteralRowNumberValueSegment(startIndex, stopIndex,
-                    (int)literalExpressionSegment.GetLiterals(), boundOpened);
+                    (int)literalExpressionSegment.Literals, boundOpened);
             }
 
             var parameterMarkerExpression = ((ParameterMarkerExpressionSegment)expression);
             return new ParameterMarkerRowNumberValueSegment(startIndex, stopIndex,
-                parameterMarkerExpression.GetParameterMarkerIndex(), parameterMarkerExpression.GetParameterName(), boundOpened);
+                parameterMarkerExpression.ParameterMarkerIndex, parameterMarkerExpression.ParamName, boundOpened);
         }
     }
 }

@@ -20,12 +20,12 @@ namespace NCDC.ShardingRewrite.Token.Generator.Impl.KeyGen
 
 
 
-        public abstract bool IsGenerateSqlToken(InsertCommand insertCommand);
+        public abstract bool IsGenerateSqlToken(InsertCommandContext insertCommandContext);
 
         public bool IsGenerateSqlToken(ISqlCommandContext<ISqlCommand> sqlCommandContext)
         {
             return sqlCommandContext is InsertCommandContext insertCommandContext && insertCommandContext.GetGeneratedKeyContext()!=null
-                                                                                  && insertCommandContext.GetGeneratedKeyContext().IsGenerated() && IsGenerateSqlToken(insertCommandContext.GetSqlCommand());
+                                                                                  && insertCommandContext.GetGeneratedKeyContext().IsGenerated() && IsGenerateSqlToken(insertCommandContext);
         }
     }
 }

@@ -18,9 +18,14 @@ namespace NCDC.ShardingRewrite.Token.Generator.Impl.KeyGen
         {
             var insertColumnsSegment = sqlCommandContext.GetSqlCommand().InsertColumns;
             ShardingAssert.ShouldBeNotNull(insertColumnsSegment,"insertColumnsSegment is required");
-            return new UseDefaultInsertColumnsToken(insertColumnsSegment.GetStopIndex(), GetColumnNames(sqlCommandContext));
+            return new UseDefaultInsertColumnsToken(insertColumnsSegment.StopIndex, GetColumnNames(sqlCommandContext));
         }
-    
+
+        public override bool IsGenerateSqlToken(InsertCommandContext insertCommandContext)
+        {
+            return !insertCommandContext.ContainsInsertColumns();
+        }
+
         private List<String> GetColumnNames(InsertCommandContext insertCommandContext) {
             var generatedKey = insertCommandContext.GetGeneratedKeyContext();
             ShardingAssert.ShouldBeNotNull(generatedKey,"generatedKey is required");
@@ -28,11 +33,6 @@ namespace NCDC.ShardingRewrite.Token.Generator.Impl.KeyGen
             result.Remove(generatedKey.GetColumnName());
             result.Add(generatedKey.GetColumnName());
             return result;
-        }
-
-        public override bool IsGenerateSqlToken(InsertCommand insertCommand)
-        {
-            return insertCommand.UseDefaultColumns();
         }
     }
 }

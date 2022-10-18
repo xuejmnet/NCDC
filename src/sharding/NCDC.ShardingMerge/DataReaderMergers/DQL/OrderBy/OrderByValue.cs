@@ -46,13 +46,13 @@ namespace NCDC.ShardingMerge.DataReaderMergers.DQL.OrderBy
         {
             foreach (var simpleTableSegment in selectCommandContext.GetAllTables())
             {
-                var tableName = simpleTableSegment.GetTableName().GetIdentifier().GetValue();
+                var tableName = simpleTableSegment.TableName.IdentifierValue.Value;
                 var tableMetaData = tableMetadataManager.Get(tableName);
                 IReadOnlyDictionary<String, ColumnMetadata> columns = tableMetaData.Columns;
                 var orderByItemSegment = eachOrderByItem.GetSegment();
                 if (orderByItemSegment is ColumnOrderByItemSegment columnOrderByItemSegment)
                 {
-                    String columnName = columnOrderByItemSegment.GetColumn().GetIdentifier().GetValue();
+                    String columnName = columnOrderByItemSegment.GetColumn().IdentifierValue.Value;
                     if (columns.ContainsKey(columnName))
                     {
                         return columns[columnName].CaseSensitive;

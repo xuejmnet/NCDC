@@ -53,9 +53,9 @@ namespace NCDC.ShardingRewrite.Token.SimpleObject
 
         public string ToString(RouteUnit routeUnit)
         {
-            String actualTableName = GetLogicAndActualTables(routeUnit)[identifier.GetValue().ToLower()];
-            actualTableName = null == actualTableName ? identifier.GetValue().ToLower() : actualTableName;
-            var quoteCharacterEnum = identifier.GetQuoteCharacter();
+            String actualTableName = GetLogicAndActualTables(routeUnit)[identifier.Value.ToLower()];
+            actualTableName = null == actualTableName ? identifier.Value.ToLower() : actualTableName;
+            var quoteCharacterEnum = identifier.QuoteCharacter;
             return $"{QuoteCharacter.Get(quoteCharacterEnum).GetStartDelimiter()}{actualTableName}{QuoteCharacter.Get(quoteCharacterEnum).GetEndDelimiter()}";
 
         }

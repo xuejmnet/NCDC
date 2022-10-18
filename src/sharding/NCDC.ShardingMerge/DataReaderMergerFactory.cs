@@ -1,8 +1,7 @@
 using NCDC.Basic.Configurations;
 using NCDC.Basic.TableMetadataManagers;
-using NCDC.CommandParser.Abstractions;
 using NCDC.CommandParser.Common.Command;
-using NCDC.CommandParser.Common.Command.DAL.Dialect;
+using NCDC.CommandParser.Common.Command.DAL;
 using NCDC.ShardingMerge.Abstractions;
 using NCDC.ShardingMerge.DataReaderMergers;
 using NCDC.ShardingMerge.DataReaderMergers.DAL;
@@ -29,7 +28,7 @@ public sealed class DataReaderMergerFactory:IDataReaderMergerFactory
             return new ShardingDQLDataReaderMerger(_shardingConfiguration.DatabaseType, _tableMetadataManager);
         }
 
-        if (sqlCommandContext.GetSqlCommand() is DALCommand dalCommand)
+        if (sqlCommandContext.GetSqlCommand() is IDALCommand dalCommand)
         {
             return new ShardingDALDataReaderMerger(_shardingConfiguration, _tableMetadataManager);
         }

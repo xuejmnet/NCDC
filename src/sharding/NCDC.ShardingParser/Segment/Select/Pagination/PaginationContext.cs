@@ -17,15 +17,15 @@ namespace NCDC.ShardingParser.Segment.Select.Pagination
 
         private readonly bool _hasPagination;
 
-        private readonly IPaginationValueSegment _offsetSegment;
+        private readonly IPaginationValueSegment? _offsetSegment;
 
-        private readonly IPaginationValueSegment _rowCountSegment;
+        private readonly IPaginationValueSegment? _rowCountSegment;
 
         private readonly long _actualOffset;
 
         private readonly long? _actualRowCount;
 
-        public PaginationContext(IPaginationValueSegment offsetSegment, IPaginationValueSegment rowCountSegment, ParameterContext parameterContext)
+        public PaginationContext(IPaginationValueSegment? offsetSegment, IPaginationValueSegment? rowCountSegment, ParameterContext parameterContext)
         {
             _hasPagination = null != offsetSegment || null != rowCountSegment;
             this._offsetSegment = offsetSegment;
@@ -38,20 +38,20 @@ namespace NCDC.ShardingParser.Segment.Select.Pagination
         {
             if (paginationValueSegment is IParameterMarkerPaginationValueSegment parameterMarkerPaginationValueSegment)
             {
-                if (parameterContext.TryGetParameterValue(parameterMarkerPaginationValueSegment.GetParameterName(),out var parameterValue))
+                if (parameterContext.TryGetParameterValue(parameterMarkerPaginationValueSegment.ParameterName,out var parameterValue))
                 {
                     return parameterValue is long l ? l : (int)parameterValue;
                 }
                 else
                 {
                     throw new ShardingException(
-                        $"{nameof(IParameterMarkerPaginationValueSegment)} cant get value that parameter name:[{parameterMarkerPaginationValueSegment.GetParameterName()}]  ");
+                        $"{nameof(IParameterMarkerPaginationValueSegment)} cant get value that parameter name:[{parameterMarkerPaginationValueSegment.ParameterName}]  ");
                 }
 
             }
             else
             {
-                return ((INumberLiteralPaginationValueSegment)paginationValueSegment).GetValue();
+                return ((INumberLiteralPaginationValueSegment)paginationValueSegment).Value;
             }
         }
 
@@ -60,7 +60,7 @@ namespace NCDC.ShardingParser.Segment.Select.Pagination
          * 
          * @return offset segment
          */
-        public IPaginationValueSegment GetOffsetSegment()
+        public IPaginationValueSegment? GetOffsetSegment()
         {
             return _offsetSegment;
         }
@@ -70,7 +70,7 @@ namespace NCDC.ShardingParser.Segment.Select.Pagination
          *
          * @return row count segment
          */
-        public IPaginationValueSegment GetRowCountSegment()
+        public IPaginationValueSegment? GetRowCountSegment()
         {
             return _rowCountSegment;
         }
@@ -96,13 +96,13 @@ namespace NCDC.ShardingParser.Segment.Select.Pagination
         public int? GetOffsetParameterIndex()
         {
             return _offsetSegment is IParameterMarkerPaginationValueSegment offset
-                ? offset.GetParameterIndex() : (int?)null;
+                ? offset.ParameterIndex : (int?)null;
         }
 
         public int? GetRowCountParameterIndex()
         {
             return _rowCountSegment is IParameterMarkerPaginationValueSegment rowCount
-                    ? rowCount.GetParameterIndex() : (int?)null;
+                    ? rowCount.ParameterIndex : (int?)null;
         }
 
         public long GetRevisedOffset()

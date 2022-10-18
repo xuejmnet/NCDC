@@ -44,15 +44,15 @@ namespace NCDC.ShardingParser.Segment.Select.OrderBy.Engine
 
         private  OrderByContext CreateOrderByContextForDistinctRowWithoutGroupBy(SelectCommand selectCommand, GroupByContext groupByContext)
         {
-            if (!groupByContext.GetItems().Any() && selectCommand.Projections.IsDistinctRow())
+            if (!groupByContext.GetItems().Any() && selectCommand.Projections.DistinctRow)
             {
                 int index = 0;
                 ICollection<OrderByItem> orderByItems = new LinkedList<OrderByItem>();
-                foreach (var projectionSegment in selectCommand.Projections.GetProjections())
+                foreach (var projectionSegment in selectCommand.Projections.Projections)
                 {
                     if (projectionSegment is ColumnProjectionSegment columnProjectionSegment)
                     {
-                        var columnOrderByItemSegment = new ColumnOrderByItemSegment(columnProjectionSegment.GetColumn(), OrderDirectionEnum.ASC);
+                        var columnOrderByItemSegment = new ColumnOrderByItemSegment(columnProjectionSegment.Column, OrderDirectionEnum.ASC);
                         OrderByItem item = new OrderByItem(columnOrderByItemSegment);
                         item.SetIndex(index);
                         orderByItems.Add(item);

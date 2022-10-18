@@ -58,7 +58,7 @@ namespace NCDC.MySqlParser.Visitor
 
         public override IASTNode VisitParameterMarker(MySqlCommandParser.ParameterMarkerContext ctx)
         {
-            return new ParameterMarkerValue(_currentParameterIndex++, ParameterMarkerTypeEnum.AT,ctx.GetText());
+            return new ParameterMarkerValue(_currentParameterIndex++, ParameterMarkerTypeEnum.AT, ctx.GetText());
         }
 
 
@@ -299,7 +299,7 @@ namespace NCDC.MySqlParser.Visitor
             IExpressionSegment right = (IExpressionSegment)Visit(ctx.expr(1));
             String text = ctx.Start.InputStream.GetText(new Interval(ctx.Start.StartIndex, ctx.Stop.StopIndex));
             return new BinaryOperationExpression(ctx.Start.StartIndex, ctx.Stop.StopIndex, left, right,
-  @operator, text);
+                @operator, text);
         }
 
 
@@ -310,9 +310,9 @@ namespace NCDC.MySqlParser.Visitor
                 String rightText = "";
                 if (null != ctx.NOT())
                 {
-                    rightText =rightText+ctx.Start.InputStream.GetText(new Interval(
+                    rightText = rightText + ctx.Start.InputStream.GetText(new Interval(
                         ctx.NOT().Symbol.StartIndex,
-                        ctx.NOT().Symbol.StopIndex))+" ";
+                        ctx.NOT().Symbol.StopIndex)) + " ";
                 }
 
                 IToken operatorToken = null;
@@ -334,7 +334,7 @@ namespace NCDC.MySqlParser.Visitor
                 int startIndex = null == operatorToken
                     ? ctx.IS().Symbol.StopIndex + 1
                     : operatorToken.StartIndex;
-                rightText = rightText+ctx.Start.InputStream
+                rightText = rightText + ctx.Start.InputStream
                     .GetText(new Interval(startIndex, ctx.Stop.StopIndex));
                 IExpressionSegment right = new LiteralExpressionSegment(ctx.IS().Symbol.StopIndex + 1,
                     ctx.Stop.StopIndex, rightText);
@@ -343,7 +343,7 @@ namespace NCDC.MySqlParser.Visitor
                 IExpressionSegment left = (IExpressionSegment)Visit(ctx.booleanPrimary());
                 String @operator = "IS";
                 return new BinaryOperationExpression(ctx.Start.StartIndex, ctx.Stop.StopIndex, left, right,
-  @operator, text);
+                    @operator, text);
             }
 
             if (null != ctx.comparisonOperator() || null != ctx.SAFE_EQ_())
@@ -366,7 +366,7 @@ namespace NCDC.MySqlParser.Visitor
             String @operator = ctx.assignmentOperator().GetText();
             String text = ctx.Start.InputStream.GetText(new Interval(ctx.Start.StartIndex, ctx.Stop.StopIndex));
             return new BinaryOperationExpression(ctx.Start.StartIndex, ctx.Stop.StopIndex, left, right,
-  @operator, text);
+                @operator, text);
         }
 
         private IASTNode CreateCompareSegment(MySqlCommandParser.BooleanPrimaryContext ctx)
@@ -386,7 +386,7 @@ namespace NCDC.MySqlParser.Visitor
             String @operator = null != ctx.SAFE_EQ_() ? ctx.SAFE_EQ_().GetText() : ctx.comparisonOperator().GetText();
             String text = ctx.Start.InputStream.GetText(new Interval(ctx.Start.StartIndex, ctx.Stop.StopIndex));
             return new BinaryOperationExpression(ctx.Start.StartIndex, ctx.Stop.StopIndex, left, right,
-  @operator, text);
+                @operator, text);
         }
 
 
@@ -432,7 +432,6 @@ namespace NCDC.MySqlParser.Visitor
                 {
                     ((ListExpression)right).Items.Add((IExpressionSegment)Visit(exprContext));
                 }
-              
             }
 
             return new InExpression(ctx.Start.StartIndex, ctx.Stop.StopIndex, left, right, not);
@@ -447,7 +446,7 @@ namespace NCDC.MySqlParser.Visitor
             if (null != ctx.SOUNDS())
             {
                 right = (IExpressionSegment)Visit(ctx.bitExpr(1));
-                    @operator = "SOUNDS LIKE";
+                @operator = "SOUNDS LIKE";
             }
             else
             {
@@ -457,13 +456,14 @@ namespace NCDC.MySqlParser.Visitor
                 {
                     listExpression.Items.Add((IExpressionSegment)Visit(simpleExprContext));
                 }
+
                 right = listExpression;
-                    @operator = null != ctx.NOT() ? "NOT LIKE" : "LIKE";
+                @operator = null != ctx.NOT() ? "NOT LIKE" : "LIKE";
             }
 
             String text = ctx.Start.InputStream.GetText(new Interval(ctx.Start.StartIndex, ctx.Stop.StopIndex));
             return new BinaryOperationExpression(ctx.Start.StartIndex, ctx.Stop.StopIndex, left, right,
-  @operator, text);
+                @operator, text);
         }
 
         private BinaryOperationExpression createBinaryOperationExpressionFromRegexp(
@@ -474,7 +474,7 @@ namespace NCDC.MySqlParser.Visitor
             String @operator = null != ctx.NOT() ? "NOT REGEXP" : "REGEXP";
             String text = ctx.Start.InputStream.GetText(new Interval(ctx.Start.StartIndex, ctx.Stop.StopIndex));
             return new BinaryOperationExpression(ctx.Start.StartIndex, ctx.Stop.StopIndex, left, right,
-  @operator, text);
+                @operator, text);
         }
 
         private BetweenExpression createBetweenSegment(MySqlCommandParser.PredicateContext ctx)
@@ -499,7 +499,7 @@ namespace NCDC.MySqlParser.Visitor
             String @operator = ctx.GetChild(1).GetText();
             String text = ctx.Start.InputStream.GetText(new Interval(ctx.Start.StartIndex, ctx.Stop.StopIndex));
             return new BinaryOperationExpression(ctx.Start.StartIndex, ctx.Stop.StopIndex, left, right,
-  @operator, text);
+                @operator, text);
         }
 
 
@@ -523,7 +523,7 @@ namespace NCDC.MySqlParser.Visitor
             {
                 ParameterMarkerValue parameterMarker = (ParameterMarkerValue)Visit(ctx.parameterMarker());
                 ParameterMarkerExpressionSegment segment = new ParameterMarkerExpressionSegment(startIndex, stopIndex,
-                    parameterMarker.Value, parameterMarker.ParameterMarkerType,parameterMarker.ParameterName);
+                    parameterMarker.Value, parameterMarker.ParameterMarkerType, parameterMarker.ParameterName);
                 ParameterMarkerSegments.Add(segment);
                 return segment;
             }
@@ -568,6 +568,7 @@ namespace NCDC.MySqlParser.Visitor
                     existsSubQueryExpression.Not = true;
                     return expression;
                 }
+
                 return new NotExpression(startIndex, stopIndex, (IExpressionSegment)expression);
             }
 
@@ -593,7 +594,7 @@ namespace NCDC.MySqlParser.Visitor
             {
                 result = new ColumnSegment(ctx.Start.StartIndex, ctx.Stop.StopIndex,
                     (IdentifierValue)Visit(ctx.identifier(1)));
-                result.Owner=new OwnerSegment(ctx.identifier(0).Start.StartIndex, ctx.identifier(0).Stop.StopIndex,
+                result.Owner = new OwnerSegment(ctx.identifier(0).Start.StartIndex, ctx.identifier(0).Stop.StopIndex,
                     (IdentifierValue)Visit(ctx.identifier(0)));
             }
             else
@@ -602,9 +603,9 @@ namespace NCDC.MySqlParser.Visitor
                     (IdentifierValue)Visit(ctx.identifier(2)));
                 OwnerSegment owner = new OwnerSegment(ctx.identifier(1).Start.StartIndex,
                     ctx.identifier(1).Stop.StopIndex, (IdentifierValue)Visit(ctx.identifier(1)));
-                owner.Owner=new OwnerSegment(ctx.identifier(0).Start.StartIndex, ctx.identifier(0).Stop.StopIndex,
+                owner.Owner = new OwnerSegment(ctx.identifier(0).Start.StartIndex, ctx.identifier(0).Stop.StopIndex,
                     (IdentifierValue)Visit(ctx.identifier(0)));
-                result.Owner=owner;
+                result.Owner = owner;
             }
 
             return result;
@@ -627,10 +628,10 @@ namespace NCDC.MySqlParser.Visitor
             MySqlSelectCommand result = (MySqlSelectCommand)Visit(ctx.queryExpression());
             if (null != ctx.lockClauseList())
             {
-                result.Lock=(LockSegment)Visit(ctx.lockClauseList());
+                result.Lock = (LockSegment)Visit(ctx.lockClauseList());
             }
 
-            result.ParameterCount=_currentParameterIndex;
+            result.ParameterCount = _currentParameterIndex;
             result.ParameterMarkerSegments.AddAll(ParameterMarkerSegments);
             return result;
         }
@@ -644,9 +645,11 @@ namespace NCDC.MySqlParser.Visitor
                 if (null != lockClauseContext.tableLockingList())
                 {
                     result.Tables
-                        .AddAll(GenerateTablesFromTableAliasRefList(lockClauseContext.tableLockingList().tableAliasRefList()));
+                        .AddAll(GenerateTablesFromTableAliasRefList(lockClauseContext.tableLockingList()
+                            .tableAliasRefList()));
                 }
             }
+
             return result;
         }
 
@@ -665,12 +668,12 @@ namespace NCDC.MySqlParser.Visitor
 
             if (null != ctx.orderByClause())
             {
-                result.OrderBy=(OrderBySegment)Visit(ctx.orderByClause());
+                result.OrderBy = (OrderBySegment)Visit(ctx.orderByClause());
             }
 
             if (null != ctx.limitClause())
             {
-                result.Limit=(LimitSegment)Visit(ctx.limitClause());
+                result.Limit = (LimitSegment)Visit(ctx.limitClause());
             }
 
             return result;
@@ -687,7 +690,7 @@ namespace NCDC.MySqlParser.Visitor
             MySqlSelectCommand result = (MySqlSelectCommand)Visit(ctx.queryExpression());
             if (null != ctx.lockClauseList())
             {
-                result.Lock=(LockSegment)Visit(ctx.lockClauseList());
+                result.Lock = (LockSegment)Visit(ctx.lockClauseList());
             }
 
             return result;
@@ -696,27 +699,29 @@ namespace NCDC.MySqlParser.Visitor
 
         public override IASTNode VisitQueryExpressionBody(MySqlCommandParser.QueryExpressionBodyContext ctx)
         {
-            if (1 == ctx.ChildCount && ctx.GetChild(0) is MySqlCommandParser.QueryPrimaryContext) {
+            if (1 == ctx.ChildCount && ctx.GetChild(0) is MySqlCommandParser.QueryPrimaryContext)
+            {
                 return Visit(ctx.queryPrimary());
             }
+
             if (null != ctx.queryExpressionBody())
             {
                 MySqlSelectCommand result = (MySqlSelectCommand)Visit(ctx.queryExpressionBody());
                 CombineSegment combineSegment = (CombineSegment)VisitCombineClause(ctx.combineClause());
-                if (result.Combine!=null)
+                if (result.Combine != null)
                 {
                     result.Combine.SelectCommand.Combine = combineSegment;
                 }
                 else
                 {
-                    result.Combine=combineSegment;
+                    result.Combine = combineSegment;
                 }
 
                 return result;
             }
 
             MySqlSelectCommand r = (MySqlSelectCommand)Visit(ctx.queryExpressionParens());
-            r.Combine=(CombineSegment)VisitCombineClause(ctx.combineClause());
+            r.Combine = (CombineSegment)VisitCombineClause(ctx.combineClause());
             return r;
         }
 
@@ -736,10 +741,10 @@ namespace NCDC.MySqlParser.Visitor
         public override IASTNode VisitQuerySpecification(MySqlCommandParser.QuerySpecificationContext ctx)
         {
             MySqlSelectCommand result = new MySqlSelectCommand();
-            result.Projections=(ProjectionsSegment)Visit(ctx.projections());
+            result.Projections = (ProjectionsSegment)Visit(ctx.projections());
             if (null != ctx.selectSpecification())
             {
-                result.Projections.DistinctRow=IsDistinct(ctx);
+                result.Projections.DistinctRow = IsDistinct(ctx);
             }
 
             if (null != ctx.fromClause() && null != ctx.fromClause().tableReferences())
@@ -750,22 +755,22 @@ namespace NCDC.MySqlParser.Visitor
 
             if (null != ctx.whereClause())
             {
-                result.Where=(WhereSegment)Visit(ctx.whereClause());
+                result.Where = (WhereSegment)Visit(ctx.whereClause());
             }
 
             if (null != ctx.groupByClause())
             {
-                result.GroupBy=(GroupBySegment)Visit(ctx.groupByClause());
+                result.GroupBy = (GroupBySegment)Visit(ctx.groupByClause());
             }
 
             if (null != ctx.havingClause())
             {
-                result.Having=(HavingSegment)Visit(ctx.havingClause());
+                result.Having = (HavingSegment)Visit(ctx.havingClause());
             }
 
             if (null != ctx.windowClause())
             {
-                result.Window=(WindowSegment)Visit(ctx.windowClause());
+                result.Window = (WindowSegment)Visit(ctx.windowClause());
             }
 
             return result;
@@ -775,7 +780,7 @@ namespace NCDC.MySqlParser.Visitor
         public override IASTNode VisitTableStatement(MySqlCommandParser.TableStatementContext ctx)
         {
             MySqlSelectCommand result = new MySqlSelectCommand();
-            result.Table=(SimpleTableSegment)Visit(ctx.tableName());
+            result.Table = (SimpleTableSegment)Visit(ctx.tableName());
             return result;
         }
 
@@ -795,8 +800,9 @@ namespace NCDC.MySqlParser.Visitor
 
         public override IASTNode VisitIntervalExpression(MySqlCommandParser.IntervalExpressionContext ctx)
         {
-            CalculateParameterCount(new []{ctx.intervalValue().expr()});
-            return new ExpressionProjectionSegment(ctx.Start.StartIndex, ctx.Stop.StopIndex, GetOriginalText(ctx),null);
+            CalculateParameterCount(new[] { ctx.intervalValue().expr() });
+            return new ExpressionProjectionSegment(ctx.Start.StartIndex, ctx.Stop.StopIndex, GetOriginalText(ctx),
+                null);
         }
 
 
@@ -832,7 +838,7 @@ namespace NCDC.MySqlParser.Visitor
             String aggregationType = ctx.aggregationFunctionName().GetText();
             return AggregationType.IsAggregationType(aggregationType)
                 ? CreateAggregationSegment(ctx, aggregationType)
-                : new ExpressionProjectionSegment(ctx.Start.StartIndex, ctx.Stop.StopIndex, GetOriginalText(ctx),null);
+                : new ExpressionProjectionSegment(ctx.Start.StartIndex, ctx.Stop.StopIndex, GetOriginalText(ctx), null);
         }
 
 
@@ -976,6 +982,7 @@ namespace NCDC.MySqlParser.Visitor
             {
                 result.Parameters.Add((IExpressionSegment)Visit(exprContext));
             }
+
             return result;
         }
 
@@ -990,15 +997,19 @@ namespace NCDC.MySqlParser.Visitor
 
         public override IASTNode VisitCastFunction(MySqlCommandParser.CastFunctionContext ctx)
         {
-            CalculateParameterCount(new[]{ctx.expr()});
+            CalculateParameterCount(new[] { ctx.expr() });
             FunctionSegment result = new FunctionSegment(ctx.Start.StartIndex, ctx.Stop.StopIndex, ctx.CAST().GetText(),
                 GetOriginalText(ctx));
             IASTNode exprSegment = Visit(ctx.expr());
-            if (exprSegment is ColumnSegment columnSegment) {
+            if (exprSegment is ColumnSegment columnSegment)
+            {
                 result.Parameters.Add(columnSegment);
-            } else if (exprSegment is LiteralExpressionSegment literalExpressionSegment) {
+            }
+            else if (exprSegment is LiteralExpressionSegment literalExpressionSegment)
+            {
                 result.Parameters.Add(literalExpressionSegment);
             }
+
             result.Parameters.Add((DataTypeSegment)Visit(ctx.dataType()));
             return result;
         }
@@ -1006,7 +1017,7 @@ namespace NCDC.MySqlParser.Visitor
 
         public override IASTNode VisitConvertFunction(MySqlCommandParser.ConvertFunctionContext ctx)
         {
-            CalculateParameterCount(new []{ctx.expr()});
+            CalculateParameterCount(new[] { ctx.expr() });
             return new FunctionSegment(ctx.Start.StartIndex, ctx.Stop.StopIndex, ctx.CONVERT().GetText(),
                 GetOriginalText(ctx));
         }
@@ -1025,7 +1036,7 @@ namespace NCDC.MySqlParser.Visitor
 
         public override IASTNode VisitSubstringFunction(MySqlCommandParser.SubstringFunctionContext ctx)
         {
-            CalculateParameterCount(new []{ctx.expr()});
+            CalculateParameterCount(new[] { ctx.expr() });
             return new FunctionSegment(ctx.Start.StartIndex, ctx.Stop.StopIndex,
                 null == ctx.SUBSTR() ? ctx.SUBSTRING().GetText() : ctx.SUBSTR().GetText(), GetOriginalText(ctx));
         }
@@ -1033,7 +1044,7 @@ namespace NCDC.MySqlParser.Visitor
 
         public override IASTNode VisitExtractFunction(MySqlCommandParser.ExtractFunctionContext ctx)
         {
-            CalculateParameterCount(new []{ctx.expr()});
+            CalculateParameterCount(new[] { ctx.expr() });
             return new FunctionSegment(ctx.Start.StartIndex, ctx.Stop.StopIndex, ctx.EXTRACT().GetText(),
                 GetOriginalText(ctx));
         }
@@ -1057,7 +1068,7 @@ namespace NCDC.MySqlParser.Visitor
 
         public override IASTNode VisitWeightStringFunction(MySqlCommandParser.WeightStringFunctionContext ctx)
         {
-            CalculateParameterCount(new []{ctx.expr()});
+            CalculateParameterCount(new[] { ctx.expr() });
             return new FunctionSegment(ctx.Start.StartIndex, ctx.Stop.StopIndex, ctx.WEIGHT_STRING().GetText(),
                 GetOriginalText(ctx));
         }
@@ -1096,7 +1107,7 @@ namespace NCDC.MySqlParser.Visitor
         {
             FunctionSegment result = new FunctionSegment(ctx.Start.StartIndex, ctx.Stop.StopIndex,
                 ctx.regularFunctionName().GetText(), GetOriginalText(ctx));
-            result.Parameters.AddAll(ctx.expr().Select(o=>(IExpressionSegment) Visit(o)));
+            result.Parameters.AddAll(ctx.expr().Select(o => (IExpressionSegment)Visit(o)));
             return result;
         }
 
@@ -1138,14 +1149,17 @@ namespace NCDC.MySqlParser.Visitor
             {
                 return Visit(ctx.simpleExpr(0));
             }
+
             foreach (var exprContext in ctx.expr())
             {
                 Visit(exprContext);
             }
+
             foreach (var simpleExprContext in ctx.simpleExpr())
             {
                 Visit(simpleExprContext);
             }
+
             String value = ctx.Start.InputStream.GetText(new Interval(ctx.Start.StartIndex, ctx.Stop.StopIndex));
             return new CommonExpressionSegment(ctx.Start.StartIndex, ctx.Stop.StopIndex, value);
         }
@@ -1171,19 +1185,19 @@ namespace NCDC.MySqlParser.Visitor
         public override IASTNode VisitDataType(MySqlCommandParser.DataTypeContext ctx)
         {
             DataTypeSegment result = new DataTypeSegment();
-            result.DataTypeName=ctx.dataTypeName.Text;
-            result.StartIndex=ctx.Start.StartIndex;
-            result.StopIndex=ctx.Stop.StopIndex;
+            result.DataTypeName = ctx.dataTypeName.Text;
+            result.StartIndex = ctx.Start.StartIndex;
+            result.StopIndex = ctx.Stop.StopIndex;
             if (null != ctx.fieldLength())
             {
                 DataTypeLengthSegment dataTypeLengthSegment = (DataTypeLengthSegment)Visit(ctx.fieldLength());
-                result.DataLength=dataTypeLengthSegment;
+                result.DataLength = dataTypeLengthSegment;
             }
 
             if (null != ctx.precision())
             {
                 DataTypeLengthSegment dataTypeLengthSegment = (DataTypeLengthSegment)Visit(ctx.precision());
-                result.DataLength=dataTypeLengthSegment;
+                result.DataLength = dataTypeLengthSegment;
             }
 
             return result;
@@ -1193,9 +1207,9 @@ namespace NCDC.MySqlParser.Visitor
         public override IASTNode VisitFieldLength(MySqlCommandParser.FieldLengthContext ctx)
         {
             DataTypeLengthSegment result = new DataTypeLengthSegment();
-            result.StartIndex=ctx.Start.StartIndex;
-            result.StopIndex=ctx.Stop.StartIndex;
-            result.Precision=int.Parse(ctx.length.Text);
+            result.StartIndex = ctx.Start.StartIndex;
+            result.StopIndex = ctx.Stop.StartIndex;
+            result.Precision = int.Parse(ctx.length.Text);
             return result;
         }
 
@@ -1203,11 +1217,11 @@ namespace NCDC.MySqlParser.Visitor
         public override IASTNode VisitPrecision(MySqlCommandParser.PrecisionContext ctx)
         {
             DataTypeLengthSegment result = new DataTypeLengthSegment();
-            result.StartIndex=ctx.Start.StartIndex;
-            result.StopIndex=ctx.Stop.StartIndex;
+            result.StartIndex = ctx.Start.StartIndex;
+            result.StopIndex = ctx.Stop.StartIndex;
             ITerminalNode[] numbers = ctx.NUMBER_();
-            result.Precision=int.Parse(numbers[0].GetText());
-            result.Scale=int.Parse(numbers[1].GetText());
+            result.Precision = int.Parse(numbers[0].GetText());
+            result.Scale = int.Parse(numbers[1].GetText());
             return result;
         }
 
@@ -1219,6 +1233,7 @@ namespace NCDC.MySqlParser.Visitor
             {
                 items.Add((OrderByItemSegment)Visit(orderByItemContext));
             }
+
             return new OrderBySegment(ctx.Start.StartIndex, ctx.Stop.StopIndex, items);
         }
 
@@ -1244,9 +1259,12 @@ namespace NCDC.MySqlParser.Visitor
             else
             {
                 IASTNode expr = VisitExpr(ctx.expr());
-                if (expr is ColumnSegment columnSegment) {
+                if (expr is ColumnSegment columnSegment)
+                {
                     return new ColumnOrderByItemSegment(columnSegment, orderDirection);
-                } else {
+                }
+                else
+                {
                     return new ExpressionOrderByItemSegment(ctx.expr().Start.StartIndex,
                         ctx.expr().Stop.StopIndex, GetOriginalText(ctx.expr()), orderDirection,
                         (IExpressionSegment)expr);
@@ -1270,16 +1288,16 @@ namespace NCDC.MySqlParser.Visitor
             else
             {
                 result = new MySqlInsertCommand();
-                result.SetAssignment=(SetAssignmentSegment)Visit(ctx.setAssignmentsClause());
+                result.SetAssignment = (SetAssignmentSegment)Visit(ctx.setAssignmentsClause());
             }
 
             if (null != ctx.onDuplicateKeyClause())
             {
-                result.OnDuplicateKeyColumns=(OnDuplicateKeyColumnsSegment)Visit(ctx.onDuplicateKeyClause());
+                result.OnDuplicateKeyColumns = (OnDuplicateKeyColumnsSegment)Visit(ctx.onDuplicateKeyClause());
             }
 
-            result.Table=(SimpleTableSegment)Visit(ctx.tableName());
-            result.ParameterCount=_currentParameterIndex;
+            result.Table = (SimpleTableSegment)Visit(ctx.tableName());
+            result.ParameterCount = _currentParameterIndex;
             result.ParameterMarkerSegments.AddAll(ParameterMarkerSegments);
             return result;
         }
@@ -1292,22 +1310,22 @@ namespace NCDC.MySqlParser.Visitor
             {
                 if (null != ctx.fields())
                 {
-                    result.InsertColumns=new InsertColumnsSegment(ctx.LP_().Symbol.StartIndex,
+                    result.InsertColumns = new InsertColumnsSegment(ctx.LP_().Symbol.StartIndex,
                         ctx.RP_().Symbol.StopIndex, CreateInsertColumns(ctx.fields()));
                 }
                 else
                 {
-                    result.InsertColumns=new InsertColumnsSegment(ctx.LP_().Symbol.StartIndex,
-                        ctx.RP_().Symbol.StopIndex,new List<ColumnSegment>(0));
+                    result.InsertColumns = new InsertColumnsSegment(ctx.LP_().Symbol.StartIndex,
+                        ctx.RP_().Symbol.StopIndex, new List<ColumnSegment>(0));
                 }
             }
             else
             {
-                result.InsertColumns=(new InsertColumnsSegment(ctx.Start.StartIndex - 1, ctx.Start.StartIndex - 1,
+                result.InsertColumns = (new InsertColumnsSegment(ctx.Start.StartIndex - 1, ctx.Start.StartIndex - 1,
                     new List<ColumnSegment>(0)));
             }
 
-            result.InsertSelect=CreateInsertSelectSegment(ctx);
+            result.InsertSelect = CreateInsertSelectSegment(ctx);
             return result;
         }
 
@@ -1325,18 +1343,18 @@ namespace NCDC.MySqlParser.Visitor
             {
                 if (null != ctx.fields())
                 {
-                    result.InsertColumns=new InsertColumnsSegment(ctx.LP_().Symbol.StartIndex,
+                    result.InsertColumns = new InsertColumnsSegment(ctx.LP_().Symbol.StartIndex,
                         ctx.RP_().Symbol.StopIndex, CreateInsertColumns(ctx.fields()));
                 }
                 else
                 {
-                    result.InsertColumns=new InsertColumnsSegment(ctx.LP_().Symbol.StartIndex,
+                    result.InsertColumns = new InsertColumnsSegment(ctx.LP_().Symbol.StartIndex,
                         ctx.RP_().Symbol.StopIndex, new List<ColumnSegment>(0));
                 }
             }
             else
             {
-                result.InsertColumns=new InsertColumnsSegment(ctx.Start.StartIndex - 1, ctx.Start.StartIndex - 1,
+                result.InsertColumns = new InsertColumnsSegment(ctx.Start.StartIndex - 1, ctx.Start.StartIndex - 1,
                     new List<ColumnSegment>(0));
             }
 
@@ -1357,7 +1375,7 @@ namespace NCDC.MySqlParser.Visitor
 
         public override IASTNode VisitOnDuplicateKeyClause(MySqlCommandParser.OnDuplicateKeyClauseContext ctx)
         {
-            var columns = ctx.assignment().Select(o=>(AssignmentSegment)Visit(o)).ToList();
+            var columns = ctx.assignment().Select(o => (AssignmentSegment)Visit(o)).ToList();
             return new OnDuplicateKeyColumnsSegment(ctx.Start.StartIndex, ctx.Stop.StopIndex, columns);
         }
 
@@ -1377,11 +1395,11 @@ namespace NCDC.MySqlParser.Visitor
             else
             {
                 result = new MySqlInsertCommand();
-                result.SetAssignment=(SetAssignmentSegment)Visit(ctx.setAssignmentsClause());
+                result.SetAssignment = (SetAssignmentSegment)Visit(ctx.setAssignmentsClause());
             }
 
-            result.Table=(SimpleTableSegment)Visit(ctx.tableName());
-            result.ParameterCount=_currentParameterIndex;
+            result.Table = (SimpleTableSegment)Visit(ctx.tableName());
+            result.ParameterCount = _currentParameterIndex;
             result.ParameterMarkerSegments.AddAll(ParameterMarkerSegments);
             return result;
         }
@@ -1394,22 +1412,22 @@ namespace NCDC.MySqlParser.Visitor
             {
                 if (null != ctx.fields())
                 {
-                    result.InsertColumns=new InsertColumnsSegment(ctx.LP_().Symbol.StartIndex,
+                    result.InsertColumns = new InsertColumnsSegment(ctx.LP_().Symbol.StartIndex,
                         ctx.RP_().Symbol.StopIndex, CreateInsertColumns(ctx.fields()));
                 }
                 else
                 {
-                    result.InsertColumns=new InsertColumnsSegment(ctx.LP_().Symbol.StartIndex,
+                    result.InsertColumns = new InsertColumnsSegment(ctx.LP_().Symbol.StartIndex,
                         ctx.RP_().Symbol.StopIndex, new List<ColumnSegment>(0));
                 }
             }
             else
             {
-                result.InsertColumns=new InsertColumnsSegment(ctx.Start.StartIndex - 1, ctx.Start.StartIndex - 1,
+                result.InsertColumns = new InsertColumnsSegment(ctx.Start.StartIndex - 1, ctx.Start.StartIndex - 1,
                     new List<ColumnSegment>(0));
             }
 
-            result.InsertSelect=CreateReplaceSelectSegment(ctx);
+            result.InsertSelect = CreateReplaceSelectSegment(ctx);
             return result;
         }
 
@@ -1427,18 +1445,18 @@ namespace NCDC.MySqlParser.Visitor
             {
                 if (null != ctx.fields())
                 {
-                    result.InsertColumns=new InsertColumnsSegment(ctx.LP_().Symbol.StartIndex,
+                    result.InsertColumns = new InsertColumnsSegment(ctx.LP_().Symbol.StartIndex,
                         ctx.RP_().Symbol.StopIndex, CreateInsertColumns(ctx.fields()));
                 }
                 else
                 {
-                    result.InsertColumns=new InsertColumnsSegment(ctx.LP_().Symbol.StartIndex,
+                    result.InsertColumns = new InsertColumnsSegment(ctx.LP_().Symbol.StartIndex,
                         ctx.RP_().Symbol.StopIndex, new List<ColumnSegment>(0));
                 }
             }
             else
             {
-                result.InsertColumns=new InsertColumnsSegment(ctx.Start.StartIndex - 1, ctx.Start.StartIndex - 1,
+                result.InsertColumns = new InsertColumnsSegment(ctx.Start.StartIndex - 1, ctx.Start.StartIndex - 1,
                     new List<ColumnSegment>(0));
             }
 
@@ -1464,26 +1482,25 @@ namespace NCDC.MySqlParser.Visitor
 
         public override IASTNode VisitUpdate(MySqlCommandParser.UpdateContext ctx)
         {
-            MySqlUpdateCommand result = new MySqlUpdateCommand();
             ITableSegment tableSegment = (ITableSegment)Visit(ctx.tableReferences());
-            result.Table=tableSegment;
-            result.SetAssignment=(SetAssignmentSegment)Visit(ctx.setAssignmentsClause());
+            var setAssignmentSegment = (SetAssignmentSegment)Visit(ctx.setAssignmentsClause());
+            MySqlUpdateCommand result = new MySqlUpdateCommand(tableSegment, setAssignmentSegment);
             if (null != ctx.whereClause())
             {
-                result.Where=(WhereSegment)Visit(ctx.whereClause());
+                result.Where = (WhereSegment)Visit(ctx.whereClause());
             }
 
             if (null != ctx.orderByClause())
             {
-                result.OrderBy=(OrderBySegment)Visit(ctx.orderByClause());
+                result.OrderBy = (OrderBySegment)Visit(ctx.orderByClause());
             }
 
             if (null != ctx.limitClause())
             {
-                result.Limit=(LimitSegment)Visit(ctx.limitClause());
+                result.Limit = (LimitSegment)Visit(ctx.limitClause());
             }
 
-            result.ParameterCount=_currentParameterIndex;
+            result.ParameterCount = _currentParameterIndex;
             result.ParameterMarkerSegments.AddAll(ParameterMarkerSegments);
             return result;
         }
@@ -1491,14 +1508,14 @@ namespace NCDC.MySqlParser.Visitor
 
         public override IASTNode VisitSetAssignmentsClause(MySqlCommandParser.SetAssignmentsClauseContext ctx)
         {
-            var assignments = ctx.assignment().Select(o=>(AssignmentSegment)Visit(o)).ToList();
+            var assignments = ctx.assignment().Select(o => (AssignmentSegment)Visit(o)).ToList();
             return new SetAssignmentSegment(ctx.Start.StartIndex, ctx.Stop.StopIndex, assignments);
         }
 
 
         public override IASTNode VisitAssignmentValues(MySqlCommandParser.AssignmentValuesContext ctx)
         {
-            var segments = ctx.assignmentValue().Select(o=>(IExpressionSegment)Visit(o)).ToList();
+            var segments = ctx.assignmentValue().Select(o => (IExpressionSegment)Visit(o)).ToList();
             return new InsertValuesSegment(ctx.Start.StartIndex, ctx.Stop.StopIndex, segments);
         }
 
@@ -1518,9 +1535,12 @@ namespace NCDC.MySqlParser.Visitor
             if (null != expr)
             {
                 IASTNode result = Visit(expr);
-                if (result is ColumnSegment columnSegment) {
+                if (result is ColumnSegment columnSegment)
+                {
                     return new CommonExpressionSegment(ctx.Start.StartIndex, ctx.Stop.StopIndex, ctx.GetText());
-                } else {
+                }
+                else
+                {
                     return result;
                 }
             }
@@ -1540,30 +1560,31 @@ namespace NCDC.MySqlParser.Visitor
             ITableSegment table;
             if (null != ctx.multipleTablesClause())
             {
-                table=(ITableSegment)Visit(ctx.multipleTablesClause());
+                table = (ITableSegment)Visit(ctx.multipleTablesClause());
             }
             else
             {
-                table=(ITableSegment)Visit(ctx.singleTableClause());
+                table = (ITableSegment)Visit(ctx.singleTableClause());
             }
+
             MySqlDeleteCommand result = new MySqlDeleteCommand(table);
 
             if (null != ctx.whereClause())
             {
-                result.Where=(WhereSegment)Visit(ctx.whereClause());
+                result.Where = (WhereSegment)Visit(ctx.whereClause());
             }
 
             if (null != ctx.orderByClause())
             {
-                result.OrderBy=(OrderBySegment)Visit(ctx.orderByClause());
+                result.OrderBy = (OrderBySegment)Visit(ctx.orderByClause());
             }
 
             if (null != ctx.limitClause())
             {
-                result.Limit=(LimitSegment)Visit(ctx.limitClause());
+                result.Limit = (LimitSegment)Visit(ctx.limitClause());
             }
 
-            result.ParameterCount=_currentParameterIndex;
+            result.ParameterCount = _currentParameterIndex;
             result.ParameterMarkerSegments.AddAll(ParameterMarkerSegments);
             return result;
         }
@@ -1585,15 +1606,15 @@ namespace NCDC.MySqlParser.Visitor
         {
             DeleteMultiTableSegment result = new DeleteMultiTableSegment();
             ITableSegment relateTableSource = (ITableSegment)Visit(ctx.tableReferences());
-            result.RelationTable=relateTableSource;
-            result.ActualDeleteTables=GenerateTablesFromTableAliasRefList(ctx.tableAliasRefList());
+            result.RelationTable = relateTableSource;
+            result.ActualDeleteTables = GenerateTablesFromTableAliasRefList(ctx.tableAliasRefList());
             return result;
         }
 
         private List<SimpleTableSegment> GenerateTablesFromTableAliasRefList(
             MySqlCommandParser.TableAliasRefListContext ctx)
         {
-            return ctx.tableIdentOptWild().Select(o=>(SimpleTableSegment)Visit(o.tableName())).ToList();
+            return ctx.tableIdentOptWild().Select(o => (SimpleTableSegment)Visit(o.tableName())).ToList();
         }
 
 
@@ -1606,7 +1627,7 @@ namespace NCDC.MySqlParser.Visitor
                 result = (MySqlSelectCommand)Visit(ctx.queryExpression());
                 if (null != ctx.lockClauseList())
                 {
-                    result.Lock=(LockSegment)Visit(ctx.lockClauseList());
+                    result.Lock = (LockSegment)Visit(ctx.lockClauseList());
                 }
             }
             else if (null != ctx.selectWithInto())
@@ -1618,7 +1639,7 @@ namespace NCDC.MySqlParser.Visitor
                 result = (MySqlSelectCommand)Visit(ctx.GetChild(0));
             }
 
-            result.ParameterCount=_currentParameterIndex;
+            result.ParameterCount = _currentParameterIndex;
             result.ParameterMarkerSegments.AddAll(ParameterMarkerSegments);
             return result;
         }
@@ -1632,6 +1653,7 @@ namespace NCDC.MySqlParser.Visitor
                     return true;
                 }
             }
+
             return false;
         }
 
@@ -1667,10 +1689,12 @@ namespace NCDC.MySqlParser.Visitor
                 projections.Add(new ShorthandProjectionSegment(ctx.unqualifiedShorthand().Start.StartIndex,
                     ctx.unqualifiedShorthand().Stop.StopIndex));
             }
+
             foreach (var projectionContext in ctx.projection())
             {
                 projections.Add((IProjectionSegment)Visit(projectionContext));
             }
+
             ProjectionsSegment result = new ProjectionsSegment(ctx.Start.StartIndex, ctx.Stop.StopIndex);
             result.Projections.AddAll(projections);
             return result;
@@ -1687,19 +1711,24 @@ namespace NCDC.MySqlParser.Visitor
 
             AliasSegment? alias = null == ctx.alias() ? null : (AliasSegment)Visit(ctx.alias());
             IASTNode exprProjection = Visit(ctx.expr());
-            if (exprProjection is ColumnSegment columnSegment) {
+            if (exprProjection is ColumnSegment columnSegment)
+            {
                 ColumnProjectionSegment result = new ColumnProjectionSegment((ColumnSegment)exprProjection);
                 result.SetAlias(alias);
                 return result;
             }
-            if (exprProjection is SubQuerySegment subQuerySegment) {
+
+            if (exprProjection is SubQuerySegment subQuerySegment)
+            {
                 String text = ctx.Start.InputStream
                     .GetText(new Interval(subQuerySegment.StartIndex, subQuerySegment.StopIndex));
                 SubQueryProjectionSegment result = new SubQueryProjectionSegment((SubQuerySegment)exprProjection, text);
                 result.SetAlias(alias);
                 return result;
             }
-            if (exprProjection is ExistsSubQueryExpression existsSubQueryExpression) {
+
+            if (exprProjection is ExistsSubQueryExpression existsSubQueryExpression)
+            {
                 String text = ctx.Start.InputStream.GetText(new Interval(existsSubQueryExpression.StartIndex,
                     existsSubQueryExpression.StopIndex));
                 SubQueryProjectionSegment result =
@@ -1707,6 +1736,7 @@ namespace NCDC.MySqlParser.Visitor
                 result.SetAlias(alias);
                 return result;
             }
+
             return CreateProjection(ctx, alias, exprProjection);
         }
 
@@ -1719,11 +1749,11 @@ namespace NCDC.MySqlParser.Visitor
                 shorthand.identifier()[shorthand.identifier().Length - 1];
             OwnerSegment owner = new OwnerSegment(identifier.Start.StartIndex, identifier.Stop.StopIndex,
                 new IdentifierValue(identifier.GetText()));
-            result.Owner=owner;
+            result.Owner = owner;
             if (shorthand.identifier().Length > 1)
             {
                 MySqlCommandParser.IdentifierContext schemaIdentifier = shorthand.identifier()[0];
-                owner.Owner=new OwnerSegment(schemaIdentifier.Start.StartIndex, schemaIdentifier.Stop.StopIndex,
+                owner.Owner = new OwnerSegment(schemaIdentifier.Start.StartIndex, schemaIdentifier.Stop.StopIndex,
                     new IdentifierValue(schemaIdentifier.GetText()));
             }
 
@@ -1740,34 +1770,46 @@ namespace NCDC.MySqlParser.Visitor
         private IASTNode CreateProjection(MySqlCommandParser.ProjectionContext ctx, AliasSegment? alias,
             IASTNode projection)
         {
-            if (projection is AggregationProjectionSegment aggregationProjectionSegment) {
+            if (projection is AggregationProjectionSegment aggregationProjectionSegment)
+            {
                 aggregationProjectionSegment.SetAlias(alias);
                 return projection;
             }
-            if (projection is ExpressionProjectionSegment expressionProjectionSegment) {
+
+            if (projection is ExpressionProjectionSegment expressionProjectionSegment)
+            {
                 expressionProjectionSegment.SetAlias(alias);
                 return projection;
             }
-            if (projection is FunctionSegment functionSegment) {
+
+            if (projection is FunctionSegment functionSegment)
+            {
                 ExpressionProjectionSegment result1 = new ExpressionProjectionSegment(functionSegment.StartIndex,
                     functionSegment.StopIndex, functionSegment.Text, functionSegment);
                 result1.SetAlias(alias);
                 return result1;
             }
-            if (projection is CommonExpressionSegment commonExpressionSegment) {
-                ExpressionProjectionSegment result2 = new ExpressionProjectionSegment(commonExpressionSegment.StartIndex,
+
+            if (projection is CommonExpressionSegment commonExpressionSegment)
+            {
+                ExpressionProjectionSegment result2 = new ExpressionProjectionSegment(
+                    commonExpressionSegment.StartIndex,
                     commonExpressionSegment.StopIndex, commonExpressionSegment.Text, commonExpressionSegment);
                 result2.SetAlias(alias);
                 return result2;
             }
+
             // FIXME :For DISTINCT()
-            if (projection is ColumnSegment columnSegment) {
+            if (projection is ColumnSegment columnSegment)
+            {
                 ExpressionProjectionSegment result3 = new ExpressionProjectionSegment(ctx.Start.StartIndex,
                     ctx.Stop.StopIndex, GetOriginalText(ctx), columnSegment);
                 result3.SetAlias(alias);
                 return result3;
             }
-            if (projection is SubQueryExpressionSegment subQueryExpressionSegment) {
+
+            if (projection is SubQueryExpressionSegment subQueryExpressionSegment)
+            {
                 String text = ctx.Start.InputStream.GetText(new Interval(subQueryExpressionSegment.StartIndex,
                     subQueryExpressionSegment.StopIndex));
                 SubQueryProjectionSegment result4 =
@@ -1775,7 +1817,9 @@ namespace NCDC.MySqlParser.Visitor
                 result4.SetAlias(alias);
                 return result4;
             }
-            if (projection is BinaryOperationExpression) {
+
+            if (projection is BinaryOperationExpression)
+            {
                 int startIndex = ((BinaryOperationExpression)projection).StartIndex;
                 int stopIndex = alias?.StopIndex ?? ((BinaryOperationExpression)projection).StopIndex;
                 ExpressionProjectionSegment result5 = new ExpressionProjectionSegment(startIndex, stopIndex,
@@ -1783,10 +1827,13 @@ namespace NCDC.MySqlParser.Visitor
                 result5.SetAlias(alias);
                 return result5;
             }
-            if (projection is ParameterMarkerExpressionSegment parameterMarkerExpressionSegment) {
+
+            if (projection is ParameterMarkerExpressionSegment parameterMarkerExpressionSegment)
+            {
                 parameterMarkerExpressionSegment.SetAlias(alias);
                 return parameterMarkerExpressionSegment;
             }
+
             LiteralExpressionSegment column = (LiteralExpressionSegment)projection;
             ExpressionProjectionSegment result = null == alias
                 ? new ExpressionProjectionSegment(column.StartIndex, column.StopIndex,
@@ -1821,36 +1868,35 @@ namespace NCDC.MySqlParser.Visitor
         private JoinTableSegment GenerateJoinTableSourceFromEscapedTableReference(
             MySqlCommandParser.TableReferenceContext ctx, ITableSegment tableSegment)
         {
-            JoinTableSegment result = new JoinTableSegment();
-            result.StartIndex=tableSegment.StartIndex;
-            result.StopIndex=ctx.Stop.StopIndex;
-            result.Left=tableSegment;
-            result.JoinType = nameof(JoinTypeEnum.COMMA);
-            result.Right=(ITableSegment)Visit(ctx);
+            var right = (ITableSegment)Visit(ctx);
+            JoinTableSegment result = new JoinTableSegment(tableSegment.StartIndex, ctx.Stop.StopIndex, tableSegment,
+                right, nameof(JoinTypeEnum.COMMA));
             return result;
         }
 
 
         public override IASTNode VisitEscapedTableReference(MySqlCommandParser.EscapedTableReferenceContext ctx)
         {
-            ITableSegment left= (ITableSegment)Visit(ctx.tableFactor());
+            ITableSegment left = (ITableSegment)Visit(ctx.tableFactor());
             foreach (var joinedTableContext in ctx.joinedTable())
             {
                 left = VisitJoinedTable(joinedTableContext, left);
             }
+
             return left;
         }
 
 
         public override IASTNode VisitTableReference(MySqlCommandParser.TableReferenceContext ctx)
         {
-            ITableSegment left= null != ctx.tableFactor()
+            ITableSegment left = null != ctx.tableFactor()
                 ? (ITableSegment)Visit(ctx.tableFactor())
                 : (ITableSegment)Visit(ctx.escapedTableReference());
             foreach (var joinedTableContext in ctx.joinedTable())
             {
                 left = VisitJoinedTable(joinedTableContext, left);
             }
+
             return left;
         }
 
@@ -1886,16 +1932,15 @@ namespace NCDC.MySqlParser.Visitor
         }
 
         private JoinTableSegment VisitJoinedTable(MySqlCommandParser.JoinedTableContext ctx, ITableSegment tableSegment)
+
         {
-            JoinTableSegment result = new JoinTableSegment();
-            result.Left=tableSegment;
-            result.StartIndex=tableSegment.StartIndex;
-            result.StopIndex=ctx.Stop.StopIndex;
-            result.JoinType=GetJoinType(ctx);
+            var joinType = GetJoinType(ctx);
             ITableSegment right = null != ctx.tableFactor()
                 ? (ITableSegment)Visit(ctx.tableFactor())
                 : (ITableSegment)Visit(ctx.tableReference());
-            result.Right=right;
+            JoinTableSegment result = new JoinTableSegment(tableSegment.StartIndex, ctx.Stop.StopIndex, tableSegment,
+                right, joinType);
+
             return null != ctx.joinSpecification() ? VisitJoinSpecification(ctx.joinSpecification(), result) : result;
         }
 
@@ -1941,12 +1986,12 @@ namespace NCDC.MySqlParser.Visitor
             if (null != ctx.expr())
             {
                 IExpressionSegment condition = (IExpressionSegment)Visit(ctx.expr());
-                result.Condition=condition;
+                result.Condition = condition;
             }
 
             if (null != ctx.USING())
             {
-                result.Using=ctx.columnNames().columnName().Select(o=>(ColumnSegment) Visit(o)).ToList();
+                result.Using = ctx.columnNames().columnName().Select(o => (ColumnSegment)Visit(o)).ToList();
             }
 
             return result;
@@ -1962,7 +2007,7 @@ namespace NCDC.MySqlParser.Visitor
 
         public override IASTNode VisitGroupByClause(MySqlCommandParser.GroupByClauseContext ctx)
         {
-            var orderByItems = ctx.orderByItem().Select(o=>(OrderByItemSegment)Visit(o)).ToList();
+            var orderByItems = ctx.orderByItem().Select(o => (OrderByItemSegment)Visit(o)).ToList();
             return new GroupBySegment(ctx.Start.StartIndex, ctx.Stop.StopIndex, orderByItems);
         }
 
@@ -2002,7 +2047,7 @@ namespace NCDC.MySqlParser.Visitor
 
             var parameterMarkerValue = (ParameterMarkerValue)Visit(ctx.parameterMarker());
             IParameterMarkerSegment result = new ParameterMarkerLimitValueSegment(ctx.Start.StartIndex,
-                ctx.Stop.StopIndex,parameterMarkerValue.Value,parameterMarkerValue.ParameterName);
+                ctx.Stop.StopIndex, parameterMarkerValue.Value, parameterMarkerValue.ParameterName);
             ParameterMarkerSegments.Add(result);
             return result;
         }
@@ -2025,7 +2070,7 @@ namespace NCDC.MySqlParser.Visitor
 
             var parameterMarkerValue = (ParameterMarkerValue)Visit(ctx.parameterMarker());
             IParameterMarkerSegment result = new ParameterMarkerLimitValueSegment(ctx.Start.StartIndex,
-                ctx.Stop.StopIndex,parameterMarkerValue.Value,parameterMarkerValue.ParameterName);
+                ctx.Stop.StopIndex, parameterMarkerValue.Value, parameterMarkerValue.ParameterName);
             ParameterMarkerSegments.Add(result);
             return result;
         }
@@ -2042,7 +2087,7 @@ namespace NCDC.MySqlParser.Visitor
             var parameterMarkerValue = (ParameterMarkerValue)Visit(ctx.parameterMarker());
             ParameterMarkerExpressionSegment segment = new ParameterMarkerExpressionSegment(ctx.Start.StartIndex,
                 ctx.Stop.StopIndex,
-                parameterMarkerValue.Value,parameterMarkerValue.ParameterName);
+                parameterMarkerValue.Value, parameterMarkerValue.ParameterName);
             ParameterMarkerSegments.Add(segment);
             return segment;
         }

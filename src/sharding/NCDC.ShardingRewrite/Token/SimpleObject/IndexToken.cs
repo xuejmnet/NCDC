@@ -42,9 +42,9 @@ namespace NCDC.ShardingRewrite.Token.SimpleObject
         public string ToString(RouteUnit routeUnit)
         {
             StringBuilder result = new StringBuilder();
-            var quoteCharacterEnum = _identifier.GetQuoteCharacter();
+            var quoteCharacterEnum = _identifier.QuoteCharacter;
             var quoteCharacter = QuoteCharacter.Get(quoteCharacterEnum);
-            result.Append(quoteCharacter.GetStartDelimiter()).Append(_identifier.GetValue());
+            result.Append(quoteCharacter.GetStartDelimiter()).Append(_identifier.Value);
             IDictionary<string, string> logicAndActualTables = GetLogicAndActualTables(routeUnit);
             if (logicAndActualTables.Any())
             {

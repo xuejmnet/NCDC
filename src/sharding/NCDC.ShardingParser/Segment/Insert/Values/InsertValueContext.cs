@@ -44,7 +44,7 @@ namespace NCDC.ShardingParser.Segment.Insert.Values
             {
                 if (assignment is ParameterMarkerExpressionSegment parameterMarkerExpression)
                 {
-                    result.Add(parameterMarkerExpression.GetParameterName());
+                    result.Add(parameterMarkerExpression.ParamName);
                 }
             }
             return result;
@@ -85,7 +85,7 @@ namespace NCDC.ShardingParser.Segment.Insert.Values
         public object GetValue(int index)
         {
             IExpressionSegment valueExpression = _valueExpressions[index];
-            return valueExpression is ParameterMarkerExpressionSegment parameterMarkerExpression ? _parameterContext.GetParameterValue(parameterMarkerExpression.GetParameterName()) : ((LiteralExpressionSegment)valueExpression).GetLiterals();
+            return valueExpression is ParameterMarkerExpressionSegment parameterMarkerExpression ? _parameterContext.GetParameterValue(parameterMarkerExpression.ParamName) : ((LiteralExpressionSegment)valueExpression).Literals;
         }
 
         //private int GetParameterIndex(IExpressionSegment valueExpression)

@@ -26,8 +26,11 @@ namespace NCDC.ProxyClientMySql.ClientConnections.DataReaders.Query;
 
 public sealed class MySqlQueryClientDataReader : IClientQueryDataReader<MySqlPacketPayload>
 {
+    private readonly string _sql;
+    private readonly IServerHandlerFactory _serverHandlerFactory;
+    private readonly ISqlCommand _sqlCommand;
     public IConnectionSession ConnectionSession { get; }
-    public IServerHandler ServerHandler { get; }
+    public IServerHandler? ServerHandler { get; private set; }
     public int MySqlEncoding { get; }
     private int _currentSequenceId;
     public ResultTypeEnum ResultType { get; private set; }
@@ -35,12 +38,15 @@ public sealed class MySqlQueryClientDataReader : IClientQueryDataReader<MySqlPac
     public MySqlQueryClientDataReader(string sql, IConnectionSession connectionSession,
         IServerHandlerFactory serverHandlerFactory)
     {
+        _sql = sql;
+        _serverHandlerFactory = serverHandlerFactory;
+        //MySQLComQueryPacketExecutor
         ConnectionSession = connectionSession;
-        var sqlCommand = ParseSql(sql);
-        var isMultiCommands = IsMultiCommands(connectionSession, sqlCommand, sql);
+        _sqlCommand = ParseSql(sql);
+        var isMultiCommands = IsMultiCommands(ConnectionSession, _sqlCommand, _sql);
         ServerHandler = isMultiCommands
             ? new MySqlMultiServerHandler()
-            : serverHandlerFactory.Create(DatabaseTypeEnum.MySql, sql, sqlCommand, connectionSession);
+            : _serverHandlerFactory.CreateAsync(DatabaseTypeEnum.MySql, _sql, _sqlCommand, ConnectionSession);
         MySqlEncoding = connectionSession.Channel.GetMySqlCharacterSet().DbEncoding;
     }
 

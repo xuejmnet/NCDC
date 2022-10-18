@@ -49,6 +49,7 @@ public sealed class MessageCommand:ICommand
             }
             finally
             {
+                _connectionSession.QueryContext = null;
                 if (isNeedFlush)
                 {
                     _context.Flush();
@@ -86,11 +87,6 @@ public sealed class MessageCommand:ICommand
                 {
                     
                     var responsePackets = clientDataReader.SendCommand();
-                    // var enumerable = responsePackets as IPacket[] ?? responsePackets.ToArray();
-                    // if (enumerable.IsEmpty())
-                    // {
-                    //     return false;
-                    // }
 
                     int i = 0;
                    await foreach (var responsePacket in responsePackets)

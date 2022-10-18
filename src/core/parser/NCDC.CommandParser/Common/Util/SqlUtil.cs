@@ -4,6 +4,7 @@ using NCDC.CommandParser.Common.Constant;
 using NCDC.CommandParser.Common.Segment.DML.Expr;
 using NCDC.CommandParser.Common.Segment.DML.Expr.Complex;
 using NCDC.CommandParser.Common.Segment.DML.Expr.Simple;
+using NCDC.CommandParser.Common.Segment.Generic.Table;
 using NCDC.CommandParser.Common.Value.Literal.Impl;
 using NCDC.Extensions;
 
@@ -135,6 +136,31 @@ namespace NCDC.CommandParser.Common.Util
                 return new CommonExpressionSegment(startIndex, stopIndex, otherLiteralValue.Value);
             }
             return new CommonExpressionSegment(startIndex, stopIndex, text);
+        }
+        public static List<SubQueryTableSegment> GetSubQueryTableSegmentFromTableSegment(ITableSegment tableSegment) {
+            List<SubQueryTableSegment> result = new List<SubQueryTableSegment>();
+            if (tableSegment is SubQueryTableSegment subQueryTableSegment) {
+                result.Add(subQueryTableSegment);
+            }
+            if (tableSegment is JoinTableSegment joinTableSegment) {
+                result.AddAll(GetSubqueryTableSegmentFromJoinTableSegment(joinTableSegment));
+            }
+            return result;
+        }
+    
+        private static List<SubQueryTableSegment> GetSubqueryTableSegmentFromJoinTableSegment( JoinTableSegment joinTableSegment) {
+            List<SubQueryTableSegment> result = new List<SubQueryTableSegment>();
+            if (joinTableSegment.Left is SubQueryTableSegment subQueryTableSegmentLeft) {
+                result.Add(subQueryTableSegmentLeft);
+            } else if (joinTableSegment.Left is JoinTableSegment joinTableSegmentLeft) {
+                result.AddAll(GetSubqueryTableSegmentFromJoinTableSegment(joinTableSegmentLeft));
+            }
+            if (joinTableSegment.Right is SubQueryTableSegment subQueryTableSegmentRight) {
+                result.Add(subQueryTableSegmentRight);
+            } else if (joinTableSegment.Right is JoinTableSegment joinTableSegmentRight) {
+                result.AddAll(GetSubqueryTableSegmentFromJoinTableSegment(joinTableSegmentRight));
+            }
+            return result;
         }
     }
 }

@@ -2,8 +2,10 @@ using NCDC.Basic.TableMetadataManagers;
 using NCDC.CommandParser.Abstractions;
 using NCDC.CommandParser.Common.Command;
 using NCDC.CommandParser.Common.Command.DML;
+using NCDC.CommandParser.Common.Segment.DML.Expr;
 using NCDC.CommandParser.Common.Segment.DML.Predicate;
 using NCDC.CommandParser.Common.Segment.DML.Predicate.Value;
+using NCDC.CommandParser.Common.Util;
 using NCDC.Enums;
 using NCDC.Exceptions;
 using NCDC.ShardingAdoNet;
@@ -73,49 +75,54 @@ public class SqlRoutePredicateDiscover
             if (whereSegment != null)
             {
                 CreateShardingConditions(sqlCommandContext,
-                    whereSegment.GetAndPredicates(), parameterContext);
+                    whereSegment.Expr, parameterContext);
             }
         }
     }
 
     private void CreateShardingConditions(
-        ISqlCommandContext<ISqlCommand> sqlCommandContext, ICollection<AndPredicateSegment> andPredicates,
+        ISqlCommandContext<ISqlCommand> sqlCommandContext, IExpressionSegment expression,
         ParameterContext parameterContext)
     {
+        var andPredicates = ExpressionExtractUtil.GetAndPredicateSegments(expression);
         if (andPredicates.IsNotEmpty())
         {
             _where = _where.And(RoutePredicateExpression.DefaultFalse);
             foreach (var andPredicate in andPredicates)
             {
                 var where = RoutePredicateExpression.Default;
-                foreach (var predicate in andPredicate.GetPredicates())
+                foreach (var predicate in andPredicate.Predicates)
                 {
-                    var columnName = predicate.GetColumn().GetIdentifier().GetValue();
-                    if (!_tableMetadata.IsShardingColumn(columnName, _shardingTableRoute))
+                    var columnSegments = ColumnExtractor.Extract(predicate);
+                    foreach (var columnSegment in columnSegments)
                     {
-                        continue;
-                    }
+                        var columnName = columnSegment.IdentifierValue.Value;
+                        if (!_tableMetadata.IsShardingColumn(columnName, _shardingTableRoute))
+                        {
+                            continue;
+                        }
 
-                    if (predicate.GetPredicateRightValue() is PredicateCompareRightValue predicateCompareRightValue)
-                    {
-                        var routePredicateExpression = CompareOperatorPredicateGenerator.Instance.Get(
-                            _keyTranslateFilter,
-                            columnName, predicateCompareRightValue, parameterContext);
-                        where = where.And(routePredicateExpression);
-                    }
-                    else if (predicate.GetPredicateRightValue() is PredicateInRightValue predicateInRightValue)
-                    {
-                        var routePredicateExpression = InOperatorPredicateGenerator.Instance.Get(_keyTranslateFilter,
-                            columnName, predicateInRightValue, parameterContext);
-                        where = where.And(routePredicateExpression);
-                    }
-                    else if
-                        (predicate.GetPredicateRightValue() is PredicateBetweenRightValue predicateBetweenRightValue)
-                    {
-                        var routePredicateExpression = BetweenOperatorPredicateGenerator.Instance.Get(
-                            _keyTranslateFilter,
-                            columnName, predicateBetweenRightValue, parameterContext);
-                        where = where.And(routePredicateExpression);
+                        if (predicate is BinaryOperationExpression predicateOperationExpression)
+                        {
+                            var routePredicateExpression = CompareOperatorPredicateGenerator.Instance.Get(
+                                _keyTranslateFilter,
+                                columnName, predicateOperationExpression, parameterContext);
+                            where = where.And(routePredicateExpression);
+                        }
+                        else if (predicate is InExpression predicateInExpression)
+                        {
+                            var routePredicateExpression = InOperatorPredicateGenerator.Instance.Get(_keyTranslateFilter,
+                                columnName, predicateInExpression, parameterContext);
+                            where = where.And(routePredicateExpression);
+                        }
+                        else if
+                            (predicate is BetweenExpression predicateBetweenExpression)
+                        {
+                            var routePredicateExpression = BetweenOperatorPredicateGenerator.Instance.Get(
+                                _keyTranslateFilter,
+                                columnName, predicateBetweenExpression, parameterContext);
+                            where = where.And(routePredicateExpression);
+                        }
                     }
                 }
 

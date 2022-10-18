@@ -1,3 +1,4 @@
+using NCDC.CommandParser.Common.Segment.DML.Expr;
 using NCDC.CommandParser.Common.Segment.DML.Predicate.Value;
 using NCDC.Enums;
 using NCDC.Plugin.Enums;
@@ -18,16 +19,16 @@ public sealed class InOperatorPredicateGenerator
     public static InOperatorPredicateGenerator Instance { get; } = new InOperatorPredicateGenerator();
 
     
-    public RoutePredicateExpression Get(Func<IComparable, ShardingOperatorEnum, string, Func<string, bool>> keyTranslateFilter,string columnName,PredicateInRightValue predicateRightValue,
+    public RoutePredicateExpression Get(Func<IComparable, ShardingOperatorEnum, string, Func<string, bool>> keyTranslateFilter,string columnName,InExpression predicateInExpression,
         ParameterContext parameterContext)
     {
         var contains = RoutePredicateExpression.DefaultFalse;
-        foreach (var sqlExpression in predicateRightValue.SqlExpressions)
+        foreach (var expression in predicateInExpression.GetExpressionList())
         {
-            var routeValue = new ConditionValue(sqlExpression, parameterContext).GetValue();
+            var routeValue = new ConditionValue(expression, parameterContext).GetValue();
             if (routeValue==null)
             {
-                if (ExpressionConditionHelper.IsNowExpression(sqlExpression))
+                if (ExpressionConditionHelper.IsNowExpression(expression))
                 {
                     routeValue = DateTime.Now;
                 }

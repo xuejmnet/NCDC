@@ -12,9 +12,9 @@ namespace NCDC.ShardingParser.Segment.Select.Projection.Impl
     {
         private readonly string _expression;
     
-        private readonly string _alias;
+        private readonly string? _alias;
 
-        public ExpressionProjection(string expression, string @alias)
+        public ExpressionProjection(string expression, string? @alias)
         {
             _expression = expression;
             _alias = alias;
@@ -43,7 +43,7 @@ namespace NCDC.ShardingParser.Segment.Select.Projection.Impl
             }
         }
 
-        public string GetAlias()
+        public string? GetAlias()
         {
             return _alias;
         }

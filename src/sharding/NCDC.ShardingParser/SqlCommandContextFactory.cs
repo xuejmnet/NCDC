@@ -48,7 +48,7 @@ namespace NCDC.ShardingParser
         {
             if (sqlCommand is SelectCommand selectCommand)
             {
-                return new SelectCommandContext(_tableMetadataManager, sql, parameterContext, selectCommand);
+                return new SelectCommandContext(_tableMetadataManager,parameterContext, selectCommand);
             }
             if (sqlCommand is UpdateCommand updateCommand)
             {

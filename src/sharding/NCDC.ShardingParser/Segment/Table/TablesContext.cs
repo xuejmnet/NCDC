@@ -30,14 +30,19 @@ namespace NCDC.ShardingParser.Segment.Table
             new Dictionary<string, ICollection<SubQueryTableContext>>();
 
 
+        public TablesContext(ICollection<SimpleTableSegment> tableSegments):this(tableSegments,new Dictionary<int, SelectCommandContext>())
+        {
+            
+        }
         public TablesContext(IEnumerable<ITableSegment> tableSegments,IDictionary<int,SelectCommandContext> subQueryContexts)
         {
-            if (tableSegments.IsEmpty())
+            var enumerable = tableSegments as ITableSegment[] ?? tableSegments.ToArray();
+            if (enumerable.IsEmpty())
             {
                 return;
             }
 
-            foreach (var tableSegment in tableSegments)
+            foreach (var tableSegment in enumerable)
             {
 
                 if (tableSegment is SimpleTableSegment simpleTableSegment)
@@ -89,6 +94,13 @@ namespace NCDC.ShardingParser.Segment.Table
         }
 
 
+        public string? GetDatabaseName() {
+            if (_databaseNames.Count() > 1)
+            {
+                throw new InvalidOperationException("Can not support multiple different database.");
+            }
+            return _databaseNames.IsEmpty() ? null : _databaseNames.First();
+        }
         /// <summary>
         /// ��ȡ���еı�����
         /// </summary>
@@ -97,7 +109,7 @@ namespace NCDC.ShardingParser.Segment.Table
         {
             foreach (var table in _tables)
             {
-                yield return table.GetTableName().GetIdentifier().GetValue();
+                yield return table.TableName.IdentifierValue.Value;
             }
         }
 
@@ -110,15 +122,15 @@ namespace NCDC.ShardingParser.Segment.Table
         {
             if (1 == _tables.Count)
             {
-                return _tables.First().GetTableName().GetIdentifier().GetValue();
+                return _tables.First().TableName.IdentifierValue.Value;
             }
 
-            if (null != column.GetOwner())
+            if (null != column.Owner)
             {
-                return FindTableNameFromSql(column.GetOwner()!.GetIdentifier().GetValue());
+                return FindTableNameFromSql(column.Owner.IdentifierValue.Value);
             }
 
-            return FindTableNameFromMetaData(column.GetIdentifier().GetValue(), tableMetadata);
+            return FindTableNameFromMetaData(column.IdentifierValue.Value, tableMetadata);
         }
 
         /// <summary>
@@ -131,7 +143,7 @@ namespace NCDC.ShardingParser.Segment.Table
         {
             foreach (var table in _tables)
             {
-                var tableName = table.GetTableName().GetIdentifier().GetValue();
+                var tableName = table.TableName.IdentifierValue.Value;
                 if (tableNameOrAlias.EqualsIgnoreCase(tableName)
                     || tableNameOrAlias.EqualsIgnoreCase(table.GetAlias()))
                 {
@@ -155,11 +167,16 @@ namespace NCDC.ShardingParser.Segment.Table
             {
                 if (tableMetadata.ContainsColumn(columnName))
                 {
-                    return table.GetTableName().GetIdentifier().GetValue();
+                    return table.TableName.IdentifierValue.Value;
                 }
             }
 
             return null;
+        }
+
+        public ICollection<SimpleTableSegment> GetTables()
+        {
+            return _tables;
         }
     }
 }

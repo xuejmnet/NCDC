@@ -32,15 +32,15 @@ namespace NCDC.ShardingMerge.DataReaderMergers.DAL
         public IStreamDataReader Merge(List<IStreamDataReader> streamDataReaders, ISqlCommandContext<ISqlCommand> sqlCommandContext)
         {
             var dalStatement = sqlCommandContext.GetSqlCommand();
-            if (dalStatement is ShowDatabasesCommand showDatabasesCommand) {
-                return new SingleLocalDataMergedDataReader(new List<object>(){ _shardingConfiguration.DatabaseName });
-            }
-            if (dalStatement is ShowTablesCommand || dalStatement is ShowTableStatusCommand || dalStatement is ShowIndexCommand) {
-                return new LogicTablesMergedDataReader(_tableMetadataManager,sqlCommandContext, streamDataReaders);
-            }
-            if (dalStatement is ShowCreateTableCommand) {
-                return new ShowCreateTableMergedDataReader(_tableMetadataManager, sqlCommandContext, streamDataReaders);
-            }
+            // if (dalStatement is ShowDatabasesCommand showDatabasesCommand) {
+            //     return new SingleLocalDataMergedDataReader(new List<object>(){ _shardingConfiguration.DatabaseName });
+            // }
+            // if (dalStatement is ShowTablesCommand || dalStatement is ShowTableStatusCommand || dalStatement is ShowIndexCommand) {
+            //     return new LogicTablesMergedDataReader(_tableMetadataManager,sqlCommandContext, streamDataReaders);
+            // }
+            // if (dalStatement is ShowCreateTableCommand) {
+            //     return new ShowCreateTableMergedDataReader(_tableMetadataManager, sqlCommandContext, streamDataReaders);
+            // }
             return new TransparentMergedDataReader(streamDataReaders[0]);
         }
     }

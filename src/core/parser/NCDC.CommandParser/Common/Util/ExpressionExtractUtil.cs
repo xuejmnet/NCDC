@@ -65,14 +65,14 @@ public static class ExpressionExtractUtil
      * @param expressions expression collection
      * @return parameter marker expression collection
      */
-    public static ICollection<ParameterMarkerExpressionSegment> GetParameterMarkerExpressions( ICollection<IExpressionSegment> expressions)
+    public static ICollection<ParameterMarkerExpressionSegment> GetParameterMarkerExpressions( IEnumerable<IExpressionSegment> expressions)
     {
         ICollection<ParameterMarkerExpressionSegment> result = new LinkedList<ParameterMarkerExpressionSegment>();
         ExtractParameterMarkerExpressions(result, expressions);
         return result;
     }
     
-    private static void ExtractParameterMarkerExpressions( ICollection<ParameterMarkerExpressionSegment> result,  ICollection<IExpressionSegment> expressions) {
+    private static void ExtractParameterMarkerExpressions( ICollection<ParameterMarkerExpressionSegment> result,  IEnumerable<IExpressionSegment> expressions) {
         foreach (var expressionSegment in expressions)
         {
             if (expressionSegment is ParameterMarkerExpressionSegment parameterMarkerExpressionSegment) {

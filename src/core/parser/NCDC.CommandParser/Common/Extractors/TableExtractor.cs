@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using NCDC.CommandParser.Common.Command;
 using NCDC.CommandParser.Common.Command.DML;
 using NCDC.CommandParser.Common.Segment.DDL.Routine;
 using NCDC.CommandParser.Common.Segment.DML.Assignment;
@@ -10,6 +11,7 @@ using NCDC.CommandParser.Common.Segment.DML.Order.Item;
 using NCDC.CommandParser.Common.Segment.DML.Predicate;
 using NCDC.CommandParser.Common.Segment.Generic;
 using NCDC.CommandParser.Common.Segment.Generic.Table;
+using NCDC.CommandParser.Dialect.Handler.DDL;
 using NCDC.CommandParser.Dialect.Handler.DML;
 using NCDC.Extensions;
 
@@ -236,45 +238,56 @@ public sealed class TableExtractor
                 }
             }
 
-            InsertStatementHandler.getOnDuplicateKeyColumnsSegment(insertCommand)
-                .ifPresent(each->extractTablesFromAssignmentItems(each.getColumns()));
-            if (insertCommand.getInsertSelect().isPresent())
+            var onDuplicateKeyColumnsSegment = InsertCommandHandler.GetOnDuplicateKeyColumnsSegment(insertCommand);
+            if (onDuplicateKeyColumnsSegment is not null)
             {
-                extractTablesFromSelect(insertCommand.getInsertSelect().get().getSelect());
+                ExtractTablesFromAssignmentItems(onDuplicateKeyColumnsSegment.Columns);
+            }
+           
+            if (insertCommand.InsertSelect is not null)
+            {
+                ExtractTablesFromSelect(insertCommand.InsertSelect.Select);
             }
         }
 
-        private void extractTablesFromAssignmentItems(ICollection<AssignmentSegment> assignmentItems)
+        private void ExtractTablesFromAssignmentItems(ICollection<AssignmentSegment> assignmentItems)
         {
-            assignmentItems.forEach(each->extractTablesFromColumnSegments(each.getColumns()));
+            foreach (var assignmentSegment in assignmentItems)
+            {
+                ExtractTablesFromColumnSegments(assignmentSegment.GetColumns());
+            }
         }
 
-        private void extractTablesFromColumnSegments(ICollection<ColumnSegment> columnSegments)
+        private void ExtractTablesFromColumnSegments(ICollection<ColumnSegment> columnSegments)
         {
-            columnSegments.forEach(each-> {
-                if (each.getOwner().isPresent() && NeedRewrite(each.getOwner().get()))
+            foreach (var columnSegment in columnSegments)
+            {
+                if (columnSegment.Owner is not null && NeedRewrite(columnSegment.Owner))
                 {
-                    OwnerSegment ownerSegment = each.getOwner().get();
-                    rewriteTables.add(new SimpleTableSegment(new TableNameSegment(ownerSegment.getStartIndex(),
-                        ownerSegment.getStopIndex(), ownerSegment.getIdentifier())));
+                    OwnerSegment ownerSegment = columnSegment.Owner;
+                    RewriteTables.Add(new SimpleTableSegment(new TableNameSegment(ownerSegment.StartIndex,
+                        ownerSegment.StopIndex, ownerSegment.IdentifierValue)));
                 }
-            });
+            }
         }
 
         /**
          * Extract table that should be rewritten from update statement.
          *
-         * @param updateStatement update statement.
+         * @param updateCommand update statement.
          */
-        public void extractTablesFromUpdate(UpdateStatement updateStatement)
+        public void ExtractTablesFromUpdate(UpdateCommand updateCommand)
         {
-            ExtractTablesFromTableSegment(updateStatement.getTable());
-            updateStatement.getSetAssignment().getAssignments()
-                .forEach(each->extractTablesFromExpression(each.getColumns().get(0)));
-            if (updateStatement.getWhere().isPresent())
+            ExtractTablesFromTableSegment(updateCommand.Table);
+            foreach (var assignmentAssignment in updateCommand.SetAssignment.Assignments)
             {
-                ExtractTablesFromExpression(updateStatement.getWhere().get().getExpr());
+                ExtractTablesFromExpression(assignmentAssignment.GetColumns()[0]);
+            } if (updateCommand.Where is not null)
+            {
+                ExtractTablesFromExpression(updateCommand.Where.Expr);
             }
+                
+           
         }
 
         /**
@@ -302,56 +315,59 @@ public sealed class TableExtractor
          * @param routineBody routine body segment
          * @return the tables that should exist
          */
-        public ICollection<SimpleTableSegment> extractExistTableFromRoutineBody(RoutineBodySegment routineBody)
+        public ICollection<SimpleTableSegment> ExtractExistTableFromRoutineBody(RoutineBodySegment routineBody)
         {
-            ICollection<SimpleTableSegment> result = new LinkedList<>();
-            for (ValidStatementSegment each :
-            routineBody.getValidStatements()) {
-                if (each.getAlterTable().isPresent())
+            ICollection<SimpleTableSegment> result = new LinkedList<SimpleTableSegment>();
+            foreach (var routineBodyValidCommand in routineBody.ValidCommands)
+            {
+                var alterTableCommand = routineBodyValidCommand.GetAlterTable();
+                if (alterTableCommand is not null)
                 {
-                    result.add(each.getAlterTable().get().getTable());
+                    result.Add(alterTableCommand.Table);
                 }
 
-                if (each.getDropTable().isPresent())
+                var dropTableCommand = routineBodyValidCommand.GetDropTable();
+                if (dropTableCommand is not null)
                 {
-                    result.addAll(each.getDropTable().get().getTables());
+                    result.AddAll(dropTableCommand.Tables);
                 }
 
-                if (each.getTruncate().isPresent())
+                var truncateCommand = routineBodyValidCommand.GetTruncate();
+                if (truncateCommand is not null)
                 {
-                    result.addAll(each.getTruncate().get().getTables());
+                    result.AddAll(truncateCommand.Tables);
                 }
 
-                result.addAll(extractExistTableFromDMLStatement(each));
+                result.AddAll(ExtractExistTableFromDMLCommand(routineBodyValidCommand));
             }
             return result;
         }
 
-        private ICollection<SimpleTableSegment> extractExistTableFromDMLStatement(
-            ValidStatementSegment validStatementSegment)
+        private ICollection<SimpleTableSegment> ExtractExistTableFromDMLCommand(
+            ValidCommandSegment validCommandSegment)
         {
-            if (validStatementSegment.getInsert().isPresent())
+            if (validCommandSegment.GetInsert() is not null)
             {
-                ExtractTablesFromInsert(validStatementSegment.getInsert().get());
+                ExtractTablesFromInsert(validCommandSegment.GetInsert()!);
             }
-            else if (validStatementSegment.getReplace().isPresent())
+            else if (validCommandSegment.GetReplace() is not null)
             {
-                ExtractTablesFromInsert(validStatementSegment.getReplace().get());
+                ExtractTablesFromInsert(validCommandSegment.GetReplace()!);
             }
-            else if (validStatementSegment.getUpdate().isPresent())
+            else if (validCommandSegment.GetUpdate() is not null)
             {
-                extractTablesFromUpdate(validStatementSegment.getUpdate().get());
+                ExtractTablesFromUpdate(validCommandSegment.GetUpdate()!);
             }
-            else if (validStatementSegment.getDelete().isPresent())
+            else if (validCommandSegment.GetDelete() is not null)
             {
-                ExtractTablesFromDelete(validStatementSegment.getDelete().get());
+                ExtractTablesFromDelete(validCommandSegment.GetDelete()!);
             }
-            else if (validStatementSegment.getSelect().isPresent())
+            else if (validCommandSegment.GetSelect() is not null)
             {
-                extractTablesFromSelect(validStatementSegment.getSelect().get());
+                ExtractTablesFromSelect(validCommandSegment.GetSelect()!);
             }
 
-            return rewriteTables;
+            return RewriteTables;
         }
 
         /**
@@ -360,18 +376,16 @@ public sealed class TableExtractor
          * @param routineBody routine body segment
          * @return the tables that should not exist
          */
-        public ICollection<SimpleTableSegment> extractNotExistTableFromRoutineBody(RoutineBodySegment routineBody)
+        public IEnumerable<SimpleTableSegment> ExtractNotExistTableFromRoutineBody(RoutineBodySegment routineBody)
         {
-            ICollection<SimpleTableSegment> result = new LinkedList<>();
-            for (ValidStatementSegment each :
-            routineBody.getValidStatements()) {
-                Optional<CreateTableStatement> createTable = each.getCreateTable();
-                if (createTable.isPresent() && !CreateTableStatementHandler.ifNotExists(createTable.get()))
+            foreach (var routineBodyValidCommand in routineBody.ValidCommands)
+            {
+                var createTableCommand = routineBodyValidCommand.GetCreateTable();
+                if (createTableCommand is not null && !CreateTableCommandHandler.IfNotExists(createTableCommand))
                 {
-                    result.add(createTable.get().getTable());
+                    yield return createTableCommand.Table;
                 }
             }
-            return result;
         }
 
         /**
@@ -379,28 +393,16 @@ public sealed class TableExtractor
          *
          * @param sqlStatement sql statement
          */
-        public void extractTablesFromSQLStatement(SQLStatement sqlStatement)
+        public void ExtractTablesFromSQLCommand(ISqlCommand sqlCommand)
         {
-            if (sqlStatement instanceof SelectStatement) {
-                extractTablesFromSelect((SelectStatement)sqlStatement);
-            } else if (sqlStatement instanceof InsertStatement) {
-                ExtractTablesFromInsert((InsertStatement)sqlStatement);
-            } else if (sqlStatement instanceof UpdateStatement) {
-                extractTablesFromUpdate((UpdateStatement)sqlStatement);
-            } else if (sqlStatement instanceof DeleteStatement) {
-                ExtractTablesFromDelete((DeleteStatement)sqlStatement);
+            if (sqlCommand is SelectCommand selectCommand) {
+                ExtractTablesFromSelect(selectCommand);
+            } else if (sqlCommand is InsertCommand insertCommand) {
+                ExtractTablesFromInsert(insertCommand);
+            } else if (sqlCommand is UpdateCommand updateCommand) {
+                ExtractTablesFromUpdate(updateCommand);
+            } else if (sqlCommand is DeleteCommand deleteCommand) {
+                ExtractTablesFromDelete(deleteCommand);
             }
-        }
-
-        /**
-         * Extract table that should be rewritten from create view statement.
-         * 
-         * @param createViewStatement create view statement
-         */
-        public void extractTablesFromCreateViewStatement(CreateViewStatement createViewStatement)
-        {
-            tableContext.add(createViewStatement.getView());
-            rewriteTables.add(createViewStatement.getView());
-            extractTablesFromSelect(createViewStatement.getSelect());
         }
     }

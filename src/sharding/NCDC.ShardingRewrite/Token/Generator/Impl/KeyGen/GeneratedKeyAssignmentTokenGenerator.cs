@@ -1,5 +1,6 @@
 using NCDC.Base;
 using NCDC.CommandParser.Common.Command.DML;
+using NCDC.CommandParser.Dialect.Handler.DML;
 using NCDC.ShardingParser.Command.DML;
 using NCDC.ShardingAdoNet;
 using NCDC.ShardingRewrite.Sql.Token.SimpleObject;
@@ -25,16 +26,18 @@ namespace NCDC.ShardingRewrite.Token.Generator.Impl.KeyGen
         {
             var generatedKey = sqlCommandContext.GetGeneratedKeyContext();
             ShardingAssert.ShouldBeNotNull(generatedKey,"generatedKey is required");
-            ShardingAssert.ShouldBeNotNull(sqlCommandContext.GetSqlCommand().SetAssignment,"setAssignment is required");
-            int startIndex = sqlCommandContext.GetSqlCommand().SetAssignment.GetStopIndex() + 1;
+            var insertCommand = sqlCommandContext.GetSqlCommand();
+            var setAssignmentSegment = InsertCommandHandler.GetSetAssignmentSegment(insertCommand);
+            ShardingAssert.ShouldBeNotNull(setAssignmentSegment,"setAssignment is required");
+            int startIndex = setAssignmentSegment!.StopIndex + 1;
             if (_parameterContext.IsEmpty())
-                return new LiteralGeneratedKeyAssignmentToken(startIndex, generatedKey.GetColumnName(), generatedKey.GetGeneratedValues().LastOrDefault());
+                return new LiteralGeneratedKeyAssignmentToken(startIndex, generatedKey!.GetColumnName(), generatedKey.GetGeneratedValues().LastOrDefault());
             return  new ParameterMarkerGeneratedKeyAssignmentToken(startIndex, generatedKey.GetColumnName());
         }
 
-        public override bool IsGenerateSqlToken(InsertCommand insertCommand)
+        public override bool IsGenerateSqlToken(InsertCommandContext insertCommandContext)
         {
-            return insertCommand.SetAssignment!=null;
+            return InsertCommandHandler.GetSetAssignmentSegment(insertCommandContext.GetSqlCommand()) is not null;
         }
     }
 }

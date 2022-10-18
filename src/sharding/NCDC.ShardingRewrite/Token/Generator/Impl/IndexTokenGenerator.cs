@@ -30,7 +30,7 @@ namespace NCDC.ShardingRewrite.Token.Generator.Impl
             {
                 foreach (var index in indexAvailable.GetIndexes())
                 {
-                    result.Add(new IndexToken(index.GetStartIndex(), index.GetStopIndex(), index.Identifier, sqlCommandContext, _tableMetadataManager));
+                    result.Add(new IndexToken(index.StartIndex, index.StopIndex, index.IndexName.IdentifierValue, sqlCommandContext, _tableMetadataManager));
                 }
             }
 

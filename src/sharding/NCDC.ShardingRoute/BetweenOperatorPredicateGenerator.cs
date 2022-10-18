@@ -1,3 +1,4 @@
+using NCDC.CommandParser.Common.Segment.DML.Expr;
 using NCDC.CommandParser.Common.Segment.DML.Predicate.Value;
 using NCDC.Enums;
 using NCDC.Plugin.Enums;
@@ -18,14 +19,14 @@ public sealed class BetweenOperatorPredicateGenerator
 
     public RoutePredicateExpression Get(
         Func<IComparable, ShardingOperatorEnum, string, Func<string, bool>> keyTranslateFilter, string columnName,
-        PredicateBetweenRightValue predicateBetweenRightValue,
+        BetweenExpression predicateBetweenExpression,
         ParameterContext parameterContext)
     {
         var routePredicateExpression = RoutePredicateExpression.Default;
-        IComparable? betweenStartRouteValue = new ConditionValue(predicateBetweenRightValue.BetweenExpression, parameterContext).GetValue();
+        IComparable? betweenStartRouteValue = new ConditionValue(predicateBetweenExpression.BetweenExpr, parameterContext).GetValue();
         if (betweenStartRouteValue == null)
         {
-            if (ExpressionConditionHelper.IsNowExpression(predicateBetweenRightValue.BetweenExpression))
+            if (ExpressionConditionHelper.IsNowExpression(predicateBetweenExpression.BetweenExpr))
             {
                 betweenStartRouteValue = DateTime.Now;
             }
@@ -36,10 +37,10 @@ public sealed class BetweenOperatorPredicateGenerator
             var translateFilter = keyTranslateFilter(betweenStartRouteValue,ShardingOperatorEnum.GREATER_THAN_OR_EQUAL,columnName);
             routePredicateExpression = routePredicateExpression.And(new RoutePredicateExpression(translateFilter));
         }
-        IComparable? betweenEndRouteValue = new ConditionValue(predicateBetweenRightValue.AndExpression, parameterContext).GetValue();
+        IComparable? betweenEndRouteValue = new ConditionValue(predicateBetweenExpression.AndExpr, parameterContext).GetValue();
         if (betweenEndRouteValue == null)
         {
-            if (ExpressionConditionHelper.IsNowExpression(predicateBetweenRightValue.BetweenExpression))
+            if (ExpressionConditionHelper.IsNowExpression(predicateBetweenExpression.BetweenExpr))
             {
                 betweenEndRouteValue = DateTime.Now;
             }

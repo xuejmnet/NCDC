@@ -19,8 +19,4 @@ public sealed class BinaryOperationExpression:IExpressionSegment
     public string Operator { get; }
     public string Text { get; }
 
-    public override string ToString()
-    {
-        return $"{nameof(StartIndex)}: {StartIndex}, {nameof(StopIndex)}: {StopIndex}, {nameof(Left)}: {Left}, {nameof(Right)}: {Right}, {nameof(Operator)}: {Operator}, {nameof(Text)}: {Text}";
-    }
 }

@@ -31,14 +31,14 @@ public sealed class ConditionValue
     private IComparable? GetValue(ParameterMarkerExpressionSegment expressionSegment, ParameterContext parameterContext)
     {
 
-        object result = parameterContext.GetParameterValue(expressionSegment.GetParameterName());
+        object result = parameterContext.GetParameterValue(expressionSegment.ParamName);
         ShardingAssert.Else(result is IComparable, "Sharding value must implements IComparable.");
         return (IComparable)result;
     }
 
     private IComparable? GetValue(LiteralExpressionSegment expressionSegment)
     {
-        object result = expressionSegment.GetLiterals();
+        object result = expressionSegment.Literals;
         ShardingAssert.Else(result is IComparable, "Sharding value must implements IComparable.");
         return (IComparable)result;
     }

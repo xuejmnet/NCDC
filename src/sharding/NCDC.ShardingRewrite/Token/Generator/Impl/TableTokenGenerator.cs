@@ -45,10 +45,10 @@ namespace NCDC.ShardingRewrite.Token.Generator.Impl
             ICollection<SqlToken> result = new LinkedList<SqlToken>();
             foreach (var simpleTableSegment in sqlStatementContext.GetAllTables())
             {
-                var tableMetadata = _tableMetadataManager.TryGet(simpleTableSegment.GetTableName().GetIdentifier().GetValue());
+                var tableMetadata = _tableMetadataManager.TryGet(simpleTableSegment.TableName.IdentifierValue.Value);
                 if (tableMetadata!=null&&tableMetadata.IsMultiTableMapping)
                 {
-                    result.Add(new TableToken(simpleTableSegment.GetStartIndex(), simpleTableSegment.GetStopIndex(), simpleTableSegment.GetTableName().GetIdentifier(), (ISqlCommandContext<ISqlCommand>)sqlStatementContext, _tableMetadataManager));
+                    result.Add(new TableToken(simpleTableSegment.StartIndex, simpleTableSegment.StopIndex, simpleTableSegment.TableName.IdentifierValue, (ISqlCommandContext<ISqlCommand>)sqlStatementContext, _tableMetadataManager));
                 }
             }
             return result;

@@ -51,20 +51,20 @@ namespace NCDC.ShardingRewrite.Token.Generator.Impl
 
         private int GetStartIndex(ICollection<InsertValuesSegment> segments)
         {
-            int result = segments.First().GetStartIndex();
+            int result = segments.First().StartIndex;
             foreach (var segment in segments)
             {
-                result = result > segment.GetStartIndex() ? segment.GetStartIndex() : result;
+                result = result > segment.StopIndex ? segment.StartIndex : result;
             }
             return result;
         }
 
         private int GetStopIndex(ICollection<InsertValuesSegment> segments)
         {
-            int result = segments.First().GetStopIndex();
+            int result = segments.First().StopIndex;
             foreach (var segment in segments)
             {
-                result = result < segment.GetStopIndex() ? segment.GetStopIndex() : result;
+                result = result < segment.StopIndex ? segment.StopIndex : result;
             }
             return result;
         }

@@ -26,7 +26,7 @@ namespace NCDC.CommandParser.Common.Segment.DML.Order.Item
             _expression = expression;
         }
 
-        public override string GetText()
+        public override string GetExpression()
         {
             return _expression;
         }

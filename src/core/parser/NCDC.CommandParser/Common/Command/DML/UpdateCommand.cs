@@ -14,10 +14,15 @@ namespace NCDC.CommandParser.Common.Command.DML
 */
     public abstract class UpdateCommand: AbstractSqlCommand, IDMLCommand
     {
-        
-        public ITableSegment? Table { get; set; }
+        protected UpdateCommand(ITableSegment table, SetAssignmentSegment setAssignment)
+        {
+            Table = table;
+            SetAssignment = setAssignment;
+        }
+
+        public ITableSegment Table { get;  }
     
-        public SetAssignmentSegment? SetAssignment{ get; set; }
+        public SetAssignmentSegment SetAssignment{ get; }
     
         public WhereSegment? Where { get; set; }
     

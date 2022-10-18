@@ -1,4 +1,6 @@
 using Microsoft.Extensions.Logging;
+using NCDC.CommandParser.Common.Segment.DML.Column;
+using NCDC.CommandParser.Common.Segment.DML.Expr;
 using NCDC.CommandParser.Common.Segment.DML.Predicate.Value;
 using NCDC.Enums;
 using NCDC.Exceptions;
@@ -44,21 +46,22 @@ public sealed class CompareOperatorPredicateGenerator
 
     public static CompareOperatorPredicateGenerator Instance { get; } = new CompareOperatorPredicateGenerator();
 
-    public RoutePredicateExpression Get(Func<IComparable, ShardingOperatorEnum, string, Func<string, bool>> keyTranslateFilter,string columnName,PredicateCompareRightValue predicateRightValue,
+    public RoutePredicateExpression Get(Func<IComparable, ShardingOperatorEnum, string, Func<string, bool>> keyTranslateFilter,string columnName,BinaryOperationExpression predicateOperationExpression,
         ParameterContext parameterContext)
     {
-        string @operator = predicateRightValue.GetOperator();
+        string @operator =predicateOperationExpression.Operator;
         var shardingOperator = ShardingOperatorFunc(@operator);
         if (IsNotSupportedOperator(shardingOperator))
         {
             _logger.LogWarning($"not support {@operator}");
             throw new ShardingInvalidOperationException($"not support {@operator}");
         }
-        
-        IComparable? routeValue = new ConditionValue(predicateRightValue.GetExpression(), parameterContext).GetValue();
+
+        var valueExpression = predicateOperationExpression.Left is ColumnSegment?predicateOperationExpression.Right:predicateOperationExpression.Left;
+        IComparable? routeValue = new ConditionValue(valueExpression, parameterContext).GetValue();
         if (routeValue == null)
         {
-            if (ExpressionConditionHelper.IsNowExpression(predicateRightValue.GetExpression()))
+            if (ExpressionConditionHelper.IsNowExpression(valueExpression))
             {
                 routeValue = DateTime.Now;
             }

@@ -23,7 +23,7 @@ namespace NCDC.CommandParser.Common.Segment.DML.Order.Item
             this._column = column;
         }
 
-        public override string GetText()
+        public override string GetExpression()
         {
             return _column.GetQualifiedName();
         }

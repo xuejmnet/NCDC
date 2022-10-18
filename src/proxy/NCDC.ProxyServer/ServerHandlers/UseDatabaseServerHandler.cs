@@ -19,7 +19,7 @@ public sealed class UseDatabaseServerHandler:IServerHandler
     }
     public Task<IServerResult> ExecuteAsync()
     {
-        var database = SqlUtil.GetExactlyValue(_mySqlUseCommand.GetSchema());
+        var database = SqlUtil.GetExactlyValue(_mySqlUseCommand.Schema);
         if (IsAuthorized(database))
         {
             return Task.FromResult((IServerResult)RecordsAffectedServerResult.Empty);
@@ -28,8 +28,12 @@ public sealed class UseDatabaseServerHandler:IServerHandler
         throw new ShardingException($"unknown database {database}");
     }
 
-    private bool IsAuthorized(string database)
+    private bool IsAuthorized(string? database)
     {
+        if (database is null)
+        {
+            return false;
+        }
         if (_connectionSession.DatabaseExists(database))
         {
             // var logicDatabase = ProxyRuntimeContext.Instance.GetDatabase(database);

@@ -21,7 +21,7 @@ namespace NCDC.ShardingParser.Segment.Select.Pagination.Engine
          */
         public PaginationContext CreatePaginationContext(LimitSegment limitSegment, ParameterContext parameterContext)
         {
-            return new PaginationContext(limitSegment.GetOffset(), limitSegment.GetRowCount(), parameterContext);
+            return new PaginationContext(limitSegment.Offset, limitSegment.RowCount, parameterContext);
         }
     }
 }

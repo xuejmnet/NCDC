@@ -8,12 +8,14 @@ namespace NCDC.ProxyServer.ServerHandlers;
 
 public sealed class TransactionServerHandler:IServerHandler
 {
+    public IConnectionSession ConnectionSession { get; }
     private readonly TransactionOperationTypeEnum _txType;
     private readonly IsolationLevel _isolationLevel;
     private readonly ServerTransactionManager _serverTransactionManager;
 
     public TransactionServerHandler(TransactionOperationTypeEnum txType,IConnectionSession connectionSession)
     {
+        ConnectionSession = connectionSession;
         _txType = txType;
         _isolationLevel = connectionSession.IsolationLevel;
         _serverTransactionManager = new ServerTransactionManager(connectionSession);
@@ -27,12 +29,30 @@ public sealed class TransactionServerHandler:IServerHandler
     {
         switch (_txType)
         {
-            case TransactionOperationTypeEnum.BEGIN: await _serverTransactionManager.BeginAsync(_isolationLevel);break;
-            case TransactionOperationTypeEnum.COMMIT: await _serverTransactionManager.CommitAsync();break;
-            case TransactionOperationTypeEnum.ROLLBACK:await _serverTransactionManager.RollbackAsync();break;
+            case TransactionOperationTypeEnum.BEGIN:await HandleBeginAsync();break;
+            case TransactionOperationTypeEnum.COMMIT: await HandleCommitAsync();break;
+            case TransactionOperationTypeEnum.ROLLBACK:await HandleRollbackAsync();break;
             default: throw new NotSupportedException($"{_txType}");
         }
 
         return new RecordsAffectedServerResult();
+    }
+
+    private async ValueTask HandleBeginAsync()
+    {
+        //如果之前在事务里面的直接把之前的提交上去
+        if (ConnectionSession.GetTransactionStatus().IsInTransaction())
+        {
+            await _serverTransactionManager.CommitAsync();
+        }
+        await _serverTransactionManager.BeginAsync(_isolationLevel);
+    }
+    private async ValueTask HandleCommitAsync()
+    {
+        await _serverTransactionManager.CommitAsync();
+    }
+    private async ValueTask HandleRollbackAsync()
+    {
+        await _serverTransactionManager.RollbackAsync();
     }
 }

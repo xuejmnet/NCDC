@@ -1,6 +1,10 @@
 ﻿using NCDC.CommandParser.Common.Command.DML;
+using NCDC.CommandParser.Common.Segment.DML.Expr;
 using NCDC.CommandParser.Common.Segment.DML.Pagination.Top;
 using NCDC.CommandParser.Common.Segment.DML.Predicate;
+using NCDC.CommandParser.Common.Util;
+using NCDC.CommandParser.Dialect.Handler.DML;
+using NCDC.Extensions;
 using NCDC.ShardingParser.Segment.Select.Projection;
 using NCDC.ShardingAdoNet;
 
@@ -15,30 +19,46 @@ namespace NCDC.ShardingParser.Segment.Select.Pagination.Engine
     */
     public sealed class PaginationContextEngine
     {
-        public PaginationContext CreatePaginationContext(SelectCommand selectCommand, ProjectionsContext projectionsContext,ParameterContext parameterContext)
+        public PaginationContext CreatePaginationContext(SelectCommand selectCommand, ProjectionsContext projectionsContext,ParameterContext parameterContext,ICollection<WhereSegment> whereSegments)
         {
-            var limitSegment = selectCommand.Limit;
+            var limitSegment = SelectCommandHandler.GetLimitSegment(selectCommand);
             if (limitSegment != null)
             {
                 return new LimitPaginationContextEngine().CreatePaginationContext(limitSegment, parameterContext);
             }
             var topProjectionSegment = FindTopProjection(selectCommand);
-            var whereSegment = selectCommand.Where;
+            var expressions = whereSegments.Select(o => o.Expr).ToList();
             if (topProjectionSegment != null)
             {
                 return new TopPaginationContextEngine().CreatePaginationContext(
-                    topProjectionSegment, whereSegment?.GetAndPredicates() ?? new List<AndPredicateSegment>(0), parameterContext);
+                    topProjectionSegment, expressions, parameterContext);
             }
-            if (whereSegment != null)
+            if (expressions.IsNotEmpty()&&ContainsRowNumberPagination(selectCommand))
             {
-                return new RowNumberPaginationContextEngine().CreatePaginationContext(whereSegment.GetAndPredicates(), projectionsContext, parameterContext);
+                return new RowNumberPaginationContextEngine().CreatePaginationContext(expressions, projectionsContext, parameterContext);
             }
             return new PaginationContext(null, null, parameterContext);
         }
+    
+        private bool ContainsRowNumberPagination( SelectCommand selectCommand) {
+            return false;
+        }
 
-        private TopProjectionSegment FindTopProjection(SelectCommand selectCommand)
+        private TopProjectionSegment? FindTopProjection(SelectCommand selectCommand)
         {
-            return selectCommand.Projections.GetProjections().OfType<TopProjectionSegment>().FirstOrDefault();
+            var subQueryTableSegments = SqlUtil.GetSubQueryTableSegmentFromTableSegment(selectCommand.From);
+            foreach (var subQueryTableSegment in subQueryTableSegments)
+            {
+                var subQuerySelect = subQueryTableSegment.SubQuery.Select;
+                foreach (var projectionsProjection in subQuerySelect.Projections.Projections)
+                {
+                    if (projectionsProjection is TopProjectionSegment topProjectionSegment)
+                    {
+                        return topProjectionSegment;
+                    }
+                }
+            }
+            return null;
         }
     }
 }

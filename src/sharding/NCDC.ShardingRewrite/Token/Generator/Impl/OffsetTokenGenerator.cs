@@ -22,7 +22,7 @@ namespace NCDC.ShardingRewrite.Token.Generator.Impl
         {
             var pagination = sqlCommandContext.GetPaginationContext();
             ShardingAssert.ShouldBeNotNull(pagination.GetOffsetSegment(), "offset segment is required");
-            return new OffsetToken(pagination.GetOffsetSegment().GetStartIndex(), pagination.GetOffsetSegment().GetStopIndex(), pagination.GetRevisedOffset());
+            return new OffsetToken(pagination.GetOffsetSegment().StartIndex, pagination.GetOffsetSegment().StopIndex, pagination.GetRevisedOffset());
         }
 
         public bool IsGenerateSqlToken(ISqlCommandContext<ISqlCommand> sqlCommandContext)

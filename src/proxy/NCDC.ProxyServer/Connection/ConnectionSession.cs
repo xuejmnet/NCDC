@@ -9,6 +9,7 @@ using NCDC.ProxyServer.AppServices.Abstractions;
 using NCDC.ProxyServer.Connection.Abstractions;
 using NCDC.ProxyServer.Databases;
 using NCDC.ProxyServer.Runtimes;
+using NCDC.ProxyServer.ServerHandlers.ServerTransactions;
 
 namespace NCDC.ProxyServer.Connection;
 
@@ -124,6 +125,18 @@ public class ConnectionSession : IConnectionSession
         _channelWaitWriteableListener.Wakeup();
     }
 
+    public QueryContext? QueryContext { get; set; }
+
+
+    public async ValueTask HandleAutoCommitAsync()
+    {
+        //不是自动提交并且没有在事务内部那么就就需要开启事务
+        if (!GetIsAutoCommit() && !GetTransactionStatus().IsInTransaction())
+        {
+            var serverTransactionManager = new ServerTransactionManager(this);
+           await serverTransactionManager.BeginAsync(IsolationLevel);
+        }
+    }
 
     public void Reset()
     {

@@ -15,13 +15,13 @@ namespace NCDC.ShardingParser.Segment.Select.Projection.Impl
     
         private readonly string _innerExpression;
     
-        private readonly string _alias;
+        private readonly string? _alias;
     
         private readonly List<AggregationProjection> _derivedAggregationProjections = new List<AggregationProjection>(2);
     
         private int _index = -1;
 
-        public AggregationProjection(AggregationTypeEnum type, string innerExpression, string @alias)
+        public AggregationProjection(AggregationTypeEnum type, string innerExpression, string? @alias)
         {
             _type = type;
             _innerExpression = innerExpression;
@@ -30,10 +30,10 @@ namespace NCDC.ShardingParser.Segment.Select.Projection.Impl
 
         public string GetExpression()
         {
-            return SqlUtil.GetExactlyValue(_type.ToString() + _innerExpression);
+            return _type + _innerExpression;
         }
 
-        public string GetAlias()
+        public string? GetAlias()
         {
             return _alias;
         }

@@ -47,7 +47,17 @@ namespace NCDC.ShardingRewrite.Token.Generator.Impl.KeyGen
             }
             return result;
         }
-    
+
+        public override bool IsGenerateSqlToken(InsertCommandContext insertCommandContext)
+        {
+            return insertCommandContext.GetSqlCommand().Values.IsNotEmpty() && insertCommandContext
+                                                                                .GetGeneratedKeyContext() is not null
+                                                                            && insertCommandContext
+                                                                                .GetGeneratedKeyContext()!
+                                                                                .GetGeneratedValues().IsNotEmpty();
+
+        }
+
         private InsertValuesToken FindPreviousSqlToken() {
             foreach (var previousSqlToken in _previousSqlTokens)
             {
@@ -59,11 +69,6 @@ namespace NCDC.ShardingRewrite.Token.Generator.Impl.KeyGen
     
         private bool IsToAddDerivedLiteralExpression(InsertCommandContext insertCommandContext, int insertValueCount) {
             return insertCommandContext.GetGroupedParameters()[insertValueCount].IsEmpty();
-        }
-
-        public override bool IsGenerateSqlToken(InsertCommand insertCommand)
-        {
-            return insertCommand.Values.Any();
         }
     }
 }

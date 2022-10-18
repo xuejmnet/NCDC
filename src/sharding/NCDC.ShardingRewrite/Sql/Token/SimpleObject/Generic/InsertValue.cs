@@ -49,10 +49,11 @@ namespace NCDC.ShardingRewrite.Sql.Token.SimpleObject.Generic
             }
             else if (expressionSegment is LiteralExpressionSegment)
             {
-                Object literals = ((LiteralExpressionSegment)expressionSegment).GetLiterals();
-                return literals is string ? $"'{((LiteralExpressionSegment)expressionSegment).GetLiterals()}'" : literals.ToString();
+                Object literals = ((LiteralExpressionSegment)expressionSegment).Literals;
+                return literals is string ? $"'{((LiteralExpressionSegment)expressionSegment).Literals}'" : literals.ToString();
             }
-            return ((IComplexExpressionSegment)expressionSegment).GetText();
+
+            return ((IComplexExpressionSegment)expressionSegment).Text;
         }
     }
 }

@@ -1,10 +1,11 @@
 ﻿using NCDC.CommandParser.Common.Command.DML;
-using NCDC.CommandParser.Predicate;
+using NCDC.CommandParser.Common.Extractors;
+using NCDC.CommandParser.Common.Segment.DML.Column;
 using NCDC.CommandParser.Common.Segment.DML.Predicate;
 using NCDC.CommandParser.Common.Segment.Generic.Table;
+using NCDC.CommandParser.Common.Util;
 using NCDC.Extensions;
 using NCDC.ShardingParser.Segment.Table;
-using NCDC.Extensions;
 
 namespace NCDC.ShardingParser.Command.DML
 {
@@ -18,35 +19,52 @@ namespace NCDC.ShardingParser.Command.DML
     public sealed class DeleteCommandContext: GenericSqlCommandContext<DeleteCommand>, ITableAvailable, IWhereAvailable
     {
         private readonly TablesContext _tablesContext;
+        private readonly ICollection<WhereSegment> _whereSegments = new LinkedList<WhereSegment>();
+        private readonly ICollection<ColumnSegment> _columnSegments=new LinkedList<ColumnSegment>();
     
         public DeleteCommandContext(DeleteCommand sqlCommand) : base(sqlCommand)
         {
-            _tablesContext = new TablesContext(sqlCommand.Tables);
+            _tablesContext = new TablesContext(GetAllSimpleTableSegments());
+            var whereSegment = GetSqlCommand().Where;
+            if (whereSegment is not null)
+            {
+                _whereSegments.Add(whereSegment);
+            }
+            ColumnExtractor.ExtractColumnSegments(_columnSegments,_whereSegments);
         }
 
-        public ICollection<SimpleTableSegment> GetAllTables()
-        {
-            ICollection<SimpleTableSegment> result = new LinkedList<SimpleTableSegment>(GetSqlCommand().Tables);
-            if (GetSqlCommand().Tables!=null)
-            {
-                result.AddAll(GetAllTablesFromWhere(GetSqlCommand().Where));
-            }
-            return result;
+        private ICollection<SimpleTableSegment> GetAllSimpleTableSegments() {
+            TableExtractor tableExtractor = new TableExtractor();
+            tableExtractor.ExtractTablesFromDelete(GetSqlCommand());
+            return FilterAliasDeleteTable(tableExtractor.RewriteTables);
         }
-        private ICollection<SimpleTableSegment> GetAllTablesFromWhere( WhereSegment where)
-        {
-            ICollection<SimpleTableSegment> result = new LinkedList<SimpleTableSegment>();
-            foreach (var andPredicate in where.GetAndPredicates())
+        private ICollection<SimpleTableSegment> FilterAliasDeleteTable(ICollection<SimpleTableSegment> tableSegments) {
+            var aliasTableSegmentMap = new Dictionary<string,SimpleTableSegment>(tableSegments.Count);
+            foreach (var simpleTableSegment in tableSegments)
             {
-                foreach (var predicate in andPredicate.GetPredicates())
+                var alias = simpleTableSegment.GetAlias();
+                if (alias is not null)
                 {
-                    result.AddAll(new PredicateExtractor(GetSqlCommand().Tables, predicate).ExtractTables());
+                    aliasTableSegmentMap.TryAdd(alias, simpleTableSegment);
+                }
+            }
+            ICollection<SimpleTableSegment> result = new LinkedList<SimpleTableSegment>();
+            foreach (var simpleTableSegment in tableSegments)
+            {
+                var tableName = simpleTableSegment.TableName.IdentifierValue.Value;
+                if (aliasTableSegmentMap.TryGetValue(tableName, out var aliasDeleteTable)&&aliasDeleteTable.Equals(simpleTableSegment))
+                {
+                    result.Add(simpleTableSegment);
                 }
             }
             return result;
         }
 
-        public WhereSegment GetWhere()
+        public ICollection<SimpleTableSegment> GetAllTables()
+        {
+            return _tablesContext.GetTables();
+        }
+        public WhereSegment? GetWhere()
         {
             return GetSqlCommand().Where;
         }

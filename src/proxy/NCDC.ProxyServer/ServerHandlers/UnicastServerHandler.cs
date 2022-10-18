@@ -15,7 +15,7 @@ public sealed class UnicastServerHandler : IServerHandler
     private readonly IServerDataReaderFactory _serverDataReaderFactory;
     private IServerDataReader? _serverDataReader;
 
-    public UnicastServerHandler(string sql, IConnectionSession connectionSession,
+    public UnicastServerHandler(string sql,IConnectionSession connectionSession,
         IServerDataReaderFactory serverDataReaderFactory)
     {
         _sql = sql;

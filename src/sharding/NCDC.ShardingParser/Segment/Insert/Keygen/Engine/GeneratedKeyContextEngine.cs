@@ -2,7 +2,10 @@
 using NCDC.CommandParser.Common.Segment.DML.Expr;
 using NCDC.CommandParser.Common.Segment.DML.Expr.Simple;
 using NCDC.Basic.TableMetadataManagers;
+using NCDC.CommandParser.Common.Segment.DML.Assignment;
+using NCDC.CommandParser.Dialect.Handler.DML;
 using NCDC.Exceptions;
+using NCDC.Extensions;
 using NCDC.ShardingAdoNet;
 
 namespace NCDC.ShardingParser.Segment.Insert.Keygen.Engine
@@ -16,10 +19,12 @@ namespace NCDC.ShardingParser.Segment.Insert.Keygen.Engine
     */
     public sealed class GeneratedKeyContextEngine
     {
+        private readonly InsertCommand _insertCommand;
         private readonly ITableMetadataManager _tableMetadataManager;
 
-        public GeneratedKeyContextEngine(ITableMetadataManager tableMetadataManager)
+        public GeneratedKeyContextEngine(InsertCommand insertCommand,ITableMetadataManager tableMetadataManager)
         {
+            _insertCommand = insertCommand;
             _tableMetadataManager = tableMetadataManager;
         }
 
@@ -30,15 +35,15 @@ namespace NCDC.ShardingParser.Segment.Insert.Keygen.Engine
      * @param insertStatement insert statement
      * @return generate key context
      */
-        public GeneratedKeyContext CreateGenerateKeyContext(ParameterContext parameterContext, InsertCommand insertCommand)
+        public GeneratedKeyContext? CreateGenerateKeyContext(List<string> insertColumnNames,List<List<IExpressionSegment>> valueExpressions,ParameterContext parameterContext)
         {
-            string tableName = insertCommand.Table.GetTableName().GetIdentifier().GetValue();
+            string tableName = _insertCommand.Table!.TableName.IdentifierValue.Value;
             var generateKeyColumnName = FindGenerateKeyColumn(tableName);
             if (generateKeyColumnName != null)
             {
-                if (ContainsGenerateKey(insertCommand, generateKeyColumnName))
+                if (ContainsGenerateKey(insertColumnNames, generateKeyColumnName))
                 {
-                    return FindGeneratedKey(parameterContext, insertCommand, generateKeyColumnName);
+                    return FindGeneratedKey(insertColumnNames, valueExpressions,parameterContext, generateKeyColumnName);
                 }
 
                 return new GeneratedKeyContext(generateKeyColumnName, true);
@@ -64,31 +69,50 @@ namespace NCDC.ShardingParser.Segment.Insert.Keygen.Engine
             return null;
         }
 
-        private bool ContainsGenerateKey(InsertCommand insertCommand, string generateKeyColumnName)
+        private bool ContainsGenerateKey(List<string> insertColumnNames, string generateKeyColumnName)
         {
-            if (!insertCommand.GetColumnNames().Any())
+            if (insertColumnNames.IsEmpty())
             {
-                return _tableMetadataManager.GetAllColumnNames(insertCommand.Table.GetTableName().GetIdentifier().GetValue())
-                    .Count == insertCommand.GetValueCountForPerGroup();
+                return _tableMetadataManager.GetAllColumnNames(_insertCommand.Table!.TableName.IdentifierValue.Value)
+                    .Count == GetValueCountForPerGroup();
             }
-            return insertCommand.GetColumnNames().Contains(generateKeyColumnName);
+            return insertColumnNames.Contains(generateKeyColumnName);
+        }
+        private int GetValueCountForPerGroup() {
+            if (_insertCommand.Values.IsNotEmpty()) {
+                return _insertCommand.Values.First().Values.Count;
+            }
+            var setAssignment = InsertCommandHandler.GetSetAssignmentSegment(_insertCommand);
+            if (setAssignment is not null)
+            {
+                return setAssignment.Assignments.Count;
+            }
+            if (_insertCommand.InsertSelect is not null) {
+                return _insertCommand.InsertSelect.Select.Projections?.Projections.Count??0;
+            }
+            return 0;
         }
         /// <summary>
         /// 找到自动生成的键比如自增id
         /// </summary>
+        /// <param name="insertColumnNames"></param>
+        /// <param name="valueExpressions"></param>
         /// <param name="parameterContext"></param>
-        /// <param name="insertCommand"></param>
         /// <param name="generateKeyColumnName"></param>
         /// <returns></returns>
         /// <exception cref="ShardingException"></exception>
-        private GeneratedKeyContext FindGeneratedKey(ParameterContext parameterContext, InsertCommand insertCommand, string generateKeyColumnName)
+        private GeneratedKeyContext FindGeneratedKey(List<string> insertColumnNames,List<List<IExpressionSegment>> valueExpressions,ParameterContext parameterContext, string generateKeyColumnName)
         {
             GeneratedKeyContext result = new GeneratedKeyContext(generateKeyColumnName, false);
-            foreach (var expression in FindGenerateKeyExpressions(insertCommand, generateKeyColumnName))
+            foreach (var expression in FindGenerateKeyExpressions(insertColumnNames,valueExpressions, generateKeyColumnName))
             {
                 if (expression is ParameterMarkerExpressionSegment parameterMarkerExpressionSegment)
                 {
-                    var parameterName = parameterMarkerExpressionSegment.GetParameterName();
+                    if (parameterContext.IsEmpty())
+                    {
+                        continue;
+                    }
+                    var parameterName = parameterMarkerExpressionSegment.ParamName;
 
 
                     if (!parameterContext.TryGetParameterValue(parameterName,out var value))
@@ -100,31 +124,32 @@ namespace NCDC.ShardingParser.Segment.Insert.Keygen.Engine
                 }
                 else if (expression is LiteralExpressionSegment literalExpressionSegment)
                 {
-                    result.GetGeneratedValues().Add((IComparable)literalExpressionSegment.GetLiterals());
+                    result.GetGeneratedValues().Add((IComparable)literalExpressionSegment.Literals);
                 }
             }
             return result;
         }
 
-        private ICollection<IExpressionSegment> FindGenerateKeyExpressions(InsertCommand insertCommand, string generateKeyColumnName)
+        private ICollection<IExpressionSegment> FindGenerateKeyExpressions(List<string> insertColumnNames,List<List<IExpressionSegment>> valueExpressions, string generateKeyColumnName)
         {
             ICollection<IExpressionSegment> result = new LinkedList<IExpressionSegment>();
-            foreach (var expression in insertCommand.GetAllValueExpressions())
+            foreach (var expression in valueExpressions)
             {
-                result.Add(expression[FindGenerateKeyIndex(insertCommand, generateKeyColumnName.ToLower())]);
+                result.Add(expression[FindGenerateKeyIndex(insertColumnNames, generateKeyColumnName.ToLower())]);
             }
             return result;
         }
 
-        private int FindGenerateKeyIndex(InsertCommand insertCommand, string generateKeyColumnName)
+        private int FindGenerateKeyIndex(List<string> insertColumnNames, string generateKeyColumnName)
         {
-            if (!insertCommand.GetColumnNames().Any())
+            if (insertColumnNames.IsEmpty())
             {
                 return _tableMetadataManager
-                    .GetAllColumnNames(insertCommand.Table.GetTableName().GetIdentifier().GetValue()).ToList()
+                    .GetAllColumnNames(_insertCommand.Table!.TableName.IdentifierValue.Value).ToList()
                     .IndexOf(generateKeyColumnName);
             }
-            return insertCommand.GetColumnNames().IndexOf(generateKeyColumnName);
+
+            return insertColumnNames.IndexOf(generateKeyColumnName);
         }
     }
 }

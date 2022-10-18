@@ -7,7 +7,7 @@
     * @Ver: 1.0
     * @Email: 326308290@qq.com
     */
-   public sealed class LiteralExpressionSegment:ISimpleExpressionSegment
+   public  class LiteralExpressionSegment:ISimpleExpressionSegment
     {
         public int StartIndex { get; }
         public int StopIndex { get; }

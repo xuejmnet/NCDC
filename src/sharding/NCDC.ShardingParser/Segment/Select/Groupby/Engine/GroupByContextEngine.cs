@@ -32,7 +32,7 @@ namespace NCDC.ShardingParser.Segment.Select.Groupby.Engine
                 }
                 groupByItems.Add(orderByItem);
             }
-            return new GroupByContext(groupByItems, selectCommand.GroupBy.GetStopIndex());
+            return new GroupByContext(groupByItems, selectCommand.GroupBy.StopIndex);
         }
     }
 }

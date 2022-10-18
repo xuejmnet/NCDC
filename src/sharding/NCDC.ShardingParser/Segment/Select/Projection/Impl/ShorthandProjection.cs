@@ -8,14 +8,14 @@ namespace NCDC.ShardingParser.Segment.Select.Projection.Impl
 */
     public sealed class ShorthandProjection:IProjection
     {
-        private readonly string _owner;
+        private readonly string? _owner;
     
-        private readonly ICollection<ColumnProjection> _actualColumns;
+        private readonly IDictionary<string,ColumnProjection> _actualColumns;
 
-        public ShorthandProjection(string owner, ICollection<ColumnProjection> actualColumns)
+        public ShorthandProjection(string? owner, ICollection<ColumnProjection> actualColumns)
         {
             _owner = owner;
-            _actualColumns = actualColumns;
+            _actualColumns = actualColumns.ToDictionary(o=>o.GetExpression().ToLower(),o=>o);
         }
 
         public string GetExpression()
@@ -23,7 +23,7 @@ namespace NCDC.ShardingParser.Segment.Select.Projection.Impl
             return string.IsNullOrEmpty(_owner) ? "*" : _owner + ".*";
         }
 
-        public string GetAlias()
+        public string? GetAlias()
         {
             return null;
         }
@@ -33,12 +33,12 @@ namespace NCDC.ShardingParser.Segment.Select.Projection.Impl
             return "*";
         }
 
-        public string GetOwner()
+        public string? GetOwner()
         {
             return _owner;
         }
 
-        public ICollection<ColumnProjection> GetActualColumns()
+        public IDictionary<string,ColumnProjection> GetActualColumns()
         {
             return _actualColumns;
         }

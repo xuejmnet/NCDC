@@ -1,6 +1,6 @@
 namespace NCDC.CommandParser.Dialect.Handler;
 
-public interface ISelectCommandHandler
+public interface ISqlCommandHandler
 {
     
 }

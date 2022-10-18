@@ -1,7 +1,6 @@
 using Microsoft.Extensions.Logging;
-using NCDC.CommandParser.Abstractions;
 using NCDC.CommandParser.Common.Command;
-using NCDC.CommandParser.Common.Command.DAL.Dialect;
+using NCDC.CommandParser.Common.Command.DAL;
 using NCDC.CommandParser.Common.Command.DCL;
 using NCDC.CommandParser.Common.Command.TCL;
 using NCDC.CommandParser.Common.Util;
@@ -9,20 +8,27 @@ using NCDC.CommandParser.Dialect.Command.MySql.DAL;
 using NCDC.Enums;
 using NCDC.Logger;
 using NCDC.ProxyServer.Abstractions;
+using NCDC.ProxyServer.Connection;
 using NCDC.ProxyServer.Connection.Abstractions;
+using NCDC.ProxyServer.Helpers;
+using NCDC.ShardingAdoNet;
+using NCDC.ShardingParser.Abstractions;
 
 namespace NCDC.ProxyServer.ServerHandlers;
 
-public sealed class ServerHandlerFactory:IServerHandlerFactory
+public sealed class ServerHandlerFactory : IServerHandlerFactory
 {
-    private static readonly ILogger<ServerHandlerFactory> _logger = NCDCLoggerFactory.CreateLogger<ServerHandlerFactory>();
+    private static readonly ILogger<ServerHandlerFactory> _logger =
+        NCDCLoggerFactory.CreateLogger<ServerHandlerFactory>();
+
     private readonly IServerDataReaderFactory _serverDataReaderFactory;
 
     public ServerHandlerFactory(IServerDataReaderFactory serverDataReaderFactory)
     {
         _serverDataReaderFactory = serverDataReaderFactory;
     }
-    public IServerHandler Create(DatabaseTypeEnum databaseType, string sql, ISqlCommand sqlCommand,
+
+    public IServerHandler CreateAsync(DatabaseTypeEnum databaseType, string sql, ISqlCommand sqlCommand,
         IConnectionSession connectionSession)
     {
         _logger.LogDebug($"database type:{databaseType},sql:{sql},sql command:{sqlCommand}");
@@ -34,19 +40,32 @@ public sealed class ServerHandlerFactory:IServerHandlerFactory
         }
 
         CheckNotSupportCommand(sqlCommand);
+        // var sqlCommandContext = _sqlCommandContextFactory.Create(sql, ParameterContext.Empty, sqlCommand);
+        // connectionSession.QueryContext = new QueryContext(sqlCommandContext, sql, ParameterContext.Empty);
+        // await HandleAutoCommitAsync(sqlCommand, connectionSession);
         if (sqlCommand is ITCLCommand tclCommand)
         {
-            return CreateTCLCommandServerHandler(tclCommand,sql, connectionSession);
+            return CreateTCLCommandServerHandler(tclCommand,sql,connectionSession);
         }
-        if (sqlCommand is DALCommand dalCommand)
+
+        if (sqlCommand is IDALCommand dalCommand)
         {
-            return CreateDALCommandServerHandler(dalCommand, sql,connectionSession);
+            return CreateDALCommandServerHandler(dalCommand, sql, connectionSession);
         }
 
 
-        return new QueryServerHandler(sql,sqlCommand,connectionSession,_serverDataReaderFactory);
+        return new QueryServerHandler(sql, sqlCommand, connectionSession, _serverDataReaderFactory);
     }
-    private IServerHandler CreateDALCommandServerHandler(DALCommand dalCommand, string sql,
+
+    private static async ValueTask HandleAutoCommitAsync(ISqlCommand sqlCommand, IConnectionSession connectionSession)
+    {
+        if (AutoCommitHelper.NeedOpenTransaction(sqlCommand))
+        {
+            await connectionSession.HandleAutoCommitAsync();
+        }
+    }
+
+    private IServerHandler CreateDALCommandServerHandler(IDALCommand dalCommand, string sql,
         IConnectionSession connectionSession)
     {
         if (dalCommand is MySqlUseCommand useCommand)
@@ -54,10 +73,11 @@ public sealed class ServerHandlerFactory:IServerHandlerFactory
             return new UseDatabaseServerHandler(useCommand, connectionSession);
         }
 
-        if (dalCommand is ShowDatabasesCommand)
+        if (dalCommand is MySqlShowDatabasesCommand)
         {
             return new ShowDatabasesServerHandler(connectionSession);
         }
+
         if (dalCommand is SetCommand && null == connectionSession.DatabaseName)
         {
             return SkipServerHandler.Default;
@@ -66,12 +86,10 @@ public sealed class ServerHandlerFactory:IServerHandlerFactory
         return new UnicastServerHandler(sql, connectionSession, _serverDataReaderFactory);
     }
 
-    private IServerHandler CreateTCLCommandServerHandler(ITCLCommand itclCommand, string sql,
-        IConnectionSession connectionSession)
+    private IServerHandler CreateTCLCommandServerHandler(ITCLCommand itclCommand,string sql, IConnectionSession connectionSession)
     {
         if (itclCommand is BeginTransactionCommand beginTransactionCommand)
         {
-            // throw new NotSupportedException("BeginTransactionCommand");
             return new TransactionServerHandler(TransactionOperationTypeEnum.BEGIN, connectionSession);
         }
 
@@ -83,29 +101,27 @@ public sealed class ServerHandlerFactory:IServerHandlerFactory
                     ? new TransactionServerHandler(TransactionOperationTypeEnum.COMMIT, connectionSession)
                     : new SkipServerHandler();
             }
+
             throw new NotSupportedException("SetAutoCommitCommand");
         }
 
         if (itclCommand is CommitCommand commitCommand)
         {
             return new TransactionServerHandler(TransactionOperationTypeEnum.COMMIT, connectionSession);
-            // throw new NotSupportedException("CommitCommand");
         }
 
         if (itclCommand is RollbackCommand rollbackCommand)
         {
             return new TransactionServerHandler(TransactionOperationTypeEnum.ROLLBACK, connectionSession);
-            // throw new NotSupportedException("RollbackCommand");
         }
         //todo 判断设置隔离级别
 
-        return new UnicastServerHandler(sql,connectionSession,_serverDataReaderFactory);
-        // throw new NotSupportedException(itclCommand.GetType().FullName);
+        return new UnicastServerHandler(sql,connectionSession, _serverDataReaderFactory);
     }
 
     private void CheckNotSupportCommand(ISqlCommand sqlCommand)
     {
-        if (sqlCommand is DCLCommand || sqlCommand is FlushCommand || sqlCommand is MySqlShowCreateUserCommand)
+        if (sqlCommand is IDCLCommand)
         {
             throw new NotSupportedException("unsupported operation");
         }

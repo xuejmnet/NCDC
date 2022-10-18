@@ -67,7 +67,7 @@ namespace NCDC.ShardingParser.Segment.Select.Projection
         /// </summary>
         /// <param name="projectionName"></param>
         /// <returns></returns>
-        public string FindAlias(string projectionName)
+        public string? FindAlias(string projectionName)
         {
             foreach (var projection in _projections)
             {
@@ -144,7 +144,7 @@ namespace NCDC.ShardingParser.Segment.Select.Projection
             {
                 if (projection is ShorthandProjection shorthandProjection)
                 {
-                    result.AddRange(shorthandProjection.GetActualColumns());
+                    result.AddRange(shorthandProjection.GetActualColumns().Values);
                 }
                 else if (!(projection is DerivedProjection))
                 {

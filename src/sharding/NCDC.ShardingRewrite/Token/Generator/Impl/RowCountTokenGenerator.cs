@@ -23,7 +23,7 @@ namespace NCDC.ShardingRewrite.Token.Generator.Impl
         {
             var pagination = sqlCommandContext.GetPaginationContext();
             ShardingAssert.ShouldBeNotNull(pagination.GetRowCountSegment(), "row count segment is required");
-            return new RowCountToken(pagination.GetRowCountSegment().GetStartIndex(), pagination.GetRowCountSegment().GetStopIndex(), pagination.GetRevisedRowCount(sqlCommandContext));
+            return new RowCountToken(pagination.GetRowCountSegment().StartIndex, pagination.GetRowCountSegment().StopIndex, pagination.GetRevisedRowCount(sqlCommandContext));
         }
 
         public SqlToken GenerateSqlToken(ISqlCommandContext<ISqlCommand> sqlCommandContext)

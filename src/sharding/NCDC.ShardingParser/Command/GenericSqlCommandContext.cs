@@ -1,6 +1,7 @@
 ﻿using NCDC.CommandParser.Abstractions;
 using NCDC.CommandParser.Common.Command;
 using NCDC.CommandParser.Common.Segment.Generic.Table;
+using NCDC.ShardingParser.Command.DML;
 using NCDC.ShardingParser.Segment.Table;
 
 namespace NCDC.ShardingParser.Command
@@ -20,7 +21,7 @@ namespace NCDC.ShardingParser.Command
         public GenericSqlCommandContext(T sqlCommand)
         {
             this._sqlCommand = sqlCommand;
-            this._tablesContext = new TablesContext(new List<SimpleTableSegment>(0));
+            this._tablesContext = new TablesContext(new List<ITableSegment>(0),new Dictionary<int, SelectCommandContext>());
         }
         public T GetSqlCommand()
         {

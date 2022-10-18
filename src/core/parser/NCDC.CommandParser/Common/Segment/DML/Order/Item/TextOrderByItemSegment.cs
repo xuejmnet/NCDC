@@ -15,6 +15,6 @@ namespace NCDC.CommandParser.Common.Segment.DML.Order.Item
         {
         }
         
-        public abstract string GetText();
+        public abstract string GetExpression();
     }
 }
