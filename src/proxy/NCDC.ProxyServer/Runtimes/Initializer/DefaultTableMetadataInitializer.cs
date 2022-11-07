@@ -1,5 +1,5 @@
+using NCDC.Basic.Metadatas;
 using NCDC.Basic.Plugin;
-using NCDC.Basic.TableMetadataManagers;
 using NCDC.Exceptions;
 using NCDC.Helpers;
 using NCDC.Plugin;

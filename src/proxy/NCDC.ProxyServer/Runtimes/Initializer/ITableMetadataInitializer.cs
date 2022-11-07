@@ -1,4 +1,4 @@
-using NCDC.Basic.TableMetadataManagers;
+using NCDC.Basic.Metadatas;
 
 namespace NCDC.ProxyServer.Runtimes.Initializer;
 

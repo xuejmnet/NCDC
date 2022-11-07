@@ -1,4 +1,4 @@
-using NCDC.Basic.TableMetadataManagers;
+using NCDC.Basic.Metadatas;
 using NCDC.CommandParser.Abstractions;
 using NCDC.CommandParser.Common.Command;
 using NCDC.CommandParser.Common.Command.DML;

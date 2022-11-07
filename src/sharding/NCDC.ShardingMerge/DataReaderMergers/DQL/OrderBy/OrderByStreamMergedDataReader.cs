@@ -1,7 +1,7 @@
 ﻿using NCDC.Base.PriorityQueues;
-using NCDC.Basic.TableMetadataManagers;
 using NCDC.ShardingMerge.DataReaders.Stream;
 using NCDC.ShardingParser.Command.DML;
+using NCDC.ShardingParser.MetaData;
 using NCDC.ShardingParser.Segment.Select.OrderBy;
 using NCDC.StreamDataReaders;
 

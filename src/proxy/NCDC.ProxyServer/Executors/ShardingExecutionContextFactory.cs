@@ -1,13 +1,13 @@
 using NCDC.Basic.Configurations;
-using NCDC.Basic.TableMetadataManagers;
 using NCDC.CommandParser.Abstractions;
 using NCDC.CommandParser.Common.Command;
 using NCDC.Extensions;
+using NCDC.ProxyServer.Abstractions;
 using NCDC.ProxyServer.Connection.Abstractions;
 using NCDC.ShardingAdoNet;
 using NCDC.ShardingParser;
-using NCDC.ShardingParser.Abstractions;
 using NCDC.ShardingParser.Command;
+using NCDC.ShardingParser.MetaData;
 using NCDC.ShardingRewrite;
 using NCDC.ShardingRewrite.Abstractions;
 using NCDC.ShardingRewrite.ParameterRewriters.ParameterBuilders;

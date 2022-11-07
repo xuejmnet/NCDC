@@ -1,7 +1,7 @@
 using System.Collections.ObjectModel;
+using NCDC.Basic.Metadatas;
 using NCDC.CommandParser.Common.Segment.DML.Column;
 using NCDC.CommandParser.Common.Segment.Generic.Table;
-using NCDC.Basic.TableMetadataManagers;
 using NCDC.Exceptions;
 using NCDC.Extensions;
 using NCDC.ShardingParser.Command.DML;

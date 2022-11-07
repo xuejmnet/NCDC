@@ -1,9 +1,9 @@
-using NCDC.Basic.TableMetadataManagers;
 using NCDC.ShardingParser;
 using NCDC.ShardingRoute.Abstractions;
 using NCDC.ShardingRoute.TableRoutes.Abstractions;
 using NCDC.Extensions;
 using NCDC.Plugin;
+using NCDC.ShardingParser.MetaData;
 
 namespace NCDC.ShardingRoute.TableRoutes;
 

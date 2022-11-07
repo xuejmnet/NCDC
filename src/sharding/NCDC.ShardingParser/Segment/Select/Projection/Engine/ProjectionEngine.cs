@@ -2,9 +2,9 @@ using NCDC.CommandParser.Common.Constant;
 using NCDC.CommandParser.Common.Segment.DML.Item;
 using NCDC.CommandParser.Common.Segment.Generic.Table;
 using NCDC.ShardingParser.Segment.Select.Projection.Impl;
-using NCDC.Basic.TableMetadataManagers;
 using NCDC.CommandParser.Common.Segment.DML.Expr.Simple;
 using NCDC.Extensions;
+using NCDC.ShardingParser.MetaData;
 
 namespace NCDC.ShardingParser.Segment.Select.Projection.Engine
 {

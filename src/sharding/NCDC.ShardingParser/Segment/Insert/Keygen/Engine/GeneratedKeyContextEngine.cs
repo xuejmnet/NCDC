@@ -1,12 +1,12 @@
 ﻿using NCDC.CommandParser.Common.Command.DML;
 using NCDC.CommandParser.Common.Segment.DML.Expr;
 using NCDC.CommandParser.Common.Segment.DML.Expr.Simple;
-using NCDC.Basic.TableMetadataManagers;
 using NCDC.CommandParser.Common.Segment.DML.Assignment;
 using NCDC.CommandParser.Dialect.Handler.DML;
 using NCDC.Exceptions;
 using NCDC.Extensions;
 using NCDC.ShardingAdoNet;
+using NCDC.ShardingParser.MetaData;
 
 namespace NCDC.ShardingParser.Segment.Insert.Keygen.Engine
 {

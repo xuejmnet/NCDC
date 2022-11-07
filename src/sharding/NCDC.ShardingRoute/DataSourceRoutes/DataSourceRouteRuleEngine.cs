@@ -1,10 +1,10 @@
 using NCDC.Basic.Configurations;
-using NCDC.Basic.TableMetadataManagers;
 using NCDC.Exceptions;
 using NCDC.ShardingRoute.Abstractions;
 using NCDC.ShardingRoute.DataSourceRoutes.Abstractions;
 using NCDC.Extensions;
 using NCDC.Plugin;
+using NCDC.ShardingParser.MetaData;
 
 namespace NCDC.ShardingRoute.DataSourceRoutes;
 

@@ -1,4 +1,4 @@
-using NCDC.Basic.TableMetadataManagers;
+using NCDC.Basic.Metadatas;
 using NCDC.Plugin;
 using NCDC.Plugin.TableRouteRules;
 using NCDC.ShardingParser;

@@ -1,5 +1,4 @@
 using NCDC.Basic.Configurations;
-using NCDC.Basic.TableMetadataManagers;
 using NCDC.CommandParser.Abstractions;
 using NCDC.ProxyServer.Databases;
 using NCDC.ProxyServer.Executors;
@@ -7,6 +6,7 @@ using NCDC.ProxyServer.Options;
 using NCDC.ProxyServer.Runtimes.Initializer;
 using NCDC.ProxyServer.ServiceProviders;
 using NCDC.ShardingMerge.Abstractions;
+using NCDC.ShardingParser.MetaData;
 using NCDC.ShardingRoute.Abstractions;
 
 namespace NCDC.ProxyServer.Runtimes;

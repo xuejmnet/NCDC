@@ -1,5 +1,5 @@
-using NCDC.Basic.TableMetadataManagers;
 using NCDC.ShardingParser;
+using NCDC.ShardingParser.MetaData;
 using NCDC.ShardingRewrite.Abstractions;
 using NCDC.ShardingRewrite.Token.SimpleObject;
 using NCDC.ShardingRoute;

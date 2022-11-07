@@ -1,8 +1,8 @@
-﻿using NCDC.Basic.TableMetadataManagers;
-using NCDC.CommandParser.Abstractions;
+﻿using NCDC.CommandParser.Abstractions;
 using NCDC.CommandParser.Common.Command;
 using NCDC.ShardingMerge.DataReaders.Memory;
 using NCDC.ShardingParser.Command;
+using NCDC.ShardingParser.MetaData;
 using NCDC.StreamDataReaders;
 
 namespace NCDC.ShardingMerge.DataReaderMergers.DAL.Show

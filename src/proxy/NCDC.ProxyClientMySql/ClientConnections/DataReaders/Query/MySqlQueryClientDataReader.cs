@@ -1,10 +1,8 @@
 using System.Data.Common;
 using MySqlConnector;
-using NCDC.CommandParser.Abstractions;
 using NCDC.CommandParser.Common.Command;
 using NCDC.CommandParser.Common.Command.DML;
 using NCDC.Enums;
-using NCDC.Exceptions;
 using NCDC.Protocol.MySql.Constant;
 using NCDC.Protocol.MySql.Packet;
 using NCDC.Protocol.MySql.Packet.Command;
@@ -30,7 +28,7 @@ public sealed class MySqlQueryClientDataReader : IClientQueryDataReader<MySqlPac
     private readonly IServerHandlerFactory _serverHandlerFactory;
     private readonly ISqlCommand _sqlCommand;
     public IConnectionSession ConnectionSession { get; }
-    public IServerHandler? ServerHandler { get; private set; }
+    public IServerHandler ServerHandler { get; }
     public int MySqlEncoding { get; }
     private int _currentSequenceId;
     public ResultTypeEnum ResultType { get; private set; }
@@ -46,7 +44,7 @@ public sealed class MySqlQueryClientDataReader : IClientQueryDataReader<MySqlPac
         var isMultiCommands = IsMultiCommands(ConnectionSession, _sqlCommand, _sql);
         ServerHandler = isMultiCommands
             ? new MySqlMultiServerHandler()
-            : _serverHandlerFactory.CreateAsync(DatabaseTypeEnum.MySql, _sql, _sqlCommand, ConnectionSession);
+            : _serverHandlerFactory.Create(DatabaseTypeEnum.MySql, _sql, _sqlCommand, ConnectionSession);
         MySqlEncoding = connectionSession.Channel.GetMySqlCharacterSet().DbEncoding;
     }
 

@@ -1,8 +1,9 @@
 using System.Collections.Concurrent;
 using System.Collections.Immutable;
+using NCDC.Basic.Metadatas;
 using NCDC.Exceptions;
 
-namespace NCDC.Basic.TableMetadataManagers;
+namespace NCDC.ShardingParser.MetaData;
 
 public class TableMetadataManager:ITableMetadataManager
 {

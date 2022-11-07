@@ -1,4 +1,4 @@
-namespace NCDC.Basic.TableMetadataManagers;
+namespace NCDC.Basic.Metadatas;
 
 public sealed class ColumnMetadata
 {

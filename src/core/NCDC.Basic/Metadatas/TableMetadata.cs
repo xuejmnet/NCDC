@@ -1,8 +1,7 @@
-using System.Collections.Concurrent;
 using System.Collections.Immutable;
 using NCDC.Exceptions;
 
-namespace NCDC.Basic.TableMetadataManagers;
+namespace NCDC.Basic.Metadatas;
 
 public class TableMetadata
 {

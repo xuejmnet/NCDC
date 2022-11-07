@@ -1,4 +1,3 @@
-using NCDC.Basic.TableMetadataManagers;
 using NCDC.CommandParser.Abstractions;
 using NCDC.CommandParser.Common.Command;
 using NCDC.CommandParser.Common.Constant;
@@ -13,6 +12,7 @@ using NCDC.ShardingMerge.DataReaderMergers.DQL.OrderBy;
 using NCDC.ShardingMerge.DataReaderMergers.DQL.Pagination;
 using NCDC.ShardingParser.Command;
 using NCDC.ShardingParser.Command.DML;
+using NCDC.ShardingParser.MetaData;
 using NCDC.ShardingParser.Segment.Select.OrderBy;
 using NCDC.StreamDataReaders;
 

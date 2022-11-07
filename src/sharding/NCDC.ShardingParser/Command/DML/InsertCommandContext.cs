@@ -4,7 +4,6 @@ using NCDC.ShardingParser.Segment.Insert.Keygen;
 using NCDC.ShardingParser.Segment.Insert.Keygen.Engine;
 using NCDC.ShardingParser.Segment.Insert.Values;
 using NCDC.ShardingParser.Segment.Table;
-using NCDC.Basic.TableMetadataManagers;
 using NCDC.CommandParser.Common.Extractors;
 using NCDC.CommandParser.Common.Segment.DML.Assignment;
 using NCDC.CommandParser.Common.Segment.DML.Column;
@@ -12,6 +11,7 @@ using NCDC.CommandParser.Common.Segment.DML.Expr;
 using NCDC.CommandParser.Dialect.Handler.DML;
 using NCDC.Extensions;
 using NCDC.ShardingAdoNet;
+using NCDC.ShardingParser.MetaData;
 
 namespace NCDC.ShardingParser.Command.DML
 {

@@ -111,6 +111,7 @@ public class ConnectionSession : IConnectionSession
             throw new ShardingException("Failed to switch database, please terminate current transaction.");
         }
 
+        Console.WriteLine("设置数据库"+databaseName);
         _databaseName = databaseName;
         RuntimeContext = databaseName.IsNullOrWhiteSpace() ? null : AppRuntimeManager.GetRuntimeContext(databaseName!);
     }
@@ -126,17 +127,6 @@ public class ConnectionSession : IConnectionSession
     }
 
     public QueryContext? QueryContext { get; set; }
-
-
-    public async ValueTask HandleAutoCommitAsync()
-    {
-        //不是自动提交并且没有在事务内部那么就就需要开启事务
-        if (!GetIsAutoCommit() && !GetTransactionStatus().IsInTransaction())
-        {
-            var serverTransactionManager = new ServerTransactionManager(this);
-           await serverTransactionManager.BeginAsync(IsolationLevel);
-        }
-    }
 
     public void Reset()
     {

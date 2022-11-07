@@ -1,5 +1,7 @@
 
-namespace NCDC.Basic.TableMetadataManagers;
+using NCDC.Basic.Metadatas;
+
+namespace NCDC.ShardingParser.MetaData;
 
 public interface ITableMetadataManager
 {

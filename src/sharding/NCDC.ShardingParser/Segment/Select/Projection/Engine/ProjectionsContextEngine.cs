@@ -5,9 +5,9 @@ using NCDC.CommandParser.Common.Segment.Generic.Table;
 using NCDC.ShardingParser.Segment.Select.Groupby;
 using NCDC.ShardingParser.Segment.Select.OrderBy;
 using NCDC.ShardingParser.Segment.Select.Projection.Impl;
-using NCDC.Basic.TableMetadataManagers;
 using NCDC.Exceptions;
 using NCDC.Extensions;
+using NCDC.ShardingParser.MetaData;
 
 namespace NCDC.ShardingParser.Segment.Select.Projection.Engine
 {

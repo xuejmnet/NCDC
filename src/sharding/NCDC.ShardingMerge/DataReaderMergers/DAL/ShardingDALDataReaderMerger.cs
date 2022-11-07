@@ -1,5 +1,4 @@
 ﻿using NCDC.Basic.Configurations;
-using NCDC.Basic.TableMetadataManagers;
 using NCDC.CommandParser.Abstractions;
 using NCDC.CommandParser.Common.Command;
 using NCDC.ShardingMerge.Abstractions;
@@ -7,6 +6,7 @@ using NCDC.ShardingMerge.DataReaderMergers.DAL.Common;
 using NCDC.ShardingMerge.DataReaderMergers.DAL.Show;
 using NCDC.ShardingMerge.DataReaders.Transparent;
 using NCDC.ShardingParser.Command;
+using NCDC.ShardingParser.MetaData;
 using NCDC.StreamDataReaders;
 
 namespace NCDC.ShardingMerge.DataReaderMergers.DAL

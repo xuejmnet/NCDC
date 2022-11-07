@@ -2,8 +2,8 @@
 using NCDC.CommandParser.Common.Constant;
 using NCDC.CommandParser.Common.Value.Identifier;
 using NCDC.ShardingParser.Command;
-using NCDC.Basic.TableMetadataManagers;
 using NCDC.CommandParser.Common.Command;
+using NCDC.ShardingParser.MetaData;
 using NCDC.ShardingRewrite.Sql.Token.SimpleObject;
 using NCDC.ShardingRoute;
 

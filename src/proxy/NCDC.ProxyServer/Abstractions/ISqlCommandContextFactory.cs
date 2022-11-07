@@ -1,9 +1,8 @@
-using NCDC.CommandParser.Abstractions;
 using NCDC.CommandParser.Common.Command;
 using NCDC.ShardingAdoNet;
 using NCDC.ShardingParser.Command;
 
-namespace NCDC.ShardingParser.Abstractions;
+namespace NCDC.ProxyServer.Abstractions;
 
 public interface ISqlCommandContextFactory
 {

@@ -41,7 +41,6 @@ public interface IConnectionSession:IDisposable
     Task WaitChannelIsWritableAsync(CancellationToken cancellationToken = default);
     void NotifyChannelIsWritable();
     QueryContext? QueryContext { get; set; }
-    ValueTask HandleAutoCommitAsync();
 
     void Reset();
 }

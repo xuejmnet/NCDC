@@ -1,13 +1,12 @@
-using NCDC.CommandParser.Abstractions;
+using NCDC.CommandParser.Common.Command;
 using NCDC.CommandParser.Common.Command.DML;
+using NCDC.ProxyServer.Abstractions;
+using NCDC.ShardingAdoNet;
 using NCDC.ShardingParser.Command;
 using NCDC.ShardingParser.Command.DML;
-using NCDC.Basic.TableMetadataManagers;
-using NCDC.CommandParser.Common.Command;
-using NCDC.ShardingAdoNet;
-using NCDC.ShardingParser.Abstractions;
+using NCDC.ShardingParser.MetaData;
 
-namespace NCDC.ShardingParser
+namespace NCDC.ProxyServer
 {
 /*
 * @Author: xjm

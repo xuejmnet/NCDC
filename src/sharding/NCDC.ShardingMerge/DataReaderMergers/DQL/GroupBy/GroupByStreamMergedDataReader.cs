@@ -1,9 +1,9 @@
 using NCDC.Base;
-using NCDC.Basic.TableMetadataManagers;
 using NCDC.Extensions;
 using NCDC.ShardingMerge.DataReaderMergers.DQL.GroupBy.Aggregation;
 using NCDC.ShardingMerge.DataReaderMergers.DQL.OrderBy;
 using NCDC.ShardingParser.Command.DML;
+using NCDC.ShardingParser.MetaData;
 using NCDC.ShardingParser.Segment.Select.Projection.Impl;
 using NCDC.StreamDataReaders;
 

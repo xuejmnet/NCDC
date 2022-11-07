@@ -1,5 +1,4 @@
 ﻿using NCDC.ShardingParser.MetaData;
-using NCDC.Basic.TableMetadataManagers;
 using NCDC.Extensions;
 using NCDC.ShardingRewrite.Sql.Token.Generator;
 using NCDC.ShardingRewrite.Sql.Token.Generator.Builder;

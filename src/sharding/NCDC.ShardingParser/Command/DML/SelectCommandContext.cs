@@ -11,7 +11,6 @@ using NCDC.ShardingParser.Segment.Select.Pagination.Engine;
 using NCDC.ShardingParser.Segment.Select.Projection;
 using NCDC.ShardingParser.Segment.Select.Projection.Engine;
 using NCDC.ShardingParser.Segment.Table;
-using NCDC.Basic.TableMetadataManagers;
 using NCDC.CommandParser.Common.Constant;
 using NCDC.CommandParser.Common.Extractors;
 using NCDC.CommandParser.Common.Segment.DML.Column;
@@ -21,6 +20,7 @@ using NCDC.CommandParser.Common.Util;
 using NCDC.Exceptions;
 using NCDC.Extensions;
 using NCDC.ShardingAdoNet;
+using NCDC.ShardingParser.MetaData;
 
 namespace NCDC.ShardingParser.Command.DML
 {

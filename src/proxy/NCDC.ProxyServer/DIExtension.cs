@@ -1,8 +1,8 @@
 using Microsoft.Extensions.Configuration;
-using NCDC.Basic.TableMetadataManagers;
 using NCDC.Enums;
 using NCDC.Extensions;
 using NCDC.MySqlParser;
+using NCDC.ProxyServer;
 using NCDC.ProxyServer.Abstractions;
 using NCDC.ProxyServer.AppServices;
 using NCDC.ProxyServer.AppServices.Abstractions;
@@ -15,6 +15,7 @@ using NCDC.ProxyServer.Runtimes.Builder;
 using NCDC.ProxyServer.ServerDataReaders;
 using NCDC.ProxyServer.ServerHandlers;
 using NCDC.ShardingParser;
+using NCDC.ShardingParser.MetaData;
 using NCDC.ShardingRewrite;
 using NCDC.ShardingRoute;
 
@@ -116,7 +117,8 @@ public static class DIExtension
         services.AddSingleton<IVirtualDataSource,VirtualDataSource>();
         services.AddSingleton<ITableMetadataManager,TableMetadataManager>();
         services.AddSingleton<IShardingExecutionContextFactory,ShardingExecutionContextFactory>();
-        services.AddShardingParser();
+        services.AddSingleton<ISqlCommandContextFactory, SqlCommandContextFactory>();
+        // services.AddShardingParser();
         services.AddShardingRoute();
         services.AddShardingRewrite();
         return services;

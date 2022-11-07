@@ -12,7 +12,6 @@ using NCDC.ProxyServer.Connection;
 using NCDC.ProxyServer.Connection.Abstractions;
 using NCDC.ProxyServer.Helpers;
 using NCDC.ShardingAdoNet;
-using NCDC.ShardingParser.Abstractions;
 
 namespace NCDC.ProxyServer.ServerHandlers;
 
@@ -28,7 +27,7 @@ public sealed class ServerHandlerFactory : IServerHandlerFactory
         _serverDataReaderFactory = serverDataReaderFactory;
     }
 
-    public IServerHandler CreateAsync(DatabaseTypeEnum databaseType, string sql, ISqlCommand sqlCommand,
+    public IServerHandler Create(DatabaseTypeEnum databaseType, string sql, ISqlCommand sqlCommand,
         IConnectionSession connectionSession)
     {
         _logger.LogDebug($"database type:{databaseType},sql:{sql},sql command:{sqlCommand}");
@@ -42,7 +41,6 @@ public sealed class ServerHandlerFactory : IServerHandlerFactory
         CheckNotSupportCommand(sqlCommand);
         // var sqlCommandContext = _sqlCommandContextFactory.Create(sql, ParameterContext.Empty, sqlCommand);
         // connectionSession.QueryContext = new QueryContext(sqlCommandContext, sql, ParameterContext.Empty);
-        // await HandleAutoCommitAsync(sqlCommand, connectionSession);
         if (sqlCommand is ITCLCommand tclCommand)
         {
             return CreateTCLCommandServerHandler(tclCommand,sql,connectionSession);
@@ -55,14 +53,6 @@ public sealed class ServerHandlerFactory : IServerHandlerFactory
 
 
         return new QueryServerHandler(sql, sqlCommand, connectionSession, _serverDataReaderFactory);
-    }
-
-    private static async ValueTask HandleAutoCommitAsync(ISqlCommand sqlCommand, IConnectionSession connectionSession)
-    {
-        if (AutoCommitHelper.NeedOpenTransaction(sqlCommand))
-        {
-            await connectionSession.HandleAutoCommitAsync();
-        }
     }
 
     private IServerHandler CreateDALCommandServerHandler(IDALCommand dalCommand, string sql,

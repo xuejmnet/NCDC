@@ -1,9 +1,9 @@
 using System.Collections.Concurrent;
 using System.Collections.Immutable;
-using NCDC.Basic.TableMetadataManagers;
 using NCDC.Exceptions;
 using NCDC.Plugin;
 using NCDC.ShardingParser;
+using NCDC.ShardingParser.MetaData;
 using NCDC.ShardingRoute.Abstractions;
 using NCDC.ShardingRoute.TableRoutes.Abstractions;
 

@@ -1,4 +1,4 @@
-using NCDC.Basic.TableMetadataManagers;
+using NCDC.Basic.Metadatas;
 using NCDC.Enums;
 using NCDC.Plugin.Enums;
 using NCDC.ShardingParser;

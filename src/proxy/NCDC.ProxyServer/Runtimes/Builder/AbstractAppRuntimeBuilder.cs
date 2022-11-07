@@ -1,7 +1,7 @@
 using System.Data;
 using System.Data.Common;
 using NCDC.Basic.Configurations;
-using NCDC.Basic.TableMetadataManagers;
+using NCDC.Basic.Metadatas;
 using NCDC.Enums;
 using NCDC.ProxyServer.AppServices.Abstractions;
 using NCDC.ProxyServer.Databases;
