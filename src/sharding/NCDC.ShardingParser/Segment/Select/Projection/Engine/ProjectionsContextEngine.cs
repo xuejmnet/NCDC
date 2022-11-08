@@ -20,14 +20,12 @@ namespace NCDC.ShardingParser.Segment.Select.Projection.Engine
     */
     public sealed class ProjectionsContextEngine
     {
-        private readonly ITableMetadataManager _tableMetadataManager;
 
         private readonly ProjectionEngine _projectionEngine;
 
-        public ProjectionsContextEngine(ITableMetadataManager tableMetadataManager)
+        public ProjectionsContextEngine()
         {
-            _tableMetadataManager = tableMetadataManager;
-            _projectionEngine = new ProjectionEngine(tableMetadataManager);
+            _projectionEngine = new ProjectionEngine();
         }
         public ProjectionsContext CreateProjectionsContext(ITableSegment table, ProjectionsSegment? projectionsSegment,
             GroupByContext groupByContext, OrderByContext orderByContext)

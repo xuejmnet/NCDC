@@ -50,16 +50,16 @@ namespace NCDC.ShardingParser.Command.DML
         
         public bool NeedAggregateRewrite{ get; set; }
 
-        public SelectCommandContext(ITableMetadataManager tableMetadataManager, ParameterContext parameterContext, SelectCommand sqlCommand) : base(sqlCommand)
+        public SelectCommandContext(ParameterContext parameterContext, SelectCommand sqlCommand) : base(sqlCommand)
         {
             ExtractWhereSegments(_whereSegments, sqlCommand);
             ColumnExtractor.ExtractColumnSegments(_columnSegments, _whereSegments);
-            _subQueryContexts = CreateSubQueryContexts(tableMetadataManager, parameterContext);
+            _subQueryContexts = CreateSubQueryContexts(parameterContext);
             _tablesContext = new TablesContext(GetAllTableSegments(),_subQueryContexts);
             var databaseName = _tablesContext.GetDatabaseName();
             _groupByContext = new GroupByContextEngine().CreateGroupByContext(sqlCommand);
             _orderByContext = new OrderByContextEngine().CreateOrderBy(sqlCommand, _groupByContext);
-            _projectionsContext = new ProjectionsContextEngine(tableMetadataManager).CreateProjectionsContext(GetSqlCommand().From, GetSqlCommand().Projections, _groupByContext, _orderByContext);
+            _projectionsContext = new ProjectionsContextEngine().CreateProjectionsContext(GetSqlCommand().From, GetSqlCommand().Projections, _groupByContext, _orderByContext);
             _paginationContext = new PaginationContextEngine().CreatePaginationContext(sqlCommand, _projectionsContext, parameterContext,_whereSegments);
         }
         
@@ -71,14 +71,14 @@ namespace NCDC.ShardingParser.Command.DML
             whereSegments.AddAll(WhereExtractUtil.GetSubQueryWhereSegments(selectCommand));
             whereSegments.AddAll(WhereExtractUtil.GetJoinWhereSegments(selectCommand));
         }
-        private IDictionary<int, SelectCommandContext> CreateSubQueryContexts(ITableMetadataManager tableMetadataManager, ParameterContext parameterContext) {
+        private IDictionary<int, SelectCommandContext> CreateSubQueryContexts(ParameterContext parameterContext) {
             var subQuerySegments = SubQueryExtractUtil.GetSubQuerySegments(GetSqlCommand());
             var querySegments = subQuerySegments as SubQuerySegment[] ?? subQuerySegments.ToArray();
             var result = new Dictionary<int,SelectCommandContext>(querySegments.Count());
             
             foreach (var subQuerySegment in querySegments)
             {
-                var subQueryContext = new SelectCommandContext(tableMetadataManager,parameterContext,subQuerySegment.Select);
+                var subQueryContext = new SelectCommandContext(parameterContext,subQuerySegment.Select);
                 subQueryContext.SubQueryType = subQuerySegment.SubQueryType;
                 result.Add(subQuerySegment.StartIndex,subQueryContext);
             }

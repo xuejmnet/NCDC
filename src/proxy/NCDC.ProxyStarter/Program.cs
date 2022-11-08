@@ -7,6 +7,7 @@ using NCDC.Logger;
 using NCDC.MySqlParser;
 using NCDC.ProxyServer.AppServices.Abstractions;
 using NCDC.ProxyServer.Bootstrappers;
+using NCDC.ShardingParser;
 
 namespace NCDC.ProxyStarter
 {
@@ -44,16 +45,17 @@ Start Time:{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}");
             //注册常用编码
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
             NCDCLoggerFactory.DefaultFactory = _loggerFactory;
-            var serivces = new ServiceCollection();
-            serivces.AddSingleton<IConfiguration>(serviceProvider => _configuration);
-            serivces.AddSingleton<ILoggerFactory>(serviceProvider => _loggerFactory);
+            var services = new ServiceCollection();
+            services.AddSingleton<IConfiguration>(serviceProvider => _configuration);
+            services.AddSingleton<ILoggerFactory>(serviceProvider => _loggerFactory);
 
-            serivces.AddSingleton<IServiceHost, DefaultServiceHost>();
-            serivces.AddEntityFrameworkCoreConfiguration();
-            serivces.AddProxyClientMySql();
-            serivces.AddMySqlParser();
+            services.AddSingleton<IServiceHost, DefaultServiceHost>();
+            services.AddEntityFrameworkCoreConfiguration();
+            services.AddProxyClientMySql();
+            services.AddMySqlParser();
+            services.AddShardingParser();
             
-            var buildServiceProvider = serivces.BuildServiceProvider();
+            var buildServiceProvider = services.BuildServiceProvider();
             var argPort = GetPort(args);
             if (argPort.HasValue)
             {

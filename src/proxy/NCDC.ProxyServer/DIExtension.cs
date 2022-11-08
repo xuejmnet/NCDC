@@ -15,6 +15,7 @@ using NCDC.ProxyServer.Runtimes.Builder;
 using NCDC.ProxyServer.ServerDataReaders;
 using NCDC.ProxyServer.ServerHandlers;
 using NCDC.ShardingParser;
+using NCDC.ShardingParser.Abstractions;
 using NCDC.ShardingParser.MetaData;
 using NCDC.ShardingRewrite;
 using NCDC.ShardingRoute;
@@ -117,7 +118,7 @@ public static class DIExtension
         services.AddSingleton<IVirtualDataSource,VirtualDataSource>();
         services.AddSingleton<ITableMetadataManager,TableMetadataManager>();
         services.AddSingleton<IShardingExecutionContextFactory,ShardingExecutionContextFactory>();
-        services.AddSingleton<ISqlCommandContextFactory, SqlCommandContextFactory>();
+        // services.AddSingleton<ISqlCommandContextFactory, SqlCommandContextFactory>();
         // services.AddShardingParser();
         services.AddShardingRoute();
         services.AddShardingRewrite();

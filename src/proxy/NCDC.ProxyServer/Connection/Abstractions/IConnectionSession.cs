@@ -12,7 +12,7 @@ namespace NCDC.ProxyServer.Connection.Abstractions;
 
 public interface IConnectionSession:IDisposable
 {
-    IsolationLevel IsolationLevel { get; }
+    IsolationLevel IsolationLevel { get; set; }
     string? DatabaseName { get; }
     ISqlCommandParser GetSqlCommandParser();
     IServerConnection ServerConnection { get; }

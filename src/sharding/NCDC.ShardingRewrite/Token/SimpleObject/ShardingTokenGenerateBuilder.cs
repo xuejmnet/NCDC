@@ -57,7 +57,7 @@ namespace NCDC.ShardingRewrite.Token.SimpleObject
             result.AddIf(!isSingleRouting,new OffsetTokenGenerator());
             result.AddIf(!isSingleRouting,new RowCountTokenGenerator());
             result.Add(new GeneratedKeyInsertColumnTokenGenerator());
-            result.Add(new GeneratedKeyForUseDefaultInsertColumnsTokenGenerator());
+            result.Add(new GeneratedKeyForUseDefaultInsertColumnsTokenGenerator(_tableMetadataManager));
             result.Add(new GeneratedKeyAssignmentTokenGenerator(routeContext.GetParameterContext()));
             result.Add(new ShardingInsertValuesTokenGenerator(routeContext));
             // result.Add(new GeneratedKeyInsertValuesTokenGenerator());

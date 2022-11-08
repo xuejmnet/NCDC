@@ -35,7 +35,7 @@ public sealed class TransactionServerHandler:IServerHandler
             default: throw new NotSupportedException($"{_txType}");
         }
 
-        return new RecordsAffectedServerResult();
+        return RecordsAffectedServerResult.Default;
     }
 
     private async ValueTask HandleBeginAsync()

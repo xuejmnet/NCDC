@@ -1,12 +1,11 @@
 using NCDC.CommandParser.Common.Command;
 using NCDC.CommandParser.Common.Command.DML;
-using NCDC.ProxyServer.Abstractions;
 using NCDC.ShardingAdoNet;
+using NCDC.ShardingParser.Abstractions;
 using NCDC.ShardingParser.Command;
 using NCDC.ShardingParser.Command.DML;
-using NCDC.ShardingParser.MetaData;
 
-namespace NCDC.ProxyServer
+namespace NCDC.ShardingParser
 {
 /*
 * @Author: xjm
@@ -16,16 +15,10 @@ namespace NCDC.ProxyServer
 */
     public  class SqlCommandContextFactory:ISqlCommandContextFactory
     {
-        private readonly ITableMetadataManager _tableMetadataManager;
-
-        public SqlCommandContextFactory(ITableMetadataManager tableMetadataManager)
-        {
-            _tableMetadataManager = tableMetadataManager;
-        }
-        public  ISqlCommandContext<ISqlCommand> Create(string sql, ParameterContext parameterContext, ISqlCommand sqlCommand) {
+        public  ISqlCommandContext<ISqlCommand> Create(ParameterContext parameterContext, ISqlCommand sqlCommand) {
             if(sqlCommand is IDMLCommand dmlCommand)
             {
-                return GetDMLCommandContext(sql, parameterContext, dmlCommand);
+                return GetDMLCommandContext(parameterContext, dmlCommand);
             }
            
             //if (sqlCommand is DMLStatement) {
@@ -43,11 +36,11 @@ namespace NCDC.ProxyServer
             return new GenericSqlCommandContext<ISqlCommand>(sqlCommand);
         }
 
-        private  ISqlCommandContext<ISqlCommand> GetDMLCommandContext(string sql, ParameterContext parameterContext, IDMLCommand sqlCommand)
+        private  ISqlCommandContext<ISqlCommand> GetDMLCommandContext(ParameterContext parameterContext, IDMLCommand sqlCommand)
         {
             if (sqlCommand is SelectCommand selectCommand)
             {
-                return new SelectCommandContext(_tableMetadataManager,parameterContext, selectCommand);
+                return new SelectCommandContext(parameterContext, selectCommand);
             }
             if (sqlCommand is UpdateCommand updateCommand)
             {
@@ -58,7 +51,7 @@ namespace NCDC.ProxyServer
                 return new DeleteCommandContext(deleteCommand);
             }
             if (sqlCommand is InsertCommand insertCommand) {
-                return new InsertCommandContext(_tableMetadataManager, parameterContext, insertCommand);
+                return new InsertCommandContext(parameterContext, insertCommand);
             }
             throw new NotSupportedException($"Unsupported SQL statement `{sqlCommand.GetType().Name}`");
         }

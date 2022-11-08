@@ -3,6 +3,7 @@ using NCDC.CommandParser.Common.Command;
 using NCDC.CommandParser.Common.Command.DAL;
 using NCDC.CommandParser.Common.Command.DCL;
 using NCDC.CommandParser.Common.Command.TCL;
+using NCDC.CommandParser.Common.Constant;
 using NCDC.CommandParser.Common.Util;
 using NCDC.CommandParser.Dialect.Command.MySql.DAL;
 using NCDC.Enums;
@@ -12,6 +13,7 @@ using NCDC.ProxyServer.Connection;
 using NCDC.ProxyServer.Connection.Abstractions;
 using NCDC.ProxyServer.Helpers;
 using NCDC.ShardingAdoNet;
+using NCDC.ShardingParser.Abstractions;
 
 namespace NCDC.ProxyServer.ServerHandlers;
 
@@ -21,10 +23,12 @@ public sealed class ServerHandlerFactory : IServerHandlerFactory
         NCDCLoggerFactory.CreateLogger<ServerHandlerFactory>();
 
     private readonly IServerDataReaderFactory _serverDataReaderFactory;
+    private readonly ISqlCommandContextFactory _sqlCommandContextFactory;
 
-    public ServerHandlerFactory(IServerDataReaderFactory serverDataReaderFactory)
+    public ServerHandlerFactory(IServerDataReaderFactory serverDataReaderFactory,ISqlCommandContextFactory sqlCommandContextFactory)
     {
         _serverDataReaderFactory = serverDataReaderFactory;
+        _sqlCommandContextFactory = sqlCommandContextFactory;
     }
 
     public IServerHandler Create(DatabaseTypeEnum databaseType, string sql, ISqlCommand sqlCommand,
@@ -39,8 +43,8 @@ public sealed class ServerHandlerFactory : IServerHandlerFactory
         }
 
         CheckNotSupportCommand(sqlCommand);
-        // var sqlCommandContext = _sqlCommandContextFactory.Create(sql, ParameterContext.Empty, sqlCommand);
-        // connectionSession.QueryContext = new QueryContext(sqlCommandContext, sql, ParameterContext.Empty);
+        var sqlCommandContext = _sqlCommandContextFactory.Create(ParameterContext.Empty, sqlCommand);
+        connectionSession.QueryContext = new QueryContext(sqlCommandContext, sql, ParameterContext.Empty);
         if (sqlCommand is ITCLCommand tclCommand)
         {
             return CreateTCLCommandServerHandler(tclCommand,sql,connectionSession);
@@ -76,14 +80,14 @@ public sealed class ServerHandlerFactory : IServerHandlerFactory
         return new UnicastServerHandler(sql, connectionSession, _serverDataReaderFactory);
     }
 
-    private IServerHandler CreateTCLCommandServerHandler(ITCLCommand itclCommand,string sql, IConnectionSession connectionSession)
+    private IServerHandler CreateTCLCommandServerHandler(ITCLCommand tclCommand,string sql, IConnectionSession connectionSession)
     {
-        if (itclCommand is BeginTransactionCommand beginTransactionCommand)
+        if (tclCommand is BeginTransactionCommand beginTransactionCommand)
         {
             return new TransactionServerHandler(TransactionOperationTypeEnum.BEGIN, connectionSession);
         }
 
-        if (itclCommand is SetAutoCommitCommand setAutoCommitCommand)
+        if (tclCommand is SetAutoCommitCommand setAutoCommitCommand)
         {
             if (setAutoCommitCommand.AutoCommit)
             {
@@ -95,16 +99,21 @@ public sealed class ServerHandlerFactory : IServerHandlerFactory
             throw new NotSupportedException("SetAutoCommitCommand");
         }
 
-        if (itclCommand is CommitCommand commitCommand)
+        if (tclCommand is CommitCommand commitCommand)
         {
             return new TransactionServerHandler(TransactionOperationTypeEnum.COMMIT, connectionSession);
         }
 
-        if (itclCommand is RollbackCommand rollbackCommand)
+        if (tclCommand is RollbackCommand rollbackCommand)
         {
             return new TransactionServerHandler(TransactionOperationTypeEnum.ROLLBACK, connectionSession);
         }
         //todo 判断设置隔离级别
+        if (tclCommand is SetTransactionCommand setTransactionCommand &&
+            OperationScopeEnum.GLOBAL != setTransactionCommand.Scope)
+        {
+            return new TransactionSetServerHandler(setTransactionCommand, connectionSession);
+        }
 
         return new UnicastServerHandler(sql,connectionSession, _serverDataReaderFactory);
     }

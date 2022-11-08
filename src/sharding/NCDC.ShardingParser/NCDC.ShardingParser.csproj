@@ -10,8 +10,4 @@
       <ProjectReference Include="..\..\core\NCDC.Basic\NCDC.Basic.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Abstractions" />
-    </ItemGroup>
-
 </Project>

@@ -29,7 +29,7 @@ public class ConnectionSession : IConnectionSession
     public IVirtualDataSource? VirtualDataSource => RuntimeContext?.GetVirtualDataSource();
     private volatile bool autoCommit = true;
     private  string? _databaseName;
-    public IsolationLevel IsolationLevel { get; private set; }
+    public IsolationLevel IsolationLevel { get;  set; }
     public string? DatabaseName => _databaseName;
     public IRuntimeContext? RuntimeContext { get; private set; }
     public IAppRuntimeManager AppRuntimeManager { get; }

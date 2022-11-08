@@ -27,7 +27,7 @@ namespace NCDC.ShardingParser.Command.DML
         private readonly TablesContext _tablesContext;
 
         private readonly IReadOnlyList<string> _columnNames;
-        private readonly List<string> _insertColumnNames;
+        public  IReadOnlyList<string> InsertColumnNames { get; }
         private readonly List<List<IExpressionSegment>> _valueExpressions;
 
         private readonly List<InsertValueContext> _insertValueContexts;
@@ -36,19 +36,20 @@ namespace NCDC.ShardingParser.Command.DML
 
         private  GeneratedKeyContext? _generatedKeyContext;
 
-        public InsertCommandContext(ITableMetadataManager tableMetadataManager, ParameterContext parameterContext, InsertCommand insertCommand) : base(insertCommand)
+        public InsertCommandContext(ParameterContext parameterContext, InsertCommand insertCommand) : base(insertCommand)
         {
-            _insertColumnNames = GetInsertColumnNames();
+            InsertColumnNames = GetInsertColumnNames();
            _valueExpressions= GetAllValueExpressions(insertCommand);
            _insertValueContexts = GetInsertValueContexts(parameterContext, _valueExpressions);
-           _insertSelectContext=GetInsertSelectContext(tableMetadataManager, parameterContext);
+           _insertSelectContext=GetInsertSelectContext(parameterContext);
            _onDuplicateKeyUpdateValueContext = GetOnDuplicateKeyUpdateValueContext(parameterContext);
             _tablesContext = new TablesContext(GetAllSimpleTableSegments());
-            var tableName = GetSqlCommand()?.Table?.TableName.IdentifierValue.Value;
-            _columnNames = ContainsInsertColumns() ? _insertColumnNames :(tableName is not null? tableMetadataManager.GetAllColumnNames(tableName):new List<string>());
-            _generatedKeyContext = new GeneratedKeyContextEngine(insertCommand,tableMetadataManager).CreateGenerateKeyContext(_insertColumnNames,_valueExpressions,parameterContext);
+            // var tableName = GetSqlCommand()?.Table?.TableName.IdentifierValue.Value;
+            _columnNames = ContainsInsertColumns() ? InsertColumnNames : new List<string>(0);//(tableName is not null? tableMetadataManager.GetAllColumnNames(tableName):new List<string>());
+            _generatedKeyContext =
+                null; // new GeneratedKeyContextEngine(insertCommand,tableMetadataManager).CreateGenerateKeyContext(_insertColumnNames,_valueExpressions,parameterContext);
         }
-        public List<String> GetInsertColumnNames()
+        public IReadOnlyList<String> GetInsertColumnNames()
         {
             InsertCommand insertCommand = GetSqlCommand();
             var setAssignmentSegment = InsertCommandHandler.GetSetAssignmentSegment(insertCommand);
@@ -84,7 +85,7 @@ namespace NCDC.ShardingParser.Command.DML
         {
             return valueExpressions.Select(o => new InsertValueContext(o, parameterContext)).ToList();
         }
-        private InsertSelectContext? GetInsertSelectContext(ITableMetadataManager tableMetadataManager, ParameterContext parameterContext) {
+        private InsertSelectContext? GetInsertSelectContext(ParameterContext parameterContext) {
             var insertCommand = GetSqlCommand();
             var insertSelectSegment = insertCommand.InsertSelect;
             if (insertSelectSegment is  null)
@@ -92,7 +93,7 @@ namespace NCDC.ShardingParser.Command.DML
                 return null;
             }
             
-            var selectCommandContext = new SelectCommandContext(tableMetadataManager, parameterContext, insertSelectSegment.Select);
+            var selectCommandContext = new SelectCommandContext(parameterContext, insertSelectSegment.Select);
             InsertSelectContext insertSelectContext = new InsertSelectContext(selectCommandContext, parameterContext);
             return insertSelectContext;
         }
@@ -117,17 +118,17 @@ namespace NCDC.ShardingParser.Command.DML
             return insertCommand.GetColumns().IsNotEmpty() || InsertCommandHandler.GetSetAssignmentSegment(insertCommand) is not null;
         }
 
-        /**
-         * Get column names for descending order.
-         * 
-         * @return column names for descending order
-         */
-        public List<string> GetDescendingColumnNames()
-        {
-            var list = new List<string>(_columnNames);
-            list.Reverse();
-            return list;
-        }
+        // /**
+        //  * Get column names for descending order.
+        //  * 
+        //  * @return column names for descending order
+        //  */
+        // public List<string> GetDescendingColumnNames()
+        // {
+        //     var list = new List<string>(_columnNames);
+        //     list.Reverse();
+        //     return list;
+        // }
 
         /**
          * Get grouped parameters.
@@ -162,11 +163,6 @@ namespace NCDC.ShardingParser.Command.DML
         public List<InsertValueContext> GetInsertValueContexts()
         {
             return _insertValueContexts;
-        }
-
-        public IReadOnlyList<string> GetColumnNames()
-        {
-            return _columnNames;
         }
         public override TablesContext GetTablesContext()
         {

@@ -16,16 +16,14 @@ namespace NCDC.ShardingParser.Segment.Select.Projection.Engine
     */
     public sealed class ProjectionEngine
     {
-        private readonly ITableMetadataManager _tableMetadataManager;
 
 
         private int aggregationAverageDerivedColumnCount;
 
         private int aggregationDistinctDerivedColumnCount;
 
-        public ProjectionEngine(ITableMetadataManager tableMetadataManager)
+        public ProjectionEngine()
         {
-            _tableMetadataManager = tableMetadataManager;
         }
 
         /**

@@ -3,9 +3,11 @@ using NCDC.CommandParser.Abstractions;
 using NCDC.CommandParser.Common.Command;
 using NCDC.Extensions;
 using NCDC.ProxyServer.Abstractions;
+using NCDC.ProxyServer.Connection;
 using NCDC.ProxyServer.Connection.Abstractions;
 using NCDC.ShardingAdoNet;
 using NCDC.ShardingParser;
+using NCDC.ShardingParser.Abstractions;
 using NCDC.ShardingParser.Command;
 using NCDC.ShardingParser.MetaData;
 using NCDC.ShardingRewrite;
@@ -19,50 +21,45 @@ namespace NCDC.ProxyServer.Executors;
 
 public sealed class ShardingExecutionContextFactory : IShardingExecutionContextFactory
 {
-    private readonly ISqlCommandContextFactory _sqlCommandContextFactory;
+    // private readonly ISqlCommandContextFactory _sqlCommandContextFactory;
     private readonly IRouteContextFactory _routeContextFactory;
     private readonly ISqlRewriterContextFactory _sqlRewriterContextFactory;
     private readonly ITableMetadataManager _tableMetadataManager;
     private readonly ShardingConfiguration _shardingConfiguration;
 
     public ShardingExecutionContextFactory(
-        ISqlCommandContextFactory sqlCommandContextFactory, IRouteContextFactory routeContextFactory,
+        // ISqlCommandContextFactory sqlCommandContextFactory, 
+        IRouteContextFactory routeContextFactory,
         ISqlRewriterContextFactory sqlRewriterContextFactory,ITableMetadataManager tableMetadataManager,ShardingConfiguration shardingConfiguration)
     {
-        _sqlCommandContextFactory = sqlCommandContextFactory;
+        // _sqlCommandContextFactory = sqlCommandContextFactory;
         _routeContextFactory = routeContextFactory;
         _sqlRewriterContextFactory = sqlRewriterContextFactory;
         _tableMetadataManager = tableMetadataManager;
         _shardingConfiguration = shardingConfiguration;
     }
 
-    public ShardingExecutionContext Create(IConnectionSession connectionSession,string sql)
+    public ShardingExecutionContext Create(IConnectionSession connectionSession)
     {
-        var sqlCommand = connectionSession.GetSqlCommandParser().Parse(sql, false);
-        return Create(sql, sqlCommand);
-    }
-
-    public ShardingExecutionContext Create(string sql, ISqlCommand sqlCommand)
-    {
-        var sqlCommandContext = _sqlCommandContextFactory.Create(sql, ParameterContext.Empty, sqlCommand);
-        var shardingExecutionContext = Create0(sql,sqlCommandContext);
+        var queryContext = connectionSession.QueryContext!;
+        var shardingExecutionContext = Create0(queryContext);
         if (true)
         {
-            SqlLogger.LogSql(sql, false, shardingExecutionContext.GetSqlCommandContext(), shardingExecutionContext.GetExecutionUnits());
+            SqlLogger.LogSql(queryContext.Sql, false, shardingExecutionContext.GetSqlCommandContext(), shardingExecutionContext.GetExecutionUnits());
         }
 
         return shardingExecutionContext;
     }
 
-    private ShardingExecutionContext Create0(string sql, ISqlCommandContext<ISqlCommand> sqlCommandContext)
+    private ShardingExecutionContext Create0(QueryContext queryContext)
     {
-        var sqlParserResult = new SqlParserResult(sql, sqlCommandContext, ParameterContext.Empty,_tableMetadataManager);
+        var sqlParserResult = new SqlParserResult(queryContext.Sql, queryContext.SqlCommandContext, ParameterContext.Empty,_tableMetadataManager);
         if (!sqlParserResult.NativeSql)
         {
             if (sqlParserResult.DefaultDataSourceExecute)
             {
-                ShardingExecutionContext result = new ShardingExecutionContext(sqlCommandContext);
-                result.GetExecutionUnits().Add(new ExecutionUnit(_shardingConfiguration.DefaultDataSourceName,new SqlUnit(sql,ParameterContext.Empty)));
+                ShardingExecutionContext result = new ShardingExecutionContext(queryContext.SqlCommandContext);
+                result.GetExecutionUnits().Add(new ExecutionUnit(_shardingConfiguration.DefaultDataSourceName,new SqlUnit(queryContext.Sql,ParameterContext.Empty)));
                 return result;
             }
             else
@@ -85,8 +82,8 @@ public sealed class ShardingExecutionContextFactory : IShardingExecutionContextF
         else
         {
             //广播所有datasource
-            ShardingExecutionContext result = new ShardingExecutionContext(sqlCommandContext);
-            result.GetExecutionUnits().AddAll(_shardingConfiguration.GetAllDataSources().Select(o=>new ExecutionUnit(o,new SqlUnit(sql,ParameterContext.Empty))));
+            ShardingExecutionContext result = new ShardingExecutionContext(queryContext.SqlCommandContext);
+            result.GetExecutionUnits().AddAll(_shardingConfiguration.GetAllDataSources().Select(o=>new ExecutionUnit(o,new SqlUnit(queryContext.Sql,ParameterContext.Empty))));
             return result;
         }
     }

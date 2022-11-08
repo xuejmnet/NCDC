@@ -8,6 +8,6 @@ public sealed class SkipServerHandler:IServerHandler
     public static SkipServerHandler Default { get; } = new SkipServerHandler();
     public Task<IServerResult> ExecuteAsync()
     {
-        return Task.FromResult((IServerResult)RecordsAffectedServerResult.Empty);
+        return Task.FromResult((IServerResult)RecordsAffectedServerResult.Default);
     }
 }

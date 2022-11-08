@@ -6,6 +6,5 @@ namespace NCDC.ProxyServer.Executors;
 
 public interface IShardingExecutionContextFactory
 {
-    ShardingExecutionContext Create(IConnectionSession connectionSession,string sql);
-    ShardingExecutionContext Create(string sql,ISqlCommand sqlCommand);
+    ShardingExecutionContext Create(IConnectionSession connectionSession);
 }

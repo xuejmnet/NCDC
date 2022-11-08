@@ -22,7 +22,7 @@ public sealed class UseDatabaseServerHandler:IServerHandler
         var database = SqlUtil.GetExactlyValue(_mySqlUseCommand.Schema);
         if (IsAuthorized(database))
         {
-            return Task.FromResult((IServerResult)RecordsAffectedServerResult.Empty);
+            return Task.FromResult((IServerResult)RecordsAffectedServerResult.Default);
         }
 
         throw new ShardingException($"unknown database {database}");

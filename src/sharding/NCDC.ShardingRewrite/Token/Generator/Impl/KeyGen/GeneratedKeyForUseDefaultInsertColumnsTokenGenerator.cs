@@ -1,6 +1,8 @@
 using NCDC.Base;
 using NCDC.CommandParser.Common.Command.DML;
 using NCDC.ShardingParser.Command.DML;
+using NCDC.ShardingParser.Extensions;
+using NCDC.ShardingParser.MetaData;
 using NCDC.ShardingRewrite.Sql.Token.SimpleObject;
 using NCDC.ShardingRewrite.Sql.Token.SimpleObject.Generic;
 
@@ -14,6 +16,12 @@ namespace NCDC.ShardingRewrite.Token.Generator.Impl.KeyGen
 */
     public sealed class GeneratedKeyForUseDefaultInsertColumnsTokenGenerator:BaseGeneratedKeyTokenGenerator
     {
+        private readonly ITableMetadataManager _tableMetadataManager;
+
+        public GeneratedKeyForUseDefaultInsertColumnsTokenGenerator(ITableMetadataManager tableMetadataManager)
+        {
+            _tableMetadataManager = tableMetadataManager;
+        }
         public override SqlToken GenerateSqlToken(InsertCommandContext sqlCommandContext)
         {
             var insertColumnsSegment = sqlCommandContext.GetSqlCommand().InsertColumns;
@@ -29,7 +37,7 @@ namespace NCDC.ShardingRewrite.Token.Generator.Impl.KeyGen
         private List<String> GetColumnNames(InsertCommandContext insertCommandContext) {
             var generatedKey = insertCommandContext.GetGeneratedKeyContext();
             ShardingAssert.ShouldBeNotNull(generatedKey,"generatedKey is required");
-            List<String> result = new List<string>(insertCommandContext.GetColumnNames());
+            List<String> result = new List<string>(insertCommandContext.GetColumnNames(_tableMetadataManager));
             result.Remove(generatedKey.GetColumnName());
             result.Add(generatedKey.GetColumnName());
             return result;
