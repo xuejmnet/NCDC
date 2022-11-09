@@ -22,13 +22,14 @@ public sealed class TableRouteRuleEngine:ITableRouteRuleEngine
         if (!_tableMetadataManager.IsShardingTable(tableName))
         {
             var dataSourceNames = dataSourceRouteResult.IntersectDataSources;
-            var tableRouteUnits = new List<TableRouteUnit>(dataSourceNames.Count);
-            foreach (var dataSourceName in dataSourceNames)
-            {
-                var shardingRouteUnit = new TableRouteUnit(dataSourceName, tableName, tableName);
-                tableRouteUnits.Add(shardingRouteUnit);
-            }
-            return tableRouteUnits;
+            return dataSourceNames.Select(dataSourceName => new TableRouteUnit(dataSourceName, tableName, tableName)).ToList();
+            // var tableRouteUnits = new List<TableRouteUnit>(dataSourceNames.Count);
+            // foreach (var dataSourceName in dataSourceNames)
+            // {
+            //     var shardingRouteUnit = new TableRouteUnit(dataSourceName, tableName, tableName);
+            //     tableRouteUnits.Add(shardingRouteUnit);
+            // }
+            // return tableRouteUnits;
         }
         return _tableRouteManager.RouteTo(tableName,dataSourceRouteResult,sqlParserResult);
     }

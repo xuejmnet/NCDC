@@ -39,22 +39,20 @@ public sealed class ShardingExecutionContextFactory : IShardingExecutionContextF
         _shardingConfiguration = shardingConfiguration;
     }
 
-    public ShardingExecutionContext Create(IConnectionSession connectionSession)
+    public ShardingExecutionContext Create(QueryContext queryContext)
     {
-        var queryContext = connectionSession.QueryContext!;
         var shardingExecutionContext = Create0(queryContext);
         if (true)
         {
             SqlLogger.LogSql(queryContext.Sql, false, shardingExecutionContext.GetSqlCommandContext(), shardingExecutionContext.GetExecutionUnits());
         }
-
         return shardingExecutionContext;
     }
 
     private ShardingExecutionContext Create0(QueryContext queryContext)
     {
         var sqlParserResult = new SqlParserResult(queryContext.Sql, queryContext.SqlCommandContext, ParameterContext.Empty,_tableMetadataManager);
-        if (!sqlParserResult.NativeSql)
+        if (!sqlParserResult.NoRouteReWriteSql)
         {
             if (sqlParserResult.DefaultDataSourceExecute)
             {

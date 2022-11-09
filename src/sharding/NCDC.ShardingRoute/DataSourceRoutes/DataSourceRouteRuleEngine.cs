@@ -29,7 +29,10 @@ public sealed class DataSourceRouteRuleEngine:IDataSourceRouteRuleEngine
         {
             if (!_tableMetadataManager.IsShardingDataSource(tableName))
             {
-                dataSourceMaps.Add(tableName, new HashSet<string>() { _shardingConfiguration.DefaultDataSourceName });
+                if (!dataSourceMaps.TryGetValue(tableName, out var ds))
+                {
+                    dataSourceMaps.Add(tableName, new HashSet<string>() { _shardingConfiguration.DefaultDataSourceName });
+                }
                 continue;
             }
             var dataSources = _dataSourceRouteManager.RouteTo(tableName, context.SqlParserResult);

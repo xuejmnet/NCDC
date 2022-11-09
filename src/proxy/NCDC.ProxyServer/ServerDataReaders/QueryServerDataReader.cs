@@ -1,3 +1,4 @@
+using NCDC.Enums;
 using NCDC.ProxyServer.Abstractions;
 using NCDC.ProxyServer.Binaries;
 using NCDC.ProxyServer.Connection.Abstractions;
@@ -9,7 +10,7 @@ using NCDC.StreamDataReaders;
 
 namespace NCDC.ProxyServer.ServerDataReaders;
 
-public sealed class QueryServerDataReader:AbstractAdoServerDataReader
+public sealed class QueryServerDataReader:AbstractExecuteServerDataReader
 {
 
     protected IStreamDataReader StreamDataReader { get; private set; }
@@ -18,6 +19,10 @@ public sealed class QueryServerDataReader:AbstractAdoServerDataReader
     {
     }
 
+    protected override ValueTask<List<IServerDbConnection>> GetServerDbConnectionsAsync(ConnectionModeEnum connectionMode, string dataSourceName, int connectionSize)
+    {
+        return ConnectionSession.ServerConnection.GetConnections(connectionMode, dataSourceName, connectionSize);
+    }
     public override bool Read()
     {
         return StreamDataReader!.Read();

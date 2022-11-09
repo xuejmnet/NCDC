@@ -12,7 +12,7 @@ public sealed class SqlParserResult
     public string Sql { get; }
     public ISqlCommandContext<ISqlCommand> SqlCommandContext { get; }
     public ParameterContext ParameterContext { get; }
-    public bool NativeSql { get; }
+    public bool NoRouteReWriteSql { get; }
     public bool DefaultDataSourceExecute { get; }
 
     public SqlParserResult(string sql,ISqlCommandContext<ISqlCommand> sqlCommandContext,ParameterContext parameterContext,ITableMetadataManager tableMetadataManager)
@@ -20,8 +20,8 @@ public sealed class SqlParserResult
         Sql = sql;
         SqlCommandContext = sqlCommandContext;
         ParameterContext = parameterContext;
-        NativeSql = IsNativeSql(sqlCommandContext);
-        if (!NativeSql)
+        NoRouteReWriteSql = IsNoRouteReWriteSql(sqlCommandContext);
+        if (!NoRouteReWriteSql)
         {
             DefaultDataSourceExecute = IsDefaultDataSourceExecute(sqlCommandContext, tableMetadataManager);
         }
@@ -32,7 +32,7 @@ public sealed class SqlParserResult
     /// </summary>
     /// <param name="sqlCommandContext"></param>
     /// <returns></returns>
-    private bool IsNativeSql(ISqlCommandContext<ISqlCommand> sqlCommandContext)
+    private bool IsNoRouteReWriteSql(ISqlCommandContext<ISqlCommand> sqlCommandContext)
     {
         if (sqlCommandContext.GetSqlCommand() is IDMLCommand)
         {
@@ -46,7 +46,7 @@ public sealed class SqlParserResult
         if (sqlCommandContext.GetSqlCommand() is IDMLCommand)
         {
             var tableNames = sqlCommandContext.GetTablesContext().GetTableNames();
-            return tableNames.All(o => !tableMetadataManager.IsSharding(o));
+            return tableNames.Any(tableMetadataManager.IsSharding);
         }
 
         return false;

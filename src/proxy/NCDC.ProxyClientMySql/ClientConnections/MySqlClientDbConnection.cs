@@ -13,6 +13,7 @@ using NCDC.ProxyServer.Abstractions;
 using NCDC.ProxyServer.Commons;
 using NCDC.ProxyServer.Connection;
 using NCDC.ProxyServer.Connection.Abstractions;
+using NCDC.ShardingParser.Abstractions;
 
 namespace NCDC.ProxyClientMySql.ClientConnections;
 
@@ -22,11 +23,13 @@ public sealed class MySqlClientDbConnection : IClientDbConnection<MySqlPacketPay
         NCDCLoggerFactory.CreateLogger<MySqlClientDbConnection>();
     private readonly IServerHandlerFactory _serverHandlerFactory;
     private readonly IServerDataReaderFactory _serverDataReaderFactory;
+    private readonly ISqlCommandContextFactory _sqlCommandContextFactory;
 
-    public MySqlClientDbConnection(IServerHandlerFactory serverHandlerFactory,IServerDataReaderFactory serverDataReaderFactory)
+    public MySqlClientDbConnection(IServerHandlerFactory serverHandlerFactory,IServerDataReaderFactory serverDataReaderFactory,ISqlCommandContextFactory sqlCommandContextFactory)
     {
         _serverHandlerFactory = serverHandlerFactory;
         _serverDataReaderFactory = serverDataReaderFactory;
+        _sqlCommandContextFactory = sqlCommandContextFactory;
     }
 
     public IClientCommand<MySqlPacketPayload> CreateCommand(MySqlPacketPayload payload,IConnectionSession connectionSession)
@@ -38,7 +41,7 @@ public sealed class MySqlClientDbConnection : IClientDbConnection<MySqlPacketPay
             case MySqlCommandTypeEnum.COM_QUIT:
                 return new MySqlQuitClientCommand();
             case MySqlCommandTypeEnum.COM_FIELD_LIST:
-                return new MySqlFieldListClientCommand(payload,connectionSession,_serverDataReaderFactory);
+                return new MySqlFieldListClientCommand(payload,connectionSession,_serverDataReaderFactory,_sqlCommandContextFactory);
             case MySqlCommandTypeEnum.COM_INIT_DB:
                 return new MySqlInitDbClientCommand(payload, connectionSession);
             case MySqlCommandTypeEnum.COM_QUERY:

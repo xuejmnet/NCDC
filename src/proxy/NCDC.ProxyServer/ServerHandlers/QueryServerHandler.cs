@@ -9,18 +9,14 @@ namespace NCDC.ProxyServer.ServerHandlers;
 
 public sealed class QueryServerHandler:IServerHandler
 {
-    private readonly ISqlCommand _sqlCommand;
     private readonly IConnectionSession _connectionSession;
     private readonly IServerDataReaderFactory _serverDataReaderFactory;
-    public string Sql { get; }
     public IServerDataReader ServerDataReader { get; private set; }
 
-    public QueryServerHandler(string sql,ISqlCommand sqlCommand,IConnectionSession connectionSession,IServerDataReaderFactory serverDataReaderFactory)
+    public QueryServerHandler(IConnectionSession connectionSession,IServerDataReaderFactory serverDataReaderFactory)
     {
-        _sqlCommand = sqlCommand;
         _connectionSession = connectionSession;
         _serverDataReaderFactory = serverDataReaderFactory;
-        Sql = sql;
     }
     public Task<IServerResult> ExecuteAsync()
     {
@@ -29,7 +25,7 @@ public sealed class QueryServerHandler:IServerHandler
             throw new ShardingException("no database selected");
         }
 
-        ServerDataReader = _serverDataReaderFactory.Create(Sql,_sqlCommand, _connectionSession);
+        ServerDataReader = _serverDataReaderFactory.Create(_connectionSession);
         return ServerDataReader.ExecuteDbDataReaderAsync();
         
        

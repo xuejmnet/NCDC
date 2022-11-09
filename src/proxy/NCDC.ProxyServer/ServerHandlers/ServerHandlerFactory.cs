@@ -47,19 +47,19 @@ public sealed class ServerHandlerFactory : IServerHandlerFactory
         connectionSession.QueryContext = new QueryContext(sqlCommandContext, sql, ParameterContext.Empty);
         if (sqlCommand is ITCLCommand tclCommand)
         {
-            return CreateTCLCommandServerHandler(tclCommand,sql,connectionSession);
+            return CreateTCLCommandServerHandler(tclCommand,connectionSession);
         }
 
         if (sqlCommand is IDALCommand dalCommand)
         {
-            return CreateDALCommandServerHandler(dalCommand, sql, connectionSession);
+            return CreateDALCommandServerHandler(dalCommand, connectionSession);
         }
 
 
-        return new QueryServerHandler(sql, sqlCommand, connectionSession, _serverDataReaderFactory);
+        return new QueryServerHandler(connectionSession, _serverDataReaderFactory);
     }
 
-    private IServerHandler CreateDALCommandServerHandler(IDALCommand dalCommand, string sql,
+    private IServerHandler CreateDALCommandServerHandler(IDALCommand dalCommand,
         IConnectionSession connectionSession)
     {
         if (dalCommand is MySqlUseCommand useCommand)
@@ -77,10 +77,10 @@ public sealed class ServerHandlerFactory : IServerHandlerFactory
             return SkipServerHandler.Default;
         }
 
-        return new UnicastServerHandler(sql, connectionSession, _serverDataReaderFactory);
+        return new UnicastServerHandler(connectionSession, _serverDataReaderFactory);
     }
 
-    private IServerHandler CreateTCLCommandServerHandler(ITCLCommand tclCommand,string sql, IConnectionSession connectionSession)
+    private IServerHandler CreateTCLCommandServerHandler(ITCLCommand tclCommand,IConnectionSession connectionSession)
     {
         if (tclCommand is BeginTransactionCommand beginTransactionCommand)
         {
@@ -93,7 +93,7 @@ public sealed class ServerHandlerFactory : IServerHandlerFactory
             {
                 return connectionSession.GetTransactionStatus().IsInTransaction()
                     ? new TransactionServerHandler(TransactionOperationTypeEnum.COMMIT, connectionSession)
-                    : new SkipServerHandler();
+                    : SkipServerHandler.Default;
             }
 
             throw new NotSupportedException("SetAutoCommitCommand");
@@ -108,14 +108,13 @@ public sealed class ServerHandlerFactory : IServerHandlerFactory
         {
             return new TransactionServerHandler(TransactionOperationTypeEnum.ROLLBACK, connectionSession);
         }
-        //todo 判断设置隔离级别
         if (tclCommand is SetTransactionCommand setTransactionCommand &&
             OperationScopeEnum.GLOBAL != setTransactionCommand.Scope)
         {
             return new TransactionSetServerHandler(setTransactionCommand, connectionSession);
         }
 
-        return new UnicastServerHandler(sql,connectionSession, _serverDataReaderFactory);
+        return new UnicastServerHandler(connectionSession, _serverDataReaderFactory);
     }
 
     private void CheckNotSupportCommand(ISqlCommand sqlCommand)

@@ -26,7 +26,6 @@ public sealed class MySqlQueryClientDataReader : IClientQueryDataReader<MySqlPac
 {
     private readonly string _sql;
     private readonly IServerHandlerFactory _serverHandlerFactory;
-    private readonly ISqlCommand _sqlCommand;
     public IConnectionSession ConnectionSession { get; }
     public IServerHandler ServerHandler { get; }
     public int MySqlEncoding { get; }
@@ -40,11 +39,11 @@ public sealed class MySqlQueryClientDataReader : IClientQueryDataReader<MySqlPac
         _serverHandlerFactory = serverHandlerFactory;
         //MySQLComQueryPacketExecutor
         ConnectionSession = connectionSession;
-        _sqlCommand = ParseSql(sql);
-        var isMultiCommands = IsMultiCommands(ConnectionSession, _sqlCommand, _sql);
+        var sqlCommand = ParseSql(sql);
+        var isMultiCommands = IsMultiCommands(ConnectionSession, sqlCommand, _sql);
         ServerHandler = isMultiCommands
             ? new MySqlMultiServerHandler()
-            : _serverHandlerFactory.Create(DatabaseTypeEnum.MySql, _sql, _sqlCommand, ConnectionSession);
+            : _serverHandlerFactory.Create(DatabaseTypeEnum.MySql, _sql, sqlCommand, ConnectionSession);
         MySqlEncoding = connectionSession.Channel.GetMySqlCharacterSet().DbEncoding;
     }
 
@@ -55,7 +54,6 @@ public sealed class MySqlQueryClientDataReader : IClientQueryDataReader<MySqlPac
             throw new NotSupportedException(sql);
         }
 
-        Console.WriteLine("MySqlQueryClientDataReader:"+sql);
         return ConnectionSession.GetSqlCommandParser().Parse(sql, false);
     }
 

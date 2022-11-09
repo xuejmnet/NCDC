@@ -10,15 +10,13 @@ namespace NCDC.ProxyServer.ServerHandlers;
 /// </summary>
 public sealed class UnicastServerHandler : IServerHandler
 {
-    private readonly string _sql;
     private readonly IConnectionSession _connectionSession;
     private readonly IServerDataReaderFactory _serverDataReaderFactory;
     private IServerDataReader? _serverDataReader;
 
-    public UnicastServerHandler(string sql,IConnectionSession connectionSession,
+    public UnicastServerHandler(IConnectionSession connectionSession,
         IServerDataReaderFactory serverDataReaderFactory)
     {
-        _sql = sql;
         _connectionSession = connectionSession;
         _serverDataReaderFactory = serverDataReaderFactory;
     }
@@ -30,7 +28,7 @@ public sealed class UnicastServerHandler : IServerHandler
         try
         {
             _connectionSession.SetCurrentDatabaseName(currentDatabaseName);
-            _serverDataReader = _serverDataReaderFactory.Create(_sql, _connectionSession);
+            _serverDataReader = _serverDataReaderFactory.Create(_connectionSession);
             return await _serverDataReader.ExecuteDbDataReaderAsync();
         }
         finally
