@@ -147,7 +147,7 @@ public class EntityFrameworkCoreAppInitializer : AbstractAppInitializer
         }
     }
 
-    protected override async Task<IReadOnlyCollection<string>> GetRuntimesAsync()
+    protected override async Task<IReadOnlyList<string>> GetRuntimesAsync()
     {
         using (var scope = _appServiceProvider.CreateScope())
         {
@@ -157,7 +157,7 @@ public class EntityFrameworkCoreAppInitializer : AbstractAppInitializer
         }
     }
 
-    protected override async Task<IReadOnlyCollection<AuthUser>> GetAuthUsersAsync()
+    protected override async Task<IReadOnlyList<AuthUser>> GetAuthUsersAsync()
     {
         using (var scope = _appServiceProvider.CreateScope())
         {
@@ -168,7 +168,7 @@ public class EntityFrameworkCoreAppInitializer : AbstractAppInitializer
         }
     }
 
-    protected override async Task<IReadOnlyCollection<UserDatabaseEntry>> GetUserDatabasesAsync()
+    protected override async Task<IReadOnlyList<UserDatabaseEntry>> GetUserDatabasesAsync()
     {
         using (var scope = _appServiceProvider.CreateScope())
         {

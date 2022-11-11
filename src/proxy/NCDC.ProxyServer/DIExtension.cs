@@ -24,7 +24,7 @@ namespace Microsoft.Extensions.DependencyInjection;
 
 public static class DIExtension
 {
-    private static DatabaseTypeEnum ParseDatabaseType(string databaseType)
+    public static DatabaseTypeEnum ParseDatabaseType(this string databaseType)
     {
         if ("MySql".EqualsIgnoreCase(databaseType))
         {
@@ -33,7 +33,7 @@ public static class DIExtension
 
         throw new NotImplementedException(databaseType);
     }
-    private static DbStorageTypeEnum ParseStorageType(string storageType)
+    public static DbStorageTypeEnum ParseStorageType(this string storageType)
     {
         if ("MySql".EqualsIgnoreCase(storageType))
         {
@@ -42,7 +42,7 @@ public static class DIExtension
 
         throw new NotImplementedException(storageType);
     }
-    private static int ParseInt(string portStr)
+    public static int ParseInt(this string portStr)
     {
         if (!int.TryParse(portStr,out var port ))
         {
@@ -51,7 +51,7 @@ public static class DIExtension
 
         return port;
     }
-    private static bool ParseBool(string portStr)
+    public static bool ParseBool(this string portStr)
     {
         if (!bool.TryParse(portStr,out var b ))
         {
@@ -74,13 +74,13 @@ public static class DIExtension
             var logDecode = configuration["LogDecode"];
             return new AppConfiguration()
             {
-               DatabaseType = ParseDatabaseType(database),
-               StorageType = ParseStorageType(storage),
+               DatabaseType = database.ParseDatabaseType(),
+               StorageType = storage.ParseStorageType(),
                ConnectionsString = connectionString,
-               Port = ParseInt(port),
+               Port = port.ParseInt(),
                RulePluginPath = routePluginPath,
-               LogEncode = ParseBool(logEncode),
-               LogDecode = ParseBool(logDecode)
+               LogEncode = logEncode.ParseBool(),
+               LogDecode = logDecode.ParseBool()
             };
         });
         // services.AddSingleton<IAppConfiguration, AppConfiguration>(sp =>

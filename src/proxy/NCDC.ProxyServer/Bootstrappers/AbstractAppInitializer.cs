@@ -61,7 +61,7 @@ public abstract class AbstractAppInitializer:IAppInitializer
         return Task.CompletedTask;
     }
 
-    protected abstract Task<IReadOnlyCollection<string>> GetRuntimesAsync();
-    protected abstract Task<IReadOnlyCollection<AuthUser>> GetAuthUsersAsync();
-    protected abstract Task<IReadOnlyCollection<UserDatabaseEntry>> GetUserDatabasesAsync();
+    protected abstract Task<IReadOnlyList<string>> GetRuntimesAsync();
+    protected abstract Task<IReadOnlyList<AuthUser>> GetAuthUsersAsync();
+    protected abstract Task<IReadOnlyList<UserDatabaseEntry>> GetUserDatabasesAsync();
 }

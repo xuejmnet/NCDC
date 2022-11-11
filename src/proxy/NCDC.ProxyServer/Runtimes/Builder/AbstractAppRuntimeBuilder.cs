@@ -45,15 +45,15 @@ public abstract class AbstractAppRuntimeBuilder : IAppRuntimeBuilder
 
         foreach (var logicTable in GetLogicTables())
         {
-            if (logicTable.ShardingTableRule != null)
-            {
-                builder.RouteConfigOption.AddTableRouteRule(logicTable.Name, logicTable.ShardingTableRule);
-            }
 
             if (logicTable.ShardingDataSourceRule != null)
             {
                 builder.RouteConfigOption.AddDataSourceRouteRule(logicTable.Name,
                     logicTable.ShardingDataSourceRule);
+            }
+            if (logicTable.ShardingTableRule != null)
+            {
+                builder.RouteConfigOption.AddTableRouteRule(logicTable.Name, logicTable.ShardingTableRule);
             }
         }
 
@@ -78,8 +78,8 @@ public abstract class AbstractAppRuntimeBuilder : IAppRuntimeBuilder
             var actualTables = GetActualTables(logicTableName);
 
             var actualTableEntity = actualTables.FirstOrDefault();
-            var columnMetadatas = await GetColumnSchemaAsync(virtualDataSource, actualTableEntity);
-            var tableMetadata = new TableMetadata(logicTableName, columnMetadatas);
+            var columnSchema = await GetColumnSchemaAsync(virtualDataSource, actualTableEntity);
+            var tableMetadata = new TableMetadata(logicTableName, columnSchema);
             foreach (var actualTable in actualTables)
             {
                 tableMetadata.AddActualTableWithDataSource(actualTable.DataSource, actualTable.TableName);

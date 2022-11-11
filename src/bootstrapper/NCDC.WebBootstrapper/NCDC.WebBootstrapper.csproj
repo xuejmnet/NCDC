@@ -7,7 +7,21 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3"/>
+      <ProjectReference Include="..\..\core\NCDC\NCDC.csproj" />
+      <ProjectReference Include="..\..\orm\NCDC.EntityFrameworkCore\NCDC.EntityFrameworkCore.csproj" />
+      <ProjectReference Include="..\..\proxy\NCDC.ProxyClientMySql\NCDC.ProxyClientMySql.csproj" />
+      <ProjectReference Include="..\..\proxy\NCDC.ProxyClient\NCDC.ProxyClient.csproj" />
+      <ProjectReference Include="..\..\proxy\NCDC.ProxyServer\NCDC.ProxyServer.csproj" />
     </ItemGroup>
+
+    <ItemGroup>
+      <Content Include="rule\.DS_Store" />
+    </ItemGroup>
+
+<!--    <ItemGroup>-->
+<!--        <ProjectReference Include="..\..\orm\NCDC.EntityFrameworkCore\NCDC.EntityFrameworkCore.csproj" />-->
+<!--        <ProjectReference Include="..\NCDC.ProxyClientMySql\NCDC.ProxyClientMySql.csproj" />-->
+<!--        <ProjectReference Include="..\NCDC.ProxyClient\NCDC.ProxyClient.csproj" />-->
+<!--    </ItemGroup>-->
 
 </Project>
