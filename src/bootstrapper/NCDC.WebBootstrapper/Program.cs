@@ -8,6 +8,7 @@ using NCDC.Logger;
 using NCDC.MySqlParser;
 using NCDC.ProxyServer.AppServices;
 using NCDC.ProxyServer.AppServices.Abstractions;
+using NCDC.ProxyServer.Bootstrappers;
 using NCDC.ShardingParser;
 using NCDC.WebBootstrapper;
 
@@ -48,7 +49,6 @@ builder.Services.AddMySqlParser();
 builder.Services.AddShardingParser();
 builder.Services.AddSingleton<IAppConfiguration>(sp =>
 {
-
     var configuration = builder.Configuration;
     var database = configuration["DatabaseType"];
     var storage = configuration["StorageType"];
@@ -70,7 +70,6 @@ builder.Services.AddSingleton<IAppConfiguration>(sp =>
 });
 builder.Services.AddHostedService<AppStarter>();
 var app = builder.Build();
-NCDCLoggerFactory.DefaultFactory = app.Services.GetRequiredService<ILoggerFactory>();  
 
 // app.UseHttpsRedirection();
 

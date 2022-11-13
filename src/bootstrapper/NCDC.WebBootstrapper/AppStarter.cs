@@ -1,3 +1,4 @@
+using NCDC.Logger;
 using NCDC.ProxyServer.Bootstrappers;
 
 namespace NCDC.WebBootstrapper;
@@ -6,9 +7,10 @@ public class AppStarter:BackgroundService
 {
     private readonly IAppBootstrapper _appBootstrapper;
 
-    public AppStarter(IAppBootstrapper appBootstrapper)
+    public AppStarter(IServiceProvider serviceProvider,ILoggerFactory loggerFactory)
     {
-        _appBootstrapper = appBootstrapper;
+        NCDCLoggerFactory.DefaultFactory =loggerFactory;
+        _appBootstrapper = serviceProvider.GetRequiredService<IAppBootstrapper>();
     }
     protected override Task ExecuteAsync(CancellationToken stoppingToken)
     {

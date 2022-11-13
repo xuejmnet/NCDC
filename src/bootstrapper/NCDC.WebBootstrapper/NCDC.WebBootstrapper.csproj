@@ -14,10 +14,6 @@
       <ProjectReference Include="..\..\proxy\NCDC.ProxyServer\NCDC.ProxyServer.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Content Include="rule\.DS_Store" />
-    </ItemGroup>
-
 <!--    <ItemGroup>-->
 <!--        <ProjectReference Include="..\..\orm\NCDC.EntityFrameworkCore\NCDC.EntityFrameworkCore.csproj" />-->
 <!--        <ProjectReference Include="..\NCDC.ProxyClientMySql\NCDC.ProxyClientMySql.csproj" />-->
