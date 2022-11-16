@@ -55,5 +55,4 @@ public  class ShardingTableRoute:AbstractFilterTableRoute
         var tableInfos = tableName.Split(".");
         return new TableRouteUnit(tableInfos[0], TableName,tableInfos[1]);
     }
-
 }

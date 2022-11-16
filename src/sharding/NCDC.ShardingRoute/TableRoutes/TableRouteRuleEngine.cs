@@ -19,18 +19,18 @@ public sealed class TableRouteRuleEngine:ITableRouteRuleEngine
     }
     private ICollection<TableRouteUnit> GetEntityRouteUnit(DataSourceRouteResult dataSourceRouteResult,string tableName,SqlParserResult sqlParserResult)
     {
-        if (!_tableMetadataManager.IsShardingTable(tableName))
-        {
-            var dataSourceNames = dataSourceRouteResult.IntersectDataSources;
-            return dataSourceNames.Select(dataSourceName => new TableRouteUnit(dataSourceName, tableName, tableName)).ToList();
-            // var tableRouteUnits = new List<TableRouteUnit>(dataSourceNames.Count);
-            // foreach (var dataSourceName in dataSourceNames)
-            // {
-            //     var shardingRouteUnit = new TableRouteUnit(dataSourceName, tableName, tableName);
-            //     tableRouteUnits.Add(shardingRouteUnit);
-            // }
-            // return tableRouteUnits;
-        }
+        // if (!_tableMetadataManager.IsShardingTable(tableName))
+        // {
+        //     var dataSourceNames = dataSourceRouteResult.IntersectDataSources;
+        //     return dataSourceNames.Select(dataSourceName => new TableRouteUnit(dataSourceName, tableName, tableName)).ToList();
+        //     // var tableRouteUnits = new List<TableRouteUnit>(dataSourceNames.Count);
+        //     // foreach (var dataSourceName in dataSourceNames)
+        //     // {
+        //     //     var shardingRouteUnit = new TableRouteUnit(dataSourceName, tableName, tableName);
+        //     //     tableRouteUnits.Add(shardingRouteUnit);
+        //     // }
+        //     // return tableRouteUnits;
+        // }
         return _tableRouteManager.RouteTo(tableName,dataSourceRouteResult,sqlParserResult);
     }
     public ShardingRouteResult Route(TableRouteContext context)
@@ -41,6 +41,10 @@ public sealed class TableRouteRuleEngine:ITableRouteRuleEngine
 
             foreach (var tableName in tableNames)
             {
+                if (!_tableMetadataManager.IsShardingTable(tableName))
+                {
+                    continue;
+                }
                 var shardingRouteUnits = GetEntityRouteUnit(context.DataSourceRouteResult,tableName, context.SqlParserResult);
                 
                 foreach (var shardingRouteUnit in shardingRouteUnits)
