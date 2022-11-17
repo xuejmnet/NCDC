@@ -8,7 +8,7 @@ namespace NCDC.EntityFrameworkCore.Entities;
 public class DataSourceEntity:BaseEntity
 {
     /// <summary>
-    /// 数据库名称
+    /// 所属逻辑数据库名称
     /// </summary>
     public string Database { get; set; }
     /// <summary>

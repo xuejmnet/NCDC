@@ -7,13 +7,14 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.11" />
       <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="6.0.0" />
       <PackageReference Include="MySqlConnector" Version="2.1.13" />
     </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\..\antlr4\NCDC.MySqlParser\NCDC.MySqlParser.csproj" />
-      <ProjectReference Include="..\..\antlr4\NCDC.SqlServerParser\NCDC.SqlServerParser.csproj" />
+<!--      <ProjectReference Include="..\..\antlr4\NCDC.SqlServerParser\NCDC.SqlServerParser.csproj" />-->
       <ProjectReference Include="..\..\protocol\NCDC.Protocol\NCDC.Protocol.csproj" />
       <ProjectReference Include="..\..\sharding\NCDC.ShardingMerge\NCDC.ShardingMerge.csproj" />
       <ProjectReference Include="..\..\sharding\NCDC.ShardingRewrite\NCDC.ShardingRewrite.csproj" />

@@ -142,6 +142,57 @@ public class EntityFrameworkCoreAppInitializer : AbstractAppInitializer
                     logicDatabaseUser.UserName = "xjm";
                     await dbContext.AddAsync(logicDatabaseUser);
                 }
+                {
+                    var logicDatabase = new LogicDatabaseEntity();
+                    logicDatabase.Id = Guid.NewGuid().ToString("n");
+                    logicDatabase.CreateTime=DateTime.Now;
+                    logicDatabase.UpdateTime=DateTime.Now;
+                    logicDatabase.Version= Guid.NewGuid().ToString("n");
+                    logicDatabase.Name = "ncdctest";
+                    logicDatabase.AutoUseWriteConnectionStringAfterWriteDb = true;
+                    logicDatabase.ThrowIfQueryRouteNotMatch = false;
+                    logicDatabase.MaxQueryConnectionsLimit = Environment.ProcessorCount;
+                    logicDatabase.ConnectionMode = ConnectionModeEnum.SYSTEM_AUTO;
+                    await dbContext.AddAsync(logicDatabase);
+                    var dataSource1 = new DataSourceEntity();
+                    dataSource1.Id = Guid.NewGuid().ToString("n");
+                    dataSource1.CreateTime=DateTime.Now;
+                    dataSource1.UpdateTime=DateTime.Now;
+                    dataSource1.Version= Guid.NewGuid().ToString("n");
+                    dataSource1.Database = "ncdctest";
+                    dataSource1.Name = "A";
+                    dataSource1.IsDefault = true;
+                    dataSource1.ConnectionString = "server=127.0.0.1;port=3306;database=ncdc1;userid=root;password=root;";
+                    await dbContext.AddAsync(dataSource1);
+                    var dataSource2 = new DataSourceEntity();
+                    dataSource2.Id = Guid.NewGuid().ToString("n");
+                    dataSource2.CreateTime=DateTime.Now;
+                    dataSource2.UpdateTime=DateTime.Now;
+                    dataSource2.Version= Guid.NewGuid().ToString("n");
+                    dataSource2.Database = "ncdctest";
+                    dataSource2.Name = "B";
+                    dataSource2.IsDefault = false;
+                    dataSource2.ConnectionString = "server=127.0.0.1;port=3306;database=ncdc2;userid=root;password=root;";
+                    await dbContext.AddAsync(dataSource2);
+                    var dataSource3 = new DataSourceEntity();
+                    dataSource3.Id = Guid.NewGuid().ToString("n");
+                    dataSource3.CreateTime=DateTime.Now;
+                    dataSource3.UpdateTime=DateTime.Now;
+                    dataSource3.Version= Guid.NewGuid().ToString("n");
+                    dataSource3.Database = "ncdctest";
+                    dataSource3.Name = "C";
+                    dataSource3.IsDefault = false;
+                    dataSource3.ConnectionString = "server=127.0.0.1;port=3306;database=ncdc3;userid=root;password=root;";
+                    await dbContext.AddAsync(dataSource3);
+                    var logicDatabaseUser = new LogicDatabaseUserEntity();
+                    logicDatabaseUser.Id = Guid.NewGuid().ToString("n");
+                    logicDatabaseUser.CreateTime = DateTime.Now;
+                    logicDatabaseUser.UpdateTime = DateTime.Now;
+                    logicDatabaseUser.Version = Guid.NewGuid().ToString("n");
+                    logicDatabaseUser.Database = "ncdctest";
+                    logicDatabaseUser.UserName = "xjm";
+                    await dbContext.AddAsync(logicDatabaseUser);
+                }
                 await dbContext.SaveChangesAsync();
             }
         }

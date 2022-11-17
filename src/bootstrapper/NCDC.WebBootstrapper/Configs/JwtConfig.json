@@ -1,0 +1,7 @@
+{
+  "JwtIssuerOptions": {
+    "Issuer": "NCDC",
+    "Audience": "http://localhost:5000/",
+    "SecretKey": "NcdcjWTTOKENjWTTOKEN!@#"
+  }
+}

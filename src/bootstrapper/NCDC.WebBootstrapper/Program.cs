@@ -2,6 +2,7 @@
 
 
 using System.Text;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using NCDC.Host;
 using NCDC.Logger;
@@ -11,6 +12,9 @@ using NCDC.ProxyServer.AppServices.Abstractions;
 using NCDC.ProxyServer.Bootstrappers;
 using NCDC.ShardingParser;
 using NCDC.WebBootstrapper;
+using NCDC.WebBootstrapper.Filters;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 Console.WriteLine(@$"
    _  __  _____  ___    _____
@@ -27,7 +31,7 @@ Gitee Repository :  https://gitee.com/xuejm/NCDC
 Start Time:{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}");
 
 var builder = WebApplication.CreateBuilder(args);
-
+builder.Configuration.AddJsonFile("Configs/JwtConfig.json");
 // Add services to the container.
 // ILoggerFactory loggerFactory = LoggerFactory.Create(b =>
 // {
@@ -40,7 +44,24 @@ Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 // NCDCLoggerFactory.DefaultFactory = loggerFactory;
 builder.Logging.AddSimpleConsole(c => c.TimestampFormat = "[yyyy-MM-dd HH:mm:ss]");
 // builder.Services.Replace(ServiceDescriptor.Singleton<ILoggerFactory>(sp => loggerFactory));
-builder.Services.AddControllers();
+
+builder.Services.Configure<ApiBehaviorOptions>(options =>
+{
+    //忽略系统自带校验你[ApiController] 
+    options.SuppressModelStateInvalidFilter = true;
+});
+builder.Services.AddControllers(options =>
+{
+    options.Filters.Add<HttpGlobalExceptionFilter>();
+    options.Filters.Add<ValidateModelStateFilter>();
+}).AddNewtonsoftJson(options =>
+{
+    options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+    options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+    options.SerializerSettings.DateFormatString = "yyyy-MM-dd HH:mm:ss";
+});
+builder.Services.AddRouting(options => options.LowercaseUrls = true);
+builder.Services.AddSecurity(builder.Configuration);
 
 builder.Services.AddSingleton<IServiceHost, DefaultServiceHost>();
 builder.Services.AddEntityFrameworkCoreConfiguration();
@@ -68,10 +89,23 @@ builder.Services.AddSingleton<IAppConfiguration>(sp =>
         LogDecode = logDecode.ParseBool()
     };
 });
+
+//添加跨域
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("App4Cors",
+        b => b.SetIsOriginAllowed(_ => true)
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            .AllowCredentials());
+});
 builder.Services.AddHostedService<AppStarter>();
 var app = builder.Build();
 
 // app.UseHttpsRedirection();
+
+app.UseCors("App4Cors");
+app.UseAuthentication();
 
 app.UseAuthorization();
 

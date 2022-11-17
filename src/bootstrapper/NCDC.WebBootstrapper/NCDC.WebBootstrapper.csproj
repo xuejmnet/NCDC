@@ -14,6 +14,12 @@
       <ProjectReference Include="..\..\proxy\NCDC.ProxyServer\NCDC.ProxyServer.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="JWT" Version="9.0.3" />
+      <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.11" />
+      <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    </ItemGroup>
+
 <!--    <ItemGroup>-->
 <!--        <ProjectReference Include="..\..\orm\NCDC.EntityFrameworkCore\NCDC.EntityFrameworkCore.csproj" />-->
 <!--        <ProjectReference Include="..\NCDC.ProxyClientMySql\NCDC.ProxyClientMySql.csproj" />-->
