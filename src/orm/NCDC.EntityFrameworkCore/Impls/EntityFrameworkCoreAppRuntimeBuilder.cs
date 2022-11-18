@@ -31,18 +31,18 @@ public sealed class EntityFrameworkCoreAppRuntimeBuilder : AbstractAppRuntimeBui
         using (var scope = _appServiceProvider.CreateScope())
         {
             var dbContext = scope.ServiceProvider.GetRequiredService<NCDCDbContext>();
-            var logicDatabase = await dbContext.Set<LogicDatabaseEntity>().FirstOrDefaultAsync(o => o.Name == database);
+            var logicDatabase = await dbContext.Set<LogicDatabaseEntity>().FirstOrDefaultAsync(o => o.DatabaseName == database);
 
             _logicDatabase = logicDatabase ?? throw new ShardingConfigException($"database: {database} not found");
 
-            var dataSources = await dbContext.Set<DataSourceEntity>().Where(o => o.Database == database).ToListAsync();
-            var logicTables = await dbContext.Set<LogicTableEntity>().Where(o => o.Database == database).ToListAsync();
+            var dataSources = await dbContext.Set<ActualDatabaseEntity>().Where(o => o.LogicDatabaseName == database).ToListAsync();
+            var logicTables = await dbContext.Set<LogicTableEntity>().Where(o => o.LogicDatabaseName == database).ToListAsync();
             var actualTables =
-                await dbContext.Set<ActualTableEntity>().Where(o => o.Database == database).ToListAsync();
+                await dbContext.Set<ActualTableEntity>().Where(o => o.LogicDatabaseName == database).ToListAsync();
             _dataSourceNodes.AddRange(dataSources.Select(o =>
-                new DataSourceNode(o.Name, o.ConnectionString, o.IsDefault)));
+                new DataSourceNode(o.DataSourceName, o.ConnectionString, o.IsDefault)));
             _logicTableNodes.AddRange(logicTables.Select(o =>
-                new LogicTableNode(o.TableName, o.ShardingDataSourceRule, o.ShardingTableRule)));
+                new LogicTableNode(o.TableName, o.DataSourceRule, o.TableRule)));
             var map = actualTables.GroupBy(o => o.LogicTableName).ToDictionary(o => o.Key,
                 o => o.Select(t => new ActualTableNode(t.DataSource, t.TableName)).ToList());
             foreach (var kv in map)

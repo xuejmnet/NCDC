@@ -10,15 +10,17 @@ public class LogicTableEntity:BaseEntity
     /// 逻辑表名称
     /// </summary>
     public string TableName { get; set; } = null!;
-    public string Database { get; set; } = null!;
+    public string LogicDatabaseName { get; set; } = null!;
     /// <summary>
     /// 分库规则
     /// </summary>
-    public string? ShardingDataSourceRule { get; set; }
+    public string? DataSourceRule { get; set; }
+    public string? DataSourceRuleParam { get; set; }
     /// <summary>
     /// 分表规则
     /// </summary>
-    public string? ShardingTableRule { get; set; }
+    public string? TableRule { get; set; }
+    public string? TableRuleParam { get; set; }
     // /// <summary>
     // /// <code>Dictionary<string, ColumnMetadata></code> 反序列化
     // /// </summary>
@@ -26,9 +28,9 @@ public class LogicTableEntity:BaseEntity
 
     public void Check()
     {
-        if(ShardingTableRule.IsNullOrWhiteSpace()&&ShardingDataSourceRule.IsNullOrWhiteSpace())
+        if(TableRule.IsNullOrWhiteSpace()&&DataSourceRule.IsNullOrWhiteSpace())
         {
-            throw new ShardingInvalidOperationException($"data source:[{Database}],table:[{TableName}] {nameof(ShardingTableRule)},{nameof(ShardingDataSourceRule)} error.");
+            throw new ShardingInvalidOperationException($"data source:[{LogicDatabaseName}],table:[{TableName}] {nameof(TableRule)},{nameof(DataSourceRule)} error.");
         }
 
     }

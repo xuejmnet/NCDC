@@ -14,10 +14,10 @@ public class NCDCDbContext:DbContext
     {
         base.OnModelCreating(modelBuilder);
         modelBuilder.ApplyConfiguration(new LogicDatabaseMap());
-        modelBuilder.ApplyConfiguration(new DataSourceMap());
+        modelBuilder.ApplyConfiguration(new ActualDatabaseMap());
         modelBuilder.ApplyConfiguration(new LogicTableMap());
         modelBuilder.ApplyConfiguration(new AppAuthUserMap());
         modelBuilder.ApplyConfiguration(new ActualTableMap());
-        modelBuilder.ApplyConfiguration(new LogicDatabaseUserMap());
+        modelBuilder.ApplyConfiguration(new LogicDatabaseUserMapMap());
     }
 }

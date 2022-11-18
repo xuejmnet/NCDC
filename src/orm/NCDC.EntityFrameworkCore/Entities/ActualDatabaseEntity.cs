@@ -5,20 +5,20 @@ namespace NCDC.EntityFrameworkCore.Entities;
 /// <summary>
 /// 数据源对象
 /// </summary>
-public class DataSourceEntity:BaseEntity
+public class ActualDatabaseEntity:BaseEntity
 {
     /// <summary>
     /// 所属逻辑数据库名称
     /// </summary>
-    public string Database { get; set; }
+    public string LogicDatabaseName { get; set; } = null!;
     /// <summary>
     /// 数据源名称
     /// </summary>
-    public string Name { get; set; }
+    public string DataSourceName { get; set; } = null!;
     /// <summary>
     /// 数据源链接
     /// </summary>
-    public string ConnectionString { get; set; }
+    public string ConnectionString { get; set; } = null!;
     /// <summary>
     /// 是否默认数据源
     /// </summary>

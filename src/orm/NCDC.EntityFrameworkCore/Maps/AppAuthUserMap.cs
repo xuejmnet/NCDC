@@ -5,7 +5,7 @@ namespace NCDC.EntityFrameworkCore.Maps;
 
 public class AppAuthUserMap:BaseMap<AppAuthUserEntity>
 {
-    public override string TableName => "AppAuthUser";
+    protected override string TableName => "AppAuthUser";
     protected override void Configure0(EntityTypeBuilder<AppAuthUserEntity> builder)
     {
         builder.Property(o => o.UserName).IsRequired().IsUnicode().HasMaxLength(255);

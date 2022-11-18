@@ -11,7 +11,7 @@ public class LogicDatabaseEntity:BaseEntity
     /// <summary>
     /// 数据库名称
     /// </summary>
-    public string Name { get; set; }
+    public string DatabaseName { get; set; } = null!;
     /// <summary>
     /// 写操作数据库后自动使用写库链接防止读库链接未同步无法查询到数据
     /// </summary>
