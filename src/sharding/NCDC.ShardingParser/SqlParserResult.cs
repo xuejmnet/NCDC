@@ -46,7 +46,7 @@ public sealed class SqlParserResult
         if (sqlCommandContext.GetSqlCommand() is IDMLCommand)
         {
             var tableNames = sqlCommandContext.GetTablesContext().GetTableNames();
-            return tableNames.Any(tableMetadataManager.IsSharding);
+            return tableNames.All(o => !tableMetadataManager.IsSharding(o));
         }
 
         return false;

@@ -1,15 +1,19 @@
+using System.Collections.Concurrent;
+using System.Collections.Immutable;
 using NCDC.Base;
 using NCDC.Enums;
 using NCDC.Exceptions;
 using NCDC.ProxyServer.Connection.Abstractions;
+using Nito.AsyncEx;
 
 namespace NCDC.ProxyServer.Connection;
 
 public sealed class ServerConnection : IServerConnection
 {
     private const int MAXIMUM_RETRY_COUNT = 5;
+    private static readonly object slock = new object();
+    private readonly AsyncLock _mutex = new AsyncLock();
 
-    private readonly OneByOneChecker _oneByOne = new OneByOneChecker();
 
     private TransactionTypeEnum _transactionType;
     private bool _supportHint;
@@ -17,13 +21,17 @@ public sealed class ServerConnection : IServerConnection
     public string UserName { get; set; }
 
     public IDictionary<string /*data source*/, List<IServerDbConnection>> CachedConnections { get; } =
-        new Dictionary<string, List<IServerDbConnection>>();
+        new ConcurrentDictionary<string, List<IServerDbConnection>>();
+
+    // private IDictionary<string, OneByOneChecker> _checkers;
 
     public ServerConnection(IConnectionSession connectionSession)
     {
         _transactionType = TransactionTypeEnum.LOCAL;
         ConnectionSession = connectionSession;
         ServerDbConnectionInvokeReplier = new LinkedList<Func<IServerDbConnection, Task>>();
+        // var allDataSourceNames = connectionSession.VirtualDataSource!.GetAllDataSourceNames();
+        // _checkers=allDataSourceNames.ToImmutableDictionary(o => o, o => new OneByOneChecker());
     }
 
     public IConnectionSession ConnectionSession { get; }
@@ -39,9 +47,14 @@ public sealed class ServerConnection : IServerConnection
         string dataSourceName,
         int connectionSize)
     {
-        OneByOneLock();
-        try
+        // if (!_checkers.TryGetValue(dataSourceName, out var checker))
+        // {
+        //     throw new InvalidOperationException($"cant found:{dataSourceName} checker");
+        // }
+        // checker.OneByOneLock();
+        using (await _mutex.LockAsync())
         {
+         
             if (!CachedConnections.TryGetValue(dataSourceName, out var cachedConnections))
             {
                 cachedConnections = new List<IServerDbConnection>(Math.Max(connectionSize * 2,
@@ -62,11 +75,7 @@ public sealed class ServerConnection : IServerConnection
                 dbConnections.AddRange(serverDbConnections);
                 cachedConnections.AddRange(serverDbConnections);
                 return dbConnections;
-            }
-        }
-        finally
-        {
-            OneByOneUnLock();
+            }   
         }
     }
 
@@ -117,20 +126,6 @@ public sealed class ServerConnection : IServerConnection
 
     public LinkedList<Func<IServerDbConnection, Task>> ServerDbConnectionInvokeReplier { get; }
 
-    private void OneByOneLock()
-    {
-        //是否触发并发了
-        var acquired = _oneByOne.Start();
-        if (!acquired)
-        {
-            throw new ShardingException($"{nameof(OneByOneLock)} cant parallel use in connection ");
-        }
-    }
-
-    private void OneByOneUnLock()
-    {
-        _oneByOne.Stop();
-    }
 
     public void Dispose()
     {

@@ -4,42 +4,25 @@ namespace NCDC.Base;
 
 public class OneByOneChecker
 {
-    /// <summary>
-    /// running const mark
-    /// </summary>
-    private const int running = 1;
-
-    /// <summary>
-    /// not running const mark
-    /// </summary>
-    private const int unrunning = 0;
-    /// <summary>
-    /// run status
-    /// </summary>
-    private int runStatus;
+    private readonly OneByOneCheck _oneByOne;
 
     public OneByOneChecker()
     {
-        runStatus = unrunning;
-    }
-    public bool Start()
-    {
-        return Interlocked.CompareExchange(ref runStatus, running, unrunning) == unrunning;
+        _oneByOne = new OneByOneCheck();
     }
 
-    public bool IsRunning()
+    public void OneByOneLock()
     {
-        return runStatus == running;
-    }
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="mustExchange">must exchange</param>
-    public void Stop(bool mustExchange=false)
-    {
-        if (Interlocked.Exchange(ref runStatus, unrunning) != running&& !mustExchange)
+        //是否触发并发了
+        var acquired = _oneByOne.Start();
+        if (!acquired)
         {
-            throw new ShardingException("one by one stop error,current is not running");
+            throw new ShardingException($"{nameof(OneByOneLock)} cant parallel use in connection ");
         }
+    }
+
+    public void OneByOneUnLock()
+    {
+        _oneByOne.Stop();
     }
 }

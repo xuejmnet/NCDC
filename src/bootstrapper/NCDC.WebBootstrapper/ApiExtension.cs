@@ -12,7 +12,6 @@ public static class ApiExtension
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        services.AddSingleton<IJwtFactory, JwtFactory>();
         IConfigurationSection jwtAppSettingOptions = configuration.GetSection("JwtIssuerOptions");
         services.Configure<JwtIssuerOptions>((options =>
         {
