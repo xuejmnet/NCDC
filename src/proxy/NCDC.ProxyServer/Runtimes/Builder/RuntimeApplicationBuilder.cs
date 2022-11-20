@@ -1,4 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using NCDC.Basic.Configurations;
 using NCDC.Enums;
 using NCDC.Exceptions;

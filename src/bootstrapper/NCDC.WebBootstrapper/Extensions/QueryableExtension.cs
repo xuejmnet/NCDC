@@ -35,4 +35,24 @@ public static class QueryableExtension
         var data = source.Skip(skip).Take(realTake).ToList();
         return new PagedResult<T>(data, count);
     }
+    public static async Task<PagedResult<T>> ToPagedResultAsync<T>(this IQueryable<T> source, int pageIndex, int pageSize)
+    {
+        //设置每次获取多少页
+        var take = pageSize <= 0 ? 1 : pageSize;
+        //设置当前页码最小1
+        var index = pageIndex <= 0 ? 1 : pageIndex;
+        //需要跳过多少页
+        var skip = (index - 1) * take;
+
+        //获取每次总记录数
+        var count =await source.CountAsync();
+        if (count <= skip)
+            return new PagedResult<T>(new List<T>(0), count);
+        //获取剩余条数
+        var remainingCount = count - skip;
+        //当剩余条数小于take数就取remainingCount
+        var realTake = remainingCount < take ? remainingCount : take;
+        var data =await source.Skip(skip).Take(realTake).ToListAsync();
+        return new PagedResult<T>(data, count);
+    }
 }

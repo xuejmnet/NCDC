@@ -4,5 +4,5 @@ namespace NCDC.ProxyServer.Runtimes.Initializer;
 
 public interface ITableMetadataInitializer
 {
-    Task InitializeAsync(TableMetadata tableMetadata);
+    Task<bool> InitializeAsync(TableMetadata tableMetadata);
 }

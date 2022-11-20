@@ -47,7 +47,7 @@ public class EntityFrameworkCoreAppInitializer : AbstractAppInitializer
                     dataSource.CreateTime = DateTime.Now;
                     dataSource.UpdateTime = DateTime.Now;
                     dataSource.Version = Guid.NewGuid().ToString("n");
-                    dataSource.LogicDatabaseName = "xxa";
+                    dataSource.LogicDatabaseId = logicDatabase.Id;
                     dataSource.DataSourceName = "ds0";
                     dataSource.IsDefault = true;
                     dataSource.ConnectionString = "server=127.0.0.1;port=3306;database=test;userid=root;password=root;";
@@ -58,7 +58,7 @@ public class EntityFrameworkCoreAppInitializer : AbstractAppInitializer
                     logicTable.UpdateTime = DateTime.Now;
                     logicTable.Version = Guid.NewGuid().ToString("n");
                     logicTable.TableName = "sysusermod";
-                    logicTable.LogicDatabaseName = "xxa";
+                    logicTable.LogicDatabaseId = logicDatabase.Id;
                     logicTable.TableRule = "ShardingRoutePluginTest.TestModTableRouteRule";
                     await dbContext.AddAsync(logicTable);
                     var actualTable0 = new ActualTableEntity();
@@ -66,8 +66,8 @@ public class EntityFrameworkCoreAppInitializer : AbstractAppInitializer
                     actualTable0.CreateTime = DateTime.Now;
                     actualTable0.UpdateTime = DateTime.Now;
                     actualTable0.Version = Guid.NewGuid().ToString("n");
-                    actualTable0.LogicDatabaseName = "xxa";
-                    actualTable0.LogicTableName = "sysusermod";
+                    actualTable0.LogicDatabaseId =  logicDatabase.Id;
+                    actualTable0.LogicTableId = logicTable.Id;
                     actualTable0.DataSource = "ds0";
                     actualTable0.TableName = "sysusermod_00";
                     await dbContext.AddAsync(actualTable0);
@@ -76,8 +76,8 @@ public class EntityFrameworkCoreAppInitializer : AbstractAppInitializer
                     actualTable1.CreateTime = DateTime.Now;
                     actualTable1.UpdateTime = DateTime.Now;
                     actualTable1.Version = Guid.NewGuid().ToString("n");
-                    actualTable1.LogicDatabaseName = "xxa";
-                    actualTable1.LogicTableName = "sysusermod";
+                    actualTable1.LogicDatabaseId = logicDatabase.Id;
+                    actualTable1.LogicTableId = logicTable.Id;
                     actualTable1.DataSource = "ds0";
                     actualTable1.TableName = "sysusermod_01";
                     await dbContext.AddAsync(actualTable1);
@@ -86,8 +86,8 @@ public class EntityFrameworkCoreAppInitializer : AbstractAppInitializer
                     actualTable2.CreateTime = DateTime.Now;
                     actualTable2.UpdateTime = DateTime.Now;
                     actualTable2.Version = Guid.NewGuid().ToString("n");
-                    actualTable2.LogicDatabaseName = "xxa";
-                    actualTable2.LogicTableName = "sysusermod";
+                    actualTable2.LogicDatabaseId =  logicDatabase.Id;
+                    actualTable2.LogicTableId = logicTable.Id;
                     actualTable2.DataSource = "ds0";
                     actualTable2.TableName = "sysusermod_02";
                     await dbContext.AddAsync(actualTable2);
@@ -128,7 +128,7 @@ public class EntityFrameworkCoreAppInitializer : AbstractAppInitializer
                     dataSource.CreateTime=DateTime.Now;
                     dataSource.UpdateTime=DateTime.Now;
                     dataSource.Version= Guid.NewGuid().ToString("n");
-                    dataSource.LogicDatabaseName = "w123";
+                    dataSource.LogicDatabaseId =  logicDatabase.Id;
                     dataSource.DataSourceName = "ds0";
                     dataSource.IsDefault = true;
                     dataSource.ConnectionString = "server=127.0.0.1;port=3306;database=wtm0;userid=root;password=root;";
@@ -159,7 +159,7 @@ public class EntityFrameworkCoreAppInitializer : AbstractAppInitializer
                     dataSource1.CreateTime=DateTime.Now;
                     dataSource1.UpdateTime=DateTime.Now;
                     dataSource1.Version= Guid.NewGuid().ToString("n");
-                    dataSource1.LogicDatabaseName = "ncdctest";
+                    dataSource1.LogicDatabaseId = logicDatabase.Id;
                     dataSource1.DataSourceName = "A";
                     dataSource1.IsDefault = true;
                     dataSource1.ConnectionString = "server=127.0.0.1;port=3306;database=ncdc1;userid=root;password=root;";
@@ -169,7 +169,7 @@ public class EntityFrameworkCoreAppInitializer : AbstractAppInitializer
                     dataSource2.CreateTime=DateTime.Now;
                     dataSource2.UpdateTime=DateTime.Now;
                     dataSource2.Version= Guid.NewGuid().ToString("n");
-                    dataSource2.LogicDatabaseName = "ncdctest";
+                    dataSource2.LogicDatabaseId =  logicDatabase.Id;
                     dataSource2.DataSourceName = "B";
                     dataSource2.IsDefault = false;
                     dataSource2.ConnectionString = "server=127.0.0.1;port=3306;database=ncdc2;userid=root;password=root;";
@@ -179,7 +179,7 @@ public class EntityFrameworkCoreAppInitializer : AbstractAppInitializer
                     dataSource3.CreateTime=DateTime.Now;
                     dataSource3.UpdateTime=DateTime.Now;
                     dataSource3.Version= Guid.NewGuid().ToString("n");
-                    dataSource3.LogicDatabaseName = "ncdctest";
+                    dataSource3.LogicDatabaseId =  logicDatabase.Id;
                     dataSource3.DataSourceName = "C";
                     dataSource3.IsDefault = false;
                     dataSource3.ConnectionString = "server=127.0.0.1;port=3306;database=ncdc3;userid=root;password=root;";
@@ -198,7 +198,7 @@ public class EntityFrameworkCoreAppInitializer : AbstractAppInitializer
                     logicTableEntity.UpdateTime = DateTime.Now;
                     logicTableEntity.Version = Guid.NewGuid().ToString("n");
                     logicTableEntity.TableName = "sysusermod";
-                    logicTableEntity.LogicDatabaseName ="ncdctest";
+                    logicTableEntity.LogicDatabaseId = logicDatabase.Id;
                     logicTableEntity.TableRule ="ShardingRoutePluginTest.TestSysUserModTableRouteRule";
                     await dbContext.AddAsync(logicTableEntity);
 
@@ -207,8 +207,8 @@ public class EntityFrameworkCoreAppInitializer : AbstractAppInitializer
                     actualTable1.CreateTime = DateTime.Now;
                     actualTable1.UpdateTime = DateTime.Now;
                     actualTable1.Version = Guid.NewGuid().ToString("n");
-                    actualTable1.LogicDatabaseName = "ncdctest";
-                    actualTable1.LogicTableName = "sysusermod";
+                    actualTable1.LogicDatabaseId = logicDatabase.Id;
+                    actualTable1.LogicTableId = logicTableEntity.Id;
                     actualTable1.TableName = "sysusermod_00";
                     actualTable1.DataSource = "A";
                     await dbContext.AddAsync(actualTable1);
@@ -217,8 +217,8 @@ public class EntityFrameworkCoreAppInitializer : AbstractAppInitializer
                     actualTable2.CreateTime = DateTime.Now;
                     actualTable2.UpdateTime = DateTime.Now;
                     actualTable2.Version = Guid.NewGuid().ToString("n");
-                    actualTable2.LogicDatabaseName = "ncdctest";
-                    actualTable2.LogicTableName = "sysusermod";
+                    actualTable2.LogicDatabaseId =  logicDatabase.Id;
+                    actualTable2.LogicTableId = logicTableEntity.Id;
                     actualTable2.TableName = "sysusermod_01";
                     actualTable2.DataSource = "A";
                     await dbContext.AddAsync(actualTable2);
@@ -227,8 +227,8 @@ public class EntityFrameworkCoreAppInitializer : AbstractAppInitializer
                     actualTable3.CreateTime = DateTime.Now;
                     actualTable3.UpdateTime = DateTime.Now;
                     actualTable3.Version = Guid.NewGuid().ToString("n");
-                    actualTable3.LogicDatabaseName = "ncdctest";
-                    actualTable3.LogicTableName = "sysusermod";
+                    actualTable3.LogicDatabaseId =  logicDatabase.Id;
+                    actualTable3.LogicTableId = logicTableEntity.Id;
                     actualTable3.TableName = "sysusermod_02";
                     actualTable3.DataSource = "A";
                     await dbContext.AddAsync(actualTable3);

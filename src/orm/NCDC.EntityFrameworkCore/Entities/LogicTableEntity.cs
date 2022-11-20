@@ -10,7 +10,7 @@ public class LogicTableEntity:BaseEntity
     /// 逻辑表名称
     /// </summary>
     public string TableName { get; set; } = null!;
-    public string LogicDatabaseName { get; set; } = null!;
+    public string LogicDatabaseId { get; set; } = null!;
     /// <summary>
     /// 分库规则
     /// </summary>
@@ -30,7 +30,7 @@ public class LogicTableEntity:BaseEntity
     {
         if(TableRule.IsNullOrWhiteSpace()&&DataSourceRule.IsNullOrWhiteSpace())
         {
-            throw new ShardingInvalidOperationException($"data source:[{LogicDatabaseName}],table:[{TableName}] {nameof(TableRule)},{nameof(DataSourceRule)} error.");
+            throw new ShardingInvalidOperationException($"data source:[{LogicDatabaseId}],table:[{TableName}] {nameof(TableRule)},{nameof(DataSourceRule)} error.");
         }
 
     }

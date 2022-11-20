@@ -3,7 +3,7 @@ using NCDC.EntityFrameworkCore.Maps;
 
 namespace NCDC.EntityFrameworkCore;
 
-public class NCDCDbContext:DbContext
+public class NCDCDbContext:BaseNCDCDbContext<NCDCDbContext>
 {
     public NCDCDbContext(DbContextOptions<NCDCDbContext> options):base(options)
     {

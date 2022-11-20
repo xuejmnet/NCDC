@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using NCDC.Basic.Configurations;
 using NCDC.EntityFrameworkCore.Entities;
 using NCDC.Exceptions;
+using NCDC.Extensions;
 using NCDC.ProxyServer.AppServices.Abstractions;
 using NCDC.ProxyServer.Runtimes.Builder;
 
@@ -22,7 +23,7 @@ public sealed class EntityFrameworkCoreAppRuntimeBuilder : AbstractAppRuntimeBui
         _appServiceProvider = appServiceProvider;
     }
 
-    protected override async Task LoadConfigurationAsync(string database)
+    protected override async Task<bool> LoadConfigurationAsync(string database)
     {
         _logicDatabase = null;
         _dataSourceNodes.Clear();
@@ -35,21 +36,23 @@ public sealed class EntityFrameworkCoreAppRuntimeBuilder : AbstractAppRuntimeBui
 
             _logicDatabase = logicDatabase ?? throw new ShardingConfigException($"database: {database} not found");
 
-            var dataSources = await dbContext.Set<ActualDatabaseEntity>().Where(o => o.LogicDatabaseName == database).ToListAsync();
-            var logicTables = await dbContext.Set<LogicTableEntity>().Where(o => o.LogicDatabaseName == database).ToListAsync();
+            var dataSources = await dbContext.Set<ActualDatabaseEntity>().Where(o => o.LogicDatabaseId == database).ToListAsync();
+            var logicTables = await dbContext.Set<LogicTableEntity>().Where(o => o.LogicDatabaseId == database).ToListAsync();
             var actualTables =
-                await dbContext.Set<ActualTableEntity>().Where(o => o.LogicDatabaseName == database).ToListAsync();
+                await dbContext.Set<ActualTableEntity>().Where(o => o.LogicDatabaseId == database).ToListAsync();
             _dataSourceNodes.AddRange(dataSources.Select(o =>
                 new DataSourceNode(o.DataSourceName, o.ConnectionString, o.IsDefault)));
             _logicTableNodes.AddRange(logicTables.Select(o =>
                 new LogicTableNode(o.TableName, o.DataSourceRule, o.TableRule)));
-            var map = actualTables.GroupBy(o => o.LogicTableName).ToDictionary(o => o.Key,
+            var map = actualTables.GroupBy(o => o.LogicTableId).ToDictionary(o => o.Key,
                 o => o.Select(t => new ActualTableNode(t.DataSource, t.TableName)).ToList());
             foreach (var kv in map)
             {
                 _actualTableNodes.Add(kv.Key, kv.Value);
             }
         }
+
+        return _dataSourceNodes.IsNotEmpty();
     }
 
     protected override void ConfigureOption(ShardingConfiguration shardingConfiguration)

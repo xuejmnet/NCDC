@@ -5,12 +5,12 @@ namespace NCDC.EntityFrameworkCore.Maps;
 
 public class ActualTableMap:BaseMap<ActualTableEntity>
 {
-    protected override string TableName => "ActualTable";
+    protected override string TableName => "actual_table";
     protected override void Configure0(EntityTypeBuilder<ActualTableEntity> builder)
     {
-        builder.Property(o => o.LogicDatabaseName).IsRequired().IsUnicode().HasMaxLength(255);
-        builder.Property(o => o.LogicTableName).IsRequired().IsUnicode().HasMaxLength(255);
-        builder.Property(o => o.DataSource).IsRequired().IsUnicode().HasMaxLength(255);
-        builder.Property(o => o.TableName).IsRequired().IsUnicode().HasMaxLength(255);
+        builder.Property(o => o.LogicDatabaseId).IsRequired().HasMaxLength(50);
+        builder.Property(o => o.LogicTableId).IsRequired().HasMaxLength(50);
+        builder.Property(o => o.DataSource).IsRequired().HasMaxLength(255);
+        builder.Property(o => o.TableName).IsRequired().HasMaxLength(255);
     }
 }

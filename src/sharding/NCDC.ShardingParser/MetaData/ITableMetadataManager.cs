@@ -6,6 +6,7 @@ namespace NCDC.ShardingParser.MetaData;
 public interface ITableMetadataManager
 {
     bool AddTableMetadata(TableMetadata tableMetadata);
+    bool RemoveTableMetadata(string logicTableName);
     bool IsShardingTable(string logicTableName);
     bool IsOnlyShardingTable(string logicTableName);
     bool IsShardingDataSource(string logicTableName);

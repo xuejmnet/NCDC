@@ -1,7 +1,8 @@
+using Microsoft.Extensions.Logging;
 using NCDC.Basic.Metadatas;
 using NCDC.Basic.Plugin;
-using NCDC.Exceptions;
 using NCDC.Helpers;
+using NCDC.Logger;
 using NCDC.Plugin;
 using NCDC.Plugin.DataSourceRouteRules;
 using NCDC.Plugin.TableRouteRules;
@@ -16,6 +17,7 @@ namespace NCDC.ProxyServer.Runtimes.Initializer;
 
 public class DefaultTableMetadataInitializer : ITableMetadataInitializer
 {
+    private static readonly ILogger<DefaultTableMetadataInitializer> _logger =NCDCLoggerFactory.CreateLogger<DefaultTableMetadataInitializer>();
     private readonly IShardingProvider _serviceProvider;
     private readonly IRouteInitConfigOption _routeInitConfigOption;
     private readonly IDataSourceRouteManager _dataSourceRouteManager;
@@ -30,16 +32,19 @@ public class DefaultTableMetadataInitializer : ITableMetadataInitializer
         _tableRouteManager = tableRouteManager;
     }
 
-    public Task InitializeAsync(TableMetadata tableMetadata)
+    public Task<bool> InitializeAsync(TableMetadata tableMetadata)
     {
         var tableConfiguration = new TableConfiguration(tableMetadata.LogicTableName);
         if (_routeInitConfigOption.HasDataSourceRouteRule(tableMetadata.LogicTableName))
         {
             var routeRuleTypeName = _routeInitConfigOption.GetDataSourceRouteRule(tableMetadata.LogicTableName);
             var routeRuleType = RuntimeHelper.GetAllTypes()
-                                    .FirstOrDefault(o => Equals(o.FullName, routeRuleTypeName)) ??
-                                throw new InvalidOperationException(
-                                    $"data source rule:[{routeRuleTypeName}] not found");
+                .FirstOrDefault(o => Equals(o.FullName, routeRuleTypeName));
+            if (routeRuleType == null)
+            {
+                _logger.LogWarning($"table:[{tableMetadata.LogicTableName}],data source rule:[{routeRuleTypeName}] not found");
+                return Task.FromResult(false);
+            }
             var routeRule = (IDataSourceRouteRule)_serviceProvider.CreateInstance(routeRuleType);
             if (routeRule is IDataSourceRuleConfigure dataSourceRuleConfigure)
             {
@@ -48,7 +53,8 @@ public class DefaultTableMetadataInitializer : ITableMetadataInitializer
                 dataSourceRuleConfigure.Configure(builder);
                 if (tableConfiguration.ShardingDataSourceColumn == null)
                 {
-                    throw new ShardingInvalidOperationException("sharding data source column is null");
+                    _logger.LogWarning($"table:[{tableMetadata.LogicTableName}],data source rule:[{routeRuleTypeName}] sharding data source column is null");
+                    return Task.FromResult(false);
                 }
                 tableMetadata.SetShardingDataSourceColumn(tableConfiguration.ShardingDataSourceColumn);
                 foreach (var column in tableConfiguration.ShardingDataSourceColumns)
@@ -76,8 +82,12 @@ public class DefaultTableMetadataInitializer : ITableMetadataInitializer
             // var type = assembly.GetType(routeRuleTypeName);
             var routeRuleType = PluginLoader.Instance.Assemblies
                                     .Select(o=>o.GetType(routeRuleTypeName))
-                                    .FirstOrDefault(o => o!=null) ??
-                                throw new InvalidOperationException($"table rule:[{routeRuleTypeName}] not found");
+                                    .FirstOrDefault(o => o!=null);
+            if (routeRuleType == null)
+            {
+                _logger.LogWarning($"table:[{tableMetadata.LogicTableName}],table rule:[{routeRuleTypeName}] not found");
+                return Task.FromResult(false);
+            }
             var routeRule = (ITableRouteRule)_serviceProvider.CreateInstance(routeRuleType);
             if (routeRule is ITableRuleConfigure tableRuleConfigure)
             {
@@ -86,7 +96,8 @@ public class DefaultTableMetadataInitializer : ITableMetadataInitializer
                 tableRuleConfigure.Configure(builder);
                 if (tableConfiguration.ShardingTableColumn == null)
                 {
-                    throw new ShardingInvalidOperationException("sharding table column is null");
+                    _logger.LogWarning($"table:[{tableMetadata.LogicTableName}],table rule:[{routeRuleTypeName}] sharding table column is null");
+                    return Task.FromResult(false);
                 }
                 tableMetadata.SetShardingTableColumn(tableConfiguration.ShardingTableColumn);
                 foreach (var column in tableConfiguration.ShardingTableColumns)
@@ -102,6 +113,6 @@ public class DefaultTableMetadataInitializer : ITableMetadataInitializer
             _tableRouteManager.AddRoute(shardingTableRoute);
         }
 
-        return Task.CompletedTask;
+        return Task.FromResult(true);
     }
 }

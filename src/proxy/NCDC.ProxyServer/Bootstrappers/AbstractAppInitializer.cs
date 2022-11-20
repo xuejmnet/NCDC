@@ -42,6 +42,9 @@ public abstract class AbstractAppInitializer:IAppInitializer
         foreach (var database in runtimes)
         {
             var runtimeContext = await _appRuntimeBuilder.BuildAsync(database);
+            if (runtimeContext is null)
+                continue;
+            
             if (!_appRuntimeLoader.LoadRuntimeContext(runtimeContext))
             {
                 _logger.LogWarning($"repeat load runtime:{runtimeContext.DatabaseName}");

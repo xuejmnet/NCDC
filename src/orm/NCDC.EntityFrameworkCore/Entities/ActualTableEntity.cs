@@ -11,11 +11,11 @@ public class ActualTableEntity:BaseEntity
     /// <summary>
     /// 数据库
     /// </summary>
-    public string LogicDatabaseName { get; set; } = null!;
+    public string LogicDatabaseId { get; set; } = null!;
     /// <summary>
     /// 逻辑表名
     /// </summary>
-    public string LogicTableName { get; set; } = null!;
+    public string LogicTableId { get; set; } = null!;
     /// <summary>
     /// 数据源
     /// </summary>

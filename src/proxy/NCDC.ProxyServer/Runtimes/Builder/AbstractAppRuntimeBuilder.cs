@@ -19,14 +19,19 @@ public abstract class AbstractAppRuntimeBuilder : IAppRuntimeBuilder
         _appConfiguration = appConfiguration;
     }
 
-    protected abstract Task LoadConfigurationAsync(string database);
+    protected abstract Task<bool> LoadConfigurationAsync(string database);
     protected abstract void ConfigureOption(ShardingConfiguration shardingConfiguration);
     protected abstract IEnumerable<DataSourceNode> GetDataSources();
     protected abstract IEnumerable<LogicTableNode> GetLogicTables();
 
-    public async Task<IRuntimeContext> BuildAsync(string database)
+    public async Task<IRuntimeContext?> BuildAsync(string database)
     {
-        await LoadConfigurationAsync(database);
+        var doBuild = await LoadConfigurationAsync(database);
+        if (!doBuild)
+        {
+            return null;
+        }
+
         var builder = RuntimeApplicationBuilder.CreateBuilder(_appConfiguration.DatabaseType, database);
         ConfigureOption(builder.ConfigOption);
         foreach (var dataSource in GetDataSources())
@@ -45,12 +50,12 @@ public abstract class AbstractAppRuntimeBuilder : IAppRuntimeBuilder
 
         foreach (var logicTable in GetLogicTables())
         {
-
             if (logicTable.ShardingDataSourceRule != null)
             {
                 builder.RouteConfigOption.AddDataSourceRouteRule(logicTable.Name,
                     logicTable.ShardingDataSourceRule);
             }
+
             if (logicTable.ShardingTableRule != null)
             {
                 builder.RouteConfigOption.AddTableRouteRule(logicTable.Name, logicTable.ShardingTableRule);
@@ -87,7 +92,10 @@ public abstract class AbstractAppRuntimeBuilder : IAppRuntimeBuilder
 
             tableMetadataManager.AddTableMetadata(tableMetadata);
 
-            await tableMetadataInitializer.InitializeAsync(tableMetadata);
+            if (!await tableMetadataInitializer.InitializeAsync(tableMetadata))
+            {
+                tableMetadataManager.RemoveTableMetadata(tableMetadata.LogicTableName);
+            }
         }
     }
 
@@ -103,7 +111,7 @@ public abstract class AbstractAppRuntimeBuilder : IAppRuntimeBuilder
         var dataSource = virtualDataSource.GetDataSource(actualTableNode.DataSource);
 
         var emptyResultSql = GenerateEmptyResultSql(actualTableNode.TableName);
-        using (var dbConnection =await dataSource.CreateDbConnectionAsync(true))
+        using (var dbConnection = await dataSource.CreateDbConnectionAsync(true))
         {
             using (var command = dbConnection.CreateCommand())
             {

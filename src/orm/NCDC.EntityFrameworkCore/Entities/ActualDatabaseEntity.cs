@@ -8,9 +8,9 @@ namespace NCDC.EntityFrameworkCore.Entities;
 public class ActualDatabaseEntity:BaseEntity
 {
     /// <summary>
-    /// 所属逻辑数据库名称
+    /// 所属逻辑数据库
     /// </summary>
-    public string LogicDatabaseName { get; set; } = null!;
+    public string LogicDatabaseId { get; set; } = null!;
     /// <summary>
     /// 数据源名称
     /// </summary>

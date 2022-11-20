@@ -16,6 +16,7 @@
 
     <ItemGroup>
       <PackageReference Include="JWT" Version="9.0.3" />
+      <PackageReference Include="Mapster" Version="7.3.0" />
       <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.11" />
       <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     </ItemGroup>

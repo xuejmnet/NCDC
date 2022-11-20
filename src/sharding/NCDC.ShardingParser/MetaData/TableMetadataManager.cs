@@ -24,6 +24,22 @@ public class TableMetadataManager:ITableMetadataManager
         return false;
     }
 
+    public bool RemoveTableMetadata(string logicTableName)
+    {
+        if (_caches.ContainsKey(logicTableName))
+        {
+            var tableMetadata = _caches[logicTableName];
+            foreach (var actualTableName in tableMetadata.TableNames)
+            {
+                _cacheIndex.TryRemove(actualTableName, out _);
+            }
+            _caches.TryRemove(logicTableName, out _);
+            return true;
+        }
+
+        return false;
+    }
+
     public bool IsShardingTable(string logicTableName)
     {
         if (!_caches.TryGetValue(logicTableName, out var tableMetadata))
