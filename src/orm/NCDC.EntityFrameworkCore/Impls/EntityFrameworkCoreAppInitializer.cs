@@ -30,6 +30,16 @@ public class EntityFrameworkCoreAppInitializer : AbstractAppInitializer
             await dbContext.Database.EnsureCreatedAsync();
             if (!await dbContext.Set<LogicDatabaseEntity>().AnyAsync())
             {
+                var appAuthUser = new AppAuthUserEntity();
+                appAuthUser.Id = Guid.NewGuid().ToString("n");
+                appAuthUser.CreateTime = DateTime.Now;
+                appAuthUser.UpdateTime = DateTime.Now;
+                appAuthUser.Version = Guid.NewGuid().ToString("n");
+                appAuthUser.UserName = "xjm";
+                appAuthUser.Password = "abc";
+                appAuthUser.HostName = "%";
+                appAuthUser.IsEnable = true;
+                await dbContext.AddAsync(appAuthUser);
                 {
                     var logicDatabase = new LogicDatabaseEntity();
                     logicDatabase.Id = Guid.NewGuid().ToString("n");
@@ -91,23 +101,13 @@ public class EntityFrameworkCoreAppInitializer : AbstractAppInitializer
                     actualTable2.DataSource = "ds0";
                     actualTable2.TableName = "sysusermod_02";
                     await dbContext.AddAsync(actualTable2);
-                    var appAuthUser = new AppAuthUserEntity();
-                    appAuthUser.Id = Guid.NewGuid().ToString("n");
-                    appAuthUser.CreateTime = DateTime.Now;
-                    appAuthUser.UpdateTime = DateTime.Now;
-                    appAuthUser.Version = Guid.NewGuid().ToString("n");
-                    appAuthUser.UserName = "xjm";
-                    appAuthUser.Password = "abc";
-                    appAuthUser.HostName = "%";
-                    appAuthUser.IsEnable = true;
-                    await dbContext.AddAsync(appAuthUser);
                     var logicDatabaseUser = new LogicDatabaseUserMapEntity();
                     logicDatabaseUser.Id = Guid.NewGuid().ToString("n");
                     logicDatabaseUser.CreateTime = DateTime.Now;
                     logicDatabaseUser.UpdateTime = DateTime.Now;
                     logicDatabaseUser.Version = Guid.NewGuid().ToString("n");
-                    logicDatabaseUser.DatabaseName = "xxa";
-                    logicDatabaseUser.UserName = "xjm";
+                    logicDatabaseUser.DatabaseId = logicDatabase.Id;
+                    logicDatabaseUser.AppAuthUserId = appAuthUser.Id;
                     await dbContext.AddAsync(logicDatabaseUser);
                 }
 
@@ -138,8 +138,8 @@ public class EntityFrameworkCoreAppInitializer : AbstractAppInitializer
                     logicDatabaseUser.CreateTime = DateTime.Now;
                     logicDatabaseUser.UpdateTime = DateTime.Now;
                     logicDatabaseUser.Version = Guid.NewGuid().ToString("n");
-                    logicDatabaseUser.DatabaseName = "w123";
-                    logicDatabaseUser.UserName = "xjm";
+                    logicDatabaseUser.DatabaseId = logicDatabase.Id;
+                    logicDatabaseUser.AppAuthUserId = appAuthUser.Id;
                     await dbContext.AddAsync(logicDatabaseUser);
                 }
                 {
@@ -189,8 +189,8 @@ public class EntityFrameworkCoreAppInitializer : AbstractAppInitializer
                     logicDatabaseUser.CreateTime = DateTime.Now;
                     logicDatabaseUser.UpdateTime = DateTime.Now;
                     logicDatabaseUser.Version = Guid.NewGuid().ToString("n");
-                    logicDatabaseUser.DatabaseName = "ncdctest";
-                    logicDatabaseUser.UserName = "xjm";
+                    logicDatabaseUser.DatabaseId = logicDatabase.Id;
+                    logicDatabaseUser.AppAuthUserId = appAuthUser.Id;
                     await dbContext.AddAsync(logicDatabaseUser);
                     var logicTableEntity = new LogicTableEntity();
                     logicTableEntity.Id = Guid.NewGuid().ToString("n");
@@ -265,7 +265,7 @@ public class EntityFrameworkCoreAppInitializer : AbstractAppInitializer
         {
             var dbContext = scope.ServiceProvider.GetRequiredService<NCDCDbContext>();
             var appAuthUsers = await dbContext.Set<LogicDatabaseUserMapEntity>()
-                .Select(o => new UserDatabaseEntry(o.UserName, o.DatabaseName)).ToListAsync();
+                .Select(o => new UserDatabaseEntry(o.AppAuthUserId, o.DatabaseId)).ToListAsync();
             return appAuthUsers.AsReadOnly();
         }
     }

@@ -5,10 +5,10 @@ namespace NCDC.EntityFrameworkCore.Maps;
 
 public class LogicDatabaseUserMapMap:BaseMap<LogicDatabaseUserMapEntity>
 {
-    protected override string TableName => "LogicDatabaseUserMap";
+    protected override string TableName => "logic_database_user_map";
     protected override void Configure0(EntityTypeBuilder<LogicDatabaseUserMapEntity> builder)
     {
-        builder.Property(o => o.DatabaseName).IsRequired().IsUnicode().HasMaxLength(255);
-        builder.Property(o => o.UserName).IsRequired().IsUnicode().HasMaxLength(255);
+        builder.Property(o => o.DatabaseId).IsRequired().HasMaxLength(50);
+        builder.Property(o => o.AppAuthUserId).IsRequired().HasMaxLength(50);
     }
 }

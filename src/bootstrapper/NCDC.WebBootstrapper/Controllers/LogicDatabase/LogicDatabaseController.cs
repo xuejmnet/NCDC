@@ -82,7 +82,7 @@ public class LogicDatabaseController : BaseApiController
             await _ncdcDbContext.Set<ActualDatabaseEntity>().Where(o => o.LogicDatabaseId == logicDatabase.DatabaseName).ExecuteUpdateAsync(o => o.SetProperty(p => p.IsDelete, p => true));
             await _ncdcDbContext.Set<LogicTableEntity>().Where(o => o.LogicDatabaseId == logicDatabase.DatabaseName).ExecuteUpdateAsync(o => o.SetProperty(p => p.IsDelete, p => true));
             await _ncdcDbContext.Set<ActualTableEntity>().Where(o => o.LogicDatabaseId == logicDatabase.DatabaseName).ExecuteUpdateAsync(o => o.SetProperty(p => p.IsDelete, p => true));
-            await _ncdcDbContext.Set<LogicDatabaseUserMapEntity>().Where(o => o.DatabaseName == logicDatabase.DatabaseName).ExecuteUpdateAsync(o => o.SetProperty(p => p.IsDelete, p => true));
+            await _ncdcDbContext.Set<LogicDatabaseUserMapEntity>().Where(o => o.DatabaseId == logicDatabase.DatabaseName).ExecuteUpdateAsync(o => o.SetProperty(p => p.IsDelete, p => true));
             
             await tran.CommitAsync();
         }
