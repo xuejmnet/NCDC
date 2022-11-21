@@ -18,6 +18,6 @@ public class NCDCDbContext:BaseNCDCDbContext<NCDCDbContext>
         modelBuilder.ApplyConfiguration(new LogicTableMap());
         modelBuilder.ApplyConfiguration(new AppAuthUserMap());
         modelBuilder.ApplyConfiguration(new ActualTableMap());
-        modelBuilder.ApplyConfiguration(new LogicDatabaseUserMapMap());
+        modelBuilder.ApplyConfiguration(new DatabaseUserMap());
     }
 }

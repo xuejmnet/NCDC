@@ -39,15 +39,15 @@ public class LogicTableController : BaseApiController
     public async Task<AppResult<object>> Create(LogicTableCreateRequest request)
     {
         var logicDatabaseExists = await _ncdcDbContext.Set<LogicDatabaseEntity>()
-            .AnyAsync(o => o.DatabaseName == request.LogicDatabaseName);
+            .AnyAsync(o => o.Id == request.LogicDatabaseId);
         if (!logicDatabaseExists)
         {
-            return OutputFail($"不存在对应的逻辑数据库:[{request.LogicDatabaseName}]");
+            return OutputFail($"不存在对应的逻辑数据库");
         }
 
 
         var hasTable = await _ncdcDbContext.Set<LogicTableEntity>()
-            .AnyAsync(o =>o.LogicDatabaseId==request.LogicDatabaseName&& o.TableName == request.TableName);
+            .AnyAsync(o =>o.LogicDatabaseId==request.LogicDatabaseId&& o.TableName == request.TableName);
         if (hasTable)
         {
             return OutputFail($"已存在逻辑表:[{request.TableName}]");
@@ -86,14 +86,13 @@ public class LogicTableController : BaseApiController
             return OutputFail($"未找到需要修改的逻辑表");
         }
 
-        await using (var tran = await _ncdcDbContext.Database.BeginTransactionAsync())
+        var hasActualTables = await _ncdcDbContext.Set<ActualTableEntity>().AnyAsync(o => o.LogicTableId == logicTable.TableName&&o.LogicDatabaseId==logicTable.LogicDatabaseId);
+        if (hasActualTables)
         {
-            await _ncdcDbContext.Set<LogicTableEntity>().Where(o => o.Id == id)
-                .ExecuteUpdateAsync(o => o.SetProperty(x => x.IsDelete, true));
-            await _ncdcDbContext.Set<ActualTableEntity>().Where(o => o.LogicTableId == logicTable.TableName&&o.LogicDatabaseId==logicTable.LogicDatabaseId)
-                .ExecuteUpdateAsync(o => o.SetProperty(x => x.IsDelete, true));
-            await tran.CommitAsync();
+            return OutputFail($"当前逻辑表存在实际表无法删除,请先删除实际表");
         }
+        await _ncdcDbContext.Set<LogicTableEntity>().Where(o => o.Id == id)
+            .ExecuteUpdateAsync(o => o.SetProperty(x => x.IsDelete, true));
         return OutputOk();
     }
 
@@ -102,7 +101,7 @@ public class LogicTableController : BaseApiController
         [FromQuery] ActualTablePageRequest request)
     {
         var list = await _ncdcDbContext.Set<ActualTableEntity>()
-            .Where(o => o.LogicDatabaseId == request.LogicDatabaseName&&o.LogicTableId==request.LogicTableName)
+            .Where(o => o.LogicDatabaseId == request.LogicDatabaseId&&o.LogicTableId==request.LogicTableId)
             .ProjectToType<ActualTablePageResponse>()
             .ToPagedResultAsync(request.Page, request.PageSize);
         return OutputOk(list);
@@ -111,35 +110,49 @@ public class LogicTableController : BaseApiController
     public async Task<AppResult<object>> ActualTableCreate(ActualTableCreateRequest request)
     {
         var logicDatabaseExists = await _ncdcDbContext.Set<LogicDatabaseEntity>()
-            .AnyAsync(o => o.DatabaseName == request.LogicDatabaseName);
+            .AnyAsync(o => o.DatabaseName == request.LogicDatabaseId);
         if (!logicDatabaseExists)
         {
-            return OutputFail($"不存在对应的逻辑数据库:[{request.LogicDatabaseName}]");
+            return OutputFail($"不存在对应的逻辑数据库");
         }
 
-        var hasDataSource = await _ncdcDbContext.Set<ActualDatabaseEntity>().AnyAsync(o=>o.LogicDatabaseId==request.LogicDatabaseName&&o.DataSourceName==request.DataSource);
+        var hasDataSource = await _ncdcDbContext.Set<ActualDatabaseEntity>().AnyAsync(o=>o.LogicDatabaseId==request.LogicDatabaseId&&o.Id==request.DataSourceId);
         if (!hasDataSource)
         {
-            return OutputFail($"当前数据源:[{request.DataSource}]不存在");
+            return OutputFail($"所选数据源不存在");
         }
 
         var hasTable = await _ncdcDbContext.Set<LogicTableEntity>()
-            .AnyAsync(o =>o.LogicDatabaseId==request.LogicDatabaseName&& o.TableName == request.LogicTableName);
+            .AnyAsync(o =>o.LogicDatabaseId==request.LogicDatabaseId&& o.Id == request.LogicTableId);
         if (!hasTable)
         {
-            return OutputFail($"不存在逻辑表:[{request.LogicTableName}]");
+            return OutputFail($"所选不存在逻辑表");
         }
         var hasActualTable = await _ncdcDbContext.Set<ActualTableEntity>()
-            .AnyAsync(o =>o.LogicDatabaseId==request.LogicDatabaseName&& o.LogicTableId == request.LogicTableName&&o.DataSource==request.DataSource&&o.TableName==request.TableName);
+            .AnyAsync(o =>o.LogicDatabaseId==request.LogicDatabaseId&& o.LogicTableId == request.LogicTableId&&o.DataSourceId==request.DataSourceId&&o.TableName==request.TableName);
         if (hasActualTable)
         {
-            return OutputFail($"当前数据源:[{request.DataSource}]已存在实际表:[{request.TableName}]");
+            return OutputFail($"当前数据源已存在实际表:[{request.TableName}]");
         }
 
         var logicTable = request.Adapt<ActualTableEntity>();
         logicTable.Id = Guid.NewGuid().ToString("n");
         await _ncdcDbContext.AddAsync(logicTable);
         await _ncdcDbContext.SaveChangesAsync();
+        return OutputOk();
+    }
+    [HttpDelete, Route("actual-table-delete/{id}")]
+    public async Task<AppResult<object>> ActualTableDelete(string id)
+    {
+        var logicTable =
+            await _ncdcDbContext.Set<ActualTableEntity>().FirstOrDefaultAsync(o => o.Id ==id);
+        if (logicTable == null)
+        {
+            return OutputFail($"未找到需要修改的实际表");
+        }
+
+        await _ncdcDbContext.Set<ActualTableEntity>().Where(o => o.Id == id)
+            .ExecuteUpdateAsync(o => o.SetProperty(x => x.IsDelete, true));
         return OutputOk();
     }
 

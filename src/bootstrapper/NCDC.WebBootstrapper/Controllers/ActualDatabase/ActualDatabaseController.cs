@@ -37,16 +37,16 @@ public class ActualDatabaseController : BaseApiController
     [HttpPost, Route("create")]
     public async Task<AppResult<object>> Create(ActualDatabaseCreateRequest request)
     {
-        var logicDatabaseExists = await _ncdcDbContext.Set<LogicDatabaseEntity>()
-            .AnyAsync(o => o.DatabaseName == request.LogicDatabaseName);
-        if (!logicDatabaseExists)
+        var logicDatabase = await _ncdcDbContext.Set<LogicDatabaseEntity>()
+            .FirstOrDefaultAsync(o => o.Id == request.LogicDatabaseId);
+        if (logicDatabase==null)
         {
-            return OutputFail($"不存在对应的逻辑数据库:[{request.LogicDatabaseName}]");
+            return OutputFail($"不存在对应的逻辑数据库");
         }
 
         if (request.IsDefault)
         {
-            var hasDefault = await _ncdcDbContext.Set<ActualDatabaseEntity>().AnyAsync(o =>o.LogicDatabaseId==request.LogicDatabaseName&& o.IsDefault);
+            var hasDefault = await _ncdcDbContext.Set<ActualDatabaseEntity>().AnyAsync(o =>o.LogicDatabaseId==logicDatabase.Id&& o.IsDefault);
             if (hasDefault)
             {
                 return OutputFail("已存在默认数据源");
@@ -54,7 +54,7 @@ public class ActualDatabaseController : BaseApiController
         }
         else
         {
-            var hasDefault = await _ncdcDbContext.Set<ActualDatabaseEntity>().AnyAsync(o =>o.LogicDatabaseId==request.LogicDatabaseName&& o.IsDefault);
+            var hasDefault = await _ncdcDbContext.Set<ActualDatabaseEntity>().AnyAsync(o =>o.LogicDatabaseId==logicDatabase.Id&& o.IsDefault);
             if (!hasDefault)
             {
                 return OutputFail("当前数据源不存在默认数据源,请先添加默认数据源");
@@ -62,7 +62,7 @@ public class ActualDatabaseController : BaseApiController
         }
 
         var hasDataSource = await _ncdcDbContext.Set<ActualDatabaseEntity>()
-            .AnyAsync(o =>o.LogicDatabaseId==request.LogicDatabaseName&& o.DataSourceName == request.DataSourceName);
+            .AnyAsync(o =>o.LogicDatabaseId==logicDatabase.Id&& o.DataSourceName == request.DataSourceName);
         if (hasDataSource)
         {
             return OutputFail($"已存在数据源:[{request.DataSourceName}]");
@@ -127,6 +127,12 @@ public class ActualDatabaseController : BaseApiController
             }
         }
 
+        var hasActualTable =await _ncdcDbContext.Set<ActualTableEntity>().AnyAsync(o=>o.DataSourceId==actualDatabase.Id);
+
+        if (hasActualTable)
+        {
+            return OutputFail($"当前数据源存在对应的实际表无法删除");
+        }
         await _ncdcDbContext.Set<ActualDatabaseEntity>().Where(o => o.Id == id)
             .ExecuteUpdateAsync(o => o.SetProperty(x => x.IsDelete, true));
         return OutputOk();

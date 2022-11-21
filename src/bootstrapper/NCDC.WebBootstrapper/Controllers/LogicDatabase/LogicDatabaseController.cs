@@ -57,6 +57,13 @@ public class LogicDatabaseController : BaseApiController
         {
             return OutputFail("未找到需要修改的数据库");
         }
+        
+        var exists = await _ncdcDbContext.Set<LogicDatabaseEntity>()
+            .AnyAsync(o => o.DatabaseName == request.DatabaseName&&o.Id!=logicDatabase.Id);
+        if (exists)
+        {
+            return OutputFail($"数据库名称:[{request.DatabaseName}]已存在");
+        }
      
         request.Adapt(logicDatabase);
         _ncdcDbContext.Update(logicDatabase);
@@ -79,10 +86,10 @@ public class LogicDatabaseController : BaseApiController
         await using (var tran = await _ncdcDbContext.Database.BeginTransactionAsync())
         {
             await _ncdcDbContext.Set<LogicDatabaseEntity>().Where(o => o.Id == id).ExecuteUpdateAsync(o => o.SetProperty(p => p.IsDelete, p => true));
-            await _ncdcDbContext.Set<ActualDatabaseEntity>().Where(o => o.LogicDatabaseId == logicDatabase.DatabaseName).ExecuteUpdateAsync(o => o.SetProperty(p => p.IsDelete, p => true));
-            await _ncdcDbContext.Set<LogicTableEntity>().Where(o => o.LogicDatabaseId == logicDatabase.DatabaseName).ExecuteUpdateAsync(o => o.SetProperty(p => p.IsDelete, p => true));
-            await _ncdcDbContext.Set<ActualTableEntity>().Where(o => o.LogicDatabaseId == logicDatabase.DatabaseName).ExecuteUpdateAsync(o => o.SetProperty(p => p.IsDelete, p => true));
-            await _ncdcDbContext.Set<LogicDatabaseUserMapEntity>().Where(o => o.DatabaseId == logicDatabase.DatabaseName).ExecuteUpdateAsync(o => o.SetProperty(p => p.IsDelete, p => true));
+            await _ncdcDbContext.Set<ActualDatabaseEntity>().Where(o => o.LogicDatabaseId == logicDatabase.Id).ExecuteUpdateAsync(o => o.SetProperty(p => p.IsDelete, p => true));
+            await _ncdcDbContext.Set<LogicTableEntity>().Where(o => o.LogicDatabaseId == logicDatabase.Id).ExecuteUpdateAsync(o => o.SetProperty(p => p.IsDelete, p => true));
+            await _ncdcDbContext.Set<ActualTableEntity>().Where(o => o.LogicDatabaseId == logicDatabase.Id).ExecuteUpdateAsync(o => o.SetProperty(p => p.IsDelete, p => true));
+            await _ncdcDbContext.Set<DatabaseUserEntity>().Where(o => o.DatabaseId == logicDatabase.Id).ExecuteUpdateAsync(o => o.SetProperty(p => p.IsDelete, p => true));
             
             await tran.CommitAsync();
         }

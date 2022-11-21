@@ -2,7 +2,7 @@ using NCDC.EntityFrameworkCore.Entities.Base;
 
 namespace NCDC.EntityFrameworkCore.Entities;
 
-public class LogicDatabaseUserMapEntity:BaseEntity
+public class DatabaseUserEntity:BaseEntity
 {
     /// <summary>
     /// 所属数据库

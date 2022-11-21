@@ -10,7 +10,7 @@ public class ActualTableMap:BaseMap<ActualTableEntity>
     {
         builder.Property(o => o.LogicDatabaseId).IsRequired().HasMaxLength(50);
         builder.Property(o => o.LogicTableId).IsRequired().HasMaxLength(50);
-        builder.Property(o => o.DataSource).IsRequired().HasMaxLength(255);
+        builder.Property(o => o.DataSourceId).IsRequired().HasMaxLength(50);
         builder.Property(o => o.TableName).IsRequired().HasMaxLength(255);
     }
 }

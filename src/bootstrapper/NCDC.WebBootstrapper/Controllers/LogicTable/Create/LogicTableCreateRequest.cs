@@ -11,7 +11,7 @@ public class LogicTableCreateRequest : IValidatableObject
     public string TableName { get; set; } = null!;
 
     [Display(Name = "所属逻辑库表名"), Required(ErrorMessage = "{0}不能为空")]
-    public string LogicDatabaseName { get; set; } = null!;
+    public string LogicDatabaseId { get; set; } = null!;
 
     /// <summary>
     /// 分库规则

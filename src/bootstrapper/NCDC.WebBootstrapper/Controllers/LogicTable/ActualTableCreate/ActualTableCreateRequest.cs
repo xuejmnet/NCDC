@@ -14,15 +14,15 @@ public class ActualTableCreateRequest
     /// 数据库
     /// </summary>
     [Display(Name = "逻辑数据库"), Required(ErrorMessage = "{0}不能为空")]
-    public string LogicDatabaseName { get; set; } = null!;
+    public string LogicDatabaseId { get; set; } = null!;
     /// <summary>
     /// 逻辑表名
     /// </summary>
     [Display(Name = "逻辑表名"), Required(ErrorMessage = "{0}不能为空")]
-    public string LogicTableName { get; set; } = null!;
+    public string LogicTableId { get; set; } = null!;
     /// <summary>
     /// 数据源
     /// </summary>
     [Display(Name = "数据源"), Required(ErrorMessage = "{0}不能为空")]
-    public string DataSource { get; set; } = null!;
+    public string DataSourceId { get; set; } = null!;
 }

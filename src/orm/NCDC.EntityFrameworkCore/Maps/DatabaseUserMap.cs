@@ -3,10 +3,10 @@ using NCDC.EntityFrameworkCore.Entities;
 
 namespace NCDC.EntityFrameworkCore.Maps;
 
-public class LogicDatabaseUserMapMap:BaseMap<LogicDatabaseUserMapEntity>
+public class DatabaseUserMap:BaseMap<DatabaseUserEntity>
 {
-    protected override string TableName => "logic_database_user_map";
-    protected override void Configure0(EntityTypeBuilder<LogicDatabaseUserMapEntity> builder)
+    protected override string TableName => "database_user";
+    protected override void Configure0(EntityTypeBuilder<DatabaseUserEntity> builder)
     {
         builder.Property(o => o.DatabaseId).IsRequired().HasMaxLength(50);
         builder.Property(o => o.AppAuthUserId).IsRequired().HasMaxLength(50);

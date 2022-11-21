@@ -7,6 +7,11 @@ public class LogicDatabaseUpdateRequest
 {
     [Display(Name = "id"),Required(ErrorMessage = "{0}不能为空")]
     public string Id { get; set; } = null!;
+    /// <summary>
+    /// 数据库名称
+    /// </summary>
+    [Display(Name = "数据库名称"),Required(ErrorMessage = "{0}不能为空")]
+    public string DatabaseName { get; set; } = null!;
 
     /// <summary>
     /// 写操作数据库后自动使用写库链接防止读库链接未同步无法查询到数据

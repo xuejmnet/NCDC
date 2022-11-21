@@ -78,7 +78,7 @@ public class EntityFrameworkCoreAppInitializer : AbstractAppInitializer
                     actualTable0.Version = Guid.NewGuid().ToString("n");
                     actualTable0.LogicDatabaseId =  logicDatabase.Id;
                     actualTable0.LogicTableId = logicTable.Id;
-                    actualTable0.DataSource = "ds0";
+                    actualTable0.DataSourceId = dataSource.Id;
                     actualTable0.TableName = "sysusermod_00";
                     await dbContext.AddAsync(actualTable0);
                     var actualTable1 = new ActualTableEntity();
@@ -88,7 +88,7 @@ public class EntityFrameworkCoreAppInitializer : AbstractAppInitializer
                     actualTable1.Version = Guid.NewGuid().ToString("n");
                     actualTable1.LogicDatabaseId = logicDatabase.Id;
                     actualTable1.LogicTableId = logicTable.Id;
-                    actualTable1.DataSource = "ds0";
+                    actualTable1.DataSourceId = dataSource.Id;
                     actualTable1.TableName = "sysusermod_01";
                     await dbContext.AddAsync(actualTable1);
                     var actualTable2 = new ActualTableEntity();
@@ -98,10 +98,10 @@ public class EntityFrameworkCoreAppInitializer : AbstractAppInitializer
                     actualTable2.Version = Guid.NewGuid().ToString("n");
                     actualTable2.LogicDatabaseId =  logicDatabase.Id;
                     actualTable2.LogicTableId = logicTable.Id;
-                    actualTable2.DataSource = "ds0";
+                    actualTable2.DataSourceId = dataSource.Id;
                     actualTable2.TableName = "sysusermod_02";
                     await dbContext.AddAsync(actualTable2);
-                    var logicDatabaseUser = new LogicDatabaseUserMapEntity();
+                    var logicDatabaseUser = new DatabaseUserEntity();
                     logicDatabaseUser.Id = Guid.NewGuid().ToString("n");
                     logicDatabaseUser.CreateTime = DateTime.Now;
                     logicDatabaseUser.UpdateTime = DateTime.Now;
@@ -133,7 +133,7 @@ public class EntityFrameworkCoreAppInitializer : AbstractAppInitializer
                     dataSource.IsDefault = true;
                     dataSource.ConnectionString = "server=127.0.0.1;port=3306;database=wtm0;userid=root;password=root;";
                     await dbContext.AddAsync(dataSource);
-                    var logicDatabaseUser = new LogicDatabaseUserMapEntity();
+                    var logicDatabaseUser = new DatabaseUserEntity();
                     logicDatabaseUser.Id = Guid.NewGuid().ToString("n");
                     logicDatabaseUser.CreateTime = DateTime.Now;
                     logicDatabaseUser.UpdateTime = DateTime.Now;
@@ -184,7 +184,7 @@ public class EntityFrameworkCoreAppInitializer : AbstractAppInitializer
                     dataSource3.IsDefault = false;
                     dataSource3.ConnectionString = "server=127.0.0.1;port=3306;database=ncdc3;userid=root;password=root;";
                     await dbContext.AddAsync(dataSource3);
-                    var logicDatabaseUser = new LogicDatabaseUserMapEntity();
+                    var logicDatabaseUser = new DatabaseUserEntity();
                     logicDatabaseUser.Id = Guid.NewGuid().ToString("n");
                     logicDatabaseUser.CreateTime = DateTime.Now;
                     logicDatabaseUser.UpdateTime = DateTime.Now;
@@ -210,7 +210,7 @@ public class EntityFrameworkCoreAppInitializer : AbstractAppInitializer
                     actualTable1.LogicDatabaseId = logicDatabase.Id;
                     actualTable1.LogicTableId = logicTableEntity.Id;
                     actualTable1.TableName = "sysusermod_00";
-                    actualTable1.DataSource = "A";
+                    actualTable1.DataSourceId = dataSource1.Id;
                     await dbContext.AddAsync(actualTable1);
                     var actualTable2 = new ActualTableEntity();
                     actualTable2.Id = Guid.NewGuid().ToString("n");
@@ -220,7 +220,7 @@ public class EntityFrameworkCoreAppInitializer : AbstractAppInitializer
                     actualTable2.LogicDatabaseId =  logicDatabase.Id;
                     actualTable2.LogicTableId = logicTableEntity.Id;
                     actualTable2.TableName = "sysusermod_01";
-                    actualTable2.DataSource = "A";
+                    actualTable2.DataSourceId = dataSource1.Id;
                     await dbContext.AddAsync(actualTable2);
                     var actualTable3 = new ActualTableEntity();
                     actualTable3.Id = Guid.NewGuid().ToString("n");
@@ -230,7 +230,7 @@ public class EntityFrameworkCoreAppInitializer : AbstractAppInitializer
                     actualTable3.LogicDatabaseId =  logicDatabase.Id;
                     actualTable3.LogicTableId = logicTableEntity.Id;
                     actualTable3.TableName = "sysusermod_02";
-                    actualTable3.DataSource = "A";
+                    actualTable3.DataSourceId = dataSource1.Id;
                     await dbContext.AddAsync(actualTable3);
                 }
                 await dbContext.SaveChangesAsync();
@@ -264,7 +264,7 @@ public class EntityFrameworkCoreAppInitializer : AbstractAppInitializer
         using (var scope = _appServiceProvider.CreateScope())
         {
             var dbContext = scope.ServiceProvider.GetRequiredService<NCDCDbContext>();
-            var appAuthUsers = await dbContext.Set<LogicDatabaseUserMapEntity>()
+            var appAuthUsers = await dbContext.Set<DatabaseUserEntity>()
                 .Select(o => new UserDatabaseEntry(o.AppAuthUserId, o.DatabaseId)).ToListAsync();
             return appAuthUsers.AsReadOnly();
         }

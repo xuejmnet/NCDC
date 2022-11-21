@@ -19,6 +19,6 @@ public class ActualTableEntity:BaseEntity
     /// <summary>
     /// 数据源
     /// </summary>
-    public string DataSource { get; set; } = null!;
+    public string DataSourceId { get; set; } = null!;
 
 }

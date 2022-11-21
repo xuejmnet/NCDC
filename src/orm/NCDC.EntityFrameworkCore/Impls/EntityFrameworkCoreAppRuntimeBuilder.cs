@@ -45,7 +45,7 @@ public sealed class EntityFrameworkCoreAppRuntimeBuilder : AbstractAppRuntimeBui
             _logicTableNodes.AddRange(logicTables.Select(o =>
                 new LogicTableNode(o.TableName, o.DataSourceRule, o.TableRule)));
             var map = actualTables.GroupBy(o => o.LogicTableId).ToDictionary(o => o.Key,
-                o => o.Select(t => new ActualTableNode(t.DataSource, t.TableName)).ToList());
+                o => o.Select(t => new ActualTableNode(t.DataSourceId, t.TableName)).ToList());
             foreach (var kv in map)
             {
                 _actualTableNodes.Add(kv.Key, kv.Value);
