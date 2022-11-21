@@ -8,7 +8,7 @@ public class ActualDatabasePageRequest:PageRequest
     /// 所属逻辑数据库名称
     /// </summary>
     [Display(Name = "逻辑数据库"),Required(ErrorMessage = "请先选择{0}")]
-    public string LogicDatabaseName { get; set; } = null!;
+    public string LogicDatabaseId { get; set; } = null!;
     
     public string? DataSourceName { get; set; }
 }

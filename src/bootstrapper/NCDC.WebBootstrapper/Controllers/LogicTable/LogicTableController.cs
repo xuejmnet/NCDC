@@ -29,7 +29,7 @@ public class LogicTableController : BaseApiController
         [FromQuery] LogicTablePageRequest request)
     {
         var list = await _ncdcDbContext.Set<LogicTableEntity>()
-            .Where(o => o.LogicDatabaseId == request.LogicDatabaseName!)
+            .Where(o => o.LogicDatabaseId == request.LogicDatabaseId)
             .WhereIf(!string.IsNullOrWhiteSpace(request.TableName),o=>o.TableName.Contains(request.TableName!))
             .ProjectToType<LogicTablePageResponse>()
             .ToPagedResultAsync(request.Page, request.PageSize);
@@ -100,9 +100,25 @@ public class LogicTableController : BaseApiController
     public async Task<AppResult<PagedResult<ActualTablePageResponse>>> ActualTablePage(
         [FromQuery] ActualTablePageRequest request)
     {
-        var list = await _ncdcDbContext.Set<ActualTableEntity>()
+        var sql = from actualTable in _ncdcDbContext.Set<ActualTableEntity>()
             .Where(o => o.LogicDatabaseId == request.LogicDatabaseId&&o.LogicTableId==request.LogicTableId)
-            .ProjectToType<ActualTablePageResponse>()
+            join dataSource in _ncdcDbContext.Set<ActualDatabaseEntity>().Where(o => o.LogicDatabaseId == request.LogicDatabaseId)
+                on actualTable.DataSourceId equals dataSource.Id into dataSourceTemp
+            from dataSourceTp in dataSourceTemp.DefaultIfEmpty()
+                select new
+                    {
+                        actualTable.Id,
+                        actualTable.CreateTime,
+                        actualTable.UpdateTime,
+                        actualTable.TableName,
+                        actualTable.LogicDatabaseId,
+                        actualTable.LogicTableId,
+                        actualTable.DataSourceId,
+                        DataSourceName=dataSourceTp!=null?dataSourceTp.DataSourceName:""
+                    };
+            
+            
+           var list= await sql.ProjectToType<ActualTablePageResponse>()
             .ToPagedResultAsync(request.Page, request.PageSize);
         return OutputOk(list);
     }
@@ -110,7 +126,7 @@ public class LogicTableController : BaseApiController
     public async Task<AppResult<object>> ActualTableCreate(ActualTableCreateRequest request)
     {
         var logicDatabaseExists = await _ncdcDbContext.Set<LogicDatabaseEntity>()
-            .AnyAsync(o => o.DatabaseName == request.LogicDatabaseId);
+            .AnyAsync(o => o.Id == request.LogicDatabaseId);
         if (!logicDatabaseExists)
         {
             return OutputFail($"不存在对应的逻辑数据库");

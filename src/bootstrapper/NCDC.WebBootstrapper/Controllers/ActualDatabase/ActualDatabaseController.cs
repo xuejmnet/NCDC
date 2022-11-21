@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NCDC.EntityFrameworkCore;
 using NCDC.EntityFrameworkCore.Entities;
+using NCDC.WebBootstrapper.Controllers.ActualDatabase.All;
 using NCDC.WebBootstrapper.Controllers.ActualDatabase.Create;
 using NCDC.WebBootstrapper.Controllers.ActualDatabase.Page;
 using NCDC.WebBootstrapper.Controllers.ActualDatabase.Update;
@@ -27,7 +28,7 @@ public class ActualDatabaseController : BaseApiController
         [FromQuery] ActualDatabasePageRequest request)
     {
         var list = await _ncdcDbContext.Set<ActualDatabaseEntity>()
-            .Where(o => o.LogicDatabaseId == request.LogicDatabaseName!)
+            .Where(o => o.LogicDatabaseId == request.LogicDatabaseId!)
             .WhereIf(!string.IsNullOrWhiteSpace(request.DataSourceName),o=>o.DataSourceName.Contains(request.DataSourceName!))
             .ProjectToType<ActualDatabasePageResponse>()
             .ToPagedResultAsync(request.Page, request.PageSize);
@@ -136,5 +137,15 @@ public class ActualDatabaseController : BaseApiController
         await _ncdcDbContext.Set<ActualDatabaseEntity>().Where(o => o.Id == id)
             .ExecuteUpdateAsync(o => o.SetProperty(x => x.IsDelete, true));
         return OutputOk();
+    }
+    [HttpGet, Route("all")]
+    public async Task<AppResult<List<ActualDatabaseAllResponse>>> All(
+        [FromQuery] ActualDatabaseAllRequest request)
+    {
+        var list = await _ncdcDbContext.Set<ActualDatabaseEntity>()
+            .Where(o => o.LogicDatabaseId == request.LogicDatabaseId)
+            .ProjectToType<ActualDatabaseAllResponse>()
+            .ToListAsync();
+        return OutputOk(list);
     }
 }

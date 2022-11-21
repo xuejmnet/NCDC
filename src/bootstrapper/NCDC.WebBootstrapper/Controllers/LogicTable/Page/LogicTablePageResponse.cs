@@ -11,7 +11,7 @@ public class LogicTablePageResponse
     /// 逻辑表名称
     /// </summary>
     public string TableName { get; set; } = null!;
-    public string LogicDatabaseName { get; set; } = null!;
+    public string LogicDatabaseId { get; set; } = null!;
     /// <summary>
     /// 分库规则
     /// </summary>
