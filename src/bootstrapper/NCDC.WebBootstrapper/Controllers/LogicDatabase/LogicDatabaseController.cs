@@ -74,7 +74,9 @@ public class LogicDatabaseController : BaseApiController
     public async Task<AppResult<object>> Delete(string id)
     {
         if (string.IsNullOrWhiteSpace(id))
-            return OutputFail("请求id不能为空");
+        {
+            return OutputFail($"请选择需要删除的记录");
+        }
         
         var logicDatabase = await _ncdcDbContext.Set<LogicDatabaseEntity>()
             .FirstOrDefaultAsync(o => o.Id == id);

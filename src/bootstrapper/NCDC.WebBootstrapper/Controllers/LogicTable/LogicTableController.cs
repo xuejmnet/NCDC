@@ -79,6 +79,10 @@ public class LogicTableController : BaseApiController
     [HttpDelete, Route("delete/{id}")]
     public async Task<AppResult<object>> Delete(string id)
     {
+        if (string.IsNullOrWhiteSpace(id))
+        {
+            return OutputFail($"请选择需要删除的记录");
+        }
         var logicTable =
             await _ncdcDbContext.Set<LogicTableEntity>().FirstOrDefaultAsync(o => o.Id ==id);
         if (logicTable == null)
@@ -160,6 +164,10 @@ public class LogicTableController : BaseApiController
     [HttpDelete, Route("actual-table-delete/{id}")]
     public async Task<AppResult<object>> ActualTableDelete(string id)
     {
+        if (string.IsNullOrWhiteSpace(id))
+        {
+            return OutputFail($"请选择需要删除的记录");
+        }
         var logicTable =
             await _ncdcDbContext.Set<ActualTableEntity>().FirstOrDefaultAsync(o => o.Id ==id);
         if (logicTable == null)

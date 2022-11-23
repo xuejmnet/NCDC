@@ -86,15 +86,6 @@ public class ActualDatabaseController : BaseApiController
         {
             return OutputFail($"未找到需要修改的数据库");
         }
-        if (request.IsDefault)
-        {
-            var hasDefault = await _ncdcDbContext.Set<ActualDatabaseEntity>()
-                .AnyAsync(o =>o.LogicDatabaseId==actualDatabase.LogicDatabaseId&& o.IsDefault && o.Id != request.Id);
-            if (hasDefault)
-            {
-                return OutputFail("已存在默认数据源");
-            }
-        }
 
         var hasDataSource = await _ncdcDbContext.Set<ActualDatabaseEntity>()
             .AnyAsync(o =>o.LogicDatabaseId==actualDatabase.LogicDatabaseId&&  o.DataSourceName == request.DataSourceName && o.Id != request.Id);
@@ -112,6 +103,10 @@ public class ActualDatabaseController : BaseApiController
     [HttpDelete, Route("delete/{id}")]
     public async Task<AppResult<object>> Delete(string id)
     {
+        if (string.IsNullOrWhiteSpace(id))
+        {
+            return OutputFail($"请选择需要删除的记录");
+        }
         var actualDatabase =
             await _ncdcDbContext.Set<ActualDatabaseEntity>().FirstOrDefaultAsync(o => o.Id == id);
         if (actualDatabase == null)

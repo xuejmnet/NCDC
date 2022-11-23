@@ -18,8 +18,4 @@ public class ActualDatabaseUpdateRequest
     [Display(Name = "数据源链接"),Required(ErrorMessage = "{0}不能为空")]
     public string ConnectionString { get; set; } = null!;
 
-    /// <summary>
-    /// 是否默认数据源
-    /// </summary>
-    public bool IsDefault { get; set; }
 }
