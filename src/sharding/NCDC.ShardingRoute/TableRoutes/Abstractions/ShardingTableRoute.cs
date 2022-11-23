@@ -37,7 +37,7 @@ public  class ShardingTableRoute:AbstractFilterTableRoute
     {
       
         return beforeTableNames.Where(tableName =>
-            dataSourceRouteResult.IntersectDataSources.Contains(ParseDataSourceWithTableName(tableName)));
+            dataSourceRouteResult.IntersectDataSources.Contains(ParseDataSourceWithTableName(tableName),StringComparer.OrdinalIgnoreCase));
     }
 
     private string ParseDataSourceWithTableName(string tableName)

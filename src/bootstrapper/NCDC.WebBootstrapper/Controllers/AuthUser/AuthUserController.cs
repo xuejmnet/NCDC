@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NCDC.EntityFrameworkCore;
 using NCDC.EntityFrameworkCore.Entities;
-using NCDC.WebBootstrapper.Controllers.AuthUser.All;
 using NCDC.WebBootstrapper.Controllers.AuthUser.Create;
 using NCDC.WebBootstrapper.Controllers.AuthUser.Page;
 using NCDC.WebBootstrapper.Controllers.AuthUser.Update;

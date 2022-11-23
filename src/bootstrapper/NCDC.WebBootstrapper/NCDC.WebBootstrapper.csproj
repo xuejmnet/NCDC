@@ -21,10 +21,6 @@
       <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Controllers\AuthUser\UserDatabasePage" />
-    </ItemGroup>
-
 <!--    <ItemGroup>-->
 <!--        <ProjectReference Include="..\..\orm\NCDC.EntityFrameworkCore\NCDC.EntityFrameworkCore.csproj" />-->
 <!--        <ProjectReference Include="..\NCDC.ProxyClientMySql\NCDC.ProxyClientMySql.csproj" />-->
