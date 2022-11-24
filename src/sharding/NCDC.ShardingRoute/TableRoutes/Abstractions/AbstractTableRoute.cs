@@ -19,6 +19,7 @@ public abstract class AbstractTableRoute:ITableRoute
     }
 
     public string TableName => GetTableMetadata().LogicTableName;
+
     public TableMetadata GetTableMetadata()
     {
         return _tableMetadata;

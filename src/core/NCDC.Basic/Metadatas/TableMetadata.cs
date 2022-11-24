@@ -77,6 +77,7 @@ public class TableMetadata
     /// 分表所有字段包括 ShardingTableColumn
     /// </summary>
     public ISet<string> ShardingTableColumns { get; }
+    
 
 
     /// <summary>
