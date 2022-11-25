@@ -4,6 +4,8 @@ using Microsoft.Extensions.Hosting;
 using NCDC.ShardingTest.Seed;
 using NCDC.ShardingTest.Seed.Entities;
 using NCDC.ShardingTest.Seed.Shardings;
+using NCDC.ShardingTest.Seed2;
+using NCDC.ShardingTest.Seed2.Entities;
 using ShardingCore;
 using ShardingCore.Helpers;
 
@@ -13,6 +15,7 @@ public class Startup
 {
     public void ConfigureServices(IServiceCollection services, HostBuilderContext hostBuilderContext)
     {
+        services.AddDbContext<TypeSeedDbContext>(o => o.UseMySql("server=127.0.0.1;port=3306;database=ncdctype;userid=root;password=root;", new MySqlServerVersion(new Version())));
         services.AddShardingDbContext<ShardingDefaultDbContext>()
             .UseRouteConfig(op =>
             {
@@ -88,7 +91,42 @@ public class Startup
     {
         using (var scope = serviceProvider.CreateScope())
         {
-            var virtualDbContext = scope.ServiceProvider.GetService<ShardingDefaultDbContext>();
+            var typeSeedDbContext = scope.ServiceProvider.GetRequiredService<TypeSeedDbContext>();
+            await typeSeedDbContext.Database.EnsureCreatedAsync();
+            if (!await typeSeedDbContext.Set<StringEntity>().AnyAsync())
+            {
+                var stringEntities = new List<StringEntity>(1000);
+                for (int i = 0; i < 1000; i++)
+                {
+                    var stringEntity = new StringEntity();
+                    stringEntity.Id = $"{i}";
+                    stringEntity.Column1 = Guid.NewGuid().ToString("n");
+                    stringEntity.Column2 = Guid.NewGuid().ToString("n");
+                    stringEntity.Column3 = Guid.NewGuid().ToString("n");
+                    stringEntity.Column4 = Guid.NewGuid().ToString("n");
+                    stringEntity.Column5 = Guid.NewGuid().ToString("n");
+                    stringEntity.Column6 = Guid.NewGuid().ToString("n");
+                    stringEntity.Column7 = Guid.NewGuid().ToString("n");
+                    stringEntity.Column8 = Guid.NewGuid().ToString("n");
+                    stringEntity.Column9 = Guid.NewGuid().ToString("n");
+                    stringEntity.Column10 = Guid.NewGuid().ToString("n");
+                    stringEntity.Column11 = Guid.NewGuid().ToString("n");
+                    stringEntity.Column12 = Guid.NewGuid().ToString("n");
+                    stringEntity.Column13 = Guid.NewGuid().ToString("n");
+                    stringEntity.Column14 = Guid.NewGuid().ToString("n");
+                    stringEntity.Column15 = Guid.NewGuid().ToString("n");
+                    stringEntity.Column16 = Guid.NewGuid().ToString("n");
+                    stringEntity.Column17 = Guid.NewGuid().ToString("n");
+                    stringEntity.Column18 = Guid.NewGuid().ToString("n");
+                    stringEntity.Column19 = Guid.NewGuid().ToString("n");
+                    stringEntity.Column20 = Guid.NewGuid().ToString("n");
+                    stringEntities.Add(stringEntity);
+                }
+                
+                await typeSeedDbContext.AddRangeAsync(stringEntities);
+                await typeSeedDbContext.SaveChangesAsync();
+            }
+            var virtualDbContext = scope.ServiceProvider.GetRequiredService<ShardingDefaultDbContext>();
             if (!await virtualDbContext.Set<SysUserMod>().AnyAsync())
             {
                 var ids = Enumerable.Range(1, 1000);

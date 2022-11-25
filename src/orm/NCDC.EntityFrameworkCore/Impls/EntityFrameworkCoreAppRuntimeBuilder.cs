@@ -36,10 +36,10 @@ public sealed class EntityFrameworkCoreAppRuntimeBuilder : AbstractAppRuntimeBui
 
             _logicDatabase = logicDatabase ?? throw new ShardingConfigException($"database: {database} not found");
 
-            var dataSources = await dbContext.Set<ActualDatabaseEntity>().Where(o => o.LogicDatabaseId == database).ToListAsync();
-            var logicTables = await dbContext.Set<LogicTableEntity>().Where(o => o.LogicDatabaseId == database).ToListAsync();
+            var dataSources = await dbContext.Set<ActualDatabaseEntity>().Where(o => o.LogicDatabaseId == logicDatabase.Id).ToListAsync();
+            var logicTables = await dbContext.Set<LogicTableEntity>().Where(o => o.LogicDatabaseId == logicDatabase.Id).ToListAsync();
             var actualTables =
-                await dbContext.Set<ActualTableEntity>().Where(o => o.LogicDatabaseId == database).ToListAsync();
+                await dbContext.Set<ActualTableEntity>().Where(o => o.LogicDatabaseId == logicDatabase.Id).ToListAsync();
             _dataSourceNodes.AddRange(dataSources.Select(o =>
                 new DataSourceNode(o.DataSourceName, o.ConnectionString, o.IsDefault)));
             _logicTableNodes.AddRange(logicTables.Select(o =>

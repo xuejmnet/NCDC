@@ -113,7 +113,8 @@ public sealed class MySqlQueryClientDataReader : IClientQueryDataReader<MySqlPac
             var mySqlDbColumn = (MySqlDbColumn)dbColumn;
             var b = typeof(string)== mySqlDbColumn.DataType|| typeof(Guid)== mySqlDbColumn.DataType;
             var columnFieldDetailFlag = GetColumnFieldDetailFlag(dbColumn);
-            result.Add(new MySqlColumnDefinition41Packet(++sequenceId, characterSet,columnFieldDetailFlag ,
+            var newCharacterSet = mySqlDbColumn.ProviderType == MySqlDbType.Blob ? 63:characterSet;
+            result.Add(new MySqlColumnDefinition41Packet(++sequenceId, newCharacterSet,columnFieldDetailFlag ,
                 mySqlDbColumn.BaseSchemaName??string.Empty, mySqlDbColumn.BaseTableName??string.Empty, mySqlDbColumn.BaseTableName??string.Empty,
                 mySqlDbColumn.ColumnName, mySqlDbColumn.BaseColumnName??string.Empty, mySqlDbColumn.ColumnSize.GetValueOrDefault()*(b?4:1),//utf8mb4是size*4
                 (int)mySqlDbColumn.GetMySqlColumnType(null,mySqlDbColumn.ColumnSize.GetValueOrDefault(),columnFieldDetailFlag)

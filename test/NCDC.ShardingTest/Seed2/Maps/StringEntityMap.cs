@@ -20,6 +20,17 @@ public class StringEntityMap:IEntityTypeConfiguration<StringEntity>
         builder.Property(o => o.Column8).HasColumnType("text").HasComment("column8");
         builder.Property(o => o.Column9).IsRequired().HasColumnType("mediumtext").HasComment("column9");
         builder.Property(o => o.Column10).HasColumnType("mediumtext").HasComment("column10");
+        builder.Property(o => o.Column11).IsRequired().HasColumnType("longtext").HasComment("column11");
+        builder.Property(o => o.Column12).HasColumnType("longtext").HasComment("column12");
+        builder.Property(o => o.Column13).IsRequired().HasColumnType("tinyblob").HasComment("column13");
+        builder.Property(o => o.Column14).HasColumnType("tinyblob").HasComment("column14");
+        builder.Property(o => o.Column15).IsRequired().HasColumnType("blob").HasComment("column15");
+        builder.Property(o => o.Column16).HasColumnType("blob").HasComment("column16");
+        builder.Property(o => o.Column17).IsRequired().HasColumnType("mediumblob").HasComment("column17");
+        builder.Property(o => o.Column18).HasColumnType("mediumblob").HasComment("column18");
+        builder.Property(o => o.Column19).IsRequired().HasColumnType("longblob").HasComment("column19");
+        builder.Property(o => o.Column20).HasColumnType("longblob").HasComment("column20");
+       
         builder.ToTable("string_entity");
     }
 }
