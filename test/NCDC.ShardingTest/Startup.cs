@@ -95,35 +95,93 @@ public class Startup
             await typeSeedDbContext.Database.EnsureCreatedAsync();
             if (!await typeSeedDbContext.Set<StringEntity>().AnyAsync())
             {
-                var stringEntities = new List<StringEntity>(1000);
-                for (int i = 0; i < 1000; i++)
+                var stringEntities = new List<StringEntity>(10000);
+                for (int i = 0; i < 10000; i++)
                 {
                     var stringEntity = new StringEntity();
                     stringEntity.Id = $"{i}";
                     stringEntity.Column1 = Guid.NewGuid().ToString("n");
-                    stringEntity.Column2 = Guid.NewGuid().ToString("n");
+                    stringEntity.Column2 = i%2==0?Guid.NewGuid().ToString("n"):null;
                     stringEntity.Column3 = Guid.NewGuid().ToString("n");
-                    stringEntity.Column4 = Guid.NewGuid().ToString("n");
+                    stringEntity.Column4 = i%2==0?Guid.NewGuid().ToString("n"):null;
                     stringEntity.Column5 = Guid.NewGuid().ToString("n");
-                    stringEntity.Column6 = Guid.NewGuid().ToString("n");
+                    stringEntity.Column6 = i%2==0?Guid.NewGuid().ToString("n"):null;
                     stringEntity.Column7 = Guid.NewGuid().ToString("n");
-                    stringEntity.Column8 = Guid.NewGuid().ToString("n");
+                    stringEntity.Column8 = i%2==0?Guid.NewGuid().ToString("n"):null;
                     stringEntity.Column9 = Guid.NewGuid().ToString("n");
-                    stringEntity.Column10 = Guid.NewGuid().ToString("n");
+                    stringEntity.Column10 = i%2==0?Guid.NewGuid().ToString("n"):null;
                     stringEntity.Column11 = Guid.NewGuid().ToString("n");
-                    stringEntity.Column12 = Guid.NewGuid().ToString("n");
+                    stringEntity.Column12 = i%2==0?Guid.NewGuid().ToString("n"):null;
                     stringEntity.Column13 = Guid.NewGuid().ToString("n");
-                    stringEntity.Column14 = Guid.NewGuid().ToString("n");
+                    stringEntity.Column14 = i%2==0?Guid.NewGuid().ToString("n"):null;
                     stringEntity.Column15 = Guid.NewGuid().ToString("n");
-                    stringEntity.Column16 = Guid.NewGuid().ToString("n");
+                    stringEntity.Column16 = i%2==0?Guid.NewGuid().ToString("n"):null;
                     stringEntity.Column17 = Guid.NewGuid().ToString("n");
-                    stringEntity.Column18 = Guid.NewGuid().ToString("n");
+                    stringEntity.Column18 = i%2==0?Guid.NewGuid().ToString("n"):null;
                     stringEntity.Column19 = Guid.NewGuid().ToString("n");
-                    stringEntity.Column20 = Guid.NewGuid().ToString("n");
+                    stringEntity.Column20 = i%2==0?Guid.NewGuid().ToString("n"):null;
                     stringEntities.Add(stringEntity);
                 }
                 
                 await typeSeedDbContext.AddRangeAsync(stringEntities);
+                
+                
+                var numberEntities = new List<NumberEntity>(10000);
+                for (int i = 0; i < 10000; i++)
+                {
+                    var numberEntity = new NumberEntity();
+                    numberEntity.Id = $"{i}";
+                    numberEntity.Column1 =i%2==0? (byte)1: (byte)0;
+                    numberEntity.Column2 = i%2==0? (byte)1: (byte)0;
+                    numberEntity.Column3 = i%2==0? (sbyte)1: (sbyte)0;
+                    numberEntity.Column4 = i%2==0? (sbyte)1: (sbyte)0;
+                    numberEntity.Column5 = (short)new Random().Next(Int16.MaxValue);
+                    numberEntity.Column6 = i%2==0?(short)new Random().Next(Int16.MaxValue):null;
+                    numberEntity.Column7 =(ushort)new Random().Next(Int16.MaxValue);
+                    numberEntity.Column8 = i%2==0?(ushort)new Random().Next(Int16.MaxValue):null;
+                    numberEntity.Column9 =new Random().Next(Int32.MaxValue);
+                    numberEntity.Column10 = i%2==0?new Random().Next(Int32.MaxValue):null;
+                    numberEntity.Column11 = (uint)new Random().Next(Int32.MaxValue);
+                    numberEntity.Column12 = i%2==0?(uint)new Random().Next(Int32.MaxValue):null;
+                    numberEntity.Column13 = new Random().NextInt64(Int64.MaxValue);
+                    numberEntity.Column14 = i%2==0?new Random().NextInt64(Int64.MaxValue):null;
+                    numberEntity.Column15 = (ulong)new Random().NextInt64(Int64.MaxValue);
+                    numberEntity.Column16 = i%2==0?(ulong)new Random().NextInt64(Int64.MaxValue):null;
+                    numberEntity.Column17 = (float)new Random().NextDouble();
+                    numberEntity.Column18 =i%2==0?(float)new Random().NextDouble():null;
+                    numberEntity.Column19 = new Random().NextDouble();
+                    numberEntity.Column20 = i%2==0?new Random().NextDouble():null;
+                    numberEntity.Column21 = (decimal)Math.Round((new Random().NextDouble() / 100),6);
+                    numberEntity.Column22 = i%2==0?(decimal)Math.Round((new Random().NextDouble() / 100),6):null;
+                    numberEntity.Column23 = i%2==0;
+                    numberEntity.Column24 = i%2==0?true:null;
+                   numberEntities.Add(numberEntity);
+                }
+                
+                var dateTimeEntities = new List<DateTimeEntity>(10000);
+                for (int i = 0; i < 10000; i++)
+                {
+                    var dateTimeEntity = new DateTimeEntity();
+                    dateTimeEntity.Id = $"{i}";
+                    dateTimeEntity.Column1 = DateTime.Now.AddMinutes(new Random().Next(1,999999)).Year;
+                    dateTimeEntity.Column2 = i%2==0? DateTime.Now.AddMinutes(new Random().Next(1,999999)).Year: null;
+                    dateTimeEntity.Column3 =DateTime.Now.AddMinutes(new Random().Next(1,999999));
+                    dateTimeEntity.Column4 = i%2==0? DateTime.Now.AddMinutes(new Random().Next(1,999999)): null;
+                    dateTimeEntity.Column5 = DateTime.Now.AddMinutes(new Random().Next(1,999999));
+                    dateTimeEntity.Column6 = i%2==0? DateTime.Now.AddMinutes(new Random().Next(1,999999)): null;
+                    dateTimeEntity.Column7 =DateTime.Now.AddMinutes(new Random().Next(1,999999));
+                    dateTimeEntity.Column8 =  i%2==0? DateTime.Now.AddMinutes(new Random().Next(1,999999)): null;
+                    var time1 = DateTime.Now.AddSeconds(new Random().Next(1,9999999));
+                    dateTimeEntity.Column9 =new TimeOnly(time1.Hour, time1.Minute, time1.Second);
+                    var time2 = DateTime.Now.AddSeconds(new Random().Next(1,9999999));
+                    dateTimeEntity.Column10 =  i%2==0? new TimeOnly(time2.Hour, time2.Minute, time2.Second): null;
+                   dateTimeEntities.Add(dateTimeEntity);
+                }
+                
+                await typeSeedDbContext.AddRangeAsync(stringEntities);
+                await typeSeedDbContext.AddRangeAsync(numberEntities);
+                await typeSeedDbContext.AddRangeAsync(dateTimeEntities);
+                
                 await typeSeedDbContext.SaveChangesAsync();
             }
             var virtualDbContext = scope.ServiceProvider.GetRequiredService<ShardingDefaultDbContext>();

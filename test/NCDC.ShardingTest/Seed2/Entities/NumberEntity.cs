@@ -70,4 +70,9 @@ public class NumberEntity
     /// </summary>
     public decimal Column21 { get; set; }
     public decimal? Column22 { get; set; }
+    /// <summary>
+    /// LONG BLOB
+    /// </summary>
+    public bool Column23 { get; set; }
+    public bool? Column24 { get; set; }
 }

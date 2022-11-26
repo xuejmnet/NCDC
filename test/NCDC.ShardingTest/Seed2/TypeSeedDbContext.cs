@@ -14,5 +14,7 @@ public class TypeSeedDbContext:DbContext
     {
         base.OnModelCreating(modelBuilder);
         modelBuilder.ApplyConfiguration(new StringEntityMap());
+        modelBuilder.ApplyConfiguration(new NumberEntityMap());
+        modelBuilder.ApplyConfiguration(new DateTimeEntityMap());
     }
 }
