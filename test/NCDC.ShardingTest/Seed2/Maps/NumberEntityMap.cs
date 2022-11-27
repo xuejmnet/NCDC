@@ -33,8 +33,8 @@ public class NumberEntityMap:IEntityTypeConfiguration<NumberEntity>
         builder.Property(o => o.Column20).HasColumnType("double").HasComment("column20");
         builder.Property(o => o.Column21).IsRequired().HasColumnType("decimal(18,6)").HasComment("column21");
         builder.Property(o => o.Column22).HasColumnType("decimal(18,6)").HasComment("column22");
-        builder.Property(o => o.Column22).IsRequired().HasColumnType("tinyint(1)").HasComment("column23");
-        builder.Property(o => o.Column23).HasColumnType("tinyint(1)").HasComment("column24");
+        builder.Property(o => o.Column23).IsRequired().HasColumnType("tinyint(1)").HasComment("column23");
+        builder.Property(o => o.Column24).HasColumnType("tinyint(1)").HasComment("column24");
        
         builder.ToTable("number_entity");
     }

@@ -63,8 +63,8 @@ public class TestNCDC
     [Fact]
     public async Task Test2()
     {
-        var column1 = new DataAssertEntity(23);
-        var column2 = new DataAssertEntity(23);
+        var column1 = new DataAssertEntity(25);
+        var column2 = new DataAssertEntity(25);
 
         using (var dbconnection = await CreateMySqlConnection())
         {
