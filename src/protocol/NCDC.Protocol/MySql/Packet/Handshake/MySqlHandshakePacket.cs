@@ -1,5 +1,6 @@
 using System.Text;
 using NCDC.Protocol.MySql.Constant;
+using NCDC.Protocol.MySql.Constant.CharacterSets;
 using NCDC.Protocol.MySql.Payload;
 using NCDC.Protocol.Packets;
 
@@ -16,7 +17,7 @@ public sealed class MySqlHandshakePacket:IMysqlPacket
     private readonly MySqlAuthPluginData _authPluginData;
     private readonly int _capabilityFlagsLower;
     private readonly int _capabilityFlagsUpper;
-    private readonly int _characterSet;
+    private readonly CharacterSetEnum _characterSet;
     private readonly MySqlStatusFlagEnum _statusFlag;
     private string _authPluginName;
 
@@ -26,7 +27,7 @@ public sealed class MySqlHandshakePacket:IMysqlPacket
         _connectionId = connectionId;
         _capabilityFlagsLower = MySqlCapabilityFlag.CalculateHandshakeCapabilityFlagsLower();
         _capabilityFlagsUpper = MySqlCapabilityFlag.CalculateHandshakeCapabilityFlagsUpper();
-        _characterSet = MySqlServerInfo.DEFAULT_CHARSET.DbEncoding;
+        _characterSet = MySqlServerInfo.DEFAULT_CHARSET.Value;
         _statusFlag = MySqlStatusFlagEnum.SERVER_STATUS_AUTOCOMMIT;
         _authPluginData = authPluginData;
         _authPluginName = MySqlAuthenticationMethod.NATIVE_PASSWORD_AUTHENTICATION;
@@ -39,7 +40,7 @@ public sealed class MySqlHandshakePacket:IMysqlPacket
         payload.WriteInt4(_connectionId);
         payload.WriteStringNul(Encoding.Default.GetString(_authPluginData.Part1));
         payload.WriteInt2(_capabilityFlagsLower);
-        payload.WriteInt1(_characterSet);
+        payload.WriteInt1((int)_characterSet);
         payload.WriteInt2((int)_statusFlag);
         payload.WriteInt2(_capabilityFlagsUpper);
         payload.WriteInt1(IsClientPluginAuth()?_authPluginData.GetAuthPluginData().Length+1:0);

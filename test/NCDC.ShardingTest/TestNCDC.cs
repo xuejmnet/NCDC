@@ -8,6 +8,7 @@ public class TestNCDC
 {
     public TestNCDC()
     {
+        
     }
 
     private async Task<DbConnection> CreateMySqlConnection()

@@ -4,6 +4,7 @@ using MySqlConnector;
 using NCDC.Extensions;
 using NCDC.Protocol.Errors;
 using NCDC.Protocol.MySql.Constant;
+using NCDC.Protocol.MySql.Constant.CharacterSets;
 using NCDC.Protocol.MySql.Packet.Generic;
 using NCDC.Protocol.MySql.Packet.Handshake;
 using NCDC.Protocol.MySql.Payload;
@@ -86,8 +87,8 @@ public sealed class MySqlAuthenticationHandler:IAuthenticationHandler<MySqlPacke
         authContext.Username = packet.Username;
         authContext.Database = packet.Database;
         authContext.HostAddress = RemotingHelper.GetHostAddress(context);
-        var mySqlCharacterSet = MySqlCharacterSet.FindById(packet.CharacterSet);
-        context.Channel.SetEncoding(mySqlCharacterSet.Charset);
+        var mySqlCharacterSet = MySqlCharacterSet.FromValue((CharacterSetEnum)packet.CharacterSet)??throw new NotSupportedException($"character set:[{packet.CharacterSet}]");
+        context.Channel.SetEncoding(mySqlCharacterSet.Encoding);
         context.Channel.SetMySqlCharacterSet(mySqlCharacterSet);
         if (packet.Database.NotNullOrWhiteSpace() && !_appRuntimeManager.ContainsRuntimeContext(packet.Database!))
         {

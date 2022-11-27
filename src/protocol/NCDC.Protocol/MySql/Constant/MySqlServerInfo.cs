@@ -1,4 +1,5 @@
 using System.Collections.Concurrent;
+using NCDC.Protocol.MySql.Constant.CharacterSets;
 
 namespace NCDC.Protocol.MySql.Constant;
 

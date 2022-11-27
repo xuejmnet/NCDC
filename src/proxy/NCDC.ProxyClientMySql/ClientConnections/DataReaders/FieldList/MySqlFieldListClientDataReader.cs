@@ -1,5 +1,6 @@
 using NCDC.CommandParser.Common.Command;
 using NCDC.Protocol.MySql.Constant;
+using NCDC.Protocol.MySql.Constant.CharacterSets;
 using NCDC.Protocol.MySql.Packet.Command;
 using NCDC.Protocol.MySql.Packet.Generic;
 using NCDC.Protocol.MySql.Payload;
@@ -23,7 +24,7 @@ public sealed class MySqlFieldListClientDataReader : IClientDataReader<MySqlPack
     private readonly IConnectionSession _connectionSession;
     private readonly string _database;
     private readonly IServerDataReader _serverDbDataReader;
-    private readonly int _dbEncoding;
+    private readonly CharacterSetEnum _mySqlCharacterSet;
 
     public MySqlFieldListClientDataReader(string table, string filedWildcard, IConnectionSession connectionSession,
         IServerDataReaderFactory serverDataReaderFactory,ISqlCommandContextFactory sqlCommandContextFactory)
@@ -31,7 +32,7 @@ public sealed class MySqlFieldListClientDataReader : IClientDataReader<MySqlPack
         _table = table;
         _filedWildcard = filedWildcard;
         _connectionSession = connectionSession;
-        _dbEncoding = connectionSession.Channel.GetMySqlCharacterSet().DbEncoding;
+        _mySqlCharacterSet = connectionSession.Channel.GetMySqlCharacterSet().Value;
         var sql = string.Format(SQL, _table, _connectionSession.DatabaseName);
         var sqlCommand = ParseSqlCommand(sql);
         var sqlCommandContext = sqlCommandContextFactory.Create(ParameterContext.Empty, sqlCommand);
@@ -52,7 +53,7 @@ public sealed class MySqlFieldListClientDataReader : IClientDataReader<MySqlPack
         while (_serverDbDataReader.Read())
         {
             var columnName = _serverDbDataReader.GetRowData().Cells[0].ToString();
-            yield return new MySqlColumnDefinition41Packet(++currentSequenceId, _dbEncoding, _database, _table, _table,
+            yield return new MySqlColumnDefinition41Packet(++currentSequenceId, (int)_mySqlCharacterSet, _database, _table, _table,
                 columnName ?? string.Empty, columnName ?? string.Empty, 100,
                 (int)MySqlColumnTypeEnum.VarChar,
                 0, true);

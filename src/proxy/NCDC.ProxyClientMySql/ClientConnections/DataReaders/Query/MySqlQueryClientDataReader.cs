@@ -4,6 +4,7 @@ using NCDC.CommandParser.Common.Command;
 using NCDC.CommandParser.Common.Command.DML;
 using NCDC.Enums;
 using NCDC.Protocol.MySql.Constant;
+using NCDC.Protocol.MySql.Constant.CharacterSets;
 using NCDC.Protocol.MySql.Packet;
 using NCDC.Protocol.MySql.Packet.Command;
 using NCDC.Protocol.MySql.Packet.Generic;
@@ -28,7 +29,7 @@ public sealed class MySqlQueryClientDataReader : IClientQueryDataReader<MySqlPac
     private readonly IServerHandlerFactory _serverHandlerFactory;
     public IConnectionSession ConnectionSession { get; }
     public IServerHandler ServerHandler { get; }
-    public int MySqlEncoding { get; }
+    public CharacterSetEnum MySqlCharacterSet { get; }
     private int _currentSequenceId;
     public ResultTypeEnum ResultType { get; private set; }
 
@@ -44,7 +45,7 @@ public sealed class MySqlQueryClientDataReader : IClientQueryDataReader<MySqlPac
         ServerHandler = isMultiCommands
             ? new MySqlMultiServerHandler()
             : _serverHandlerFactory.Create(DatabaseTypeEnum.MySql, _sql, sqlCommand, ConnectionSession);
-        MySqlEncoding = connectionSession.Channel.GetMySqlCharacterSet().DbEncoding;
+        MySqlCharacterSet = connectionSession.Channel.GetMySqlCharacterSet().Value;
     }
 
     private ISqlCommand ParseSql(string sql)
@@ -90,7 +91,7 @@ public sealed class MySqlQueryClientDataReader : IClientQueryDataReader<MySqlPac
 
     private IEnumerable<IPacket<MySqlPacketPayload>> ProcessQuery(QueryServerResult queryServerResult)
     {
-        var result = BuildQueryResponsePackets(queryServerResult, MySqlEncoding,
+        var result = BuildQueryResponsePackets(queryServerResult, (int)MySqlCharacterSet,
             ServerStatusFlagCalculator.CalculateFor(ConnectionSession));
         _currentSequenceId = result.Count;
         return result;
@@ -110,6 +111,7 @@ public sealed class MySqlQueryClientDataReader : IClientQueryDataReader<MySqlPac
         result.Add(new MySqlFieldCountPacket(++sequenceId, dbColumns.Count));
         foreach (var dbColumn in dbColumns)
         {
+            //todo mysqlcharacterset
             var mySqlDbColumn = (MySqlDbColumn)dbColumn;
             var b = typeof(string)== mySqlDbColumn.DataType|| typeof(Guid)== mySqlDbColumn.DataType;
             var columnFieldDetailFlag = GetColumnFieldDetailFlag(dbColumn);
