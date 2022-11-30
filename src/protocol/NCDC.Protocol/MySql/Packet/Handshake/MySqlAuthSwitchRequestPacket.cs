@@ -17,8 +17,8 @@ public sealed class MySqlAuthSwitchRequestPacket : IMysqlPacket
         AuthPluginName = payload.ReadStringNul();
         var strAuthPluginData = payload.ReadStringNul();
 
-        AuthPluginData = new MySqlAuthPluginData(CopyOfRange(Encoding.Default.GetBytes(strAuthPluginData), 0, 8),
-            CopyOfRange(Encoding.Default.GetBytes(strAuthPluginData), 8, 20));
+        AuthPluginData = new MySqlAuthPluginData(CopyOfRange(Encoding.UTF8.GetBytes(strAuthPluginData), 0, 8),
+            CopyOfRange(Encoding.UTF8.GetBytes(strAuthPluginData), 8, 20));
     }
 
     public MySqlAuthSwitchRequestPacket(int sequenceId,string authPluginName, MySqlAuthPluginData authPluginData)
@@ -42,7 +42,7 @@ public sealed class MySqlAuthSwitchRequestPacket : IMysqlPacket
     {
         payload.WriteInt1(HEADER);
         payload.WriteStringNul(AuthPluginName);
-        payload.WriteStringNul(Encoding.Default.GetString(AuthPluginData.GetAuthPluginData()));
+        payload.WriteStringNul(Encoding.UTF8.GetString(AuthPluginData.GetAuthPluginData()));
     }
 
     public int SequenceId { get; }

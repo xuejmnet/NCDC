@@ -38,7 +38,7 @@ public sealed class MySqlHandshakePacket:IMysqlPacket
         payload.WriteInt1(protocolVersion);
         payload.WriteStringNul(_serverVersion);
         payload.WriteInt4(_connectionId);
-        payload.WriteStringNul(Encoding.Default.GetString(_authPluginData.Part1));
+        payload.WriteStringNul(Encoding.UTF8.GetString(_authPluginData.Part1));
         payload.WriteInt2(_capabilityFlagsLower);
         payload.WriteInt1((int)_characterSet);
         payload.WriteInt2((int)_statusFlag);
