@@ -1,6 +1,6 @@
 namespace NCDC.Protocol.MySql.Constant.CharacterSets;
 
-public enum CharacterSetEnum
+public enum MySqlCharacterSetEnum:ushort
 {
 	None = 0,
 	Big5ChineseCaseInsensitive = 1,

@@ -7,6 +7,6 @@ public interface IMessageCommandProcessor
 {
     IMessageExecutor GetMessageExecutor(IChannelId channelId);
     bool TryReceived(IChannelId channelId,ICommand command);
-    void Register(IChannelId channelId);
+    IMessageExecutor Register(IChannelId channelId);
     void UnRegister(IChannelId channelId);
 }

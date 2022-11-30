@@ -52,7 +52,7 @@ public class ClientChannelInboundHandler : ChannelHandlerAdapter
 
     public override void ChannelActive(IChannelHandlerContext context)
     {
-        _messageCommandProcessor.Register(context.Channel.Id);
+       
         var connectionId = _databaseProtocolClientEngine.GetAuthenticationHandler().Handshake(context,_authContext);
         _connectionSession.SetConnectionId(connectionId);
     }
@@ -64,7 +64,8 @@ public class ClientChannelInboundHandler : ChannelHandlerAdapter
         if (!_authenticated && !Volatile.Read(ref _authenticated))
         {
             _authenticated = Authenticate(ctx, byteBuffer);
-            _messageExecutor = _messageCommandProcessor.GetMessageExecutor(ctx.Channel.Id);
+            _messageExecutor =   _messageCommandProcessor.Register(ctx.Channel.Id);
+            // _messageExecutor = _messageCommandProcessor.GetMessageExecutor(ctx.Channel.Id);
             return;
         }
 

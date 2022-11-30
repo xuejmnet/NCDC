@@ -29,7 +29,7 @@ public sealed class MySqlQueryClientDataReader : IClientQueryDataReader<MySqlPac
     private readonly IServerHandlerFactory _serverHandlerFactory;
     public IConnectionSession ConnectionSession { get; }
     public IServerHandler ServerHandler { get; }
-    public CharacterSetEnum MySqlCharacterSet { get; }
+    public MySqlCharacterSetEnum MySqlCharacterSet { get; }
     private int _currentSequenceId;
     public ResultTypeEnum ResultType { get; private set; }
 

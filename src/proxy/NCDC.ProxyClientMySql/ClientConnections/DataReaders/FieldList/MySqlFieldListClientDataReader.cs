@@ -24,7 +24,7 @@ public sealed class MySqlFieldListClientDataReader : IClientDataReader<MySqlPack
     private readonly IConnectionSession _connectionSession;
     private readonly string _database;
     private readonly IServerDataReader _serverDbDataReader;
-    private readonly CharacterSetEnum _mySqlCharacterSet;
+    private readonly MySqlCharacterSetEnum _mySqlCharacterSet;
 
     public MySqlFieldListClientDataReader(string table, string filedWildcard, IConnectionSession connectionSession,
         IServerDataReaderFactory serverDataReaderFactory,ISqlCommandContextFactory sqlCommandContextFactory)

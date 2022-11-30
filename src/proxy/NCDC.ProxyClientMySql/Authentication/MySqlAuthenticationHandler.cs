@@ -87,7 +87,7 @@ public sealed class MySqlAuthenticationHandler:IAuthenticationHandler<MySqlPacke
         authContext.Username = packet.Username;
         authContext.Database = packet.Database;
         authContext.HostAddress = RemotingHelper.GetHostAddress(context);
-        var mySqlCharacterSet = MySqlCharacterSet.FromValue((CharacterSetEnum)packet.CharacterSet)??throw new NotSupportedException($"character set:[{packet.CharacterSet}]");
+        var mySqlCharacterSet = MySqlCharacterSet.FromValue((MySqlCharacterSetEnum)packet.CharacterSet)??throw new NotSupportedException($"character set:[{packet.CharacterSet}]");
         context.Channel.SetEncoding(mySqlCharacterSet.Encoding);
         context.Channel.SetMySqlCharacterSet(mySqlCharacterSet);
         if (packet.Database.NotNullOrWhiteSpace() && !_appRuntimeManager.ContainsRuntimeContext(packet.Database!))

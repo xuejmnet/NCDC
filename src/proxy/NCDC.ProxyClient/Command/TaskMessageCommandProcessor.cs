@@ -43,10 +43,15 @@ public sealed class TaskMessageCommandProcessor:IMessageCommandProcessor
         return messageExecutor.TryAddMessage(command);
     }
 
-    public void Register(IChannelId channelId)
+    public IMessageExecutor Register(IChannelId channelId)
     {
         var messageExecutor = _messageExecutorFactory.Create();
-        _executors.TryAdd(channelId, messageExecutor);
+        if (_executors.TryAdd(channelId, messageExecutor))
+        {
+            return messageExecutor;
+        }
+
+        throw new InvalidOperationException($"repeat register message executor:[{channelId.AsShortText()}]");
     }
 
     public void UnRegister(IChannelId channelId)

@@ -17,7 +17,7 @@ public sealed class MySqlHandshakePacket:IMysqlPacket
     private readonly MySqlAuthPluginData _authPluginData;
     private readonly int _capabilityFlagsLower;
     private readonly int _capabilityFlagsUpper;
-    private readonly CharacterSetEnum _characterSet;
+    private readonly MySqlCharacterSetEnum _characterSet;
     private readonly MySqlStatusFlagEnum _statusFlag;
     private string _authPluginName;
 
@@ -50,7 +50,7 @@ public sealed class MySqlHandshakePacket:IMysqlPacket
     }
     private void WriteAuthPluginDataPart2( MySqlPacketPayload payload) {
         if (IsClientSecureConnection()) {
-            payload.WriteStringNul(Encoding.Default.GetString(_authPluginData.Part2));
+            payload.WriteStringNul(Encoding.UTF8.GetString(_authPluginData.Part2));
         }
     }
     private void WriteAuthPluginName( MySqlPacketPayload payload) {

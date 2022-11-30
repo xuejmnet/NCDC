@@ -1,4 +1,5 @@
 using NCDC.Protocol.MySql.Constant;
+using NCDC.Protocol.MySql.Constant.CharacterSets;
 
 namespace NCDC.Protocol.MySql;
 
