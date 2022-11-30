@@ -38,6 +38,7 @@ public class ClientChannelInboundHandler : ChannelHandlerAdapter
     private readonly IAuthContext _authContext;
 
     private bool _authenticated;
+    private IMessageExecutor _messageExecutor;
 
     public ClientChannelInboundHandler(IDatabaseProtocolClientEngine databaseProtocolClientEngine,
         ISocketChannel channel,IAppRuntimeManager appRuntimeManager,IMessageCommandProcessor messageCommandProcessor,ISqlCommandParser sqlCommandParser)
@@ -63,12 +64,13 @@ public class ClientChannelInboundHandler : ChannelHandlerAdapter
         if (!_authenticated && !Volatile.Read(ref _authenticated))
         {
             _authenticated = Authenticate(ctx, byteBuffer);
+            _messageExecutor = _messageCommandProcessor.GetMessageExecutor(ctx.Channel.Id);
             return;
         }
 
         var cmd =
             new MessageCommand(_databaseProtocolClientEngine, _connectionSession, ctx, byteBuffer);
-        if (!_messageCommandProcessor.TryReceived(ctx.Channel.Id,cmd))
+        if (!_messageExecutor.TryAddMessage(cmd))
         {
             _logger.LogError($"cant process message command,processor maybe un register: \n{ByteBufferUtil.PrettyHexDump(byteBuffer)}");
         }

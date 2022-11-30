@@ -21,6 +21,17 @@ public sealed class TaskMessageCommandProcessor:IMessageCommandProcessor
         _messageExecutorFactory = messageExecutorFactory;
     }
 
+    public IMessageExecutor GetMessageExecutor(IChannelId channelId)
+    {
+        if (!_executors.TryGetValue(channelId, out var messageExecutor))
+        {
+            throw new InvalidOperationException(
+                $"cant get {nameof(IMessageExecutor)} channel id:[{channelId.AsShortText()}]");
+        }
+
+        return messageExecutor;
+    }
+
     public bool TryReceived(IChannelId channelId, ICommand command)
     {
         if (!_executors.TryGetValue(channelId, out var messageExecutor))
