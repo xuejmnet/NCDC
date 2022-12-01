@@ -60,6 +60,7 @@ public sealed class MySqlAuthenticationHandler:IAuthenticationHandler<MySqlPacke
         {
             //mysql error
             context.WriteAndFlushAsync(CreateErrorPacket(sqlErrorCode, authContext));
+            context.CloseAsync();
         }
         else
         {
@@ -135,8 +136,18 @@ public sealed class MySqlAuthenticationHandler:IAuthenticationHandler<MySqlPacke
             return MySqlServerErrorCode.ER_ACCESS_DENIED_ERROR_ARG3;
         }
 
-        var databaseHasPerm = true;
-        return (null==authContext.Database || databaseHasPerm)?null:MySqlServerErrorCode.ER_ACCESS_DENIED_ERROR_ARG3;
-      
+        if (null == authContext.Database||!_appRuntimeManager.ContainsRuntimeContext(authContext.Database))
+        {
+            return MySqlServerErrorCode.ER_NO_DB_ERROR;
+        }
+
+        var authorizedUsers = _appRuntimeManager.GetAuthorizedUsers(authContext.Database);
+        if (!authorizedUsers.Contains(authUser.Grantee.Username))
+        {
+            return MySqlServerErrorCode.ER_ACCESS_DENIED_ERROR_ARG3;
+        }
+
+        return null;
+
     }
 }

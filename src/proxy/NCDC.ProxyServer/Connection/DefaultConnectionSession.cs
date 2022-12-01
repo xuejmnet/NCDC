@@ -13,12 +13,12 @@ using NCDC.ProxyServer.ServerHandlers.ServerTransactions;
 
 namespace NCDC.ProxyServer.Connection;
 
-public class ConnectionSession : IConnectionSession
+public class DefaultConnectionSession : IConnectionSession
 {
     private readonly ISqlCommandParser _sqlCommandParser;
     private readonly TransactionStatus _transactionStatus;
-    private volatile int _connectionId;
-    private volatile Grantee _grantee;
+    private readonly int _connectionId;
+    private readonly Grantee _grantee;
 
     public IServerConnection ServerConnection { get; }
 
@@ -26,24 +26,23 @@ public class ConnectionSession : IConnectionSession
     public IChannel Channel { get; }
 
     // public ILogicDatabase? LogicDatabase => RuntimeContext?.GetDatabase();
-    public IVirtualDataSource? VirtualDataSource => RuntimeContext?.GetVirtualDataSource();
+    public IVirtualDataSource VirtualDataSource => RuntimeContext.GetVirtualDataSource();
     private volatile bool autoCommit = true;
     private  string? _databaseName;
     public IsolationLevel IsolationLevel { get;  set; }
     public string? DatabaseName => _databaseName;
-    public IRuntimeContext? RuntimeContext { get; private set; }
-    public IAppRuntimeManager AppRuntimeManager { get; }
+    public IRuntimeContext RuntimeContext { get; }
     private readonly TimeSpan _channelWaitMillis = TimeSpan.FromMilliseconds(200);
 
     private readonly ChannelIsWritableListener _channelWaitWriteableListener;
 
-    public ConnectionSession(TransactionTypeEnum transactionType, IsolationLevel isolationLevel, IChannel channel,
-        IAppRuntimeManager appRuntimeManager,ISqlCommandParser sqlCommandParser)
+    public DefaultConnectionSession(int connectionId,Grantee grantee,TransactionTypeEnum transactionType, IsolationLevel isolationLevel, IChannel channel,ISqlCommandParser sqlCommandParser,IRuntimeContext runtimeContext)
     {
+        _grantee = grantee;
         _sqlCommandParser = sqlCommandParser;
         IsolationLevel = isolationLevel;
-        AppRuntimeManager = appRuntimeManager;
         Channel = channel;
+        RuntimeContext = runtimeContext;
         _transactionStatus = new TransactionStatus(transactionType);
         ServerConnection = new ServerConnection(this);
         _channelWaitWriteableListener = new ChannelIsWritableListener();
@@ -55,18 +54,14 @@ public class ConnectionSession : IConnectionSession
 
     public ICollection<string> GetAllDatabaseNames()
     {
-        return AppRuntimeManager.GetAllDatabaseNames();
+        return VirtualDataSource.GetAllDataSourceNames();
     }
 
-    public ICollection<string> GetAuthorizeDatabases()
-    {
-        return AppRuntimeManager.GetAuthorizedDatabases(_grantee.Username);
-    }
-
-    public bool DatabaseExists(string database)
-    {
-        return AppRuntimeManager.ContainsRuntimeContext(database);
-    }
+    //
+    // public bool DatabaseExists(string database)
+    // {
+    //     return AppRuntimeManager.ContainsRuntimeContext(database);
+    // }
 
 
     public bool GetIsAutoCommit()
@@ -84,37 +79,27 @@ public class ConnectionSession : IConnectionSession
         return _connectionId;
     }
 
-    public void SetConnectionId(int connectionId)
-    {
-        this._connectionId = connectionId;
-    }
-
     public Grantee GetGrantee()
     {
         return _grantee;
     }
-
-    public void SetGrantee(Grantee grantee)
-    {
-        _grantee = grantee;
-    }
-
-    public void SetCurrentDatabaseName(string? databaseName)
-    {
-        if (databaseName != null && databaseName == _databaseName)
-        {
-            return;
-        }
-
-        if (_transactionStatus.IsInTransaction())
-        {
-            throw new ShardingException("Failed to switch database, please terminate current transaction.");
-        }
-
-        Console.WriteLine("设置数据库"+databaseName);
-        _databaseName = databaseName;
-        RuntimeContext = databaseName.IsNullOrWhiteSpace() ? null : AppRuntimeManager.GetRuntimeContext(databaseName!);
-    }
+    //
+    // public void SetCurrentDatabaseName(string? databaseName)
+    // {
+    //     if (databaseName != null && databaseName == _databaseName)
+    //     {
+    //         return;
+    //     }
+    //
+    //     if (_transactionStatus.IsInTransaction())
+    //     {
+    //         throw new ShardingException("Failed to switch database, please terminate current transaction.");
+    //     }
+    //
+    //     Console.WriteLine("设置数据库"+databaseName);
+    //     _databaseName = databaseName;
+    //     RuntimeContext = databaseName.IsNullOrWhiteSpace() ? null : AppRuntimeManager.GetRuntimeContext(databaseName!);
+    // }
 
     public Task WaitChannelIsWritableAsync(CancellationToken cancellationToken = default)
     {

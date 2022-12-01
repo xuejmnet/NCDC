@@ -64,12 +64,7 @@ public sealed class ServerHandlerFactory : IServerHandlerFactory
     {
         if (dalCommand is MySqlUseCommand useCommand)
         {
-            return new UseDatabaseServerHandler(useCommand, connectionSession);
-        }
-
-        if (dalCommand is MySqlShowDatabasesCommand)
-        {
-            return new ShowDatabasesServerHandler(connectionSession);
+            return SkipServerHandler.Default;
         }
 
         if (dalCommand is SetCommand && null == connectionSession.DatabaseName)
@@ -122,6 +117,11 @@ public sealed class ServerHandlerFactory : IServerHandlerFactory
         if (sqlCommand is IDCLCommand)
         {
             throw new NotSupportedException("unsupported operation");
+        }
+
+        if (sqlCommand is MySqlShowDatabasesCommand)
+        {
+            throw new NotSupportedException("show databases");
         }
     }
 }

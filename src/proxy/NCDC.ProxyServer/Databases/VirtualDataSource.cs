@@ -53,7 +53,7 @@ public sealed class VirtualDataSource : IVirtualDataSource
         return dataSource.ConnectionString;
     }
 
-    public IReadOnlyCollection<string> GetAllDataSourceNames()
+    public ICollection<string> GetAllDataSourceNames()
     {
         return _dataSources.Keys.ToImmutableList();
     }

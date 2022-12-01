@@ -13,7 +13,7 @@ public sealed class MessageExecutor:IMessageExecutor
     {
         _cts = new CancellationTokenSource();
         _channel = Channel.CreateUnbounded<ICommand>();
-        _commandTask = Task.Factory.StartNew(ProcessAsync,_cts.Token, TaskCreationOptions.LongRunning,TaskScheduler.Default);
+        _commandTask = Task.Factory.StartNew(ProcessAsync,default, TaskCreationOptions.LongRunning,TaskScheduler.Default);
     }
     public bool TryAddMessage(ICommand command)
     {
@@ -34,7 +34,7 @@ public sealed class MessageExecutor:IMessageExecutor
     public void Dispose()
     {
         _channel.Writer.Complete();
+        _commandTask.Wait(3000);
         _cts.Cancel();
-        _commandTask.Wait(100);
     }
 }

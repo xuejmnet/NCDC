@@ -264,8 +264,13 @@ public class EntityFrameworkCoreAppInitializer : AbstractAppInitializer
         using (var scope = _appServiceProvider.CreateScope())
         {
             var dbContext = scope.ServiceProvider.GetRequiredService<NCDCDbContext>();
-            var appAuthUsers = await dbContext.Set<DatabaseUserEntity>()
-                .Select(o => new UserDatabaseEntry(o.AppAuthUserId, o.DatabaseId)).ToListAsync();
+            var appAuthUsers = await(from map in dbContext.Set<DatabaseUserEntity>()
+                join user in dbContext.Set<AppAuthUserEntity>()
+                    on map.AppAuthUserId equals user.Id
+                    join database in dbContext.Set<LogicDatabaseEntity>()
+                    on map.DatabaseId equals database.Id
+                select new UserDatabaseEntry(user.UserName,database.DatabaseName))
+                .ToListAsync();
             return appAuthUsers.AsReadOnly();
         }
     }

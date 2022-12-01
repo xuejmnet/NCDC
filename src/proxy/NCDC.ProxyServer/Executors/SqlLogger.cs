@@ -34,7 +34,7 @@ namespace NCDC.ProxyServer.Executors
         public static void LogSql(string logicSql, bool showSimple, ISqlCommandContext<ISqlCommand> sqlCommandContext, ICollection<ExecutionUnit> executionUnits)
         {
             _logger.LogInformation($"Logic SQL: {logicSql}");
-            _logger.LogInformation($"SqlCommand: {sqlCommandContext.GetSqlCommand()}");
+            // _logger.LogInformation($"SqlCommand: {sqlCommandContext.GetSqlCommand()}");
             if (showSimple)
             {
                 LogSimpleMode(executionUnits);

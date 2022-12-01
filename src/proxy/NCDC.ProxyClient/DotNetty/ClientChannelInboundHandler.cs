@@ -15,12 +15,9 @@ using NCDC.ProxyClient.Authentication;
 using NCDC.ProxyClient.Command;
 using NCDC.ProxyClient.Command.Abstractions;
 using NCDC.ProxyServer.Abstractions;
-using NCDC.ProxyServer.AppServices;
-using NCDC.ProxyServer.AppServices.Abstractions;
 using NCDC.ProxyServer.Connection;
 using NCDC.ProxyServer.Connection.Abstractions;
 using NCDC.ProxyServer.Extensions;
-using NCDC.ProxyServer.Runtimes;
 
 namespace NCDC.ProxyClient.DotNetty;
 
@@ -30,31 +27,28 @@ public class ClientChannelInboundHandler : ChannelHandlerAdapter
         NCDCLoggerFactory.CreateLogger<ClientChannelInboundHandler>();
 
     private readonly IDatabaseProtocolClientEngine _databaseProtocolClientEngine;
+    private readonly IConnectionSessionFactory _connectionSessionFactory;
     private readonly ICommandListener _commandListener;
-    private readonly IAppRuntimeManager _appRuntimeManager;
     private readonly IMessageCommandProcessor _messageCommandProcessor;
 
-    private readonly IConnectionSession _connectionSession;
     private readonly IAuthContext _authContext;
 
     private bool _authenticated;
     private IMessageExecutor _messageExecutor;
+    private  IConnectionSession _connectionSession;
+    private  int _connectionId;
 
-    public ClientChannelInboundHandler(IDatabaseProtocolClientEngine databaseProtocolClientEngine,
-        ISocketChannel channel,IAppRuntimeManager appRuntimeManager,IMessageCommandProcessor messageCommandProcessor,ISqlCommandParser sqlCommandParser)
+    public ClientChannelInboundHandler(IDatabaseProtocolClientEngine databaseProtocolClientEngine,IConnectionSessionFactory connectionSessionFactory,IMessageCommandProcessor messageCommandProcessor)
     {
         _databaseProtocolClientEngine = databaseProtocolClientEngine;
-        _appRuntimeManager = appRuntimeManager;
+        _connectionSessionFactory = connectionSessionFactory;
         _messageCommandProcessor = messageCommandProcessor;
-        _connectionSession = new ConnectionSession(TransactionTypeEnum.LOCAL,IsolationLevel.ReadCommitted, channel,appRuntimeManager,sqlCommandParser);
         _authContext = databaseProtocolClientEngine.GetAuthContext();
     }
 
     public override void ChannelActive(IChannelHandlerContext context)
     {
-       
-        var connectionId = _databaseProtocolClientEngine.GetAuthenticationHandler().Handshake(context,_authContext);
-        _connectionSession.SetConnectionId(connectionId);
+        _connectionId = _databaseProtocolClientEngine.GetAuthenticationHandler().Handshake(context,_authContext);
     }
 
 
@@ -88,17 +82,22 @@ public class ClientChannelInboundHandler : ChannelHandlerAdapter
                     .Authenticate(context, payload,_authContext);
                 if (authenticationResult.Finished)
                 {
-                    _connectionSession.SetGrantee(new Grantee(authenticationResult.Username!,
-                        authenticationResult.Hostname));
-                    _connectionSession.SetCurrentDatabaseName(authenticationResult.Database);
+                    if (authenticationResult.Database == null)
+                    {
+                        context.WriteAndFlushAsync(new MySqlErrPacket(1, MySqlServerErrorCode.ER_NO_DB_ERROR));
+                        context.CloseAsync();
+                        return false;
+                    }
+                    var grantee = new Grantee(authenticationResult.Username!,
+                        authenticationResult.Hostname);
+                    _connectionSession =_connectionSessionFactory.Create(_connectionId,authenticationResult.Database,grantee,context.Channel);
                 }
 
                 return authenticationResult.Finished;
             }
             catch (Exception e)
             {
-                Console.WriteLine("exception occur:");
-                Console.WriteLine($"{e}");
+                _logger.LogError($"{nameof(Authenticate)} error:{e}");
                 context.WriteAndFlushAsync(new MySqlErrPacket(1, MySqlServerErrorCode.ER_NO_DB_ERROR));
                 context.CloseAsync();
             }

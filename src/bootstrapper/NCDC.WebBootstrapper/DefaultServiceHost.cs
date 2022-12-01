@@ -10,6 +10,7 @@ using NCDC.ProxyClient.Command.Abstractions;
 using NCDC.ProxyClient.DotNetty;
 using NCDC.ProxyServer.Abstractions;
 using NCDC.ProxyServer.AppServices.Abstractions;
+using NCDC.ProxyServer.Connection;
 
 namespace NCDC.WebBootstrapper;
 
@@ -22,11 +23,11 @@ public class DefaultServiceHost:IServiceHost
     private readonly IPacketCodec _packetCodec;
     private readonly IAppConfiguration _appConfiguration;
     private readonly IDatabaseProtocolClientEngine _databaseProtocolClientEngine;
-    private readonly IAppRuntimeManager _appRuntimeManager;
 
     private readonly IMessageCommandProcessor _messageCommandProcessor;
 
-    private readonly ISqlCommandParser _sqlCommandParser;
+
+    private readonly IConnectionSessionFactory _connectionSessionFactory;
     // private readonly Channel<MessageCommand> _messageChannel;
 
     // 主工作线程组，设置为1个线程
@@ -42,13 +43,12 @@ public class DefaultServiceHost:IServiceHost
     private Bootstrap _clientBootstrap;
     private IChannelHandler _encoderHandler;
 
-    public DefaultServiceHost(IAppConfiguration appConfiguration,IDatabaseProtocolClientEngine databaseProtocolClientEngine,IAppRuntimeManager appRuntimeManager,IMessageCommandProcessor messageCommandProcessor,ISqlCommandParser sqlCommandParser)
+    public DefaultServiceHost(IAppConfiguration appConfiguration,IDatabaseProtocolClientEngine databaseProtocolClientEngine,IMessageCommandProcessor messageCommandProcessor,IConnectionSessionFactory connectionSessionFactory)
     {
         _appConfiguration = appConfiguration;
         _databaseProtocolClientEngine = databaseProtocolClientEngine;
-        _appRuntimeManager = appRuntimeManager;
         _messageCommandProcessor = messageCommandProcessor;
-        _sqlCommandParser = sqlCommandParser;
+        _connectionSessionFactory = connectionSessionFactory;
         _packetCodec = databaseProtocolClientEngine.GetPacketCodec();
         _encoderHandler = new MessagePacketEncoder(_packetCodec);
         // _commandListener.OnReceived += CommandListenerOnReceived;
@@ -99,7 +99,7 @@ public class DefaultServiceHost:IServiceHost
                         pipeline.AddLast(new MessagePacketDecoder(_packetCodec));
                         pipeline.AddLast(_encoderHandler);
                         pipeline.AddLast(_connectorManagerHandler);
-                        pipeline.AddLast(new ClientChannelInboundHandler(_databaseProtocolClientEngine,channel,_appRuntimeManager,_messageCommandProcessor,_sqlCommandParser));
+                        pipeline.AddLast(new ClientChannelInboundHandler(_databaseProtocolClientEngine,_connectionSessionFactory,_messageCommandProcessor));
                         // pipeline.AddLast("tls", TlsHandler.Server(_option.TlsCertificate));
                         // pipeline.AddLast("tls", new TlsHandler(stream => new SslStream(stream, true, (sender, certificate, chain, errors) => true), new ClientTlsSettings(_targetHost)));
                         // pipeline.AddLast("framing-dec", new LengthFieldBasedFrameDecoder(int.MaxValue, 0, 4, 0, 4));

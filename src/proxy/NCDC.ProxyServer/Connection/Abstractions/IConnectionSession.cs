@@ -18,26 +18,23 @@ public interface IConnectionSession:IDisposable
     IServerConnection ServerConnection { get; }
     IChannel Channel { get; }
     // ILogicDatabase? LogicDatabase { get; }
-    IVirtualDataSource? VirtualDataSource { get; }
-    IRuntimeContext? RuntimeContext { get; }
-    IAppRuntimeManager AppRuntimeManager { get; }
+    IVirtualDataSource VirtualDataSource { get; }
+    IRuntimeContext RuntimeContext { get; }
     ICollection<string> GetAllDatabaseNames();
-    ICollection<string> GetAuthorizeDatabases();
 
-    bool DatabaseExists(string database);
+    // bool DatabaseExists(string database);
     bool GetIsAutoCommit();
 
     TransactionStatus GetTransactionStatus();
 
     int GetConnectionId();
 
-    void SetConnectionId(int connectionId);
+    //
+    // Grantee GetGrantee();
+    //
+    // void SetGrantee(Grantee grantee);
 
-    Grantee GetGrantee();
-
-    void SetGrantee(Grantee grantee);
-
-    void SetCurrentDatabaseName(string? databaseName);
+    // void SetCurrentDatabaseName(string? databaseName);
     Task WaitChannelIsWritableAsync(CancellationToken cancellationToken = default);
     void NotifyChannelIsWritable();
     QueryContext? QueryContext { get; set; }

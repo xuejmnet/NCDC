@@ -42,8 +42,8 @@ public sealed class MySqlClientDbConnection : IClientDbConnection<MySqlPacketPay
                 return new MySqlQuitClientCommand();
             case MySqlCommandTypeEnum.COM_FIELD_LIST:
                 return new MySqlFieldListClientCommand(payload,connectionSession,_serverDataReaderFactory,_sqlCommandContextFactory);
-            case MySqlCommandTypeEnum.COM_INIT_DB:
-                return new MySqlInitDbClientCommand(payload, connectionSession);
+            // case MySqlCommandTypeEnum.COM_INIT_DB:
+            //     return new MySqlInitDbClientCommand(payload, connectionSession);
             case MySqlCommandTypeEnum.COM_QUERY:
                 return new MySqlQueryClientCommand(payload, connectionSession, _serverHandlerFactory);
             case MySqlCommandTypeEnum.COM_STMT_PREPARE:
@@ -81,7 +81,6 @@ public sealed class MySqlClientDbConnection : IClientDbConnection<MySqlPacketPay
                 context.Flush();
                 //当网络消费端消费过慢或者流量过大导致netty不可写入时但是链接还是激活的就等待网络恢复
                await connectionSession.WaitChannelIsWritableAsync().ConfigureAwait(false);
-                // ((JDBCBackendConnection)backendConnection).getResourceLock().doAwait();
             }
 
             var queryRowPacket = clientQueryDataReader.GetRowPacket();

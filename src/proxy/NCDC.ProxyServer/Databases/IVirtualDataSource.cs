@@ -17,7 +17,7 @@ public interface IVirtualDataSource
     string DefaultConnectionString { get;}
 
     string GetConnectionString(string dataSourceName);
-    IReadOnlyCollection<string> GetAllDataSourceNames();
+    ICollection<string> GetAllDataSourceNames();
     bool IsDefault(string dataSourceName);
     bool AddDataSource(string dataSourceName, string connectionString);
     bool Exists(string dataSourceName);

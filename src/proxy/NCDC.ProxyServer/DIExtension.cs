@@ -8,6 +8,7 @@ using NCDC.ProxyServer.AppServices;
 using NCDC.ProxyServer.AppServices.Abstractions;
 using NCDC.ProxyServer.Bootstrappers;
 using NCDC.ProxyServer.Commons;
+using NCDC.ProxyServer.Connection;
 using NCDC.ProxyServer.Databases;
 using NCDC.ProxyServer.DbProviderFactories;
 using NCDC.ProxyServer.Executors;
@@ -90,6 +91,7 @@ public static class DIExtension
         // });
         services.AddSingleton<IAppBootstrapper, AppBootstrapper>();
         //IAppRuntimeLoader,IAppUserLoader,IUserDatabaseMappingLoader
+        services.AddSingleton<IConnectionSessionFactory, DefaultConnectionSessionFactory>();
         services.AddSingleton<IAppRuntimeManager, DefaultAppAppRuntimeManager>();
         services.AddSingleton<IAppRuntimeLoader>(sp=>(sp.GetService<IAppRuntimeManager>() as IAppRuntimeLoader)!);
         services.AddSingleton<IAppUserLoader>(sp=>(sp.GetService<IAppRuntimeManager>() as IAppUserLoader)!);

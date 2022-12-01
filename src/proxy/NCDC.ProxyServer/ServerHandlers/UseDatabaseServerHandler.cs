@@ -34,11 +34,11 @@ public sealed class UseDatabaseServerHandler:IServerHandler
         {
             return false;
         }
-        if (_connectionSession.DatabaseExists(database))
-        {
-            // var logicDatabase = ProxyRuntimeContext.Instance.GetDatabase(database);
-            // return logicDatabase!.UserNameAuthorize(_connectionSession.GetGrantee().Username);
-        }
+        // if (_connectionSession.DatabaseExists(database))
+        // {
+        //     // var logicDatabase = ProxyRuntimeContext.Instance.GetDatabase(database);
+        //     // return logicDatabase!.UserNameAuthorize(_connectionSession.GetGrantee().Username);
+        // }
 
         return false;
     }
