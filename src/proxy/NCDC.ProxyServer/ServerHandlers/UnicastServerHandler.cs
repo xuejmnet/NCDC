@@ -10,29 +10,29 @@ namespace NCDC.ProxyServer.ServerHandlers;
 /// </summary>
 public sealed class UnicastServerHandler : IServerHandler
 {
-    private readonly IConnectionSession _connectionSession;
+    private readonly IQueryContext _queryContext;
     private readonly IServerDataReaderFactory _serverDataReaderFactory;
     private IServerDataReader? _serverDataReader;
 
-    public UnicastServerHandler(IConnectionSession connectionSession,
+    public UnicastServerHandler(IQueryContext queryContext,
         IServerDataReaderFactory serverDataReaderFactory)
     {
-        _connectionSession = connectionSession;
+        _queryContext = queryContext;
         _serverDataReaderFactory = serverDataReaderFactory;
     }
 
     public async Task<IServerResult> ExecuteAsync()
     {
-        _serverDataReader = _serverDataReaderFactory.Create(_connectionSession);
+        _serverDataReader = _serverDataReaderFactory.Create(_queryContext);
         return await _serverDataReader.ExecuteDbDataReaderAsync();
     }
 
-    private string GetFirstDatabaseName()
-    {
-        var allDatabaseNames = _connectionSession.GetAllDatabaseNames();
-
-        return allDatabaseNames.FirstOrDefault() ?? throw new ShardingException("no database can select");
-    }
+    // private string GetFirstDatabaseName()
+    // {
+    //     var allDatabaseNames = _connectionSession.GetAllDatabaseNames();
+    //
+    //     return allDatabaseNames.FirstOrDefault() ?? throw new ShardingException("no database can select");
+    // }
 
     public bool Read()
     {

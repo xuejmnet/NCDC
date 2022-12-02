@@ -49,7 +49,6 @@ public sealed class MessageCommand:ICommand
             }
             finally
             {
-                _connectionSession.QueryContext = null;
                 if (isNeedFlush)
                 {
                     _context.Flush();

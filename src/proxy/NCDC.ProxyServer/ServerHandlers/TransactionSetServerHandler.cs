@@ -13,10 +13,10 @@ public class TransactionSetServerHandler:IServerHandler
     private readonly SetTransactionCommand _setTransactionCommand;
     private readonly IConnectionSession _connectionSession;
 
-    public TransactionSetServerHandler(SetTransactionCommand setTransactionCommand,IConnectionSession connectionSession)
+    public TransactionSetServerHandler(SetTransactionCommand setTransactionCommand,IQueryContext queryContext)
     {
         _setTransactionCommand = setTransactionCommand;
-        _connectionSession = connectionSession;
+        _connectionSession = queryContext.ConnectionSession;
     }
     public Task<IServerResult> ExecuteAsync()
     {

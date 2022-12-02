@@ -111,7 +111,6 @@ public class DefaultConnectionSession : IConnectionSession
         _channelWaitWriteableListener.Wakeup();
     }
 
-    public QueryContext? QueryContext { get; set; }
 
     public void Reset()
     {

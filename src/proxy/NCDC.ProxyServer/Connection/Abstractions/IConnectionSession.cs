@@ -37,7 +37,6 @@ public interface IConnectionSession:IDisposable
     // void SetCurrentDatabaseName(string? databaseName);
     Task WaitChannelIsWritableAsync(CancellationToken cancellationToken = default);
     void NotifyChannelIsWritable();
-    QueryContext? QueryContext { get; set; }
 
     void Reset();
 }

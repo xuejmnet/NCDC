@@ -44,50 +44,50 @@ public sealed class ServerHandlerFactory : IServerHandlerFactory
 
         CheckNotSupportCommand(sqlCommand);
         var sqlCommandContext = _sqlCommandContextFactory.Create(ParameterContext.Empty, sqlCommand);
-        connectionSession.QueryContext = new QueryContext(sqlCommandContext, sql, ParameterContext.Empty);
+        var queryContext= new QueryContext(connectionSession,sqlCommandContext, sql, ParameterContext.Empty);
         if (sqlCommand is ITCLCommand tclCommand)
         {
-            return CreateTCLCommandServerHandler(tclCommand,connectionSession);
+            return CreateTCLCommandServerHandler(tclCommand,queryContext);
         }
 
         if (sqlCommand is IDALCommand dalCommand)
         {
-            return CreateDALCommandServerHandler(dalCommand, connectionSession);
+            return CreateDALCommandServerHandler(dalCommand, queryContext);
         }
 
 
-        return new QueryServerHandler(connectionSession, _serverDataReaderFactory);
+        return new QueryServerHandler(queryContext, _serverDataReaderFactory);
     }
 
     private IServerHandler CreateDALCommandServerHandler(IDALCommand dalCommand,
-        IConnectionSession connectionSession)
+        IQueryContext queryContext)
     {
         if (dalCommand is MySqlUseCommand useCommand)
         {
             return SkipServerHandler.Default;
         }
 
-        if (dalCommand is SetCommand && null == connectionSession.DatabaseName)
+        if (dalCommand is SetCommand && null == queryContext.ConnectionSession.DatabaseName)
         {
             return SkipServerHandler.Default;
         }
 
-        return new UnicastServerHandler(connectionSession, _serverDataReaderFactory);
+        return new UnicastServerHandler(queryContext, _serverDataReaderFactory);
     }
 
-    private IServerHandler CreateTCLCommandServerHandler(ITCLCommand tclCommand,IConnectionSession connectionSession)
+    private IServerHandler CreateTCLCommandServerHandler(ITCLCommand tclCommand,IQueryContext queryContext)
     {
         if (tclCommand is BeginTransactionCommand beginTransactionCommand)
         {
-            return new TransactionServerHandler(TransactionOperationTypeEnum.BEGIN, connectionSession);
+            return new TransactionServerHandler(TransactionOperationTypeEnum.BEGIN, queryContext);
         }
 
         if (tclCommand is SetAutoCommitCommand setAutoCommitCommand)
         {
             if (setAutoCommitCommand.AutoCommit)
             {
-                return connectionSession.GetTransactionStatus().IsInTransaction()
-                    ? new TransactionServerHandler(TransactionOperationTypeEnum.COMMIT, connectionSession)
+                return queryContext.ConnectionSession.GetTransactionStatus().IsInTransaction()
+                    ? new TransactionServerHandler(TransactionOperationTypeEnum.COMMIT, queryContext)
                     : SkipServerHandler.Default;
             }
 
@@ -96,20 +96,20 @@ public sealed class ServerHandlerFactory : IServerHandlerFactory
 
         if (tclCommand is CommitCommand commitCommand)
         {
-            return new TransactionServerHandler(TransactionOperationTypeEnum.COMMIT, connectionSession);
+            return new TransactionServerHandler(TransactionOperationTypeEnum.COMMIT, queryContext);
         }
 
         if (tclCommand is RollbackCommand rollbackCommand)
         {
-            return new TransactionServerHandler(TransactionOperationTypeEnum.ROLLBACK, connectionSession);
+            return new TransactionServerHandler(TransactionOperationTypeEnum.ROLLBACK, queryContext);
         }
         if (tclCommand is SetTransactionCommand setTransactionCommand &&
             OperationScopeEnum.GLOBAL != setTransactionCommand.Scope)
         {
-            return new TransactionSetServerHandler(setTransactionCommand, connectionSession);
+            return new TransactionSetServerHandler(setTransactionCommand, queryContext);
         }
 
-        return new UnicastServerHandler(connectionSession, _serverDataReaderFactory);
+        return new UnicastServerHandler(queryContext, _serverDataReaderFactory);
     }
 
     private void CheckNotSupportCommand(ISqlCommand sqlCommand)

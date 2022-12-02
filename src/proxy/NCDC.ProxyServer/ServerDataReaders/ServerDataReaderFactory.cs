@@ -9,20 +9,14 @@ namespace NCDC.ProxyServer.ServerDataReaders;
 
 public sealed class ServerDataReaderFactory:IServerDataReaderFactory
 {
-    private readonly ISqlCommandContextFactory _sqlCommandContextFactory;
-
-    public ServerDataReaderFactory(ISqlCommandContextFactory sqlCommandContextFactory)
+    public IServerDataReader Create(IQueryContext queryContext)
     {
-        _sqlCommandContextFactory = sqlCommandContextFactory;
-    }
-    public IServerDataReader Create(IConnectionSession connectionSession)
-    {
-        var shardingExecutionContextFactory = connectionSession.RuntimeContext!.GetShardingExecutionContextFactory();
-        var shardingExecutionContext =shardingExecutionContextFactory.Create(connectionSession.QueryContext!);
+        var shardingExecutionContextFactory = queryContext.ConnectionSession.RuntimeContext.GetShardingExecutionContextFactory();
+        var shardingExecutionContext =shardingExecutionContextFactory.Create(queryContext);
         if (shardingExecutionContext.GetExecutionUnits().IsEmpty())
         {
             return EmptyServerDataReader.Instance;
         }
-        return new QueryServerDataReader(shardingExecutionContext, connectionSession);
+        return new QueryServerDataReader(shardingExecutionContext, queryContext);
     }
 }

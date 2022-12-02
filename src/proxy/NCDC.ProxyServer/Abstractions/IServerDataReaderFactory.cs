@@ -6,5 +6,5 @@ namespace NCDC.ProxyServer.Abstractions;
 
 public interface IServerDataReaderFactory
 {
-    IServerDataReader Create(IConnectionSession connectionSession);
+    IServerDataReader Create(IQueryContext queryContext);
 }

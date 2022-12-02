@@ -15,7 +15,7 @@ public sealed class QueryServerDataReader:AbstractExecuteServerDataReader
 
     protected IStreamDataReader StreamDataReader { get; private set; }
     protected QueryServerResult? QueryServerResult { get; private set; }
-    public QueryServerDataReader(ShardingExecutionContext shardingExecutionContext, IConnectionSession connectionSession) : base(shardingExecutionContext, connectionSession)
+    public QueryServerDataReader(ShardingExecutionContext shardingExecutionContext, IQueryContext queryContext) : base(shardingExecutionContext, queryContext)
     {
     }
 

@@ -36,8 +36,8 @@ public sealed class MySqlFieldListClientDataReader : IClientDataReader<MySqlPack
         var sql = string.Format(SQL, _table, _connectionSession.DatabaseName);
         var sqlCommand = ParseSqlCommand(sql);
         var sqlCommandContext = sqlCommandContextFactory.Create(ParameterContext.Empty, sqlCommand);
-        _connectionSession.QueryContext = new QueryContext(sqlCommandContext, sql, ParameterContext.Empty);
-        _serverDbDataReader = serverDataReaderFactory.Create(_connectionSession);
+        var  queryContext = new QueryContext(_connectionSession,sqlCommandContext, sql, ParameterContext.Empty);
+        _serverDbDataReader = serverDataReaderFactory.Create(queryContext);
     }
 
     private ISqlCommand ParseSqlCommand(string sql)

@@ -13,12 +13,12 @@ public sealed class TransactionServerHandler:IServerHandler
     private readonly IsolationLevel _isolationLevel;
     private readonly ServerTransactionManager _serverTransactionManager;
 
-    public TransactionServerHandler(TransactionOperationTypeEnum txType,IConnectionSession connectionSession)
+    public TransactionServerHandler(TransactionOperationTypeEnum txType,IQueryContext queryContext)
     {
-        ConnectionSession = connectionSession;
+        ConnectionSession = queryContext.ConnectionSession;
         _txType = txType;
-        _isolationLevel = connectionSession.IsolationLevel;
-        _serverTransactionManager = new ServerTransactionManager(connectionSession);
+        _isolationLevel = ConnectionSession.IsolationLevel;
+        _serverTransactionManager = new ServerTransactionManager(ConnectionSession);
     }
     public Task<IServerResult> ExecuteAsync()
     {

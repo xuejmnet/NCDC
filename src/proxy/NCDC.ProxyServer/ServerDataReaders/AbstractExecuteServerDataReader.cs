@@ -13,12 +13,13 @@ namespace NCDC.ProxyServer.ServerDataReaders;
 public abstract class AbstractExecuteServerDataReader:IServerDataReader
 {
     protected ShardingExecutionContext ShardingExecutionContext { get; }
-    protected IConnectionSession ConnectionSession { get; }
+    protected IQueryContext QueryContext { get; }
+    protected IConnectionSession ConnectionSession => QueryContext.ConnectionSession;
 
-    public AbstractExecuteServerDataReader(ShardingExecutionContext shardingExecutionContext,IConnectionSession connectionSession)
+    public AbstractExecuteServerDataReader(ShardingExecutionContext shardingExecutionContext,IQueryContext queryContext)
     {
         ShardingExecutionContext = shardingExecutionContext;
-        ConnectionSession = connectionSession;
+        QueryContext = queryContext;
     }
 
     public async Task<IServerResult> ExecuteDbDataReaderAsync(

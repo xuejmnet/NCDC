@@ -39,7 +39,7 @@ public sealed class ShardingExecutionContextFactory : IShardingExecutionContextF
         _shardingConfiguration = shardingConfiguration;
     }
 
-    public ShardingExecutionContext Create(QueryContext queryContext)
+    public ShardingExecutionContext Create(IQueryContext queryContext)
     {
         var shardingExecutionContext = Create0(queryContext);
         if (true)
@@ -49,7 +49,7 @@ public sealed class ShardingExecutionContextFactory : IShardingExecutionContextF
         return shardingExecutionContext;
     }
 
-    private ShardingExecutionContext Create0(QueryContext queryContext)
+    private ShardingExecutionContext Create0(IQueryContext queryContext)
     {
         var sqlParserResult = new SqlParserResult(queryContext.Sql, queryContext.SqlCommandContext, ParameterContext.Empty,_tableMetadataManager);
         if (!sqlParserResult.NoRouteReWriteSql)

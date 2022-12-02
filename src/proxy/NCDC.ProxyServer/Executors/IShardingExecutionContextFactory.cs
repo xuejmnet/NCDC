@@ -7,5 +7,5 @@ namespace NCDC.ProxyServer.Executors;
 
 public interface IShardingExecutionContextFactory
 {
-    ShardingExecutionContext Create(QueryContext queryContext);
+    ShardingExecutionContext Create(IQueryContext queryContext);
 }
