@@ -1,6 +1,7 @@
 using NCDC.Basic.Configurations;
 using NCDC.CommandParser.Abstractions;
 using NCDC.CommandParser.Common.Command;
+using NCDC.CommandParser.Common.Command.DML;
 using NCDC.Extensions;
 using NCDC.ProxyServer.Abstractions;
 using NCDC.ProxyServer.Connection;
@@ -48,41 +49,53 @@ public sealed class ShardingExecutionContextFactory : IShardingExecutionContextF
         }
         return shardingExecutionContext;
     }
+    private bool IsDefaultDataSourceExecute(ISqlCommandContext<ISqlCommand> sqlCommandContext)
+    {
+        if (sqlCommandContext.GetSqlCommand() is IDMLCommand)
+        {
+            var tableNames = sqlCommandContext.GetTablesContext().GetTableNames();
+            return !tableNames.Any(o => _tableMetadataManager.IsShardingDataSource(o));
+        }
+
+        return false;
+    }
 
     private ShardingExecutionContext Create0(IQueryContext queryContext)
     {
-        var sqlParserResult = new SqlParserResult(queryContext.Sql, queryContext.SqlCommandContext, ParameterContext.Empty,_tableMetadataManager);
-        if (!sqlParserResult.NoRouteReWriteSql)
+        //判断是否是全数据库直接执行
+        if (queryContext.DirectAllDataSourceSql)
         {
-            if (sqlParserResult.DefaultDataSourceExecute)
+            //广播所有datasource
+            var executionUnits = _shardingConfiguration.GetAllDataSources().Select(o=>new ExecutionUnit(o,new SqlUnit(queryContext.Sql,ParameterContext.Empty))).ToList();
+            ShardingExecutionContext result = new ShardingExecutionContext(queryContext.SqlCommandContext,executionUnits);
+            return result;
+        }
+        else
+        {
+            //默认数据源
+            var isDefaultDataSourceExecute = IsDefaultDataSourceExecute(queryContext.SqlCommandContext);
+            if (isDefaultDataSourceExecute)
             {
-                ShardingExecutionContext result = new ShardingExecutionContext(queryContext.SqlCommandContext);
-                result.GetExecutionUnits().Add(new ExecutionUnit(_shardingConfiguration.DefaultDataSourceName,new SqlUnit(queryContext.Sql,ParameterContext.Empty)));
+                var executionUnit = new ExecutionUnit(_shardingConfiguration.DefaultDataSourceName,new SqlUnit(queryContext.Sql,ParameterContext.Empty));
+                ShardingExecutionContext result = new ShardingExecutionContext(queryContext.SqlCommandContext,executionUnit);
                 return result;
             }
             else
             {
+                var sqlParserResult = new SqlParserResult(queryContext.Sql,queryContext.SqlCommandContext,queryContext.ParameterContext);
                 var routeContext = _routeContextFactory.Create(sqlParserResult);
                 var sqlRewriteContext = _sqlRewriterContextFactory.Rewrite(sqlParserResult, routeContext);
 
-                ICollection<ExecutionUnit> executionUnits = new LinkedList<ExecutionUnit>();
                 var sqlRewriteResults = GetRewriteResults(sqlRewriteContext, routeContext.GetRouteResult());
+                List<ExecutionUnit> executionUnits = new List<ExecutionUnit>(sqlRewriteResults.Count);
                 foreach (var sqlRewriteResult in sqlRewriteResults)
                 {
                     executionUnits.Add(new ExecutionUnit(sqlRewriteResult.Key.DataSource,
                         new SqlUnit(sqlRewriteResult.Value.Sql, sqlRewriteResult.Value.ParameterContext)));
                 }
-                ShardingExecutionContext result = new ShardingExecutionContext(routeContext.GetSqlCommandContext());
-                result.GetExecutionUnits().AddAll(executionUnits);
+                ShardingExecutionContext result = new ShardingExecutionContext(routeContext.GetSqlCommandContext(),executionUnits);
                 return result;
             }
-        }
-        else
-        {
-            //广播所有datasource
-            ShardingExecutionContext result = new ShardingExecutionContext(queryContext.SqlCommandContext);
-            result.GetExecutionUnits().AddAll(_shardingConfiguration.GetAllDataSources().Select(o=>new ExecutionUnit(o,new SqlUnit(queryContext.Sql,ParameterContext.Empty))));
-            return result;
         }
     }
 

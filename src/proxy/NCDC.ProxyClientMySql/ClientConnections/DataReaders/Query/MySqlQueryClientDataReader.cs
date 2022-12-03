@@ -20,6 +20,7 @@ using NCDC.ProxyServer.Commons;
 using NCDC.ProxyServer.Connection.Abstractions;
 using NCDC.ProxyServer.Extensions;
 using NCDC.ProxyServer.ServerHandlers.Results;
+using NCDC.ShardingParser.Abstractions;
 
 namespace NCDC.ProxyClientMySql.ClientConnections.DataReaders.Query;
 
@@ -41,10 +42,11 @@ public sealed class MySqlQueryClientDataReader : IClientQueryDataReader<MySqlPac
         //MySQLComQueryPacketExecutor
         ConnectionSession = connectionSession;
         var sqlCommand = ParseSql(sql);
-        var isMultiCommands = IsMultiCommands(ConnectionSession, sqlCommand, _sql);
-        ServerHandler = isMultiCommands
-            ? new MySqlMultiServerHandler()
-            : _serverHandlerFactory.Create(DatabaseTypeEnum.MySql, _sql, sqlCommand, ConnectionSession);
+        // var isMultiCommands = IsMultiCommands(ConnectionSession, sqlCommand, _sql);
+        // isMultiCommands
+        //     ? new MySqlMultiServerHandler()
+        //     : 
+        ServerHandler = _serverHandlerFactory.Create(_sql, sqlCommand, ConnectionSession);
         MySqlCharacterSet = connectionSession.Channel.GetMySqlCharacterSet().Value;
     }
 
@@ -58,13 +60,13 @@ public sealed class MySqlQueryClientDataReader : IClientQueryDataReader<MySqlPac
         return ConnectionSession.GetSqlCommandParser().Parse(sql, false);
     }
 
-    private bool IsMultiCommands(IConnectionSession connectionSession, ISqlCommand sqlCommand, string sql)
-    {
-        return connectionSession.Channel.HasAttribute(MySqlConstants.MYSQL_OPTION_MULTI_STATEMENTS)
-               && MySqlSetOptionClientCommand.MYSQL_OPTION_MULTI_STATEMENTS_ON.Equals(connectionSession.Channel
-                   .GetAttribute(MySqlConstants.MYSQL_OPTION_MULTI_STATEMENTS).Get())
-               && (sqlCommand is UpdateCommand || sqlCommand is DeleteCommand) && sql.Contains(";");
-    }
+    // private bool IsMultiCommands(IConnectionSession connectionSession, ISqlCommand sqlCommand, string sql)
+    // {
+    //     return connectionSession.Channel.HasAttribute(MySqlConstants.MYSQL_OPTION_MULTI_STATEMENTS)
+    //            && MySqlSetOptionClientCommand.MYSQL_OPTION_MULTI_STATEMENTS_ON.Equals(connectionSession.Channel
+    //                .GetAttribute(MySqlConstants.MYSQL_OPTION_MULTI_STATEMENTS).Get())
+    //            && (sqlCommand is UpdateCommand || sqlCommand is DeleteCommand) && sql.Contains(";");
+    // }
 
     public async IAsyncEnumerable<IPacket<MySqlPacketPayload>> SendCommand()
     {

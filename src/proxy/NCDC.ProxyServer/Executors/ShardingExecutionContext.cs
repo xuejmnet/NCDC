@@ -15,14 +15,18 @@ namespace NCDC.ProxyServer.Executors
     public sealed class ShardingExecutionContext
     {
         private readonly ISqlCommandContext<ISqlCommand> _sqlCommandContext;
-    
-        private readonly ICollection<ExecutionUnit> _executionUnits = new HashSet<ExecutionUnit>();
+
+        private readonly ICollection<ExecutionUnit> _executionUnits;
         public int MaxQueryConnectionsLimit { get; }
         public bool IsSerialExecute { get; }
 
-        public ShardingExecutionContext(ISqlCommandContext<ISqlCommand> sqlCommandContext)
+        public ShardingExecutionContext(ISqlCommandContext<ISqlCommand> sqlCommandContext,ExecutionUnit executionUnit):this(sqlCommandContext,new List<ExecutionUnit>(){executionUnit})
+        {}
+
+        public ShardingExecutionContext(ISqlCommandContext<ISqlCommand> sqlCommandContext,List<ExecutionUnit> executionUnits)
         {
             _sqlCommandContext = sqlCommandContext;
+            _executionUnits = executionUnits;
             MaxQueryConnectionsLimit = 10;
             IsSerialExecute = sqlCommandContext is InsertCommandContext||sqlCommandContext is UpdateCommandContext ||sqlCommandContext is DeleteCommandContext;
         }

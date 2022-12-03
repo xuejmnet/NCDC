@@ -7,6 +7,6 @@ namespace NCDC.ProxyServer.Abstractions;
 
 public interface IServerHandlerFactory
 {
-    IServerHandler Create(DatabaseTypeEnum databaseType, string sql, ISqlCommand sqlCommand,
+    IServerHandler Create(string sql, ISqlCommand sqlCommand,
         IConnectionSession connectionSession);
 }

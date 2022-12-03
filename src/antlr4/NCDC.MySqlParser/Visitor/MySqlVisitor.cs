@@ -1621,7 +1621,7 @@ namespace NCDC.MySqlParser.Visitor
         public override IASTNode VisitSelect(MySqlCommandParser.SelectContext ctx)
         {
             // TODO :Unsupported for withClause.
-            MySqlSelectCommand result;
+            MySqlSelectCommand? result=null;
             if (null != ctx.queryExpression())
             {
                 result = (MySqlSelectCommand)Visit(ctx.queryExpression());
@@ -1636,7 +1636,12 @@ namespace NCDC.MySqlParser.Visitor
             }
             else
             {
-                result = (MySqlSelectCommand)Visit(ctx.GetChild(0));
+                result = (MySqlSelectCommand?)Visit(ctx.GetChild(0));
+            }
+
+            if (result == null)
+            {
+                result = new MySqlSelectCommand();
             }
 
             result.ParameterCount = _currentParameterIndex;

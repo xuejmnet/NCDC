@@ -2,12 +2,14 @@ using Microsoft.Extensions.Logging;
 using NCDC.CommandParser.Common.Command;
 using NCDC.CommandParser.Common.Command.DAL;
 using NCDC.CommandParser.Common.Command.DCL;
+using NCDC.CommandParser.Common.Command.DML;
 using NCDC.CommandParser.Common.Command.TCL;
 using NCDC.CommandParser.Common.Constant;
 using NCDC.CommandParser.Common.Util;
 using NCDC.CommandParser.Dialect.Command.MySql.DAL;
 using NCDC.Enums;
 using NCDC.Logger;
+using NCDC.Protocol.MySql.Constant;
 using NCDC.ProxyServer.Abstractions;
 using NCDC.ProxyServer.Connection;
 using NCDC.ProxyServer.Connection.Abstractions;
@@ -31,15 +33,20 @@ public sealed class ServerHandlerFactory : IServerHandlerFactory
         _sqlCommandContextFactory = sqlCommandContextFactory;
     }
 
-    public IServerHandler Create(DatabaseTypeEnum databaseType, string sql, ISqlCommand sqlCommand,
+    public IServerHandler Create(string sql, ISqlCommand sqlCommand,
         IConnectionSession connectionSession)
     {
-        _logger.LogDebug($"database type:{databaseType},sql:{sql},sql command:{sqlCommand}");
+        // _logger.LogDebug($"database type:{databaseType},sql:{sql},sql command:{sqlCommand}");
         //取消sql的注释信息
         var trimCommentSql = SqlUtil.TrimComment(sql);
         if (string.IsNullOrEmpty(trimCommentSql))
         {
             return SkipServerHandler.Default;
+        }
+
+        if (IsMultiCommands(sqlCommand,sql))
+        {
+            throw new NotSupportedException("multi commands");
         }
 
         CheckNotSupportCommand(sqlCommand);
@@ -57,6 +64,12 @@ public sealed class ServerHandlerFactory : IServerHandlerFactory
 
 
         return new QueryServerHandler(queryContext, _serverDataReaderFactory);
+    }
+    
+
+    private bool IsMultiCommands(ISqlCommand sqlCommand, string sql)
+    {
+        return (sqlCommand is UpdateCommand || sqlCommand is DeleteCommand) && sql.Contains(";");
     }
 
     private IServerHandler CreateDALCommandServerHandler(IDALCommand dalCommand,

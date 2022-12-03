@@ -102,15 +102,12 @@ namespace NCDC.ShardingParser.Segment.Table
             return _databaseNames.IsEmpty() ? null : _databaseNames.First();
         }
         /// <summary>
-        /// ��ȡ���еı�����
+        /// 获取所有的表信息
         /// </summary>
         /// <returns></returns>
         public IEnumerable<string> GetTableNames()
         {
-            foreach (var table in _tables)
-            {
-                yield return table.TableName.IdentifierValue.Value;
-            }
+            return _tableNames;
         }
 
         public int GetTableNameCount()

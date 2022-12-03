@@ -6,9 +6,9 @@ public sealed class RouteUnit
 {
     public string DataSource { get; }
 
-    public ICollection<RouteMapper> TableMappers { get; }
+    public List<RouteMapper> TableMappers { get; }
 
-    public RouteUnit(string dataSource, ICollection<RouteMapper> tableMappers)
+    public RouteUnit(string dataSource, List<RouteMapper> tableMappers)
     {
         DataSource = dataSource;
         TableMappers = tableMappers;
@@ -55,24 +55,5 @@ public sealed class RouteUnit
         }
 
         return null;
-    }
-
-    private bool Equals(RouteUnit other)
-    {
-        return Equals(DataSource, other.DataSource) && Equals(TableMappers, other.TableMappers);
-    }
-
-    public override bool Equals(object obj)
-    {
-        return ReferenceEquals(this, obj) || obj is RouteUnit other && Equals(other);
-    }
-
-    public override int GetHashCode()
-    {
-        unchecked
-        {
-            return (DataSource.GetHashCode() * 397) ^
-                   TableMappers.GetHashCode();
-        }
     }
 }

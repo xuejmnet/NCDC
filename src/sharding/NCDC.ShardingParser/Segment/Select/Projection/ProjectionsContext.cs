@@ -25,6 +25,9 @@ namespace NCDC.ShardingParser.Segment.Select.Projection
             _distinctRow = distinctRow;
             _projections = projections;
         }
+        public ProjectionsContext():this(0,0,false,new List<IProjection>(0))
+        {
+        }
 
 
         public int GetStartIndex()

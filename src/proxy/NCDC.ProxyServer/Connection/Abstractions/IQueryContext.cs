@@ -10,4 +10,8 @@ public interface IQueryContext
      string Sql { get; }
      ParameterContext ParameterContext { get; }
      IConnectionSession ConnectionSession { get; }
+     /// <summary>
+     /// 是否是直接执行的sql
+     /// </summary>
+     bool DirectAllDataSourceSql { get; }
 }

@@ -30,22 +30,30 @@ namespace NCDC.ShardingParser.Segment.Select.Projection.Engine
         public ProjectionsContext CreateProjectionsContext(ITableSegment table, ProjectionsSegment? projectionsSegment,
             GroupByContext groupByContext, OrderByContext orderByContext)
         {
-            List<IProjection> projections =GetProjections(table, projectionsSegment).ToList();
-            ProjectionsContext result = new ProjectionsContext(projectionsSegment.StartIndex,
-                projectionsSegment.StopIndex, projectionsSegment.DistinctRow, projections);
-            result.GetProjections().AddAll(GetDerivedGroupByColumns(projections, groupByContext));
-            result.GetProjections().AddAll(GetDerivedOrderByColumns(projections, orderByContext));
-            return result;
+            if (projectionsSegment != null)
+            {
+                List<IProjection> projections =GetProjections(table, projectionsSegment).ToList();
+                ProjectionsContext result = new ProjectionsContext(projectionsSegment.StartIndex,
+                    projectionsSegment.StopIndex, projectionsSegment.DistinctRow, projections);
+                result.GetProjections().AddAll(GetDerivedGroupByColumns(projections, groupByContext));
+                result.GetProjections().AddAll(GetDerivedOrderByColumns(projections, orderByContext));
+                return result;
+            }
+            else
+            {
+                return new ProjectionsContext();
+            }
         }
         private IEnumerable<IProjection> GetProjections(ITableSegment table,  ProjectionsSegment projectionsSegment) {
-            foreach (var projectionsSegmentProjection in projectionsSegment.Projections)
-            {
-                var projection = _projectionEngine.CreateProjection(table,projectionsSegmentProjection);
-                if (projection is not null)
+            
+                foreach (var projectionsSegmentProjection in projectionsSegment.Projections)
                 {
-                    yield return projection;
+                    var projection = _projectionEngine.CreateProjection(table,projectionsSegmentProjection);
+                    if (projection is not null)
+                    {
+                        yield return projection;
+                    }
                 }
-            }
         }
         // public ProjectionsContext CreateProjectionsContext(string sql, SelectCommand selectCommand,
         //     GroupByContext groupByContext, OrderByContext orderByContext)
