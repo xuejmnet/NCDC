@@ -51,7 +51,7 @@ public abstract class AbstractExecuteServerDataReader:IServerDataReader
         CancellationToken cancellationToken = new CancellationToken())
     {
         var dataSourceSqlExecutorUnits = await Task.WhenAll(ShardingExecutionContext.GetExecutionUnits()
-            .GroupBy(o => o.GetDataSourceName()).Select(GetSqlExecutorGroups).ToArray());
+            .GroupBy(o => o.GetDataSourceName()).Select(GetSqlExecutorGroupsAsync).ToArray());
 
         var waitTaskQueue = 
             dataSourceSqlExecutorUnits
@@ -79,7 +79,7 @@ public abstract class AbstractExecuteServerDataReader:IServerDataReader
     /// <param name="sqlGroups"></param>
     /// <returns></returns>
     /// <exception cref="ArgumentNullException"></exception>
-    private async Task<DataSourceSqlExecutorUnit> GetSqlExecutorGroups(IGrouping<string, ExecutionUnit> sqlGroups)
+    private async Task<DataSourceSqlExecutorUnit> GetSqlExecutorGroupsAsync(IGrouping<string, ExecutionUnit> sqlGroups)
     {
         var isSerialExecute = ShardingExecutionContext.IsSerialExecute;
         var maxQueryConnectionsLimit = ShardingExecutionContext.MaxQueryConnectionsLimit;

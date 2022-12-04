@@ -54,7 +54,7 @@ public sealed class ShardingExecutionContextFactory : IShardingExecutionContextF
         if (sqlCommandContext.GetSqlCommand() is IDMLCommand)
         {
             var tableNames = sqlCommandContext.GetTablesContext().GetTableNames();
-            return !tableNames.Any(o => _tableMetadataManager.IsShardingDataSource(o));
+            return !tableNames.Any(o => _tableMetadataManager.IsSharding(o));
         }
 
         return false;

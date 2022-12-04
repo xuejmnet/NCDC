@@ -32,20 +32,36 @@ public sealed class EntityFrameworkCoreAppRuntimeBuilder : AbstractAppRuntimeBui
         using (var scope = _appServiceProvider.CreateScope())
         {
             var dbContext = scope.ServiceProvider.GetRequiredService<NCDCDbContext>();
-            var logicDatabase = await dbContext.Set<LogicDatabaseEntity>().FirstOrDefaultAsync(o => o.DatabaseName == database);
+            var logicDatabase = await dbContext.Set<LogicDatabaseEntity>()
+                .FirstOrDefaultAsync(o => o.DatabaseName == database);
 
             _logicDatabase = logicDatabase ?? throw new ShardingConfigException($"database: {database} not found");
 
-            var dataSources = await dbContext.Set<ActualDatabaseEntity>().Where(o => o.LogicDatabaseId == logicDatabase.Id).ToListAsync();
-            var logicTables = await dbContext.Set<LogicTableEntity>().Where(o => o.LogicDatabaseId == logicDatabase.Id).ToListAsync();
+            var dataSources = await dbContext.Set<ActualDatabaseEntity>()
+                .Where(o => o.LogicDatabaseId == logicDatabase.Id).ToListAsync();
+            var logicTables = await dbContext.Set<LogicTableEntity>().Where(o => o.LogicDatabaseId == logicDatabase.Id)
+                .ToListAsync();
             var actualTables =
-                await dbContext.Set<ActualTableEntity>().Where(o => o.LogicDatabaseId == logicDatabase.Id).ToListAsync();
+                await dbContext.Set<ActualTableEntity>().Where(o => o.LogicDatabaseId == logicDatabase.Id)
+                    .ToListAsync();
             _dataSourceNodes.AddRange(dataSources.Select(o =>
                 new DataSourceNode(o.DataSourceName, o.ConnectionString, o.IsDefault)));
             _logicTableNodes.AddRange(logicTables.Select(o =>
                 new LogicTableNode(o.TableName, o.DataSourceRule, o.TableRule)));
-            var map = actualTables.GroupBy(o => o.LogicTableId).ToDictionary(o => o.Key,
-                o => o.Select(t => new ActualTableNode(t.DataSourceId, t.TableName)).ToList());
+            
+            
+            var map = (from actualTable in actualTables
+                join logicTable in logicTables
+                    on actualTable.LogicTableId equals logicTable.Id
+                join dataSource in dataSources
+                    on actualTable.DataSourceId equals dataSource.Id
+                select new
+                {
+                    LogicTableName = logicTable.TableName,
+                    DataSourceName = dataSource.DataSourceName,
+                    ActualTableName = actualTable.TableName
+                }).GroupBy(o => o.LogicTableName).ToDictionary(o => o.Key,
+                o => o.Select(actual=>new ActualTableNode(actual.DataSourceName, actual.ActualTableName)).ToList());
             foreach (var kv in map)
             {
                 _actualTableNodes.Add(kv.Key, kv.Value);

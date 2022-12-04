@@ -23,15 +23,15 @@ public sealed class ServerConnection : IServerConnection
     public IDictionary<string /*data source*/, List<IServerDbConnection>> CachedConnections { get; } =
         new ConcurrentDictionary<string, List<IServerDbConnection>>();
 
-    // private IDictionary<string, OneByOneChecker> _checkers;
+    private IDictionary<string, OneByOneChecker> _checkers;
 
     public ServerConnection(IConnectionSession connectionSession)
     {
         _transactionType = TransactionTypeEnum.LOCAL;
         ConnectionSession = connectionSession;
         ServerDbConnectionInvokeReplier = new LinkedList<Func<IServerDbConnection, Task>>();
-        // var allDataSourceNames = connectionSession.VirtualDataSource!.GetAllDataSourceNames();
-        // _checkers=allDataSourceNames.ToImmutableDictionary(o => o, o => new OneByOneChecker());
+        var allDataSourceNames = connectionSession.VirtualDataSource.GetAllDataSourceNames();
+        _checkers=allDataSourceNames.ToImmutableDictionary(o => o, o => new OneByOneChecker());
     }
 
     public IConnectionSession ConnectionSession { get; }
@@ -47,14 +47,14 @@ public sealed class ServerConnection : IServerConnection
         string dataSourceName,
         int connectionSize)
     {
-        // if (!_checkers.TryGetValue(dataSourceName, out var checker))
-        // {
-        //     throw new InvalidOperationException($"cant found:{dataSourceName} checker");
-        // }
-        // checker.OneByOneLock();
-        using (await _mutex.LockAsync())
+        if (!_checkers.TryGetValue(dataSourceName, out var checker))
         {
-         
+            throw new InvalidOperationException($"cant found:{dataSourceName} checker");
+        }
+        checker.OneByOneLock();
+        try
+            // using (await _mutex.LockAsync())
+        {
             if (!CachedConnections.TryGetValue(dataSourceName, out var cachedConnections))
             {
                 cachedConnections = new List<IServerDbConnection>(Math.Max(connectionSize * 2,
@@ -75,7 +75,11 @@ public sealed class ServerConnection : IServerConnection
                 dbConnections.AddRange(serverDbConnections);
                 cachedConnections.AddRange(serverDbConnections);
                 return dbConnections;
-            }   
+            }
+        }
+        finally
+        {
+            checker.OneByOneUnLock();
         }
     }
 
@@ -130,6 +134,7 @@ public sealed class ServerConnection : IServerConnection
     public void Dispose()
     {
         CachedConnections.Clear();
+        ServerDbConnectionInvokeReplier.Clear();
     }
 
     public IServerDbConnection GetServerDbConnection(CreateServerDbConnectionStrategyEnum strategy,

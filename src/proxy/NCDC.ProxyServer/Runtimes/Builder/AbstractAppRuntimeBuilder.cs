@@ -80,21 +80,28 @@ public abstract class AbstractAppRuntimeBuilder : IAppRuntimeBuilder
             .Union(routeInitConfigOption.GetDataSourceRouteRules().Keys).Distinct().ToList();
         foreach (var logicTableName in logicTableNames)
         {
-            var actualTables = GetActualTables(logicTableName);
-
-            var actualTableEntity = actualTables.FirstOrDefault();
-            var columnSchema = await GetColumnSchemaAsync(virtualDataSource, actualTableEntity);
-            var tableMetadata = new TableMetadata(logicTableName, columnSchema);
-            foreach (var actualTable in actualTables)
+            try
             {
-                tableMetadata.AddActualTableWithDataSource(actualTable.DataSource, actualTable.TableName);
+                var actualTables = GetActualTables(logicTableName);
+
+                var actualTableEntity = actualTables.FirstOrDefault();
+                var columnSchema = await GetColumnSchemaAsync(virtualDataSource, actualTableEntity);
+                var tableMetadata = new TableMetadata(logicTableName, columnSchema);
+                foreach (var actualTable in actualTables)
+                {
+                    tableMetadata.AddActualTableWithDataSource(actualTable.DataSource, actualTable.TableName);
+                }
+
+                tableMetadataManager.AddTableMetadata(tableMetadata);
+
+                if (!await tableMetadataInitializer.InitializeAsync(tableMetadata))
+                {
+                    tableMetadataManager.RemoveTableMetadata(tableMetadata.LogicTableName);
+                }
             }
-
-            tableMetadataManager.AddTableMetadata(tableMetadata);
-
-            if (!await tableMetadataInitializer.InitializeAsync(tableMetadata))
+            catch (Exception e)
             {
-                tableMetadataManager.RemoveTableMetadata(tableMetadata.LogicTableName);
+                Console.WriteLine(e);
             }
         }
     }

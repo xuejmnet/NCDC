@@ -17,6 +17,7 @@ public sealed class VirtualDataSource : IVirtualDataSource
     private static ILogger<VirtualDataSource> _logger = NCDCLoggerFactory.CreateLogger<VirtualDataSource>();
     private readonly ShardingConfiguration _shardingConfiguration;
     private readonly IDbProviderFactory _dbProviderFactory;
+
     public string GetDatabaseName()
     {
         return _shardingConfiguration.DatabaseName;
@@ -72,7 +73,8 @@ public sealed class VirtualDataSource : IVirtualDataSource
     public bool AddDataSource(string dataSourceName, string connectionString)
     {
         return _dataSources.TryAdd(dataSourceName,
-            new DataSource(dataSourceName, connectionString, dataSourceName == DefaultDataSourceName, _dbProviderFactory.Create()));
+            new DataSource(dataSourceName, connectionString, dataSourceName == DefaultDataSourceName,
+                _dbProviderFactory.Create()));
     }
 
     public bool Exists(string dataSourceName)
@@ -89,12 +91,13 @@ public sealed class VirtualDataSource : IVirtualDataSource
         }
 
         return dataSource;
-
     }
 
-    public async ValueTask<List<IServerDbConnection>> GetServerDbConnectionsAsync(ConnectionModeEnum connectionMode, string dataSourceName, int connectionSize,
+    public async ValueTask<List<IServerDbConnection>> GetServerDbConnectionsAsync(ConnectionModeEnum connectionMode,
+        string dataSourceName, int connectionSize,
         TransactionTypeEnum transactionType)
-    {if (!_dataSources.TryGetValue(dataSourceName, out var dataSource))
+    {
+        if (!_dataSources.TryGetValue(dataSourceName, out var dataSource))
         {
             throw new ShardingException($"unknown data source name:{dataSourceName}");
         }
@@ -113,37 +116,40 @@ public sealed class VirtualDataSource : IVirtualDataSource
         //
         // lock (proxyDatabase)
         // {
-            return await CreateServerDbConnections(transactionType, dataSource, connectionSize);
+        return await CreateServerDbConnections(transactionType, dataSource, connectionSize);
         // }
     }
 
     // public SchemaMetaData SchemaMetaData { get; }
 
-    private async ValueTask<List<IServerDbConnection>> CreateServerDbConnections(TransactionTypeEnum transactionType,IDataSource dataSource,int connectionSize)
+    private async ValueTask<List<IServerDbConnection>> CreateServerDbConnections(TransactionTypeEnum transactionType,
+        IDataSource dataSource, int connectionSize)
     {
         var serverDbConnections = new List<IServerDbConnection>(connectionSize);
         for (int i = 0; i < connectionSize; i++)
         {
             try
             {
-                serverDbConnections.Add(await CreateServerDbConnection(transactionType,dataSource));
+                serverDbConnections.Add(await CreateServerDbConnection(transactionType, dataSource));
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex,$"{nameof(CreateServerDbConnections)} has error.");
+                _logger.LogError(ex, $"{nameof(CreateServerDbConnections)} has error.");
                 foreach (var serverDbConnection in serverDbConnections)
                 {
                     serverDbConnection.Dispose();
                 }
 
-                throw new ShardingException($"couldn't get {connectionSize} server db connections one time, partition succeed connection({serverDbConnections.Count}) have released!",ex);
+                throw new ShardingException(
+                    $"couldn't get {connectionSize} server db connections one time, partition succeed connection({serverDbConnections.Count}) have released!",
+                    ex);
             }
         }
 
         return serverDbConnections;
     }
 
-    private  ValueTask<IServerDbConnection> CreateServerDbConnection(TransactionTypeEnum transactionType, 
+    private ValueTask<IServerDbConnection> CreateServerDbConnection(TransactionTypeEnum transactionType,
         IDataSource dataSource)
     {
         return dataSource.CreateServerDbConnectionAsync();
