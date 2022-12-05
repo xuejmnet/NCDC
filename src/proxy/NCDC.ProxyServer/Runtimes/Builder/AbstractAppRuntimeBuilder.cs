@@ -3,6 +3,7 @@ using System.Data.Common;
 using NCDC.Basic.Configurations;
 using NCDC.Basic.Metadatas;
 using NCDC.Enums;
+using NCDC.Extensions;
 using NCDC.ProxyServer.AppServices.Abstractions;
 using NCDC.ProxyServer.Databases;
 
@@ -50,15 +51,15 @@ public abstract class AbstractAppRuntimeBuilder : IAppRuntimeBuilder
 
         foreach (var logicTable in GetLogicTables())
         {
-            if (logicTable.ShardingDataSourceRule != null)
+            if (!logicTable.ShardingDataSourceRule.IsNullOrWhiteSpace())
             {
                 builder.RouteConfigOption.AddDataSourceRouteRule(logicTable.Name,
-                    logicTable.ShardingDataSourceRule);
+                    logicTable.ShardingDataSourceRule!);
             }
 
-            if (logicTable.ShardingTableRule != null)
+            if (!logicTable.ShardingTableRule.IsNullOrWhiteSpace())
             {
-                builder.RouteConfigOption.AddTableRouteRule(logicTable.Name, logicTable.ShardingTableRule);
+                builder.RouteConfigOption.AddTableRouteRule(logicTable.Name, logicTable.ShardingTableRule!);
             }
         }
 

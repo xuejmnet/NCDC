@@ -26,6 +26,13 @@ public class TestNCDC
         await dbConnection.OpenAsync();
         return dbConnection;
     }
+    private async Task<DbConnection> CreateProxyMySqlConnection1()
+    {
+        var dbConnection =
+            new MySqlConnection("server=127.0.0.1;port=3307;database=ncdctest;userid=xjm;password=abc;");
+        await dbConnection.OpenAsync();
+        return dbConnection;
+    }
 
     [Fact]
     public async Task Test1()
@@ -130,4 +137,59 @@ public class TestNCDC
         Assert.Equal(column1, column2);
     }
     //mysql schema
+
+    [Fact]
+    public async Task Test4()
+    {
+        var proxyMySqlConnection =await CreateProxyMySqlConnection1();
+        using (var dbCommand = proxyMySqlConnection.CreateCommand())
+        {
+            dbCommand.CommandText = "select * from sysusermodint order by age";
+            using (var dataReader = await dbCommand.ExecuteReaderAsync())
+            {
+                var dbColumns = await dataReader.GetColumnSchemaAsync();
+                var ageColumn =
+                    dbColumns.FirstOrDefault(o => "age".Equals(o.ColumnName, StringComparison.OrdinalIgnoreCase));
+                Assert.NotNull(ageColumn);
+              
+                
+                int i = 1;
+                while (await dataReader.ReadAsync())
+                {
+                    var age = dataReader.GetInt32(ageColumn.ColumnOrdinal!.Value);
+                    Assert.Equal(i,age);
+                    i++;
+                }
+            }
+            
+        }
+        using (var dbCommand = proxyMySqlConnection.CreateCommand())
+        {
+            dbCommand.CommandText = "select * from sysusermodint_00";
+            using (var dataReader = await dbCommand.ExecuteReaderAsync())
+            {
+                int i = 0;
+                while (await dataReader.ReadAsync())
+                {
+                    i++;
+                }
+                Assert.Equal(333,i);
+            }
+        }
+        using (var dbCommand = proxyMySqlConnection.CreateCommand())
+        {
+            dbCommand.CommandText = "select count(1) from sysusermodint_00";
+            using (var dataReader = await dbCommand.ExecuteReaderAsync())
+            {
+                int i = 0;
+                while (await dataReader.ReadAsync())
+                {
+                    i = dataReader.GetInt32(0);
+                }
+                Assert.Equal(333,i);
+            }
+        }
+        
+    }
+    
 }
